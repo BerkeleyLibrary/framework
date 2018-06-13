@@ -1,0 +1,124 @@
+<head>
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="robots" content="noindex, nofollow">
+
+<title>Faculty Alt-Media Scanning form- UC Berkeley Library</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+div {
+    padding-top: 10px;
+}
+
+input[type=text] {
+    width: 30%;
+    padding: 15px 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+.button {
+    background-color: #9a6f00;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<% unless(verified == 1) %>yesem<% end %>
+
+<div class="container">
+
+<a href="http://www.lib.berkeley.edu/"><img src="http://digitalassets.lib.berkeley.edu/main/images/logo_small.png" alt="UC 
+Berkeley Library" /></a>
+
+<h1>Faculty Alt-Media Scanning</h1>
+
+<p>The Library provides alt-media scanning services for Berkeley faculty <strong>and instructors</strong> who 
+qualify under the Chafee Amendment to the Copyright Act <strong>and who choose to enroll in the 
+service</strong>.  This amendment states: “it is not an infringement of copyright for an authorized entity to 
+reproduce or to distribute copies or phonorecords of a previously published, nondramatic literary work if such 
+copies or phonorecords are reproduced or distributed in specialized formats exclusively for use by blind or 
+other persons with disabilities."  <strong>This alt-media scanning service is intended to support Berkeley 
+faculty and instructors in their teaching and research</strong>.</p>
+
+
+<p>The Library provides qualified users with digital files of the library's print collection.</p> 
+<ul>
+
+<li>Scans will be handled in the order they are received, with one item scanned for each user waiting 
+before second items will be handled for anyone.</li>
+
+<li>The person requesting the item will receive email notification when the digital file is ready.</li>
+
+<li>The email will include a link to download the digital file.</li>
+
+<li>The Library will do a light correction of the OCR.</li>
+
+<li>The file will be available as a Word document and as a searchable PDF.</li>
+</ul>
+
+<p><strong>By completing this form, the individual is indicating that they have a disability which qualifies 
+them for this service. The Library is not a medical provider, and accepts the individual's word that 
+they qualify for this service.  Upon receipt of this form, the Library adds a generic note to the 
+person's borrower record ("library book scan eligible"). The Library does not share this 
+information in any other way with other entities on campus or off campus.</strong></p>
+
+<p>Use this form both to opt-in to the service, and to terminate the service if your circumstances 
+change.  Please allow up to 48 hours for your status in the system to be updated.</p>
+
+<%= form_tag controller: "scan", action: "scanrequest", method: "post" do %> 
+
+<input type="hidden" id="faculty_email" name="faculty_email" value="<%= faculty_email %>">
+<input type="hidden" id="emp_id" name="emp_id" value="<%= @empid %>">
+
+<p style="color:#ee0000">* Required</p>
+
+<h2><label>Request</label> <span style="color:#ee0000">*</span></h2>
+
+<div class="radio">
+<label for="optin"><input type="radio" name="request_type" id="optin" value="optin" required>Opt in. I confirm I qualify for this service.</label>
+</div>
+
+<div class="radio">
+<label for="optout"><input type="radio" name="request_type" id="optout" value="optout">Opt out. I wish to terminate use of this service.</label>
+</div>
+
+<div class="form-group">
+<h2><label for="lastName">Last Name</label> <span style="color:#ee0000">*</span></h2>
+	<input type="text" class="form-control" id="lastName" placeholder="Enter last name" name="lastName" required>
+</div>
+
+<div class="form-group">
+<h2><label for="firstName">First Name</label> <span style="color:#ee0000">*</span></h2>
+	<input type="text" class="form-control" id="firstName" placeholder="Enter first name" name="firstName" required>
+</div>
+
+<button type="submit" class="button">SUBMIT</button>
+<% end %>
+
+<div>
+Copyright © The Regents of the University of California. All rights reserved. <a href="mailto:printscan@lists.berkeley.edu">Questions?</a>
+</div>
+
+</div>
+
+</body>
