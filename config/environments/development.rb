@@ -39,7 +39,7 @@ Rails.application.configure do
   	port:                 587,
   	domain:               'lib.berkeley.edu',
   	user_name:            'lib-noreply@berkeley.edu',
-  	password:             ENV['SHA'], 
+  	password:             ENV['SHA'],
   	authentication:       'plain',
   	enable_starttls_auto: true 
   }

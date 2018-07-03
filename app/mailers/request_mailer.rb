@@ -2,25 +2,33 @@ class RequestMailer < ActionMailer::Base
   default from: 'lib-noreply@berkeley.edu'
 #  layout 'confirmation_email'
 
-  def failure_email(email,empid,firstname,lastname)
-    @email = email 
-    mail(to: @email, subject: 'alt-media scanning patron opt-in failure',body: "Was not able to update patron record for #{firstname} #{lastname} #{empid} to opt-in to altmedia scanning")
+  def failure_email(empid,firstname,lastname,note)
+	  @empid = empid
+    @firstname = firstname
+    @lastname = lastname
+    @note = note
+    #email = "prntscan@lists.berkeley.edu"
+    email = "dzuckerm@library.berkeley.edu"
+    mail(to: email, subject: 'alt-media scanning patron opt-in failure')
   end
 
   def confirmation_email(email)
-    @email = email 
-    #mail(to: @email, subject: 'Sample Email',body: 'your request is being processed')
-    mail(to: @email, subject: 'alt-media scanning service opt-in')
+    mail(to: email, subject: 'alt-media scanning service opt-in')
   end
 
-  def opt_out_staff(email,empid,firstname,lastname)
-    @email = email 
-    mail(to: @email, subject: 'alt-media scanning service opt-out',body: "#{firstname} #{lastname} #{empid} has opted out of the alt-media scanning service.")
+  #def opt_out_staff(email,empid,firstname,lastname)
+  def opt_out_staff(empid,firstname,lastname)
+    @empid = empid
+    @firstname = firstname
+    @lastname = lastname
+    #email = "prntscan@lists.berkeley.edu"
+    email = "dzuckerm@library.berkeley.edu"
+    #mail(to: email, subject: 'alt-media scanning service opt-out',body: "#{firstname} #{lastname} #{empid} has opted out of the alt-media scanning service.")
+    mail(to: email, subject: 'alt-media scanning service opt-out')
   end
 
   def opt_out_faculty(email)
-    @email = email 
-    mail(to: @email, subject: 'alt-media scanning service opt-out',body: "You have successfully opted out of the alt-media scanning service.")
+    mail(to: email, subject: 'alt-media scanning service opt-out')
   end
 
 end

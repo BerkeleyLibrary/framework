@@ -4,11 +4,12 @@ require 'socket'
 require 'net/ssh'
 
 
-
-def verify_faculty_standing(empid)
+def verify_faculty_standing(empid,displayname)
 
   @empid = empid
-  info = open("https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/#{empid}/dump",{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
+	@displayName = displayname
+
+  info = open("https://oskicatp.berkeley.edu:54620/PATRONAPI/#{@empid.gsub(/\"/,'')}/dump",{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
   contents = info.read
 
   #find out if they are faculty.  
@@ -27,18 +28,15 @@ def verify_faculty_standing(empid)
      #patron is factulty in good standing get email and let them request scanning request privileges
      faculty_email = get_email(contents)
 
-
      #passing verified to just ensure they didn't get to the form page some other way without validating. 
-     render("scanrequest",verified: 1,faculty_email: faculty_email,emp_id: @empid)
-     
+     render("scanrequest",verified: 1,faculty_email: faculty_email,emp_id: @empid,display_name: @displayName)
+    
   elsif not ptype_result.eql?("6")
     #patron is not in good standing return proper message
     #to do route them to a page letting them know why they can't gain scanning request privileges.
     render("notfaculty") 
   elsif not standing_result.eql?("-")
     render("blocked") 
-  else
-    return standing_result
   end
 
 end
