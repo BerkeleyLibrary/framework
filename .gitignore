@@ -9,8 +9,7 @@
 
 .env
 
-# Ignore Gemfile.lock will rebuild
-Gemvile.lock
+build
 
 secrets/*
 
