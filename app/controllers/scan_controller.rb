@@ -50,10 +50,7 @@ def scanrequest
     host = Rails.application.config.expect_url.host
     user = Rails.application.config.expect_url.user
     cmd  = [Rails.application.config.expect_url.path, note, emp_id].shelljoin
-    opts = {
-      key_data: [Rails.application.config.expect_key_data],
-      non_interactive: true,
-    }
+    opts = { non_interactive: true }
 
     res = Net::SSH.start(host, user, opts) { |ssh| ssh.exec!(cmd) }
 

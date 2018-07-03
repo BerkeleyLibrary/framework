@@ -29,9 +29,12 @@ services:
     volumes:
       - public-data:/opt/app/public
     secrets:
-      - MAIL_PASSWORD
-      - PRIVATE_KEY
-      - SECRET_KEY_BASE
+      - source: MAIL_PASSWORD
+        target: /run/secrets/MAIL_PASSWORD
+      - source: PRIVATE_KEY
+        target: /home/altmedia/.ssh/id_rsa
+      - source: SECRET_KEY_BASE
+        target: /run/secrets/SECRET_KEY_BASE
 
 version: "3.4"
 

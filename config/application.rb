@@ -33,9 +33,6 @@ module Altscan
       'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/'
     })
 
-    # This contains the actual contents of the private key, as a string.
-    config.expect_key_data = ENV['PRIVATE_KEY']
-
     # Provide the path to the expect script as an SSH URI.
     config.expect_url = URI.parse(ENV.fetch('EXPECT_URL') {
       'ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote'
