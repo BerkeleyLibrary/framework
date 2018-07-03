@@ -11,13 +11,14 @@ services:
     build: .
     image: containers.lib.berkeley.edu/lap/altscan/altscan-rails:${DOCKER_TAG:-latest}
     environment:
-      DATABASE_URL: sqlite3:///var/opt/altscan/production.sqlite3
-    #  SECRET_KEY_BASE: need to get from secrets (needs to be set up) 
-      PUB_KEY: /opt/altscan/.ssh/id_rsa
-      SSH_USER: dzuckerm
-    #  SHA: need to get from secrets (needs to be set up) 
+  #    DATABASE_URL: sqlite3:///var/opt/altscan/production.sqlite3
+      SECRET_KEY_BASE: ed27a7d35f8678138186e89ac01efe646047fdf87ff1e1f419455579d2f64af84eaf78d8d311e7ed4b9f0d52e1334d0922fc5a420bdb3f64ca9093f61ecf0c62 
+      PUB_KEY: put in secrets 
+      SSH_USER: put in secrets 
+      SHA: put in secrets 
+      EXPECT: vm161.lib.berkeley.edu
     volumes:
-      - db-data:/var/altscan/ohc
+  #    - db-data:/var/opt/altscan
       - public-data:/opt/altscan/public
     deploy:
       mode: replicated
@@ -26,5 +27,5 @@ services:
 version: "3.4"
 
 volumes:
-  db-data: {}
+  #db-data: {}
   public-data: {}

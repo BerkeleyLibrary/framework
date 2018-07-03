@@ -21,6 +21,7 @@ RUN apk --update --no-cache add \
 WORKDIR /opt/altscan
 COPY Gemfile* ./
 RUN bundle install --jobs=$(nproc)
+RUN rails generate devise:install
 
 # Setup the rest of the codebase
 COPY . .
