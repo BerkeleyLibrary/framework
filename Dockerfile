@@ -1,82 +1,105 @@
-# Target: development
-# ===================
-FROM ruby:2.5-alpine as development
+# =============================================================================
+# Target: base
+#
 
-# Install runtime system dependencies and create the blightmgr user
-RUN apk --update --no-cache add \
-        bash \
-        build-base \
+FROM ruby:2.5-alpine AS base
+
+# Create the application user/group and installation directory
+RUN addgroup -Sg 40035 altmedia && \
+    adduser -Sg 40035 altmedia && \
+    mkdir -p /opt/app /var/opt/app && \
+    chown -R altmedia:altmedia /opt/app /var/opt/app
+
+# Install packages common to dev and prod.
+RUN apk --no-cache --update upgrade && \
+    apk --no-cache add \
         ca-certificates \
-        coreutils \
         libc6-compat \
         nodejs \
         openssl \
-        sqlite-dev \
         sqlite-libs \
         tzdata \
         xz-libs \
-        nodejs
-
-# Bundle install
-WORKDIR /opt/altscan
-COPY Gemfile* ./
-RUN bundle install --jobs=$(nproc)
-RUN rails generate devise:install
-
-# Setup the rest of the codebase
-COPY . .
-RUN bin/rails log:clear tmp:create tmp:clear assets:clobber assets:precompile
-RUN mkdir /var/opt/altscan
-
-RUN addgroup -Sg 40017 altscan 
-RUN adduser -Sg 40017 altscan 
-RUN chown -R altscan:altscan /opt/altscan
-USER altscan
-
-# Specify entrypoint
-#ENTRYPOINT ["docker-entrypoint.sh"]
-#CMD ["rails server -b 0.0.0.0"]
-CMD rails s -b 0.0.0.0
-
-# Environment
-ENV PATH="$PATH:/opt/altscan/bin" \
-    RAILS_ENV=development
-
-# Target: production
-# ==================
-FROM ruby:2.5-alpine as production
-RUN apk --update --no-cache add \
-        bash \
-        ca-certificates \
-        libc6-compat \
-        nodejs \
-        openssl \
-        sqlite-libs \
-        tzdata \
-        xz-libs && \
+        yarn && \
     rm -rf /var/cache/apk/*
 
-# Add user/group
-#RUN addgroup -Sg 20 altscan && altscan -Su 505 -G altscan altscan 
-RUN addgroup -Sg 40017 altscan 
-RUN adduser -Sg 40017 altscan 
-
-
-# Copy the built codebase from the dev stage
-COPY --from=development --chown=altscan /opt/altscan /opt/altscan
-COPY --from=development --chown=altscan /usr/local/bundle /usr/local/bundle
-COPY --from=development --chown=altscan /var/opt/altscan /var/opt/altscan
-
-# Run as altscan 
-USER altscan 
-WORKDIR /opt/altscan
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["server"]
-
-# Metadata / documentation
-EXPOSE 3000
-VOLUME ["/opt/altscan/public"]
+# All subsequent commands are executed relative to this directory.
+WORKDIR /opt/app
 
 # Environment
-ENV PATH="$PATH:/opt/altscan/bin" \
-    RAILS_ENV=production
+ENV PATH="/opt/app/bin:$PATH" \
+    RAILS_LOG_TO_STDOUT=yes
+
+# Specifies the "rails" command as the entrypoint. This allows you to treat the
+# `docker run` command as essentially a frontend to Rails. Whatever you pass as
+# argument is forwarded to rails, e.g.:
+#   docker run <image> assets:precompile db:create db:migrate
+ENTRYPOINT ["/opt/app/bin/docker-entrypoint.sh"]
+
+# Sets "server" as the default command. If you docker-run this image with no
+# additional arguments, it simply starts the server.
+CMD ["server"]
+
+# =============================================================================
+# Target: development
+#
+
+FROM base AS development
+
+# Install runtime system dependencies and create the blightmgr user
+RUN apk --update --no-cache add \
+        build-base \
+        coreutils \
+        sqlite-dev && \
+    rm -rf /var/cache/apk/*
+
+# Install gems (to /usr/local/bundle).
+COPY Gemfile* ./
+RUN bundle install --jobs=$(nproc) --deployment --path=/usr/local/bundle
+
+# Copy the rest of the codebase.
+COPY . .
+
+# Pre-compile assets. Because the ./public directory is later declared a
+# volume, this only matters the first time the container is run. On subsequent
+# runs you must precompile assets before launching a new version of the image.
+RUN rails assets:precompile assets:clean
+
+# Run the development stage in dev mode.
+ENV RACK_ENV=development RAILS_ENV=development
+
+# =============================================================================
+# Target: production
+#
+
+FROM base AS production
+
+# Run as a non-root user by default to limit potential damage to the host.
+USER altmedia
+
+# Copy the built codebase from the dev stage
+COPY --from=development --chown=altmedia /opt/app /opt/app
+COPY --from=development --chown=altmedia /usr/local/bundle /usr/local/bundle
+COPY --from=development --chown=altmedia /var/opt/app /var/opt/app
+
+# Sanity-check gems
+RUN bundle check
+
+# Indicate that the server listens on port 3000.
+EXPOSE 3000
+
+# Mark the public directory as a volume. The first time this is run, the volume
+# is created with the current contents of that directory. On subsequent runs
+# only the volume's data is used.
+VOLUME ["/opt/app/public"]
+
+# Adds metadata we can query in production. The idea is to use this for routing
+# alerts and triggering auto-scaling, but it's currently unused.
+LABEL edu.berkeley.lib.author-1="Dave Zuckerman <dzuckerm@berkeley.edu>"
+LABEL edu.berkeley.lib.author-2="Dan Schmidt <dcschmidt@berkeley.edu>"
+LABEL edu.berkeley.lib.maintainer="Dave Zuckerman <dzuckerm@berkeley.edu>"
+LABEL edu.berkeley.lib.project-url="https://git.lib.berkeley.edu/lap/altmedia"
+LABEL edu.berkeley.lib.support-tier="business-hours"
+
+# Run the production stage in production mode.
+ENV RACK_ENV=production RAILS_ENV=production

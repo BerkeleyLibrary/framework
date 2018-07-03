@@ -1,0 +1,26 @@
+---
+
+# Override secrets to use local files.
+secrets:
+  MAIL_PASSWORD:
+    file: secrets/MAIL_PASSWORD
+  PRIVATE_KEY:
+    file: secrets/PRIVATE_KEY
+  SECRET_KEY_BASE:
+    file: secrets/SECRET_KEY_BASE
+
+services:
+  rails:
+    build:
+      target: "${DOCKER_TARGET:-development}"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/opt/app:delegated
+      - ./public:/opt/app/public:delegated
+      - bundle_cache:/usr/local/bundle/cache:delegated
+
+version: "3.4"
+
+volumes:
+  bundle_cache: {}
