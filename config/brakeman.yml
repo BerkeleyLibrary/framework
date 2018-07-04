@@ -11,6 +11,7 @@
 :exit_on_warn: true
 :min_confidence: 2
 :output_files:
+  - /dev/stdout
   - build/brakeman.json
 :print_report: true
 :report_progress: false
