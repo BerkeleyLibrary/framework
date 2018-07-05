@@ -8,7 +8,7 @@ FROM ruby:2.5-alpine AS base
 RUN addgroup -S -g 40035 altmedia && \
     adduser -S -u 40035 -G altmedia altmedia && \
     mkdir -p /opt/app /var/opt/app && \
-    chown -R altmedia:altmedia /opt/app /var/opt/app
+    chown -R altmedia:altmedia /opt/app /var/opt/app /usr/local/bundle
 
 # Install packages common to dev and prod.
 RUN apk --no-cache --update upgrade && \
@@ -25,6 +25,9 @@ RUN apk --no-cache --update upgrade && \
 
 # All subsequent commands are executed relative to this directory.
 WORKDIR /opt/app
+
+# Run as the altmedia user to minimize risk to the host.
+USER altmedia
 
 # Environment
 ENV PATH="/opt/app/bin:$PATH" \
@@ -46,19 +49,25 @@ CMD ["server"]
 
 FROM base AS development
 
-# Install runtime system dependencies and create the blightmgr user
+# Temporarily switch back to root to install build packages.
+USER root
+
+# Install system packages needed to build gems with C extensions.
 RUN apk --update --no-cache add \
         build-base \
         coreutils \
         sqlite-dev && \
     rm -rf /var/cache/apk/*
 
-# Install gems (to /usr/local/bundle).
-COPY Gemfile* ./
+# Drop back to altmedia.
+USER altmedia
+
+# Install gems.
+COPY --chown=altmedia Gemfile* ./
 RUN bundle install --jobs=$(nproc) --deployment --path=/usr/local/bundle
 
 # Copy the rest of the codebase.
-COPY . .
+COPY --chown=altmedia . .
 
 # Pre-compile assets. Because the ./public directory is later declared a
 # volume, this only matters the first time the container is run. On subsequent
