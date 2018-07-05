@@ -111,4 +111,4 @@ LABEL edu.berkeley.lib.project-url="https://git.lib.berkeley.edu/lap/altmedia"
 LABEL edu.berkeley.lib.support-tier="business-hours"
 
 # Run the production stage in production mode.
-ENV RACK_ENV=production RAILS_ENV=production
+ENV RACK_ENV=production RAILS_ENV=production RAILS_SERVE_STATIC_FILES=true
