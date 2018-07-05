@@ -1,6 +1,12 @@
 require 'open-uri'
 
 module ScanHelper
+  class OskiCatError < StandardError
+    def initialize(msg="Couldn't connect to OskiCat. Is the server allowed to connect?")
+      super
+    end
+  end
+
   def patron_info_url(user_id)
     URI::join(Rails.application.config.patron_url, "#{user_id}/dump")
   end
@@ -10,11 +16,15 @@ module ScanHelper
 
     logger.debug("Getting Patron info: #{endpoint}")
 
-    return open(endpoint, {
-      # TODO: Instead of waving SSL, we can add the target server's root
-      # certificate to our host's trusted certificates.
-      ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
-    }).read
+    begin
+      return open(endpoint, {
+        # TODO: Instead of waving SSL, we can add the target server's root
+        # certificate to our host's trusted certificates.
+        ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
+      }).read
+    rescue StandardError
+      raise OskiCatError
+    end
   end
 
   def verify_faculty_standing(empid, displayname)
