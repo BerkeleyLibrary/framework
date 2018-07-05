@@ -5,8 +5,8 @@
 FROM ruby:2.5-alpine AS base
 
 # Create the application user/group and installation directory
-RUN addgroup -Sg 40035 altmedia && \
-    adduser -Sg 40035 altmedia && \
+RUN addgroup -S -g 40035 altmedia && \
+    adduser -S -u 40035 -G altmedia altmedia && \
     mkdir -p /opt/app /var/opt/app && \
     chown -R altmedia:altmedia /opt/app /var/opt/app
 
