@@ -24,7 +24,10 @@ services:
     build: .
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
+      update_config:
+        failure_action: rollback
+        order: start-first
     image: containers.lib.berkeley.edu/lap/altscan/altscan-rails:${DOCKER_TAG:-v1.0.0}
     volumes:
       - public-data:/opt/app/public
