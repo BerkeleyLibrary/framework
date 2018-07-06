@@ -77,9 +77,6 @@ COPY --chown=altmedia . .
 # runs you must precompile assets before launching a new version of the image.
 RUN rails assets:precompile assets:clean
 
-# Run the development stage in dev mode.
-ENV RACK_ENV=development RAILS_ENV=development
-
 # =============================================================================
 # Target: production
 #
