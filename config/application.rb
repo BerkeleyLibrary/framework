@@ -17,6 +17,8 @@ module Altscan
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
+    config.active_job.queue_adapter = :async
+
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
       address:              'smtp.gmail.com',
