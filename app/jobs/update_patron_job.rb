@@ -6,7 +6,11 @@ class UpdatePatronJob < ApplicationJob
   queue_as :default
 
   def perform(employee_id:, email:, firstname:, lastname:)
-    update_patron_record(employee_id)
+    #internal note that will be added to patron record in Millennium
+    now = Time.now.strftime('%Y%m%d')
+    note = "#{now} library book scan eligible [litscript]"
+
+    update_patron_record(employee_id, note)
     RequestMailer.confirmation_email(email).deliver_now
   rescue => e
     # expect script failed send error to prntscan list
@@ -23,11 +27,7 @@ class UpdatePatronJob < ApplicationJob
 
   private
 
-    def update_patron_record(employee_id)
-      #internal note that will be added to patron record in Millennium
-      now = Time.now.strftime('%Y%m%d')
-      note = "#{now} library book scan eligible [litscript]"
-
+    def update_patron_record(employee_id, note)
       # Connection info, including credentials, sourced from rails config
       host = Rails.application.config.expect_url.host
       user = Rails.application.config.expect_url.user
