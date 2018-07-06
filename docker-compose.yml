@@ -27,7 +27,7 @@ services:
         order: start-first
     environment:
       PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-v1.0.0}
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-v1.0.1}
     volumes:
       - public:/opt/app/public
     secrets:

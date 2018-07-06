@@ -18,6 +18,7 @@ RUN apk --no-cache --update upgrade && \
         nodejs \
         openssl \
         sqlite-libs \
+        tini \
         tzdata \
         xz-libs \
         yarn && \
@@ -37,7 +38,10 @@ ENV PATH="/opt/app/bin:$PATH" \
 # `docker run` command as essentially a frontend to Rails. Whatever you pass as
 # argument is forwarded to rails, e.g.:
 #   docker run <image> assets:precompile db:create db:migrate
-ENTRYPOINT ["/opt/app/bin/docker-entrypoint.sh"]
+#
+# Note that we use tini, a small process manager, because the application
+# forks.
+ENTRYPOINT ["/sbin/tini", "--", "/opt/app/bin/docker-entrypoint.sh"]
 
 # Sets "server" as the default command. If you docker-run this image with no
 # additional arguments, it simply starts the server.
