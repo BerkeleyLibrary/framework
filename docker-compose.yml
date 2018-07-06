@@ -2,19 +2,16 @@
 
 networks:
   default:
-    driver: overlay
-    attachable: true
+    external:
+      name: frontend
 
 secrets:
   MAIL_PASSWORD:
     external:
       name: MAIL_LIB_NOREPLY_PASSWORD
-  PATRON_URL:
-    external:
-      name: ALTMEDIA_PATRON_URL
   PRIVATE_KEY:
     external:
-      name: ALTMEDIA_PATRON_KEY
+      name: ALTMEDIA_PRIVATE_KEY
   SECRET_KEY_BASE:
     external:
       name: ALTMEDIA_SECRET_KEY_BASE
@@ -28,9 +25,11 @@ services:
       update_config:
         failure_action: rollback
         order: start-first
+    environment:
+      PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
     image: containers.lib.berkeley.edu/lap/altscan/altscan-rails:${DOCKER_TAG:-v1.0.0}
     volumes:
-      - public-data:/opt/app/public
+      - public:/opt/app/public
     secrets:
       - source: MAIL_PASSWORD
         target: /run/secrets/MAIL_PASSWORD
@@ -42,4 +41,5 @@ services:
 version: "3.4"
 
 volumes:
-  public-data: {}
+  public:
+    driver: netapp

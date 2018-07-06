@@ -1,5 +1,8 @@
 ---
 
+networks:
+  default: {}
+
 # Override secrets to use local files.
 secrets:
   MAIL_PASSWORD:
@@ -13,6 +16,8 @@ services:
   rails:
     build:
       target: "${DOCKER_TARGET:-development}"
+    environment:
+      PATRON_URL: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/
     ports:
       - 3000:3000
     volumes:
@@ -24,3 +29,4 @@ version: "3.4"
 
 volumes:
   bundle_cache: {}
+  public: {}
