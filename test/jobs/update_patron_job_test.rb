@@ -15,21 +15,11 @@ class UpdatePatronJobTest < ActiveJob::TestCase
                   employee_id: '011822839',
                   firstname: 'Daniel',
                   lastname: 'Schmidt' }
-
-    # Use a mock to ensure we're sending the right SSH command
-    @ssh_mock = Minitest::Mock.new
-    @ssh_mock.expect :exec!, nil, [
-      [
-        "/home/altmedia/bin/mkcallnote",
-        "#{@now.strftime('%Y%m%d')} library book scan eligible [litscript]",
-        @employee[:employee_id],
-      ].shelljoin
-    ]
   end
 
   test "PatronJob triggers confirmation email on success" do
     travel_to @now do
-      Net::SSH.stub :start, ssh_connection, @ssh_mock do
+      Net::SSH.stub :start, ssh_connection do
         UpdatePatronJob.perform_now(@employee)
 
         email = ActionMailer::Base.deliveries.last
@@ -41,7 +31,7 @@ class UpdatePatronJobTest < ActiveJob::TestCase
 
   test "PatronJob emails the admin on ssh exception" do
     travel_to @now do
-      Net::SSH.stub :start, ssh_connection(:raised), @ssh_mock do
+      Net::SSH.stub :start, ssh_connection(:raised) do
         assert_raises StandardError do
           UpdatePatronJob.perform_now(@employee)
         end
@@ -55,7 +45,7 @@ class UpdatePatronJobTest < ActiveJob::TestCase
 
   test "PatronJob emails the admin on failed script" do
     travel_to @now do
-      Net::SSH.stub :start, ssh_connection(:failed), @ssh_mock do
+      Net::SSH.stub :start, ssh_connection(:failed) do
         assert_raises StandardError do
           UpdatePatronJob.perform_now(@employee)
         end
