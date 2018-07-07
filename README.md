@@ -41,3 +41,65 @@ Barring a port collision (which _you'll_ have to fix), the app will be available
 ```
 127.0.0.1 altmedia-dev.lib.berkeley.edu
 ```
+
+### Testing
+
+To run the application tests:
+
+```sh
+# Test the application code
+docker-compose run --rm -e RAILS_ENV=test rails test
+
+# Audit Gemfile.lock for vulnerabilities
+docker-compose run --rm rails bundle:audit
+
+# Run static analysis to check for code/sql injection, xss, etc.
+docker-compose run --rm rails brakeman
+```
+
+### Deployment
+
+The docker-compose.yml configuration contains the production configuration, including which version of the image to release. This is important, because while docker-compose builds images for you in development, docker stack (which deploys to the production "swarm") does not — it expects you to have built and pushed the image to the registry.
+
+The first thing you should do is verify that the image is in the registry. If it's not, push it:
+
+```sh
+# Build/tag the image using only the production configuration.
+docker-compose -f docker-compose.yml build --pull
+
+# Login to the registry. See GitLab's documentation for details:
+#   https://docs.gitlab.com/ee/user/project/container_registry.html
+docker login containers.lib.berkeley.edu
+
+# Push the built image to the registry.
+docker-compose -f docker-compose.yml push
+```
+
+Once the registry's up-to-date, you can deploy the swarm. You'll need three credentials (ask @dcschmidt to generate them):
+
+- `~/.docker/ca.cert`: The server's certificate authority certificate.
+- `~/.docker/cert.pem`: Your client certificate.
+- `~/.docker/key.pem`: Your signed client key. Keep this secret — it's equivalent to having access to the Docker daemon.
+
+Put these in your home directory and chmod them to 0600. Then, setup a script to wrap your interactions with production, make it executable, and place it on your PATH. For example:
+
+```sh
+cat <<EOF > /usr/local/bin/docker-prod
+#!/bin/sh -e
+
+DOCKER_CERT_PATH=~/.docker \
+DOCKER_HOST=tcp://vm244.lib.berkeley.edu:2376 \
+DOCKER_TLS_VERIFY=1 \
+exec docker "$@"
+EOF
+
+chmod 0755 /usr/local/bin/docker-prod
+```
+
+Now you can call `docker-prod` to run docker commands against the production server.
+
+The stack's name is "altmedia". To deploy it, run:
+
+```sh
+docker-prod stack deploy --with-registry-auth -c docker-compose.yml altmedia
+```
