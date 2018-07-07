@@ -18,52 +18,45 @@ class UpdatePatronJobTest < ActiveJob::TestCase
   end
 
   test "PatronJob triggers confirmation email on success" do
-    travel_to @now do
-      Net::SSH.stub :start, ssh_connection do
-        UpdatePatronJob.perform_now(@employee)
+    with_stubbed_ssh(:succeeded) do
+      UpdatePatronJob.perform_now(@employee)
 
-        email = ActionMailer::Base.deliveries.last
-        assert_equal @employee[:email], email.to[0]
-        assert_equal 'alt-media scanning service opt-in', email.subject
-      end
+      email = ActionMailer::Base.deliveries.last
+      assert_equal @employee[:email], email.to[0]
+      assert_equal 'alt-media scanning service opt-in', email.subject
     end
   end
 
   test "PatronJob emails the admin on ssh exception" do
-    travel_to @now do
-      Net::SSH.stub :start, ssh_connection(:raised) do
-        assert_raises StandardError do
-          UpdatePatronJob.perform_now(@employee)
-        end
-
-        email = ActionMailer::Base.deliveries.last
-        assert_equal @admin_email, email.to[0]
-        assert_equal 'alt-media scanning patron opt-in failure', email.subject
+    with_stubbed_ssh(:raised) do
+      assert_raises StandardError do
+        UpdatePatronJob.perform_now(@employee)
       end
+
+      email = ActionMailer::Base.deliveries.last
+      assert_equal @admin_email, email.to[0]
+      assert_equal 'alt-media scanning patron opt-in failure', email.subject
     end
   end
 
   test "PatronJob emails the admin on failed script" do
-    travel_to @now do
-      Net::SSH.stub :start, ssh_connection(:failed) do
-        assert_raises StandardError do
-          UpdatePatronJob.perform_now(@employee)
-        end
-
-        email = ActionMailer::Base.deliveries.last
-        assert_equal @admin_email, email.to[0]
-        assert_equal 'alt-media scanning patron opt-in failure', email.subject
+    with_stubbed_ssh(:failed) do
+      assert_raises StandardError do
+        UpdatePatronJob.perform_now(@employee)
       end
+
+      email = ActionMailer::Base.deliveries.last
+      assert_equal @admin_email, email.to[0]
+      assert_equal 'alt-media scanning patron opt-in failure', email.subject
     end
   end
 
   private
 
-    # Stub that checks we've passed the right parameters to Net::SSH.start and
-    # returns an appropriate text response. Note that the response from the
-    # mock above is actually discarded by the stub -- not sure why.
-    def ssh_connection(result=nil)
-      lambda do |host, user, opts|
+    # Executes the block in a context in which Net::SSH.start() is stubbed out
+    # to return a defined "result" and assert that we've passed the right args.
+    def with_stubbed_ssh(result, &block)
+      stubbed_connection = lambda do |host, user, opts|
         assert_equal 'vm161.lib.berkeley.edu', host
         assert_equal 'altmedia', user
         assert_equal ({ non_interactive: true }), opts
@@ -73,6 +66,10 @@ class UpdatePatronJobTest < ActiveJob::TestCase
         when :failed then 'Failed'
                      else 'Finished Successfully'
         end
+      end
+
+      travel_to @now do
+        Net::SSH.stub :start, stubbed_connection, &block
       end
     end
 end
