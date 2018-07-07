@@ -75,6 +75,12 @@ docker login containers.lib.berkeley.edu
 docker-compose -f docker-compose.yml push
 ```
 
+---
+
+> **Releasing a new version:** To release a new version of the image, update the version in the docker-compose.yml configuration, build it (as above), and push it. Try not to override existing images until they're at least two versions out of date (at which point we wouldn't expect to roll back).
+
+---
+
 Once the registry's up-to-date, you can deploy the swarm. You'll need three credentials (ask @dcschmidt to generate them):
 
 - `~/.docker/ca.cert`: The server's certificate authority certificate.
