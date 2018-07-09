@@ -18,7 +18,6 @@ RUN apk --no-cache --update upgrade && \
         nodejs \
         openssl \
         sqlite-libs \
-        tini \
         tzdata \
         xz-libs \
         yarn && \
@@ -41,7 +40,7 @@ ENV PATH="/opt/app/bin:$PATH" \
 #
 # Note that we use tini, a small process manager, because the application
 # forks.
-ENTRYPOINT ["/sbin/tini", "--", "/opt/app/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/opt/app/bin/docker-entrypoint.sh"]
 
 # Sets "server" as the default command. If you docker-run this image with no
 # additional arguments, it simply starts the server.
@@ -77,9 +76,6 @@ COPY --chown=altmedia . .
 # volume, this only matters the first time the container is run. On subsequent
 # runs you must precompile assets before launching a new version of the image.
 RUN rails assets:precompile assets:clean
-
-# Run the development stage in dev mode.
-ENV RACK_ENV=development RAILS_ENV=development
 
 # =============================================================================
 # Target: production
