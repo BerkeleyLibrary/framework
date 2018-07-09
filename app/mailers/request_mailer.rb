@@ -8,7 +8,8 @@ class RequestMailer < ActionMailer::Base
     @lastname = lastname
     @note = note
     #email = "prntscan@lists.berkeley.edu"
-    email = "dzuckerm@library.berkeley.edu"
+    #email = "dzuckerm@library.berkeley.edu"
+    email = ENV['EMAIL_ADDR'] 
     mail(to: email, subject: 'alt-media scanning patron opt-in failure')
   end
 
@@ -22,7 +23,8 @@ class RequestMailer < ActionMailer::Base
     @firstname = firstname
     @lastname = lastname
     #email = "prntscan@lists.berkeley.edu"
-    email = "dzuckerm@library.berkeley.edu"
+    #email = "dzuckerm@library.berkeley.edu"
+    email = ENV['EMAIL_ADDR'] 
     #mail(to: email, subject: 'alt-media scanning service opt-out',body: "#{firstname} #{lastname} #{empid} has opted out of the alt-media scanning service.")
     mail(to: email, subject: 'alt-media scanning service opt-out')
   end

@@ -1,6 +1,9 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  #Set the email address to receive opt out requests and failure notifications. 
+  ENV['EMAIL_ADDR'] = 'prntscan@lists.berkeley.edu'
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 

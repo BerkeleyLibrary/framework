@@ -12,6 +12,9 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  #Set the email address to receive opt out requests and failure notifications. Me for testing
+	ENV['EMAIL_ADDR'] = 'dzuckerm@library.berkeley.edu'
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
