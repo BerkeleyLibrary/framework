@@ -30,6 +30,13 @@ module Altscan
       enable_starttls_auto: true,
     }
 
+    # Sets defaults for the mail() method (:from, :reply_to, ...)
+    config.action_mailer.default_options = {
+      # NOTE(dzuckerm): Set the email address to receive opt out requests and
+      # failure notifications. Me for testing.
+      to: ENV['ADMIN_EMAIL'] || 'dzuckerm@library.berkeley.edu',
+    }
+
     # Provides the full base path to the patron API.
     config.patron_url = URI.parse(ENV.fetch('PATRON_URL') {
       'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/'

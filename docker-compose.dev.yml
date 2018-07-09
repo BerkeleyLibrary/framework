@@ -17,6 +17,7 @@ services:
     build:
       target: "${DOCKER_TARGET:-development}"
     environment:
+      ADMIN_EMAIL: dzuckerm@library.berkeley.edu
       PATRON_URL: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/
     ports:
       - 3000:3000
