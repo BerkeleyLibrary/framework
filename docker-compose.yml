@@ -22,6 +22,9 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        cpus: '0.25'
+        memory: 250M
       update_config:
         delay: 10s
         failure_action: rollback
