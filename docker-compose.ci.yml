@@ -1,0 +1,19 @@
+---
+
+networks:
+  default: {}
+
+services:
+  rails:
+    environment:
+      ADMIN_EMAIL: dzuckerm@library.berkeley.edu
+      MAIL_PASSWORD: ''
+      PATRON_URL: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/
+      PRIVATE_KEY: ''
+      SECRET_KEY_BASE: ''
+    secrets: []
+
+version: "3.4"
+
+volumes:
+  public: {}
