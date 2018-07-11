@@ -37,6 +37,11 @@ pipeline {
             sh 'docker-compose run --rm --name rails_brake rails brakeman'
           }
         }
+        stage('Tests') {
+          steps {
+            sh 'docker-compose run --rm --name rails_test rails test'
+          }
+        }
       }
     }
 
