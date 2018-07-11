@@ -21,6 +21,9 @@ services:
     build: .
     deploy:
       mode: replicated
+      placement:
+        constraints:
+          - node.labels.patronapi == allowed
       replicas: 1
       resources:
         limits:
