@@ -4,6 +4,11 @@ networks:
   default: {}
 
 services:
+
+  nginx:
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+
   rails:
     environment:
       ADMIN_EMAIL: dzuckerm@library.berkeley.edu

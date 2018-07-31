@@ -17,6 +17,17 @@ secrets:
       name: ALTMEDIA_SECRET_KEY_BASE
 
 services:
+
+  nginx:
+    build: nginx
+    depends_on:
+      - rails
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:v1.0.0
+    ports:
+      - 80
+    volumes:
+      - public:/usr/share/nginx/html:ro
+
   rails:
     build: .
     deploy:
@@ -37,6 +48,8 @@ services:
       ADMIN_EMAIL: prntscan@lists.berkeley.edu # NOTE(dcschmidt): not a typo!
       PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-v1.0.4}
+    ports:
+      - 3000
     volumes:
       - public:/opt/app/public
     secrets:

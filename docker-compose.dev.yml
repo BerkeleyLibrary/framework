@@ -13,14 +13,17 @@ secrets:
     file: secrets/SECRET_KEY_BASE
 
 services:
+
+  nginx:
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+
   rails:
     build:
       target: "${DOCKER_TARGET:-development}"
     environment:
       ADMIN_EMAIL: dzuckerm@library.berkeley.edu
       PATRON_URL: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/
-    ports:
-      - 3000:3000
     volumes:
       - ./:/opt/app:delegated
       - ./public:/opt/app/public:delegated
