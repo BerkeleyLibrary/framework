@@ -5,38 +5,46 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/.bundle
+.bundle
 
 build
 
-# Ignore Gemfile.lock will rebuild
-Gemvile.lock
-
 secrets/*
 
+# Ignore devops files
+Jenkinsfile
 Dockerfile
 docker-compose*
-
-.ssh
 
 # Ignore the default SQLite database.
 *.sqlite3
 *.sqlite3-journal
 
+# Ignore markdown/readme files
+*.md
+
+# Ignore all log files
+*.log
+
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+log/*
+tmp/*
 
 # Ignore uploaded files in development
-/storage/*
+storage/*
 
-/node_modules
-/yarn-error.log
+node_modules
 
-/public/assets
+# Assets are rebuilt each deploy
+public/assets
+
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore Sublime Text project files
+*.sublime*
+
+# Add back any .keep files
+!.keep

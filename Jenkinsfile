@@ -7,7 +7,6 @@ pipeline {
 
   environment {
     COMPOSE_PROJECT_NAME = "${GIT_COMMIT.take(8)}"
-    DOCKER_TARGET = "production"
   }
 
   stages {
@@ -47,21 +46,17 @@ pipeline {
 
     stage("Publish") {
       when {
-        tag "release-*"
+        branch "master"
       }
       environment {
         DOCKER_REGISTRY_AUTH = credentials("0A792AEB-FA23-48AC-A824-5FF9066E6CA9")
         DOCKER_REGISTRY_HOST = "containers.lib.berkeley.edu"
+        DOCKER_TAG = "git-${env.GIT_COMMIT.take(8)}"
       }
       steps {
         sh "docker login -u $DOCKER_REGISTRY_AUTH_USR -p $DOCKER_REGISTRY_AUTH_PSW $DOCKER_REGISTRY_HOST"
+        sh "docker-compose build"
         sh "docker-compose push"
-
-        // Tag w/branch name and push
-        withEnv(["DOCKER_TAG=git-${env.GIT_COMMIT.take(8)}"]) {
-          sh "docker-compose build"
-          sh "docker-compose push"
-        }
       }
     }
   }
