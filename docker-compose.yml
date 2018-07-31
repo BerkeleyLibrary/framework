@@ -22,7 +22,7 @@ services:
     build: nginx
     depends_on:
       - rails
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_TAG:-v1.0.0}
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_TAG:-git-29c0d313}
     ports:
       - 80
     volumes:
@@ -47,7 +47,7 @@ services:
     environment:
       ADMIN_EMAIL: prntscan@lists.berkeley.edu # NOTE(dcschmidt): not a typo!
       PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-v1.0.4}
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-git-29c0d313}
     ports:
       - 3000
     volumes:
