@@ -2,7 +2,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Sets session data following successful Calnet login
   def altmedia 
 		@empid = request.env["omniauth.auth"]["extra"]['employeeNumber'].inspect    
+    @displayName = request.env["omniauth.auth"]["extra"]['displayName'].inspect 
 		session[:empId] = request.env["omniauth.auth"]["extra"]['employeeNumber'].inspect 
+		session[:displayName] = request.env["omniauth.auth"]["extra"]['displayName'].inspect 
   
 
     # The omniauth hash is an object that doesn't stringify nicely, so we have

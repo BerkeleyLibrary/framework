@@ -5,19 +5,19 @@ require 'shellwords'
 class UpdatePatronJob < ApplicationJob
   queue_as :default
 
-  def perform(employee_id:, email:, firstname:, lastname:)
+  def perform(employee_id:, email:, displayname:)
     #internal note that will be added to patron record in Millennium
     now = Time.now.strftime('%Y%m%d')
     note = "#{now} library book scan eligible [litscript]"
 
     update_patron_record(employee_id, note)
     RequestMailer.confirmation_email(email).deliver_now
+    RequestMailer.confirmation_email_baker(displayname,employee_id).deliver_now
   rescue => e
     # expect script failed send error to prntscan list
     RequestMailer.failure_email(
       employee_id,
-      firstname,
-      lastname,
+      displayname,
       note
     ).deliver_now
 
