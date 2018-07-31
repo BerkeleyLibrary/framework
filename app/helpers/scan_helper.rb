@@ -29,7 +29,8 @@ module ScanHelper
 
   def verify_faculty_standing(empid, displayname)
     @empid = empid.gsub(/\D/, '')
-    @displayName = displayname
+    @displayName = displayname.gsub(/"/,'')
+#    @displayName = displayname
 
     contents = get_patron_info(@empid)
 

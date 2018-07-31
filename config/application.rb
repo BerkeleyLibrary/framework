@@ -34,7 +34,8 @@ module Altscan
     config.action_mailer.default_options = {
       # NOTE(dzuckerm): Set the email address to receive opt out requests and
       # failure notifications. Me for testing.
-      to: ENV['ADMIN_EMAIL'] || 'dzuckerm@library.berkeley.edu',
+      to: ENV['BAKER_EMAIL'] || 'dzuckerm@library.berkeley.edu',
+      cc: ENV['ADMIN_EMAIL'] || 'dzuckerm@library.berkeley.edu',
     }
 
     # Provides the full base path to the patron API.
