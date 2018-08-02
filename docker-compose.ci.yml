@@ -12,6 +12,7 @@ services:
   rails:
     environment:
       ADMIN_EMAIL: dzuckerm@library.berkeley.edu
+      BAKER_EMAIL: dzuckerm@library.berkeley.edu
       MAIL_PASSWORD: ''
       PATRON_URL: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/
       PRIVATE_KEY: ''
