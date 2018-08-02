@@ -17,19 +17,40 @@ secrets:
       name: ALTMEDIA_SECRET_KEY_BASE
 
 services:
+
+  nginx:
+    build: nginx
+    depends_on:
+      - rails
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_TAG:-git-29c0d313}
+    ports:
+      - 80
+    volumes:
+      - public:/usr/share/nginx/html:ro
+
   rails:
     build: .
     deploy:
       mode: replicated
+      placement:
+        constraints:
+          - node.labels.patronapi == allowed
       replicas: 1
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 250M
       update_config:
+        delay: 10s
         failure_action: rollback
         order: start-first
     environment:
       ADMIN_EMAIL: prntscan@lists.berkeley.edu # NOTE(dcschmidt): not a typo!
       BAKER_EMAIL: baker@library.berkeley.edu 
       PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-v1.0.4}
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-git-29c0d313}
+    ports:
+      - 3000
     volumes:
       - public:/opt/app/public
     secrets:
