@@ -14,6 +14,10 @@ class RequestMailerPreview < ActionMailer::Preview
 		RequestMailer.confirmation_email('blinky@library.berkeley.edu')
 	end
 
+  def confirmation_email_baker_preview
+		RequestMailer.confirmation_email_baker('Charlie Christian',12345669)
+	end
+
 	def opt_out_staff_preview
 		RequestMailer.opt_out_staff('blinky@library.berkeley.edu',12345678,'Blinky','Kincaid')
 	end
