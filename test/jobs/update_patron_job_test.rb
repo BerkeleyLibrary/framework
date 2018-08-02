@@ -11,10 +11,9 @@ class UpdatePatronJobTest < ActiveJob::TestCase
     @admin_email = 'dzuckerm@library.berkeley.edu'
 
     # Dummy employee data.
-    @employee = { email: 'dcschmidt@berkeley.edu',
+    @employee = { email: 'dzuckerm@library.berkeley.edu',
                   employee_id: '011822839',
-                  firstname: 'Daniel',
-                  lastname: 'Schmidt' }
+                  displayname: 'David Zuckerman' }
   end
 
   test "PatronJob triggers confirmation email on success" do
