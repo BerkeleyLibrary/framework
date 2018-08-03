@@ -30,13 +30,19 @@ pipeline {
       steps {
         parallel(
           "Audit": {
-            sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails bundle:audit'
+            retry(5) {
+              sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails bundle:audit'
+            }
           },
           "Brakeman": {
-            sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails brakeman'
+            retry(5) {
+              sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails brakeman'
+            }
           },
           "Minitest": {
-            sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails test'
+            retry(5) {
+              sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails test'
+            }
           },
         )
       }
