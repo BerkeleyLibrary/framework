@@ -22,7 +22,11 @@ pipeline {
     stage("Run") {
       steps {
         sh "docker-compose up -d"
-        sleep 5 // poor man's version of waiting for service start
+
+        retry(5) {
+          sh "docker-compose run --rm --entrypoint=setup rails"
+          sleep 5
+        }
       }
     }
 
