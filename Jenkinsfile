@@ -78,8 +78,10 @@ pipeline {
           ) {
             sh "bin/docker-deploy docker-compose.prod.yml"
 
-            sleep 5
-            sh "curl --fail https://altmedia.lib.berkeley.edu/"
+            retry(5) {
+              sh "curl --fail -q https://altmedia.lib.berkeley.edu/"
+              sleep 4
+            }
           }
         }
       }
