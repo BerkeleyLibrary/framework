@@ -17,35 +17,27 @@ module Altscan
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
+    config.altmedia = config_for(:altmedia)
+    config.altmedia['expect_url'] = URI.parse(config.altmedia['expect_url'])
+    config.altmedia['patron_url'] = URI.parse(config.altmedia['patron_url'])
+
     config.active_job.queue_adapter = :async
 
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-      address:              'smtp.gmail.com',
-      port:                 587,
-      domain:               'lib.berkeley.edu',
-      user_name:            'lib-noreply@berkeley.edu',
-      password:             ENV['MAIL_PASSWORD'],
-      authentication:       'plain',
+      address: 'smtp.gmail.com',
+      port: '587',
+      domain: 'lib.berkeley.edu',
+      user_name: config.altmedia['mail_smtp_username'],
+      password: config.altmedia['mail_smtp_password'],
+      authentication: 'plain',
       enable_starttls_auto: true,
     }
 
     # Sets defaults for the mail() method (:from, :reply_to, ...)
     config.action_mailer.default_options = {
-      # NOTE(dzuckerm): Set the email address to receive opt out requests and
-      # failure notifications. Me for testing.
-      to: ENV['BAKER_EMAIL'] || 'dzuckerm@library.berkeley.edu',
-      cc: ENV['ADMIN_EMAIL'] || 'dzuckerm@library.berkeley.edu',
+      to: config.altmedia['mail_confirm_email'],
+      cc: config.altmedia['mail_admin_email'],
     }
-
-    # Provides the full base path to the patron API.
-    config.patron_url = URI.parse(ENV.fetch('PATRON_URL') {
-      'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/'
-    })
-
-    # Provide the path to the expect script as an SSH URI.
-    config.expect_url = URI.parse(ENV.fetch('EXPECT_URL') {
-      'ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote'
-    })
   end
 end

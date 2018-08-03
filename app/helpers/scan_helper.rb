@@ -8,7 +8,7 @@ module ScanHelper
   end
 
   def patron_info_url(user_id)
-    URI::join(Rails.application.config.patron_url, "#{user_id}/dump")
+    URI::join(Rails.application.config.altmedia['patron_url'], "#{user_id}/dump")
   end
 
   def get_patron_info(user_id)

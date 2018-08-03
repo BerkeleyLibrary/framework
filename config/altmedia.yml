@@ -1,0 +1,19 @@
+---
+# config/altmedia.yml
+
+default: &default
+  expect_url: ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote
+  mail_admin_email: <%= ENV['ADMIN_EMAIL'] || 'dzuckerm@library.berkeley.edu' %>
+  mail_confirm_email: <%= ENV['BAKER_EMAIL'] || 'dzuckerm@library.berkeley.edu' %>
+  mail_smtp_password: <%= ENV['MAIL_PASSWORD'] || '' %>
+  mail_smtp_username: lib-noreply@berkeley.edu
+  patron_url: <%= ENV['PATRON_URL'] || 'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/' %>
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
+test:
+  <<: *default

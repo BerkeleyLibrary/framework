@@ -29,11 +29,11 @@ class UpdatePatronJob < ApplicationJob
 
     def update_patron_record(employee_id, note)
       # Connection info, including credentials, sourced from rails config
-      host = Rails.application.config.expect_url.host
-      user = Rails.application.config.expect_url.user
+      host = Rails.application.config.altmedia['expect_url'].host
+      user = Rails.application.config.altmedia['expect_url'].user
       opts = { non_interactive: true }
       cmd  = [
-        Rails.application.config.expect_url.path,
+        Rails.application.config.altmedia['expect_url'].path,
         note,
         employee_id,
       ].shelljoin

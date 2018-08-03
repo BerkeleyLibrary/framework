@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+function tag_and_push {
+  img_tag="${1:?You must provide a docker tag as first argument}"
+
+  # These are set by Jenkins -- see the Jenkinsfile
+  registry_host="${DOCKER_REGISTRY_HOST:-containers.lib.berkeley.edu}"
+  registry_pass="${DOCKER_REGISTRY_PSW:?You must provide a registry password}"
+  registry_user="${DOCKER_REGISTRY_USR:?You must provide a registry user}"
+
+  (
+    export DOCKER_SERVICE_NGINX_TAG="$img_tag"
+    export DOCKER_SERVICE_RAILS_TAG="$img_tag"
+
+    docker login -u $registry_user -p $registry_pass $registry_host
+    docker-compose build
+    docker-compose push
+  )
+}
+
+tag_and_push "$1"

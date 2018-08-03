@@ -1,20 +1,7 @@
 ---
 
 networks:
-  default:
-    external:
-      name: frontend
-
-secrets:
-  MAIL_PASSWORD:
-    external:
-      name: MAIL_LIB_NOREPLY_PASSWORD
-  PRIVATE_KEY:
-    external:
-      name: ALTMEDIA_PRIVATE_KEY
-  SECRET_KEY_BASE:
-    external:
-      name: ALTMEDIA_SECRET_KEY_BASE
+  default: {}
 
 services:
 
@@ -22,47 +9,26 @@ services:
     build: nginx
     depends_on:
       - rails
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_TAG:-git-29c0d313}
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_SERVICE_NGINX_TAG:-latest}
     ports:
       - 80
+      - 443
     volumes:
       - public:/usr/share/nginx/html:ro
 
   rails:
-    build: .
-    deploy:
-      mode: replicated
-      placement:
-        constraints:
-          - node.labels.patronapi == allowed
-      replicas: 1
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 250M
-      update_config:
-        delay: 10s
-        failure_action: rollback
-        order: start-first
-    environment:
-      ADMIN_EMAIL: prntscan@lists.berkeley.edu # NOTE(dcschmidt): not a typo!
-      BAKER_EMAIL: baker@library.berkeley.edu 
-      PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_TAG:-git-29c0d313}
+    build:
+      context: .
+      target: "${DOCKER_SERVICE_RAILS_TARGET:-development}"
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_SERVICE_RAILS_TAG:-latest}
     ports:
       - 3000
     volumes:
-      - public:/opt/app/public
-    secrets:
-      - source: MAIL_PASSWORD
-        target: /run/secrets/MAIL_PASSWORD
-      - source: PRIVATE_KEY
-        target: /home/altmedia/.ssh/id_rsa
-      - source: SECRET_KEY_BASE
-        target: /run/secrets/SECRET_KEY_BASE
+      - ./public:/opt/app/public:delegated
+      - bundle_cache:/usr/local/bundle/cache:delegated
 
 version: "3.4"
 
 volumes:
-  public:
-    driver: netapp
+  bundle_cache: {}
+  public: {}

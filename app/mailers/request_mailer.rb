@@ -3,10 +3,10 @@ class RequestMailer < ActionMailer::Base
 
   def failure_email(empid, displayname, note)
     @empid = empid
-    @displayname = displayname 
+    @displayname = displayname
     @note = note
 
-    mail(to: ENV['ADMIN_EMAIL'],subject: 'alt-media scanning patron opt-in failure')
+    mail(to: admin_to, subject: 'alt-media scanning patron opt-in failure')
   end
 
   def confirmation_email(email)
@@ -15,18 +15,28 @@ class RequestMailer < ActionMailer::Base
 
   def confirmation_email_baker(displayname,employee_id)
     @displayname = displayname
-	  @empid = employee_id
-    mail(to: ENV['BAKER_EMAIL'], subject: 'alt-media scanning service opt-in')
+    @empid = employee_id
+    mail(to: confirm_to, subject: 'alt-media scanning service opt-in')
   end
 
   def opt_out_staff(empid,displayname )
     @empid = empid
-    @displayname = displayname 
+    @displayname = displayname
 
     mail(subject: 'alt-media scanning service opt-out')
   end
 
   def opt_out_faculty(email)
     mail(to: email, subject: 'alt-media scanning service opt-out')
+  end
+
+private
+
+  def admin_to
+    Rails.application.config.altmedia['mail_admin_email']
+  end
+
+  def confirm_to
+    Rails.application.config.altmedia['mail_confirm_email']
   end
 end
