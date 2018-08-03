@@ -59,6 +59,31 @@ pipeline {
         }
       }
     }
+
+    stage("Deploy") {
+      when {
+        branch "master"
+      }
+      environment {
+        DOCKER_HOST = 'tcp://vm244.lib.berkeley.edu:2376'
+        DOCKER_TLS_VERIFY = '1'
+      }
+      steps {
+        script {
+          withCredentials([
+            dockerCert(
+              credentialsId: '5f3bdd53-05c4-4575-a438-7fe979425bb9',
+              variable: 'DOCKER_CERT_PATH',
+            )]
+          ) {
+            sh "bin/docker-deploy docker-compose.prod.yml"
+
+            sleep 5
+            sh "curl --fail https://altmedia.lib.berkeley.edu/"
+          }
+        }
+      }
+    }
   }
 
   triggers {

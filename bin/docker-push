@@ -18,4 +18,4 @@ function tag_and_push {
   )
 }
 
-tag_and_push "$1"
+tag_and_push "$@"
