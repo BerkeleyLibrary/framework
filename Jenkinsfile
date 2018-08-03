@@ -6,9 +6,9 @@ pipeline {
   }
 
   environment {
-    COMPOSE_PROJECT_NAME        = "${GIT_COMMIT.take(8)}"
-    DOCKER_REGISTRY             = credentials("0A792AEB-FA23-48AC-A824-5FF9066E6CA9")
-    DOCKER_SERVICE_RAILS_TARGET = "production"
+    COMPOSE_FILE         = "docker-compose.ci.yml"
+    COMPOSE_PROJECT_NAME = "${GIT_COMMIT.take(8)}"
+    DOCKER_REGISTRY      = credentials("0A792AEB-FA23-48AC-A824-5FF9066E6CA9")
   }
 
   stages {

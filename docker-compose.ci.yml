@@ -14,14 +14,10 @@ services:
       - public:/usr/share/nginx/html:ro
 
   rails:
-    build:
-      context: .
-      target: "${DOCKER_SERVICE_RAILS_TARGET:-development}"
+    build: .
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_SERVICE_RAILS_TAG:-latest}
-    ports:
-      - 3000:3000
     volumes:
-      - ./public:/opt/app/public:delegated
+      - public:/opt/app/public:delegated
       - bundle_cache:/usr/local/bundle/cache:delegated
 
 version: "3.4"
