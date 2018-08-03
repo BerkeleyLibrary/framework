@@ -57,55 +57,12 @@ docker-compose run --rm rails bundle:audit
 docker-compose run --rm rails brakeman
 ```
 
-### Deployment
+### Deploying
 
-The docker-compose.yml configuration contains the production configuration, including which version of the image to release. This is important, because while docker-compose builds images for you in development, docker stack (which deploys to the production "swarm") does not — it expects you to have built and pushed the image to the registry.
+Jenkins automatically builds and tests every commit. Commits to the master branch are also tagged, pushed to the registry, and deployed to production using the `docker-compose.prod.yml` configuration file. To deploy a new version to production:
 
-The first thing you should do is verify that the image is in the registry. If it's not, push it:
+- Check [the registry](https://git.lib.berkeley.edu/lap/altmedia/container_registry) for the version of the app images you want to deploy, then update the production configuration (docker-compose.prod.yml) with the relevant tags.
+- Commit only those changes with the commit message "Deploying <tag> to production".
+- Push your commit, which Jenkins will rollout to production.
 
-```sh
-# Build/tag the image using only the production configuration.
-docker-compose -f docker-compose.yml build --pull
-
-# Login to the registry. See GitLab's documentation for details:
-#   https://docs.gitlab.com/ee/user/project/container_registry.html
-docker login containers.lib.berkeley.edu
-
-# Push the built image to the registry.
-docker-compose -f docker-compose.yml push
-```
-
----
-
-> **Releasing a new version:** To release a new version of the image, update the version in the docker-compose.yml configuration, build it (as above), and push it. Try not to override existing images until they're at least two versions out of date (at which point we wouldn't expect to roll back).
-
----
-
-Once the registry's up-to-date, you can deploy the swarm. You'll need three credentials (ask @dcschmidt to generate them):
-
-- `~/.docker/ca.cert`: The server's certificate authority certificate.
-- `~/.docker/cert.pem`: Your client certificate.
-- `~/.docker/key.pem`: Your signed client key. Keep this secret — it's equivalent to having access to the Docker daemon.
-
-Put these in your home directory and chmod them to 0600. Then, setup a script to wrap your interactions with production, make it executable, and place it on your PATH. For example:
-
-```sh
-cat <<EOF > /usr/local/bin/docker-prod
-#!/bin/sh -e
-
-DOCKER_CERT_PATH=~/.docker \
-DOCKER_HOST=tcp://vm244.lib.berkeley.edu:2376 \
-DOCKER_TLS_VERIFY=1 \
-exec docker "$@"
-EOF
-
-chmod 0755 /usr/local/bin/docker-prod
-```
-
-Now you can call `docker-prod` to run docker commands against the production server.
-
-The stack's name is "altmedia". To deploy it, run:
-
-```sh
-docker-prod stack deploy --with-registry-auth -c docker-compose.yml altmedia
-```
+Jenkins checks that https://altmedia.lib.berkeley.edu returns a non-4xx/5xx error code after the deploy. If the deploy fails, the job will also fail.
