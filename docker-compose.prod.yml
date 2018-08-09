@@ -19,7 +19,7 @@ secrets:
 services:
 
   nginx:
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:git-ed79c1a6
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:git-61ad7abc
     ports:
       - 80
     volumes:
