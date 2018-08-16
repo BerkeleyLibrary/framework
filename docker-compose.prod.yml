@@ -1,9 +1,8 @@
 ---
 
 networks:
-  default:
-    external:
-      name: frontend
+  frontend:
+    external: true
 
 secrets:
   MAIL_PASSWORD:
@@ -20,6 +19,9 @@ services:
 
   nginx:
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:git-61ad7abc
+    networks:
+      - default
+      - frontend
     ports:
       - 80
     volumes:
@@ -47,6 +49,9 @@ services:
       # BAKER_EMAIL: baker@library.berkeley.edu
       PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-61ad7abc
+    networks:
+      - default
+      - frontend
     ports:
       - 3000
     volumes:
