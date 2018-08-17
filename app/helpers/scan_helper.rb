@@ -47,7 +47,7 @@ module ScanHelper
     end
 
     #if ptype_result.eql?("6") &&  standing_result.eql?("-")
-    if standing_result.eql?("-") && (ptype_result.eql?("6") || ptype_result.eql("7"))
+    if standing_result.eql?("-") && (ptype_result.eql?("6") || ptype_result.eql?("7"))
        #patron is factulty in good standing get email and let them request scanning request privileges
        faculty_email = get_email(contents)
 
