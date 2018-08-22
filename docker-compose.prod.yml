@@ -44,6 +44,34 @@ services:
       - { source: PRIVATE_KEY,      target: /home/altmedia/.ssh/id_rsa }
       - { source: SECRET_KEY_BASE,  target: /run/secrets/SECRET_KEY_BASE }
 
+  # Runs once on every deploy and then exits.
+  updater:
+    command:
+      - assets:precompile
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 500M
+      restart_policy:
+        condition: none
+    environment:
+      # TODO(dcschmidt/dzuckerm): Actually set these only once we're ready to
+      # go live.
+      # ADMIN_EMAIL: prntscan@lists.berkeley.edu # NOTE(dcschmidt): not a typo!
+      # BAKER_EMAIL: baker@library.berkeley.edu
+      PATRON_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
+    ports:
+      - 3000
+    volumes:
+      - public:/opt/app/public
+    secrets:
+      - { source: MAIL_PASSWORD,    target: /run/secrets/MAIL_PASSWORD }
+      - { source: PRIVATE_KEY,      target: /home/altmedia/.ssh/id_rsa }
+      - { source: SECRET_KEY_BASE,  target: /run/secrets/SECRET_KEY_BASE }
+
 version: "3.4"
 
 volumes:

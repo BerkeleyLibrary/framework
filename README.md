@@ -66,3 +66,9 @@ Jenkins automatically builds and tests every commit. Commits to the master branc
 - Push your commit, which Jenkins will rollout to production.
 
 Jenkins checks that https://altmedia.lib.berkeley.edu returns a non-4xx/5xx error code after the deploy. If the deploy fails, the job will also fail.
+
+---
+
+> **Deploy Tasks:** There's an "updater" service that runs once on each deploy. This is a mirror of the Rails service, but instead of running the server it just executes `assets:precompile` and then exits. Other tasks that need to be executed after a deploy can be added here.
+
+---
