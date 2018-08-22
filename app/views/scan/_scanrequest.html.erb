@@ -14,28 +14,6 @@ div {
     padding-top: 10px;
 }
 
-input[type=text] {
-    width: 30%;
-    padding: 15px 10px;
-    margin: 5px 0;
-    box-sizing: border-box;
-    border: 2px solid black;
-    border-radius: 4px;
-}
-
-.button {
-    background-color: #9a6f00;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
 
 </style>
 
@@ -47,7 +25,7 @@ input[type=text] {
 
 <div class="container">
 
-<a href="http://www.lib.berkeley.edu/"><img src="http://digitalassets.lib.berkeley.edu/main/images/logo_small.png" alt="UC 
+<a class="link" tabindex="1" href="http://www.lib.berkeley.edu/"><img src="http://digitalassets.lib.berkeley.edu/main/images/logo_small.png" alt="UC 
 Berkeley Library" /></a>
 
 <h1>Faculty Alt-Media Scanning</h1>
@@ -94,26 +72,25 @@ change.  Please allow up to 48 hours for your status in the system to be updated
 
 <h2>Request<span style="color:#ee0000">*</span></h2>
 
+	<div class="radio">
+		<label id="optinlabel" for="optin"><input tabindex="2" type="radio" name="request_type" id="optin" value="optin">Opt in. I confirm I qualify for this service.</label>
+	</div>
 
-<div class="radio">
-<label id="optinlabel" for="optin"><input type="radio" name="request_type" id="optin" value="optin" required>Opt in. I confirm I qualify for this service.</label>
-</div>
-
-<div class="radio">
-<label id="optoutlabel" for="optout"><input type="radio" name="request_type" id="optout" value="optout">Opt out. I wish to terminate use of this service.</label>
-</div>
+	<div class="radio">
+		<label id="optoutlabel" for="optout"><input tabindex="-1" type="radio" name="request_type" id="optout" value="optout">Opt out. I wish to terminate use of this service.</label>
+	</div>
 
 <div class="form-group">
 <h2><label for="displayName">Name</label> <span style="color:#ee0000">*</span></h2>
-	<input type="text" class="form-control" id="displayName" value="<%= @displayName %>" name="displayName" required>
+	<input tabindex="3" type="text" class="form-control" id="displayName" value="<%= @displayName %>" name="displayName" required>
 </div>
 <br/>
 
-<button type="submit" class="button">SUBMIT</button>
+<button tabindex="4" type="submit" class="button">SUBMIT</button>
 <% end %>
 
 <div>
-Copyright © The Regents of the University of California. All rights reserved. <a href="mailto:prntscan@lists.berkeley.edu">Questions?</a>
+Copyright © The Regents of the University of California. All rights reserved. <a class="link" tabindex="5" href="mailto:prntscan@lists.berkeley.edu">Questions?</a>
 </div>
 
 </div>
