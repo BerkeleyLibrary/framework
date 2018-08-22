@@ -13,13 +13,6 @@ secrets:
 
 services:
 
-  nginx:
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:git-61ad7abc
-    ports:
-      - 80
-    volumes:
-      - public:/usr/share/nginx/html:ro
-
   rails:
     deploy:
       mode: replicated
