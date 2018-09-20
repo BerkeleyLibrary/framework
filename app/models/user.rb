@@ -1,23 +1,14 @@
-class User < ApplicationRecord 
+class User
+  include ActiveModel::Model
+  include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
+  extend Devise::Models
 
-devise :omniauthable, :omniauth_providers => [:altmedia] 
+  devise :omniauthable, :omniauth_providers => [:calnet]
 
+  attr_accessor :uid, :display_name, :employee_id
 
-#def self.from_altmedia!(auth)
-#	where(altmedia_uid: auth.uid).first_or_create do |user|
-#      user.email = auth.info.email 
-#      user.save!
-#  end
-#end
-#
-#def self.random_email
-#	"#{SecureRandom.hex[0,16]}@noemail.com"
-#end
-#
-#
-#def to_s
-#    email
-#end
-
-
+  def patron
+    @patron ||= Patron.find(employee_id)
+  end
 end

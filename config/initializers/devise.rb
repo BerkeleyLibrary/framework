@@ -1,5 +1,3 @@
-require 'devise/orm/active_record'
-
 Devise.setup do |config|
   config.skip_session_storage = [:http_auth]
   config.stretches = Rails.env.test? ? 1 : 11
@@ -12,8 +10,10 @@ Devise.setup do |config|
   }
 
   config.omniauth :cas,
-    name: :altmedia,
+    name: :calnet,
     host: calnet_url,
     login_url: '/cas/login',
     service_validate_url: '/cas/p3/serviceValidate'
+
+  OmniAuth.config.logger = Rails.logger if Rails.env.development?
 end

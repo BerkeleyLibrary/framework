@@ -33,11 +33,5 @@ module Altscan
       authentication: 'plain',
       enable_starttls_auto: true,
     }
-
-    # Sets defaults for the mail() method (:from, :reply_to, ...)
-    config.action_mailer.default_options = {
-      to: config.altmedia['mail_confirm_email'],
-      cc: config.altmedia['mail_admin_email'],
-    }
   end
 end

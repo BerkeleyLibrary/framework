@@ -1,0 +1,464 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/012158720/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 5 Oct 2018 17:32:41 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=10-31-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=h<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=6<BR>
+        TOT CHKOUT[p48]=1<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none <BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1384328<BR>
+        REC LENG[p82]=531<BR>
+        CREATED[p83]=05-05-16<BR>
+        UPDATED[p84]=08-02-18<BR>
+        REVISIONS[p85]=138<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=08-15-16<BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=SCHMIDT,DANIEL<BR>
+        ADDRESS[pa]=Library Administration$LIBRARY 94720<BR>
+        NOTE[px]=20180706 library book scan eligible [litscript]<BR>
+        NOTE[px]=20180709 library book scan eligible [litscript]<BR>
+        NOTE[px]=20180709 library book scan eligible [litscript]<BR>
+        NOTE[px]=20180709 library book scan eligible [litscript]<BR>
+        NOTE[px]=20180709 library book scan eligible [litscript]<BR>
+        BAKER PRIV[pv]=N<BR>
+        MAJOR/DEPT[pd]=KPADM<BR>
+        SOURCE[ps]=H<BR>
+        P BARCODE[pb]=012158720<BR>
+        P BARCODE[pb]=A2158720<BR>
+        EMAIL ADDR[pz]=danschmidt5189@berkeley.edu<BR>
+        PIN[p=]=.DWI06K5riSfI<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Fri, 05 Oct 2018 17:32:41 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/12345678/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 5 Oct 2018 18:01:27 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=10-31-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=g<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=4<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none <BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1473289<BR>
+        REC LENG[p82]=244<BR>
+        CREATED[p83]=10-05-18<BR>
+        UPDATED[p84]=10-05-18<BR>
+        REVISIONS[p85]=1<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=  -  -  <BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=Testyone, Facnoblock<BR>
+        ADDRESS[pa]=Art Closet--Doe Library MC$CAMPUS 94720<BR>
+        TELEPHONE[pt]=510-555-1212<BR>
+        P BARCODE[pb]=12345678<BR>
+        EMAIL ADDR[pz]=notreal@nowhere.com<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/87654321/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 5 Oct 2018 18:01:27 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=10-31-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=g<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=4<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none <BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=e<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1473290<BR>
+        REC LENG[p82]=247<BR>
+        CREATED[p83]=10-05-18<BR>
+        UPDATED[p84]=10-05-18<BR>
+        REVISIONS[p85]=1<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=  -  -  <BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=Testytwo, Facwithblock<BR>
+        ADDRESS[pa]=Art Closet--Doe Library MC$CAMPUS 94720<BR>
+        TELEPHONE[pt]=510-555-1212<BR>
+        P BARCODE[pb]=87654321<BR>
+        EMAIL ADDR[pz]=hopeless@nowhere.gov<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/12348765/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 5 Oct 2018 18:01:27 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=10-31-20<BR>
+        PCODE1[p44]=s<BR>
+        PCODE2[p45]=g<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=4<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none <BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1473291<BR>
+        REC LENG[p82]=256<BR>
+        CREATED[p83]=10-05-18<BR>
+        UPDATED[p84]=10-05-18<BR>
+        REVISIONS[p85]=1<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=  -  -  <BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=Testythree, Faccommuitycoll<BR>
+        ADDRESS[pa]=Art Closet--Doe Library MC$CAMPUS 94720<BR>
+        TELEPHONE[pt]=510-555-1212<BR>
+        P BARCODE[pb]=12348765<BR>
+        EMAIL ADDR[pz]=dispair@supremecourt.gov<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/87651234/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 5 Oct 2018 18:01:27 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=10-31-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=m<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=22<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none <BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1473292<BR>
+        REC LENG[p82]=252<BR>
+        CREATED[p83]=10-05-18<BR>
+        UPDATED[p84]=10-05-18<BR>
+        REVISIONS[p85]=1<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=  -  -  <BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=Testyfour, Visitingscholar<BR>
+        ADDRESS[pa]=Art Closet--Doe Library MC$CAMPUS 94720<BR>
+        TELEPHONE[pt]=510-555-1212<BR>
+        P BARCODE[pb]=87651234<BR>
+        EMAIL ADDR[pz]=lunatic@whitehowz.gov<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/18273645/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 5 Oct 2018 18:01:27 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=10-31-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=a<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=3<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none <BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1473293<BR>
+        REC LENG[p82]=241<BR>
+        CREATED[p83]=10-05-18<BR>
+        UPDATED[p84]=10-05-18<BR>
+        REVISIONS[p85]=1<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=  -  -  <BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=Testyfive, Gradstudent<BR>
+        ADDRESS[pa]=Art Closet--Doe Library MC$CAMPUS 94720<BR>
+        TELEPHONE[pt]=510-555-1212<BR>
+        P BARCODE[pb]=18273645<BR>
+        EMAIL ADDR[pz]=grad@trump.ude<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/does%20not%20exist/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 9 Oct 2018 20:19:03 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <BODY>ERRNUM=1<BR>
+        ERRMSG=Requested record not found<BR>
+        </BODY>
+    http_version: 
+  recorded_at: Tue, 09 Oct 2018 20:19:03 GMT
+recorded_with: VCR 4.0.0

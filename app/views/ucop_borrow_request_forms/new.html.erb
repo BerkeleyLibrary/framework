@@ -1,0 +1,54 @@
+<div class="alert alert-warning"><strong>Eligibility:</strong> This service is available to select UCOP staff only.</div>
+
+<h1>UCOP Staff: Request a UC Berkeley Borrowing Card</h1>
+
+<p>UC Berkeley Library privileges include access to print and electronic resources. The UC Berkeley Library subscribes to hundreds of online licensed resources, which by license agreements are accessible only to eligible users. Select UC Office of the President (UCOP) staff work on behalf of Berkeley as part of their primary jobs and are eligible for library privileges; temporary staff, contractors, and retirees are not eligible.</p>
+
+<p>To initiate access, the UCOP employee completes and submits this form. Upon submission, that employee's supervisor is emailed for their confirmation that employee meets the eligibility criteria. Once approved, the UCOP employee is sent a library card number and PIN to access online resources through the proxy service; if the UCOP employee wishes to also check out printed material, they need to visit Berkeley's Library Privileges Desk (198 Doe Library) in person with their government-issued photo identification (e.g. state ID, driver license, or passport) to pick up their library card.</p>
+
+<p>Access is granted for up to one year at a time, ending on June 30. The UCOP employee is responsible for maintaining their current contact information with the Berkeley Library and for following Berkeley Library policies. Annual renewals may be requested using this same process.</p>
+
+<hr />
+
+<%= form_for(@borrow_request) do |f| %>
+
+  <% if @borrow_request.errors.any? %>
+    <div class="alert alert-warning alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+      <h5>Please correct these errors:</h5>
+
+      <ul>
+        <% @borrow_request.errors.full_messages.each do |attr, msg| %>
+          <li><%= "#{attr} #{msg}" %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <h2>Employee Information</h2>
+
+  <%= field_for(f, :employee_name, required: true) %>
+  <%= field_for(f, :employee_preferred_name) %>
+  <%= field_for(f, :employee_id) %>
+  <%= field_for(f, :employee_email, required: true) %>
+  <%= field_for(f, :employee_personal_email, required: true) %>
+  <%= field_for(f, :employee_phone, required: true) %>
+
+  <h2>Department Information</h2>
+
+  <p>The authorizer will receive a copy of this form via email to approve. To approve, the authorizer must forward this request from their work email account to <a href="mailto:privdesk@library.berkeley.edu">privdesk@library.berkeley.edu</a></p>
+
+  <%= field_for(f, :department_name, required: true) %>
+  <%= field_for(f, :department_head_name) %>
+  <%= field_for(f, :department_head_email, required: true) %>
+
+  <%= render "recaptcha" %>
+
+  <div class="btn-group" role="group">
+    <%= f.submit(class: "btn btn-primary") %>
+    <%= f.submit("Reset", type: :reset, class: "btn btn-link") %>
+  </div>
+<% end %>

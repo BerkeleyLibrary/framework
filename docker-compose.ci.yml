@@ -10,12 +10,16 @@ services:
     depends_on:
       - rails
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_SERVICE_NGINX_TAG:-latest}
+    ports:
+      - 80
     volumes:
       - public:/usr/share/nginx/html:ro
 
   rails:
     build: .
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_SERVICE_RAILS_TAG:-latest}
+    ports:
+      - 3000
     volumes:
       - public:/opt/app/public:delegated
       - bundle_cache:/usr/local/bundle/cache:delegated

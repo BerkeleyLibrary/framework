@@ -1,0 +1,47 @@
+<h1>Faculty Alt-Media Scanning</h1>
+
+<p>The Library provides alt-media scanning services for Berkeley faculty and instructors who
+qualify under the Chafee Amendment to the Copyright Act and who choose to enroll in the
+service.  This amendment states:</p>
+
+<blockquote class="blockquote">
+  <p class="ml-3 text-secondary small">It is not an infringement of copyright for an authorized entity to reproduce or to distribute copies or phonorecords of a previously published, nondramatic literary work if such copies or phonorecords are reproduced or distributed in specialized formats exclusively for use by blind or other persons with disabilities.</p>
+</blockquote>
+
+<p>This alt-media scanning service is intended to support Berkeley faculty and instructors in their teaching and research.</p>
+
+<p>The Library provides qualified users with digital files of the library's print collection.</p>
+
+<ul>
+  <li>Scans will be handled in the order they are received, with one item scanned for each user waiting
+  before second items will be handled for anyone.</li>
+  <li>The person requesting the item will receive email notification when the digital file is ready.</li>
+  <li>The email will include a link to download the digital file.</li>
+  <li>The Library will do a light correction of the OCR.</li>
+  <li>The file will be available as a Word document and as a searchable PDF.</li>
+</ul>
+
+<p>By completing this form, the individual is indicating that they have a disability which qualifies them for this service. The Library is not a medical provider, and accepts the individual's word that they qualify for this service.  Upon receipt of this form, the Library adds a generic note to the person's borrower record ("library book scan eligible"). The Library does not share this information in any other way with other entities on campus or off campus.</p>
+
+<p>Use this form both to opt-in to the service, and to terminate the service if your circumstances change. Please allow up to 48 hours for your status in the system to be updated.</p>
+
+<hr />
+
+<%= form_for(@scan_request) do |f| %>
+  <p style="color:#ee0000">* Required</p>
+
+  <div class="form-group">
+    <div class="form-check">
+      <%= f.radio_button(:opt_in, 'yes', checked: true) %>
+      <%= f.label(:opt_in_yes) %>
+    </div>
+    <div class="form-check">
+      <%= f.radio_button(:opt_in, 'no') %>
+      <%= f.label(:opt_in_no) %>
+    </div>
+  </div>
+
+  <%= field_for(f, :patron_name) %>
+
+  <%= f.submit(class: 'btn btn-primary') %>
+<% end %>
