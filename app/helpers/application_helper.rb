@@ -21,8 +21,8 @@ module ApplicationHelper
   def logo_link
     link_to(
       image_tag('logo.png', height: '30', alt: "UC Berkeley Library"),
-      root_path,
-      class: "navbar-brand",
+      'home#index',
+      { class: "navbar-brand" },
     )
   end
 
