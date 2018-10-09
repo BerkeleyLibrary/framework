@@ -22,6 +22,20 @@ module ModelHelper
       send(func, *args)
     end
   end
+
+  def assert_email(email, cc: nil, bcc: nil, to: nil, subject: nil)
+    assert_nil email.subject if subject.nil?
+    assert_equal subject, email.subject unless subject.nil?
+
+    assert_nil email.to if to.nil?
+    assert_equal to, email.to unless to.nil?
+
+    assert_nil email.cc if cc.nil?
+    assert_equal cc, email.cc unless cc.nil?
+
+    assert_nil email.bcc if bcc.nil?
+    assert_equal bcc, email.bcc unless bcc.nil?
+  end
 end
 
 module OmniAuthHelper

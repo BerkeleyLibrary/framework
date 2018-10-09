@@ -23,12 +23,13 @@ class ScanRequestOptInJobTest < ActiveJob::TestCase
 
     patron_email, staff_email = RequestMailer.deliveries.last(2)
 
-    assert_equal patron_email.subject, 'alt-media scanning service opt-in'
-    assert_includes patron_email.to, @patron[:email]
+    assert_email patron_email,
+      subject: 'alt-media scanning service opt-in',
+      to: [@patron[:email]]
 
-    assert_equal staff_email.subject, 'alt-media scanning service opt-in'
-    assert_includes staff_email.cc, 'admin@totally-fake.com'
-    assert_includes staff_email.cc, 'confirm@totally-fake.com'
+    assert_email staff_email,
+      subject: 'alt-media scanning service opt-in',
+      cc: %w(admin@totally-fake.com confirm@totally-fake.com)
   end
 
   def test_send_failure_email_on_ssh_error
@@ -40,10 +41,9 @@ class ScanRequestOptInJobTest < ActiveJob::TestCase
       end
     end
 
-    email = RequestMailer.deliveries.last
-
-    assert_includes email.to, @admin_email
-    assert_equal 'alt-media scanning patron opt-in failure', email.subject
+    assert_email RequestMailer.deliveries.last,
+      subject: 'alt-media scanning patron opt-in failure',
+      to: [@admin_email]
   end
 
   def test_send_failure_email_on_script_error
@@ -55,9 +55,8 @@ class ScanRequestOptInJobTest < ActiveJob::TestCase
       end
     end
 
-    email = RequestMailer.deliveries.last
-
-    assert_includes email.to, @admin_email
-    assert_equal 'alt-media scanning patron opt-in failure', email.subject
+    assert_email RequestMailer.deliveries.last,
+      subject: 'alt-media scanning patron opt-in failure',
+      to: [@admin_email]
   end
 end

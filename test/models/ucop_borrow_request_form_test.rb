@@ -85,11 +85,8 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
       form.submit!
     end
 
-    email = RequestMailer.deliveries.last
-
-    assert_equal 'UC Berkeley Borrowing Card Requested', email.subject
-    assert_equal ['jeff@wilco.com'], email.to
-    assert_nil email.cc
-    assert_nil email.bcc
+    assert_email RequestMailer.deliveries.last,
+      subject: 'UC Berkeley Borrowing Card Requested',
+      to: ['jeff@wilco.com']
   end
 end
