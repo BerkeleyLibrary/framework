@@ -1,5 +1,5 @@
 require 'net/ssh'
-require 'net/http'
+require 'open-uri'
 require 'shellwords'
 
 class Patron
@@ -18,13 +18,9 @@ class Patron
     def find(id)
       base_url = Rails.application.config.altmedia['patron_url']
       patron_url = URI.join(base_url, "/PATRONAPI/#{URI.escape(id)}/dump")
-      res = Net::HTTP.get_response(patron_url)
-
-      if res.kind_of?(Net::HTTPOK)
-        return new_from_dump(id, res.body)
-      else
-        raise res
-      end
+      return new_from_dump(id, open(patron_url, {
+        ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
+      }).read)
     end
 
     def new_from_dump(id, dumpstr)
