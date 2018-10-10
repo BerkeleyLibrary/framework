@@ -38,21 +38,20 @@ en:
         opt_in_no: Opt out. I wish to terminate use of this service.
         patron_name: Name
       ucop_borrow_request_form:
-        department_head_email: Your UCOP Department Head's Email Address *
+        department_head_email: Your UCOP Department Head's Email Address
         department_head_name: Your UCOP Department Head's Full Name
-        department_name: Your UCOP Department Name *
-        employee_email: Your Email Address *
+        department_name: Your UCOP Department Name
+        employee_email: Your Email Address
         employee_id: Your UCOP Employee ID number
-        employee_name: Your First, Middle (if any) and Last Name *
-        employee_personal_email: Your Personal Email Address *
-        employee_phone: Your Phone Number *
+        employee_name: Your First, Middle (if any) and Last Name
+        employee_personal_email: Your Personal Email Address
+        employee_phone: Your Phone Number
         employee_preferred_name: Your Preferred Name (if different from legal name)
-    errors:
       models:
         scan_request_form:
           attributes:
             patron_blocks:
-              present: You must clear active blocks to use this service.
+              blank: You must clear active blocks to use this service.
             patron_type:
               inclusion: Only faculty, instructors, and visiting scholars may use this service.
 
@@ -60,11 +59,9 @@ en:
       ucop_borrow_request_form: Request Form a UC Berkeley Borrowing Card
 
   errors:
-    format: "%{attribute} %{message}"
-
-  omniauth_callbacks:
-    calnet:
-      forbidden: <strong>Forbidden:</strong> You're not allowed to access the requested page.
+    messages:
+      blank: can't be blank
+      email: is not a valid email address
 
   helpers:
     submit:
@@ -72,6 +69,10 @@ en:
         create: Submit
       ucop_borrow_request_form:
         create: Submit
+
+  omniauth_callbacks:
+    calnet:
+      forbidden: <strong>Forbidden:</strong> You're not allowed to access the requested page.
 
   request_mailer:
     confirmation_email:

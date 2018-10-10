@@ -1,24 +1,21 @@
 class UcopBorrowRequestFormsController < ApplicationController
-  def index
-    redirect_to new_ucop_borrow_request_form_path
-  end
+  before_action :init_form!
+  before_action :validate_recaptcha!, only: [:create]
 
-  def new
-    init_form!
+  def index
+    redirect_to new_ucop_borrow_request_form_path and return
   end
 
   def create
-    init_form!
-    verify_recaptcha!(model: @form)
     @form.submit!
 
     flash[:success] = t('.success', department_head_email: @form.department_head_email)
-    redirect_to new_ucop_borrow_request_form_path
+    redirect_to new_ucop_borrow_request_form_path and return
   rescue Recaptcha::VerifyError
     flash[:danger] = t('.recaptcha')
-    redirect_to_new
+    redirect_to_new and return
   rescue ActiveModel::ValidationError
-    redirect_to_new
+    redirect_to_new and return
   end
 
   private
@@ -33,9 +30,13 @@ class UcopBorrowRequestFormsController < ApplicationController
     @form = UcopBorrowRequestForm.new
 
     if not borrow_request_params.empty?
-      @form.assign_attributes(borrow_request_params)
+      @form.attributes = borrow_request_params
       @form.validate
     end
+  end
+
+  def validate_recaptcha!
+    verify_recaptcha!(model: @form)
   end
 
   def redirect_to_new

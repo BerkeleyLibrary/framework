@@ -23,5 +23,10 @@ module Altscan
     config.altmedia['patron_url'] = URI.parse(config.altmedia['patron_url'])
 
     config.active_job.queue_adapter = :async
+
+    # NOTE(dcschmidt): By default, Rails wraps fields that contain a validation
+    # error with a div classed "field_with_errors". This messes up Bootstrap's
+    # styling for feedback messages, so I've disabled the Rails' default.
+    config.action_view.field_error_proc = Proc.new { |tag, instance| tag }
   end
 end

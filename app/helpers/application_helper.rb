@@ -47,11 +47,30 @@ module ApplicationHelper
     end
   end
 
-  def field_for(builder, field_name, field_type: :text_field, **field_opts)
+  def field_for(builder, attribute, type: :text_field, **kwargs)
+    # Define the label
+    label = builder.label(attribute)
+
+    # Figure out what validation styling to apply
+    object = builder.object
+    field_errors = object.errors.full_messages_for(attribute)
+    css = 'narrow form-control'
+
+    if field_errors.any?
+      css += ' is-invalid'
+    elsif object.send(attribute)
+      css += ' is-valid'
+    end
+
+    # Define the field itself
+    field = builder.send(type, attribute, { class: css }.update(kwargs))
+
+    # Help text in case of errors
+    feedback = content_tag(:div, field_errors.first, class: "invalid-feedback")
+
     content_tag(:div, class: "form-group") do
-      concat builder.label(field_name)
-      concat builder.text_field(field_name,
-        { class: "narrow form-control" }.update(field_opts))
+      concat label
+      concat content_tag(:div, field + feedback)
     end
   end
 end

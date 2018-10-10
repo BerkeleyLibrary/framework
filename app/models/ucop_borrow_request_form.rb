@@ -18,18 +18,18 @@ class UcopBorrowRequestForm
 
   validates :department_head_email,
     presence: true,
-    format: { with: URI::MailTo::EMAIL_REGEXP }
+    email: true
 
   validates :employee_email,
     presence: true,
-    format: { with: URI::MailTo::EMAIL_REGEXP }
+    email: true
 
   validates :employee_id,
     presence: true
 
   validates :employee_personal_email,
     presence: true,
-    format: { with: URI::MailTo::EMAIL_REGEXP }
+    email: true
 
   validates :employee_phone,
     presence: true
