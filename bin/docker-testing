@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+docker-compose run \
+  --entrypoint=ash \
+  --rm \
+  --user=root \
+  -e RAILS_ENV=test \
+  rails
