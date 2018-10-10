@@ -10,6 +10,8 @@ class RoutesTest < ActionDispatch::IntegrationTest
     get "/home"
     assert_response :ok
     assert_select 'ul#webforms'
+    assert_select 'nav', /UCOP Employee Borrowing Cards/
+    assert_select 'nav', /Faculty Alt-Media Scanning/
   end
 
   def test_altmedia_requires_sign_in

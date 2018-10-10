@@ -56,7 +56,8 @@ en:
               inclusion: Only faculty, instructors, and visiting scholars may use this service.
 
     models:
-      ucop_borrow_request_form: Request Form a UC Berkeley Borrowing Card
+      scan_request_form: Faculty Alt-Media Scanning
+      ucop_borrow_request_form: UCOP Employee Borrowing Cards
 
   errors:
     messages:
