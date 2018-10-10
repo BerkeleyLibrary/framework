@@ -27,4 +27,12 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert_select "h1", 'UC Berkeley Library Access to Library Resources for Select UCOP Staff'
   end
+
+  def test_redirect_home_on_logout
+    get '/sign_out'
+    assert_redirected_to controller: :home
+    follow_redirect!
+
+    assert_select "h1", /Library Forms/
+  end
 end
