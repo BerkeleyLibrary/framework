@@ -10,9 +10,9 @@
 
 <hr />
 
-<%= form_for(@borrow_request) do |f| %>
+<%= form_for(@form) do |f| %>
 
-  <% if @borrow_request.errors.any? %>
+  <% if @form.errors.any? %>
     <div class="alert alert-warning alert-dismissible">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -21,7 +21,7 @@
       <h5>Please correct these errors:</h5>
 
       <ul>
-        <% @borrow_request.errors.full_messages.each do |attr, msg| %>
+        <% @form.errors.full_messages.each do |attr, msg| %>
           <li><%= "#{attr} #{msg}" %></li>
         <% end %>
       </ul>
@@ -45,7 +45,9 @@
   <%= field_for(f, :department_head_name) %>
   <%= field_for(f, :department_head_email, required: true) %>
 
-  <%= render "recaptcha" %>
+  <div class="form-group">
+    <%= recaptcha_tags %>
+  </div>
 
   <div class="btn-group" role="group">
     <%= f.submit(class: "btn btn-primary") %>

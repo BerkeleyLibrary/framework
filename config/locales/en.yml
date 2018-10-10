@@ -97,4 +97,5 @@ en:
     new:
       page_title: UCOP Borrowing Request
     create:
+      recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
       success: Request successfully submitted to %{department_head_email}.

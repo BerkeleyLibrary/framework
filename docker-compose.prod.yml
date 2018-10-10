@@ -7,6 +7,9 @@ secrets:
   PRIVATE_KEY:
     external:
       name: ALTMEDIA_PRIVATE_KEY
+  RECAPTCHA_SECRET_KEY:
+    external:
+      name: RECAPTCHA_LIB_BERKELEY_EDU_SECRET_KEY
   SECRET_KEY_BASE:
     external:
       name: ALTMEDIA_SECRET_KEY_BASE
@@ -40,9 +43,14 @@ services:
     volumes:
       - public:/opt/app/public
     secrets:
-      - { source: MAIL_PASSWORD,    target: /run/secrets/MAIL_PASSWORD }
-      - { source: PRIVATE_KEY,      target: /home/altmedia/.ssh/id_rsa }
-      - { source: SECRET_KEY_BASE,  target: /run/secrets/SECRET_KEY_BASE }
+      - source: MAIL_PASSWORD
+        target: /run/secrets/MAIL_PASSWORD
+      - source: PRIVATE_KEY
+        target: /home/altmedia/.ssh/id_rsa
+      - source: RECAPTCHA_SECRET_KEY
+        target: /run/secrets/RECAPTCHA_SECRET_KEY
+      - source: SECRET_KEY_BASE
+        target: /run/secrets/SECRET_KEY_BASE
 
   # Runs once on every deploy and then exits.
   updater:
