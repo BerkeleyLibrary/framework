@@ -69,9 +69,9 @@ en:
   helpers:
     submit:
       scan_request_form:
-        create: "Submit"
+        create: Submit
       ucop_borrow_request_form:
-        create: "Submit Borrow Request"
+        create: Submit
 
   request_mailer:
     confirmation_email:
