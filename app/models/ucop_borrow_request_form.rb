@@ -24,6 +24,9 @@ class UcopBorrowRequestForm
     presence: true,
     format: { with: URI::MailTo::EMAIL_REGEXP }
 
+  validates :employee_id,
+    presence: true
+
   validates :employee_personal_email,
     presence: true,
     format: { with: URI::MailTo::EMAIL_REGEXP }
