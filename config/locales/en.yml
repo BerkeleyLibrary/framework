@@ -57,7 +57,7 @@ en:
 
     models:
       scan_request_form: Faculty Alt-Media Scanning
-      ucop_borrow_request_form: UCOP Employee Borrowing Cards
+      ucop_borrow_request_form: UCB Library Resources for Select UCOP Staff
 
   errors:
     messages:

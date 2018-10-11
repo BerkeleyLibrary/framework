@@ -10,7 +10,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
     get "/home"
     assert_response :ok
     assert_select 'ul#webforms'
-    assert_select 'nav', /UCOP Employee Borrowing Cards/
+    assert_select 'nav', /UCB Library Resources for Select UCOP Staff/
     assert_select 'nav', /Faculty Alt-Media Scanning/
   end
 
@@ -25,7 +25,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     assert_response :ok
-    assert_select "h1", 'UC Berkeley Library Access to Library Resources for Select UCOP Staff'
+    assert_select "h1", 'Access to UC Berkeley Library Resources for Select UCOP Staff'
   end
 
   def test_redirect_home_on_logout
