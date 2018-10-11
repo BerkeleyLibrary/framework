@@ -1,5 +1,5 @@
 class ScanRequestForm
-  include ActiveModel::Model
+  include Submitable
 
   attr_accessor(
     :opt_in,
@@ -55,17 +55,13 @@ class ScanRequestForm
     opt_in == 'yes'
   end
 
-  def submit!
-    validate!
+protected
 
-    if opted_in?
-      opt_in!
-    else
-      opt_out!
-    end
+  def submit
+    opted_in? ? opt_in! : opt_out!
   end
 
-  private
+private
 
   def opt_in!
     ScanRequestOptInJob.perform_later(
@@ -86,4 +82,5 @@ class ScanRequestForm
       },
     )
   end
+
 end
