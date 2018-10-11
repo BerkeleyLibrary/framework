@@ -41,7 +41,7 @@ service.  This amendment states:</p>
     </div>
   </div>
 
-  <%= field_for(f, :patron_name) %>
+  <%= field_for(f, :patron_name, required: true) %>
 
   <%= f.submit(class: 'btn btn-primary') %>
 <% end %>

@@ -48,8 +48,10 @@ module ApplicationHelper
   end
 
   def field_for(builder, attribute, type: :text_field, **kwargs)
+    required = kwargs.fetch(:required) { false }
+
     # Define the label
-    label = builder.label(attribute)
+    label = builder.label(attribute, class: "control-label")
 
     # Figure out what validation styling to apply
     object = builder.object
@@ -68,7 +70,9 @@ module ApplicationHelper
     # Help text in case of errors
     feedback = content_tag(:div, field_errors.first, class: "invalid-feedback")
 
-    content_tag(:div, class: "form-group") do
+    div_css = "form-group"
+    div_css += " required" if required
+    content_tag(:div, class: div_css) do
       concat label
       concat content_tag(:div, field + feedback)
     end

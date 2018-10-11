@@ -1,1 +1,6 @@
 @import "bootstrap";
+
+.form-group.required .control-label:after {
+   content: " *";
+   color: #ee0000;
+}
