@@ -10,11 +10,9 @@ class RoutesTest < ActionDispatch::IntegrationTest
     get "/home"
     assert_response :ok
     assert_select 'ul#webforms'
-    assert_select 'nav', /Faculty Alt-Media Scanning/
-
-    skip "Pending approval of the UCOP form" do
-      assert_select 'nav', /UCB Library Resources for Select UCOP Staff/
-    end
+    assert_select 'nav', /UCB Library Resources for Select UCOP Staff/
+    assert_select 'nav .d-none', /Faculty Alt-Media Scanning/,
+      '... Alt-Media navigation link is present but hidden'
   end
 
   def test_altmedia_requires_sign_in

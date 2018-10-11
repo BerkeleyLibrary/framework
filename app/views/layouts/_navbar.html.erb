@@ -15,7 +15,16 @@
           Forms
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <%= link_to ScanRequestForm.model_name.human, new_scan_request_form_path, class: 'dropdown-item' %>
+          <%= link_to(
+            UcopBorrowRequestForm.model_name.human,
+            new_ucop_borrow_request_form_path,
+            { class: 'dropdown-item' },
+          ) %>
+          <%= link_to(
+            ScanRequestForm.model_name.human,
+            new_scan_request_form_path,
+            { class: 'dropdown-item d-none' },
+          ) %>
         </div>
       </li>
     </ul>
