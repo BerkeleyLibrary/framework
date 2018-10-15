@@ -21,7 +21,7 @@ module ApplicationHelper
   def logo_link
     link_to(
       image_tag('logo.png', height: '30', alt: "UC Berkeley Library"),
-      { controller: :home },
+      'http://www.lib.berkeley.edu/',
       { class: "navbar-brand" },
     )
   end
