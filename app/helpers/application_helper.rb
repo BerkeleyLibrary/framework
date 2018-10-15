@@ -13,8 +13,6 @@ module ApplicationHelper
   def login_link
     if authenticated?
       link_to 'Logout', destroy_user_session_path, class: "nav-link"
-    else
-      link_to 'Login', user_calnet_omniauth_authorize_path, class: "nav-link"
     end
   end
 
