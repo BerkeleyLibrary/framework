@@ -7,26 +7,6 @@
 
   <div class="navbar-collapse collapse">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <%= link_to 'Library', 'http://www.lib.berkeley.edu/', class: "nav-link" %>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Forms
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <%= link_to(
-            UcopBorrowRequestForm.model_name.human,
-            new_ucop_borrow_request_form_path,
-            { class: 'dropdown-item' },
-          ) %>
-          <%= link_to(
-            ScanRequestForm.model_name.human,
-            new_scan_request_form_path,
-            { class: 'dropdown-item d-none' },
-          ) %>
-        </div>
-      </li>
     </ul>
 
     <ul class="navbar-nav">

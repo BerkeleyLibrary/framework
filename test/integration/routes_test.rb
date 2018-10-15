@@ -6,13 +6,9 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_redirected_to "/forms/altmedia/new"
   end
 
-  def test_home_displays_form_links
+  def test_can_browse_to_homepage
     get "/home"
     assert_response :ok
-    assert_select 'ul#webforms'
-    assert_select 'nav', /UCB Library Resources for Select UCOP Staff/
-    assert_select 'nav .d-none', /Faculty Alt-Media Scanning/,
-      '... Alt-Media navigation link is present but hidden'
   end
 
   def test_altmedia_requires_sign_in
