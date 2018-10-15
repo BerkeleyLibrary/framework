@@ -7,9 +7,9 @@ class ScanRequestFormsController < ApplicationController
   end
 
   def new
-    if not @scan_request.allowed?
+    if not @form.allowed?
       render :forbidden, status: :forbidden
-    elsif @scan_request.blocked?
+    elsif @form.blocked?
       render :blocked, status: :forbidden
     else
       render :new
@@ -17,16 +17,16 @@ class ScanRequestFormsController < ApplicationController
   end
 
   def create
-    @scan_request.submit!
+    @form.submit!
 
-    if @scan_request.opted_in?
+    if @form.opted_in?
       redirect_to action: :show, id: :optin
     else
       redirect_to action: :show, id: :optout
     end
   rescue ActiveModel::ValidationError
     flash[:danger] ||= []
-    @scan_request.errors.full_messages.each {|msg| flash[:danger] << msg}
+    @form.errors.full_messages.each {|msg| flash[:danger] << msg}
 
     redirect_to new_scan_request_form_path(request.parameters)
   end
@@ -46,7 +46,7 @@ class ScanRequestFormsController < ApplicationController
 
     @user = User.new(session[:user])
     @patron = @user.patron
-    @scan_request = ScanRequestForm.new(
+    @form = ScanRequestForm.new(
       opt_in: 'yes',
       patron_affiliation: @patron.affiliation,
       patron_blocks: @patron.blocks,
@@ -57,8 +57,8 @@ class ScanRequestFormsController < ApplicationController
     )
 
     if not scan_params.blank?
-      @scan_request.assign_attributes(scan_params)
-      @scan_request.validate
+      @form.assign_attributes(scan_params)
+      @form.validate
     end
   end
 
