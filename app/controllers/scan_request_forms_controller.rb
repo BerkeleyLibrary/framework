@@ -3,7 +3,7 @@ class ScanRequestFormsController < ApplicationController
   before_action :init_form!
 
   def index
-    redirect_to new_scan_request_form_path
+    redirect_with_params(action: :new)
   end
 
   def new
@@ -28,14 +28,14 @@ class ScanRequestFormsController < ApplicationController
     flash[:danger] ||= []
     @form.errors.full_messages.each {|msg| flash[:danger] << msg}
 
-    redirect_to new_scan_request_form_path(request.parameters)
+    redirect_with_params(action: :new)
   end
 
   def show
     if %w(blocked forbidden optin optout).include?(params[:id])
       render params[:id]
     else
-      redirect_to new_scan_request_form_path
+      redirect_with_params(action: :new)
     end
   end
 

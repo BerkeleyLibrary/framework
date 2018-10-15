@@ -14,4 +14,8 @@ class ApplicationController < ActionController::Base
   def authenticate!
     redirect_to new_user_session_path unless authenticated?
   end
+
+  def redirect_with_params(opts={})
+    redirect_to request.parameters.update(opts)
+  end
 end

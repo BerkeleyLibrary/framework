@@ -17,8 +17,8 @@ class RoutesTest < ActionDispatch::IntegrationTest
   end
 
   def test_ucop_form_page
-    get "/forms/ucop-borrowing-card"
-    assert_redirected_to "/forms/ucop-borrowing-card/new"
+    get "/forms/ucop-borrowing-card?foo=bar"
+    assert_redirected_to "/forms/ucop-borrowing-card/new?foo=bar"
     follow_redirect!
 
     assert_response :ok
