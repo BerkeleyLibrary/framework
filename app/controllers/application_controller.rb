@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   helper_method :authenticated?
 
+  protect_from_forgery with: :exception
+
   def new_session_path(scope)
     new_user_session_path
   end
