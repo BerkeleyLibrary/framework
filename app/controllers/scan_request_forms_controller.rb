@@ -56,13 +56,13 @@ class ScanRequestFormsController < ApplicationController
       patron_type: @patron.type,
     )
 
-    if not scan_params.blank?
-      @form.assign_attributes(scan_params)
+    if not form_params.blank?
+      @form.assign_attributes(form_params)
       @form.validate
     end
   end
 
-  def scan_params
+  def form_params
     params.require(:scan_request_form).permit(:opt_in, :patron_name)
   rescue ActionController::ParameterMissing
     {}

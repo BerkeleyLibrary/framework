@@ -20,7 +20,7 @@ class UcopBorrowRequestFormsController < ApplicationController
 
   private
 
-  def borrow_request_params
+  def form_params
     params.require(:ucop_borrow_request_form).permit!
   rescue ActionController::ParameterMissing
     {}
@@ -29,8 +29,8 @@ class UcopBorrowRequestFormsController < ApplicationController
   def init_form!
     @form = UcopBorrowRequestForm.new
 
-    if not borrow_request_params.empty?
-      @form.attributes = borrow_request_params
+    if not form_params.empty?
+      @form.attributes = form_params
       @form.validate
     end
   end
