@@ -41,4 +41,11 @@ class ScanRequestFormsControllerTest < ActionDispatch::IntegrationTest
       assert_response :forbidden
     end
   end
+
+  def test_questions_link_goes_to_prntscan_email_list
+    with_login(:ucb_scholar) do
+      get new_scan_request_form_path
+      assert_select('.page-footer .support-email[href=?]', 'mailto:prntscan@lists.berkeley.edu')
+    end
+  end
 end

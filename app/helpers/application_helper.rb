@@ -10,6 +10,10 @@ module ApplicationHelper
     end
   end
 
+  def questions_link
+    mail_to @support_email, 'Questions?', class: 'support-email', tabindex: 5
+  end
+
   def login_link
     if authenticated?
       link_to 'Logout', destroy_user_session_path, class: "nav-link"

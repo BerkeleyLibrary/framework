@@ -67,4 +67,8 @@ class ScanRequestFormsController < ApplicationController
   rescue ActionController::ParameterMissing
     {}
   end
+
+  def set_support_email
+    @support_email = 'prntscan@lists.berkeley.edu'
+  end
 end

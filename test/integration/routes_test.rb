@@ -16,13 +16,12 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_redirected_to "/sign_in"
   end
 
-  def test_ucop_form_page
-    get "/forms/ucop-borrowing-card?foo=bar"
-    assert_redirected_to "/forms/ucop-borrowing-card/new?foo=bar"
+  def test_ucop_borrow_request_is_routeable
+    get "/forms/ucop-borrowing-card"
+    assert_redirected_to "/forms/ucop-borrowing-card/new"
     follow_redirect!
 
     assert_response :ok
-    assert_select "h1", 'Access to UC Berkeley Library Resources for Select UCOP Staff'
   end
 
   def test_redirect_home_on_logout
