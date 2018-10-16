@@ -14,6 +14,13 @@ class UcopBorrowRequestFormsControllerTest < ActionDispatch::IntegrationTest
 
   def test_questions_link_goes_to_privdesk_email
     get new_ucop_borrow_request_form_path
-    assert_select('.page-footer .support-email[href=?]', 'mailto:privdesk@library.berkeley.edu')
+    assert_select '.page-footer .support-email[href=?]',
+      'mailto:privdesk@library.berkeley.edu'
+  end
+
+  def test_navbar_doesnt_contain_login_link
+    get new_ucop_borrow_request_form_path
+    assert_select '.navbar', {count: 0, text: /Login/i},
+      '... UCOP form should not contain a Login link'
   end
 end
