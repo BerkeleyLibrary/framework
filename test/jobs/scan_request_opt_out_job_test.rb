@@ -4,9 +4,6 @@ class ScanRequestOptOutJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
   setup do
-    # TODO: This should probably be configurable.
-    @admin_email = 'admin@totally-fake.com'
-
     # Dummy employee data.
     @patron = { email: 'some-patron@totally-fake.com',
                 id: '011822839',
@@ -22,8 +19,8 @@ class ScanRequestOptOutJobTest < ActiveJob::TestCase
 
     assert_equal 'alt-media scanning service opt-out', staff_email.subject
     assert_nil staff_email.to
-    assert_includes staff_email.cc, 'admin@totally-fake.com'
-    assert_includes staff_email.cc, 'confirm@totally-fake.com'
+    assert_includes staff_email.cc, 'prntscan@lists.berkeley.edu'
+    assert_includes staff_email.cc, 'baker@library.berkeley.edu'
     assert_nil staff_email.bcc
 
     assert_equal 'alt-media scanning service opt-out', patron_email.subject

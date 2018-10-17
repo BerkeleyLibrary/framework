@@ -1,0 +1,22 @@
+---
+
+secrets:
+  RECAPTCHA_SECRET_KEY: { external: { name: RECAPTCHA_LIB_BERKELEY_EDU_SECRET_KEY } }
+  RECAPTCHA_SITE_KEY:   { external: { name: RECAPTCHA_LIB_BERKELEY_EDU_SITE_KEY } }
+
+services:
+  rails:
+    environment:
+      RAILS_ENV: production
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-2ef73dc0
+
+  updater:
+    environment:
+      RAILS_ENV: production
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-2ef73dc0
+
+version: "3.5"
+
+volumes:
+  public:
+    driver: netapp

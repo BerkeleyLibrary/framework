@@ -1,0 +1,19 @@
+---
+
+networks:
+  default:
+    external:
+      name: lb_default
+
+services:
+  rails:
+    environment:
+      RAILS_ENV: staging
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
+
+  updater:
+    environment:
+      RAILS_ENV: staging
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
+
+version: "3.5"

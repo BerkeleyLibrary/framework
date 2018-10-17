@@ -5,15 +5,11 @@ Devise.setup do |config|
   config.expire_all_remember_me_on_sign_out = true
   config.sign_out_via = :get
 
-  calnet_url = ENV.fetch('CALNET_URL') {
-    Rails.env.production? ? 'auth.berkeley.edu' : 'auth-test.berkeley.edu'
-  }
-
   config.omniauth :cas,
     name: :calnet,
-    host: calnet_url,
+    host: "auth#{'-test' unless Rails.env.production?}.berkeley.edu",
     login_url: '/cas/login',
     service_validate_url: '/cas/p3/serviceValidate'
 
-  OmniAuth.config.logger = Rails.logger if Rails.env.development?
+  OmniAuth.config.logger = Rails.logger
 end

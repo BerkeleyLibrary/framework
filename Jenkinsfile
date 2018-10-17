@@ -6,9 +6,9 @@ pipeline {
   }
 
   environment {
-    COMPOSE_FILE         = "docker-compose.ci.yml"
+    COMPOSE_FILE = "docker-compose.yml:docker-compose.ci.yml"
     COMPOSE_PROJECT_NAME = "${GIT_COMMIT.take(8)}"
-    DOCKER_REGISTRY      = credentials("0A792AEB-FA23-48AC-A824-5FF9066E6CA9")
+    DOCKER_REGISTRY = credentials("0A792AEB-FA23-48AC-A824-5FF9066E6CA9")
   }
 
   stages {
@@ -21,34 +21,29 @@ pipeline {
 
     stage("Run") {
       steps {
-        sh "docker-compose up -d"
-
-        retry(5) {
-          sh "docker-compose run --rm --entrypoint=setup rails"
-          sleep 5
-        }
+        sh "docker-compose up -d --scale updater=0"
+        retry(5) { sh "docker-compose run --rm updater" }
       }
     }
 
     stage("Test") {
-      steps {
-        parallel(
-          "Audit": {
-            retry(5) {
-              sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails bundle:audit'
-            }
-          },
-          "Brakeman": {
-            retry(5) {
-              sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails brakeman'
-            }
-          },
-          "Minitest": {
-            retry(5) {
-              sh 'docker-compose run --rm --name `uuidgen` -e RAILS_ENV=test rails test'
-            }
-          },
-        )
+      parallel {
+        stage('Security') {
+          steps {
+            sh 'docker-compose run --rm --name `uuidgen` rails brakeman'
+            sh 'docker-compose run --rm --name `uuidgen` rails bundle:audit'
+          }
+        }
+        stage('Unit') {
+          steps {
+            sh 'docker-compose run --rm --name `uuidgen` rails test'
+          }
+        }
+        stage('System') {
+          steps {
+            sh "docker-compose exec -T rails wget --spider http://localhost:3000/home"
+          }
+        }
       }
     }
 
@@ -74,23 +69,44 @@ pipeline {
       when {
         branch "master"
       }
-      environment {
-        DOCKER_HOST = 'tcp://vm244.lib.berkeley.edu:2376'
-        DOCKER_TLS_VERIFY = '1'
-      }
-      steps {
-        script {
-          withCredentials([
-            dockerCert(
-              credentialsId: '5f3bdd53-05c4-4575-a438-7fe979425bb9',
-              variable: 'DOCKER_CERT_PATH',
-            )]
-          ) {
-            sh "bin/docker-deploy docker-compose.prod.yml"
-
-            retry(5) {
-              sh "curl --fail -q https://altmedia.lib.berkeley.edu/"
-              sleep 4
+      stages {
+        stage('Staging') {
+          environment {
+            COMPOSE_FILE = "docker-compose.yml:docker-compose.staging.yml"
+            DOCKER_HOST = 'tcp://vm242.lib.berkeley.edu:2376'
+            DOCKER_TLS_VERIFY = '1'
+          }
+          steps {
+            script {
+              withCredentials([
+                dockerCert(
+                  credentialsId: 'b4a13a4f-8e28-4f1c-b13d-d02d899fbfd8',
+                  variable: 'DOCKER_CERT_PATH',
+                )]
+              ) {
+                sh "docker-compose config > tmp/staging-stack.yml"
+                sh "bin/docker-deploy tmp/staging-stack.yml altmedia"
+              }
+            }
+          }
+        }
+        stage('Production') {
+          environment {
+            COMPOSE_FILE = "docker-compose.yml:docker-compose.production.yml"
+            DOCKER_HOST = 'tcp://vm244.lib.berkeley.edu:2376'
+            DOCKER_TLS_VERIFY = '1'
+          }
+          steps {
+            script {
+              withCredentials([
+                dockerCert(
+                  credentialsId: '5f3bdd53-05c4-4575-a438-7fe979425bb9',
+                  variable: 'DOCKER_CERT_PATH',
+                )]
+              ) {
+                sh "docker-compose config > tmp/production-stack.yml"
+                sh "bin/docker-deploy tmp/production-stack.yml altmedia"
+              }
             }
           }
         }

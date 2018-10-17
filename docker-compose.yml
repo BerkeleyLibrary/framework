@@ -1,31 +1,73 @@
 ---
 
-networks:
-  default: {}
+secrets:
+  MAIL_PASSWORD:        { external: { name: MAIL_LIB_NOREPLY_PASSWORD } }
+  PRIVATE_KEY:          { external: { name: ALTMEDIA_PRIVATE_KEY } }
+  RECAPTCHA_SECRET_KEY: { external: { name: RECAPTCHA_UCBLIB_ORG_SECRET_KEY } }
+  RECAPTCHA_SITE_KEY:   { external: { name: RECAPTCHA_UCBLIB_ORG_SITE_KEY } }
+  SECRET_KEY_BASE:      { external: { name: ALTMEDIA_SECRET_KEY_BASE } }
 
 services:
-
-  nginx:
-    build: nginx
-    depends_on:
-      - rails
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-nginx:${DOCKER_SERVICE_NGINX_TAG:-latest}
-    volumes:
-      - ./public:/usr/share/nginx/html:ro
-
-  rails:
-    build:
-      context: .
-      target: "${DOCKER_SERVICE_RAILS_TARGET:-development}"
+  rails: &services-rails
+    build: .
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_SERVICE_RAILS_TAG:-latest}
-    ports:
-      - 3000:3000
-    volumes:
-      - ./:/opt/app:delegated
-      - bundle_cache:/usr/local/bundle/cache:delegated
 
-version: "3.4"
+    #
+    deploy:
+      labels:
+        traefik.backend: altmedia_rails
+        traefik.docker.network: lb_default
+        traefik.enable: "true"
+        traefik.frontend.rule: Host:altmedia.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
+        traefik.port: "3000"
+      placement:
+        constraints:
+          - node.labels.patronapi == allowed
+      update_config:
+        delay: 10s
+        failure_action: rollback
+        order: start-first
+
+    labels:
+      traefik.backend: altmedia_rails
+      traefik.docker.network: lb_default
+      traefik.enable: "true"
+      traefik.frontend.rule: Host:altmedia.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
+      traefik.port: "3000"
+
+    # Expose on a randomly available port on the host.
+    ports:
+      - 3000
+
+    # Tells docker-compose to always try to restart this.
+    restart: always
+
+    # Mount all available secrets.
+    secrets:
+      - {source: MAIL_PASSWORD}
+      - {source: PRIVATE_KEY, target: /home/altmedia/.ssh/id_rsa}
+      - {source: RECAPTCHA_SECRET_KEY}
+      - {source: RECAPTCHA_SITE_KEY}
+      - {source: SECRET_KEY_BASE}
+
+    # Mount the public directory.
+    volumes:
+      - public:/opt/app/public
+
+  updater:
+    <<: *services-rails
+    command:
+      - assets:precompile
+    deploy:
+      labels:
+        traefik.enable: "false"
+      restart_policy:
+        condition: none
+    labels:
+      traefik.enable: "false"
+    restart: "no"
+
+version: "3.5"
 
 volumes:
-  bundle_cache: {}
   public: {}

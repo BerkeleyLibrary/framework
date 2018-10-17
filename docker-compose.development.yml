@@ -1,0 +1,29 @@
+---
+
+secrets:
+  MAIL_PASSWORD:        { file: secrets/MAIL_PASSWORD }
+  PRIVATE_KEY:          { file: secrets/PRIVATE_KEY }
+  RECAPTCHA_SECRET_KEY: { file: secrets/RECAPTCHA_SECRET_KEY }
+  RECAPTCHA_SITE_KEY:   { file: secrets/RECAPTCHA_SITE_KEY }
+  SECRET_KEY_BASE:      { file: secrets/SECRET_KEY_BASE }
+
+services:
+  rails:
+    build:
+      target: development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/opt/app:delegated
+      - ./public:/opt/app/public:delegated # clobber main public volume
+      - ./vendor/bundle/cache:/usr/local/bundle/cache:delegated
+
+  updater:
+    build:
+      target: development
+    volumes:
+      - ./:/opt/app:delegated
+      - ./public:/opt/app/public:delegated # clobber main public volume
+      - ./vendor/bundle/cache:/usr/local/bundle/cache:delegated
+
+version: "3.5"

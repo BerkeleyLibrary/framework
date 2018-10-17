@@ -2,18 +2,21 @@
 
 function stack_deploy {
   compose_file="${1:?You must provide a compose configuration file}"
+  stack_name="${2:-altmedia}"
 
   # These are set by Jenkins -- see the Jenkinsfile
   registry_host="${DOCKER_REGISTRY_HOST:-containers.lib.berkeley.edu}"
   registry_pass="${DOCKER_REGISTRY_PSW:?You must provide a registry password}"
   registry_user="${DOCKER_REGISTRY_USR:?You must provide a registry user}"
 
-  docker login -u $registry_user -p $registry_pass $registry_host
+  # Logn to the registry
+  docker login -u "$registry_user" -p "$registry_pass" "$registry_host"
 
+  # Deploy the stack
   docker stack deploy \
     --compose-file "$compose_file" \
     --with-registry-auth \
-    altmedia
+    "$stack_name"
 }
 
 stack_deploy "$@"

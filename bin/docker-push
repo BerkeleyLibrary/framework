@@ -9,11 +9,15 @@ function tag_and_push {
   registry_user="${DOCKER_REGISTRY_USR:?You must provide a registry user}"
 
   (
-    export DOCKER_SERVICE_NGINX_TAG="$img_tag"
     export DOCKER_SERVICE_RAILS_TAG="$img_tag"
 
+    # Login to the registry
     docker login -u $registry_user -p $registry_pass $registry_host
+
+    # Rebuild images to apply new tags
     docker-compose build
+
+    # Push newly-tagged images to the registry
     docker-compose push
   )
 }
