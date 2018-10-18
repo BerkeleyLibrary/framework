@@ -47,66 +47,53 @@ pipeline {
       }
     }
 
-    stage("Push") {
-      when {
-        branch "master"
-      }
-      stages {
-        stage("Tag: latest") {
-          steps {
-            sh "bin/docker-push latest"
-          }
-        }
-        stage("Tag: git-hash") {
-          steps {
-            sh "bin/docker-push 'git-${GIT_COMMIT.take(8)}'"
-          }
-        }
-      }
-    }
-
     stage("Deploy") {
       when {
         branch "master"
       }
+
       stages {
-        stage('Staging') {
+        stage("Push Images") {
+          steps {
+            sh "bin/docker-push latest"
+            sh "bin/docker-push 'git-${GIT_COMMIT.take(8)}'"
+          }
+        }
+
+        stage('Deploy Staging') {
           environment {
             COMPOSE_FILE = "docker-compose.yml:docker-compose.staging.yml"
             DOCKER_HOST = 'tcp://vm242.lib.berkeley.edu:2376'
             DOCKER_TLS_VERIFY = '1'
           }
           steps {
-            script {
-              withCredentials([
-                dockerCert(
-                  credentialsId: 'b4a13a4f-8e28-4f1c-b13d-d02d899fbfd8',
-                  variable: 'DOCKER_CERT_PATH',
-                )]
-              ) {
-                sh "docker-compose config > tmp/staging-stack.yml"
-                sh "bin/docker-deploy tmp/staging-stack.yml altmedia"
-              }
+            withCredentials([
+              dockerCert(
+                credentialsId: 'b4a13a4f-8e28-4f1c-b13d-d02d899fbfd8',
+                variable: 'DOCKER_CERT_PATH',
+              ),
+            ]) {
+              sh "docker-compose config > tmp/staging-stack.yml"
+              sh "bin/docker-deploy tmp/staging-stack.yml altmedia"
             }
           }
         }
-        stage('Production') {
+
+        stage('Deploy Production') {
           environment {
             COMPOSE_FILE = "docker-compose.yml:docker-compose.production.yml"
             DOCKER_HOST = 'tcp://vm244.lib.berkeley.edu:2376'
             DOCKER_TLS_VERIFY = '1'
           }
           steps {
-            script {
-              withCredentials([
-                dockerCert(
-                  credentialsId: '5f3bdd53-05c4-4575-a438-7fe979425bb9',
-                  variable: 'DOCKER_CERT_PATH',
-                )]
-              ) {
-                sh "docker-compose config > tmp/production-stack.yml"
-                sh "bin/docker-deploy tmp/production-stack.yml altmedia"
-              }
+            withCredentials([
+              dockerCert(
+                credentialsId: '5f3bdd53-05c4-4575-a438-7fe979425bb9',
+                variable: 'DOCKER_CERT_PATH',
+              ),
+            ]) {
+              sh "docker-compose config > tmp/production-stack.yml"
+              sh "bin/docker-deploy tmp/production-stack.yml altmedia"
             }
           }
         }
