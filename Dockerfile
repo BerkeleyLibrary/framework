@@ -2,7 +2,7 @@
 # Target: base
 #
 
-FROM ruby:2.5-alpine AS base
+FROM ruby:2.5.1-alpine AS base
 
 # Create the application user/group and installation directory
 RUN addgroup -S -g 40035 altmedia && \
