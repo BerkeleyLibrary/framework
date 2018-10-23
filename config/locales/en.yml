@@ -44,7 +44,7 @@ en:
         employee_email: Your Email Address
         employee_id: Your UCOP Employee ID number
         employee_name: Your First, Middle (if any) and Last Name
-        employee_personal_email: Your Personal Email Address
+        employee_personal_email: Your Preferred Email Address
         employee_phone: Your Phone Number
         employee_preferred_name: Your Preferred Name (if different from legal name)
       models:
