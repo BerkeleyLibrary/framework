@@ -21,6 +21,8 @@ class Patron
       return new_from_dump(id, open(patron_url, {
         ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
       }).read)
+    rescue OpenURI::HTTPError => e
+      raise Framework::Errors::PatronApiError
     end
 
     def new_from_dump(id, dumpstr)

@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
-  before_action :set_support_email
+  include ErrorHandling
 
+  before_action :set_support_email
   helper_method :authenticated?
 
   protect_from_forgery with: :exception
@@ -10,11 +11,14 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticated?
-    not session[:user].nil? and not session[:user].empty?
+    not session[:user].blank?
   end
 
   def authenticate!
-    redirect_to new_user_session_path unless authenticated?
+    if not authenticated?
+      raise Framework::Errors::NotAuthenticatedError,
+        "Endpoint #{controller_name}/#{action_name} requires authentication"
+    end
   end
 
   def redirect_with_params(opts={})
