@@ -29,6 +29,18 @@ docker-compose run --rm -e RAILS_ENV=test --entrypoint=ash rails
 
 Then run `rails test`, or whatever you want, just as you normally would.
 
+### Integration/Controller Testing
+
+If you're having trouble with an `assert_select` or similar assertion, try debugging the raw response body:
+
+```ruby
+get '/some-page'
+puts @response.body
+assert_select 'problematic-assertion'
+```
+
+(When you call get/post/etc. methods, Rails' test case updates its copy of `@response`.)
+
 ## Deploying
 
 Every push to the master branch triggers staging and production deploys. Those environments are defined in three configuration files:
