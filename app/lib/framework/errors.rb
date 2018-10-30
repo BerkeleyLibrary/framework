@@ -8,5 +8,8 @@ module Framework
 
     # Raised when an error occurs contacting the Patron API.
     class PatronApiError < FrameworkError; end
+
+    # Raised if someone attempts to authenticate with an invalid provider.
+    class InvalidAuthProviderError < FrameworkError; end
   end
 end

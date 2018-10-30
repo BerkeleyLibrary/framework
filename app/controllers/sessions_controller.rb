@@ -5,11 +5,12 @@ class SessionsController < ApplicationController
   end
 
   def callback
-    @user = User.new(
-      display_name: auth_params["extra"]['displayName'],
-      employee_id: auth_params["extra"]['employeeNumber'],
-      uid: auth_params["uid"],
-    )
+    logger.debug({
+      message: "Received omniauth callback",
+      omniauth: auth_params,
+    }.to_json)
+
+    @user = User.from_omniauth(auth_params)
 
     sign_in @user
 
