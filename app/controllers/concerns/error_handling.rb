@@ -15,7 +15,7 @@ module ErrorHandling
 
     rescue_from Framework::Errors::NotAuthenticatedError do |error|
       log_error(error)
-      redirect_to new_user_session_path
+      redirect_to login_path
     end
 
     rescue_from Framework::Errors::PatronApiError do |error|

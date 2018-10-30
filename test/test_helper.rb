@@ -40,7 +40,7 @@ end
 
 module OmniAuthHelper
   def logout
-    get '/sign_out'
+    get '/logout'
     OmniAuth.config.mock_auth[:calnet] = nil
 
     follow_redirect!
@@ -53,12 +53,12 @@ module OmniAuthHelper
     OmniAuth.config.mock_auth[:calnet] = mock_hash
     mocked_calnet = OmniAuth.config.mock_auth[:calnet]
 
-    get user_calnet_omniauth_authorize_path
+    get login_path
     assert_response :redirect
 
     Rails.application.env_config["omniauth.auth"] = mocked_calnet
-    get user_calnet_omniauth_callback_path
-    assert_redirected_to new_scan_request_form_path
+    get omniauth_callback_path(:calnet)
+    assert_redirected_to home_path
 
     begin
       yield

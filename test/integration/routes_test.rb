@@ -13,7 +13,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
 
   def test_altmedia_requires_sign_in
     get "/forms/altmedia"
-    assert_redirected_to "/sign_in"
+    assert_redirected_to "/login"
   end
 
   def test_ucop_borrow_request_is_routeable
@@ -25,7 +25,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
   end
 
   def test_redirect_home_on_logout
-    get '/sign_out'
+    get '/logout'
     assert_redirected_to controller: :home
     follow_redirect!
 
