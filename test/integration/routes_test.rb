@@ -13,7 +13,7 @@ class RoutesTest < ActionDispatch::IntegrationTest
 
   def test_altmedia_requires_sign_in
     get "/forms/altmedia"
-    assert_redirected_to "/login"
+    assert_redirected_to login_path(url: '/forms/altmedia')
   end
 
   def test_ucop_borrow_request_is_routeable

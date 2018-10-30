@@ -11,7 +11,7 @@ class ScanRequestFormsControllerTest < ActionDispatch::IntegrationTest
 
   def test_unauthenticated_users_must_login
     get new_scan_request_form_path
-    assert_redirected_to login_path
+    assert_redirected_to login_path(url: new_scan_request_form_path)
   end
 
   def test_ucb_faculty_are_allowed

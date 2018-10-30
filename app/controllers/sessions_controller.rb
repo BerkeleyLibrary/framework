@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   def new
-    redirect_to "/auth/calnet"
+    redirect_args = { origin: params[:url] || home_path }.to_query
+    redirect_to "/auth/calnet?#{redirect_args}"
   end
 
   def callback
@@ -12,7 +13,7 @@ class SessionsController < ApplicationController
 
     sign_in @user
 
-    redirect_to request.env['omniauth.origin'] || home_path
+    redirect_to params[:url] || request.env['omniauth.origin'] || home_path
   end
 
   def destroy
