@@ -18,7 +18,7 @@ services:
         traefik.backend: altmedia_rails
         traefik.docker.network: lb_default
         traefik.enable: "true"
-        traefik.frontend.rule: Host:framework.ucblib.org,Host:altmedia.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
+        traefik.frontend.rule: Host:framework.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
         traefik.port: "3000"
       placement:
         constraints:
@@ -32,7 +32,7 @@ services:
       traefik.backend: altmedia_rails
       traefik.docker.network: lb_default
       traefik.enable: "true"
-      traefik.frontend.rule: Host:framework.ucblib.org,Host:altmedia.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
+      traefik.frontend.rule: Host:framework.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
       traefik.port: "3000"
 
     # Expose on a randomly available port on the host.
