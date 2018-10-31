@@ -67,7 +67,7 @@ USER altmedia
 
 # Install gems.
 COPY --chown=altmedia Gemfile* ./
-RUN bundle install --jobs=$(nproc) --path=/usr/local/bundle
+RUN bundle install --jobs=$(nproc) --deployment --path=/usr/local/bundle
 
 # Copy the rest of the codebase.
 COPY --chown=altmedia . .
