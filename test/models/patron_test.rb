@@ -71,7 +71,7 @@ class PatronTest < ActiveSupport::TestCase
   def test_adding_a_note
     patron = Patron.new(id: '123')
 
-    assert_raises(Net::SSH::AuthenticationFailed) { patron.add_note('hello') }
+    assert_raises { patron.add_note('hello') }
 
     with_stubbed_ssh(:succeeded) do |ssh|
       patron.add_note('hello')
