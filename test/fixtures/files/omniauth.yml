@@ -2,40 +2,44 @@
 
 ucb_faculty:
   provider: calnet
-  uid: "123545"
+  uid: "tony"
   info:
     name: "Prof. Emeritus"
     email: "tony@stark.com"
   extra:
     displayName: Prof. Emeritus
     employeeNumber: "12345678"
+    uid: "123545"
 
 ucb_blocked_faculty:
   provider: calnet
-  uid: "123545"
+  uid: "tony"
   info:
     name: Prof. Emeritus
     email: tony@stark.com
   extra:
     displayName: Prof. Emeritus
     employeeNumber: "87654321"
+    uid: "123545"
 
 ucb_scholar:
   provider: calnet
-  uid: "123545"
+  uid: "tony"
   info:
     name: Prof. Emeritus
     email: tony@stark.com
   extra:
     displayName: Prof. Emeritus
     employeeNumber: "87651234"
+    uid: "123545"
 
 ucb_grad_student:
   provider: calnet
-  uid: "00000005"
+  uid: "danschmidt5189"
   info:
     name: Dan Schmidt
     email: danschmidt5189@berkeley.edu
   extra:
     displayName: Daniel C. Schmidt
     employeeNumber: "18273645"
+    uid: "00000005"

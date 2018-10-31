@@ -12,17 +12,33 @@ class User
     #   https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549
     def from_omniauth(auth)
       raise Framework::Errors::InvalidAuthProviderError, auth["provider"] \
-        unless auth["provider"] == "calnet"
+        if auth["provider"].to_sym != :calnet
 
       self.new(
+        affiliations: auth["extra"]["berkeleyEduAffiliations"],
+        department_number: auth["extra"]['departmentNumber'],
         display_name: auth["extra"]['displayName'],
+        email: auth["extra"]["berkeleyEduOfficialEmail"],
         employee_id: auth["extra"]['employeeNumber'],
-        uid: auth["uid"],
+        given_name: auth["extra"]['givenName'],
+        student_id: auth["extra"]["berkeleyEduStuID"] || auth["extra"]["berkeleyEduCSID"],
+        surname: auth["extra"]["surname"],
+        uid: auth["extra"]["uid"] || auth["uid"],
       )
     end
 
     def attribute_names
-      [:uid, :display_name, :employee_id]
+      [
+        :affiliations,
+        :department_number,
+        :display_name,
+        :email,
+        :employee_id,
+        :given_name,
+        :student_id,
+        :surname,
+        :uid,
+      ]
     end
   end
 
