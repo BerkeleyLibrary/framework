@@ -1,9 +1,22 @@
+# Handle user sessions and omniauth (CAS) callbacks
+#
+# When a user attempts to access a restricted resource, we redirect them (via
+# an {ErrorHandling} hook) to the #new action. This sets the return url, if
+# it's known, and forwards them on to Calnet for authentication. Calnet
+# returns them (via Omniauth) to the #callback method, which stores their
+# info into the session.
+#
+# The nitty gritty of Calnet authentication is handled mostly by Omniauth.
+#
+# @see https://github.com/omniauth/omniauth
 class SessionsController < ApplicationController
+  # Redirect the user to Calnet for authentication
   def new
     redirect_args = { origin: params[:url] || home_path }.to_query
     redirect_to "/auth/calnet?#{redirect_args}"
   end
 
+  # Generate a new user session using data returned from a valid Calnet login
   def callback
     logger.debug({
       message: "Received omniauth callback",
@@ -17,11 +30,16 @@ class SessionsController < ApplicationController
     redirect_to params[:url] || request.env['omniauth.origin'] || home_path
   end
 
+  # Logout the user by destroying their session
   def destroy
     sign_out
     redirect_to home_path
   end
 
+  # Handle Calnet authentication failures
+  #
+  # Currently, Calnet has no way of triggering this, although it's rumored to
+  # be in development for a future release.
   def failure
     flash[:danger] = t('.forbidden')
     redirect_to home_path

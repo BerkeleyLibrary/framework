@@ -1,4 +1,5 @@
 module Framework
+  # Namespace containing all framework error classes.
   module Errors
     # Base class for all errors in the framework.
     class FrameworkError < StandardError; end

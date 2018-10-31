@@ -8,7 +8,7 @@ class RequestMailer < ActionMailer::Base
     mail(to: borrow_request.department_head_email)
   end
 
-  #--------------------------
+  # Send email describing a failure of a ScanRequest job
   def failure_email(empid, displayname, note)
     @empid = empid
     @displayname = displayname
@@ -17,10 +17,12 @@ class RequestMailer < ActionMailer::Base
     mail(to: admin_to)
   end
 
+  # Send ScanRequest confirmation email to the opted-in user
   def confirmation_email(email)
     mail(to: email)
   end
 
+  # Send ScanRequest confirmation email to the admins
   def confirmation_email_baker(displayname, employee_id)
     @displayname = displayname
     @empid = employee_id

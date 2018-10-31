@@ -1,3 +1,6 @@
+# Allow qualified academic patrons to request scans of documents
+#
+# This is commonly referred to as the "AltMedia" form.
 class ScanRequestForm
   include Submitable
 
