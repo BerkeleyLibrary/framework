@@ -19,44 +19,74 @@ class Patron
     "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote"
   )
 
-  attr_accessor(
-    :affiliation,
-    :blocks,
-    :email,
-    :id,
-    :name,
-    :type,
-  )
+  # The patron's affiliation code (UC Berkeley, Community College, etc.)
+  #
+  # See Patron::Affiliation for a partial list of affiliate codes.
+  #
+  # @return [String]
+  attr_accessor :affiliation
+
+  # The patron's manual blocks, or `nil` if there are none
+  #
+  # @return [String, nil]
+  attr_accessor :blocks
+
+  # The patron's email address on file
+  #
+  # @return [String]
+  attr_accessor :email
+
+  # The patron ID (employee, student, faculty, etc. -- can be a lot of things)
+  #
+  # @return [String]
+  attr_accessor :id
+
+  # The patron's name, usually in the form "LAST,FIRST"
+  #
+  # @return [String]
+  attr_accessor :name
+
+  # The patron's type code (undergraduate, post-doc, faculty, etc.)
+  #
+  # See Patron::Type for a partial list of codes.
+  #
+  # @return [String]
+  attr_accessor :type
 
   class << self
+    # Returns the patron record for a given ID, or nil if it is not found
+    #
+    # @return [Patron, nil]
+    #
+    # @raise [Framework::Errors::PatronApiError] If an error occurs contacting
+    #   the Patron API (commonly due to firewall issues) or if the API returns
+    #   an unknown error message.
     def find(id)
+      # Fetch raw data from the Patron API
       url = URI.join(self.api_base_url, "/PATRONAPI/#{URI.escape(id)}/dump")
       opts = { ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
-      new_from_dump(id, open(url, opts).read)
+      data = parse_dump(open(url, opts).read)
+
+      # Handle errors
+      if data["ERRMSG"].present?
+        return nil if data["ERRMSG"] == "Requested record not found"
+        raise PatronApiError, data["ERRMSG"]
+      end
+
+      # Initialize new patron record object from the parsed data
+      self.new(
+        id: id,
+        affiliation: data['PCODE1[p44]'],
+        blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
+        email: data['EMAIL ADDR[pz]'],
+        name: data['PATRN NAME[pn]'],
+        type: data['P TYPE[p47]'],
+      )
     rescue OpenURI::HTTPError => e
       raise Framework::Errors::PatronApiError
     end
 
-    def new_from_dump(id, dumpstr)
-      data = parse_dump(dumpstr)
-
-      err = data["ERRMSG"]
-
-      if err.nil?
-        return new(
-          id: id,
-          affiliation: data['PCODE1[p44]'],
-          blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
-          email: data['EMAIL ADDR[pz]'],
-          name: data['PATRN NAME[pn]'],
-          type: data['P TYPE[p47]'],
-        )
-      end
-
-      return nil if err == "Requested record not found"
-
-      raise Exception, err
-    end
+    private
 
     def parse_dump(dumpstr)
       data = {}
@@ -76,6 +106,12 @@ class Patron
     end
   end
 
+  # Adds a note to the patron's record
+  #
+  # This uses a super hacky method to add the note: executing an expect script
+  # over ssh.
+  #
+  # @param [String] note the note to add
   def add_note(note)
     Rails.logger.debug "Updating patron record: #{id}"
 
