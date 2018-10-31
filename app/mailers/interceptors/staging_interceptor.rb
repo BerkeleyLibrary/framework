@@ -10,6 +10,10 @@
 # @see https://guides.rubyonrails.org/action_mailer_basics.html#intercepting-emails Rails Guides: Intercepting Emails
 # @see https://support.google.com/mail/answer/29436?hl=en GMail: How to view headers
 class StagingInterceptor
+  # Email address that outgoing emails should be re-routed to
+  # @return [String]
+  class_attribute :to_email, default: 'lib-testmail@lists.berkeley.edu'
+
   class << self
     def delivering_email(mail)
       # Use headers to indicate who we would have emailed. Note that we don't add
@@ -19,7 +23,7 @@ class StagingInterceptor
       mail.header['X-Original-BCC'] = mail.bcc
 
       # Forward solely to the test list
-      mail.to = 'lib-testmail@lists.berkeley.edu'
+      mail.to = self.to_email
       mail.cc = mail.bcc = ''
     end
   end
