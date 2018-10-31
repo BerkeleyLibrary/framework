@@ -5,6 +5,20 @@ require 'shellwords'
 class Patron
   include ActiveModel::Model
 
+  # Base URL for the Patron API.
+  #
+  # @return [URI]
+  class_attribute :api_base_url, default: URI.parse(
+    "https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/"
+  )
+
+  # URL of the expect script used to add notes to patron records
+  #
+  # @return [URI]
+  class_attribute :expect_url, default: URI.parse(
+    "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote"
+  )
+
   attr_accessor(
     :affiliation,
     :blocks,
@@ -16,11 +30,9 @@ class Patron
 
   class << self
     def find(id)
-      base_url = Rails.application.config.altmedia['patron_url']
-      patron_url = URI.join(base_url, "/PATRONAPI/#{URI.escape(id)}/dump")
-      return new_from_dump(id, open(patron_url, {
-        ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,
-      }).read)
+      url = URI.join(self.api_base_url, "/PATRONAPI/#{URI.escape(id)}/dump")
+      opts = { ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
+      new_from_dump(id, open(url, opts).read)
     rescue OpenURI::HTTPError => e
       raise Framework::Errors::PatronApiError
     end
@@ -71,19 +83,13 @@ class Patron
       non_interactive: true,
     }
 
-    res = Net::SSH.start(update_url.host, update_url.user, ssh_opts) do |ssh|
-      command = [update_url.path, note, id].shelljoin
+    res = Net::SSH.start(expect_url.host, expect_url.user, ssh_opts) do |ssh|
+      command = [expect_url.path, note, id].shelljoin
       ssh.exec!(command)
     end
 
     unless res.match('Finished Successfully')
       raise StandardError, "Failed updating patron record for #{patron.id}"
     end
-  end
-
-  private
-
-  def update_url
-    Rails.application.config.altmedia['expect_url']
   end
 end

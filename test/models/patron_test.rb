@@ -9,6 +9,16 @@ class PatronTest < ActiveSupport::TestCase
     VCR.eject_cassette
   end
 
+  def test_configurable_attributes
+    default_api_base_url = URI.parse("https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/")
+    assert_equal Patron.api_base_url, default_api_base_url
+    assert_equal Patron.new.api_base_url, default_api_base_url
+
+    default_expect_url = URI.parse("ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote")
+    assert_equal Patron.expect_url, default_expect_url
+    assert_equal Patron.new.expect_url, default_expect_url
+  end
+
   def test_finding_records_by_id
     {
       "12345678" => {

@@ -17,11 +17,6 @@ module Altscan
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
-    # Load our custom altmedia config file
-    config.altmedia = config_for(:altmedia)
-    config.altmedia['expect_url'] = URI.parse(config.altmedia['expect_url'])
-    config.altmedia['patron_url'] = URI.parse(config.altmedia['patron_url'])
-
     config.active_job.queue_adapter = :async
 
     # NOTE(dcschmidt): By default, Rails wraps fields that contain a validation
