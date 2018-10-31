@@ -17,6 +17,17 @@ module Altscan
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
+    # Load our custom config. This is implicitly consumed in a few remaining
+    # places (e.g. RequestMailer). A good development improvement would be to
+    # inject those configs like we do with the Patron class.
+    config.altmedia = config_for(:altmedia)
+
+    config.after_initialize do
+      # Configure Patron API lookups
+      Patron.api_base_url = URI.parse(config.altmedia['patron_url'])
+      Patron.expect_url = URI.parse(config.altmedia['expect_url'])
+    end
+
     config.active_job.queue_adapter = :async
 
     # NOTE(dcschmidt): By default, Rails wraps fields that contain a validation
