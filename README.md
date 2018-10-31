@@ -41,6 +41,20 @@ assert_select 'problematic-assertion'
 
 (When you call get/post/etc. methods, Rails' test case updates its copy of `@response`.)
 
+## Documentation
+
+Framework uses [yard](https://yardoc.org) for documentation. Annotate classes, modules, and methods with comments and yard automatically generates documentation for you. In development, you can view the documentation via:
+
+```sh
+docker-compose up -d yard
+open http://localhost:8808/
+```
+
+Links:
+
+- [yardoc tags](https://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#Reference_Tags)
+- [cheat sheet](https://gist.github.com/chetan/1827484)
+
 ## Deploying
 
 Every push to the master branch triggers staging and production deploys. Those environments are defined in three configuration files:
