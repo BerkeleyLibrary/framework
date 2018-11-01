@@ -11,7 +11,7 @@ module ApplicationHelper
   end
 
   def questions_link
-    mail_to @support_email, 'Questions?', class: 'support-email', tabindex: 5
+    mail_to support_email, 'Questions?', class: 'support-email', tabindex: 5
   end
 
   def login_link

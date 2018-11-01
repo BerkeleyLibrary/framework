@@ -2,6 +2,8 @@ class ScanRequestFormsController < ApplicationController
   before_action :authenticate!
   before_action :init_form!
 
+  self.support_email = 'prntscan@lists.berkeley.edu'
+
   def index
     redirect_with_params(action: :new)
   end
@@ -66,9 +68,5 @@ class ScanRequestFormsController < ApplicationController
     params.require(:scan_request_form).permit(:opt_in, :patron_name)
   rescue ActionController::ParameterMissing
     {}
-  end
-
-  def set_support_email
-    @support_email = 'prntscan@lists.berkeley.edu'
   end
 end

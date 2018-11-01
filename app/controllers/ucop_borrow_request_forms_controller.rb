@@ -38,5 +38,4 @@ class UcopBorrowRequestFormsController < ApplicationController
   def validate_recaptcha!
     verify_recaptcha!(model: @form)
   end
-
 end
