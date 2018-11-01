@@ -21,7 +21,7 @@ module ErrorHandling
       render "errors/standard_error", status: :internal_server_error
     end
 
-    rescue_from Framework::Errors::NotAuthenticatedError do |error|
+    rescue_from Framework::Errors::UnauthorizedError do |error|
       log_error(error)
       redirect_to login_path(url: request.fullpath)
     end

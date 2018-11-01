@@ -13,11 +13,11 @@ module AuthHandling
   # Require that the current user be authenticated
   #
   # @return [void]
-  # @raise [Framework::Errors::NotAuthenticatedError] If the user is not
+  # @raise [Framework::Errors::UnauthorizedError] If the user is not
   #   authenticated
   def authenticate!
     if not authenticated?
-      raise Framework::Errors::NotAuthenticatedError,
+      raise Framework::Errors::UnauthorizedError,
         "Endpoint #{controller_name}/#{action_name} requires authentication"
     end
   end
