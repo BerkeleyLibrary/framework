@@ -1,6 +1,8 @@
 require Rails.root.join('config/environments/production')
-require Rails.root.join('app/mailers/interceptors/staging_interceptor')
+require Rails.root.join('app/mailers/interceptor/mailing_list_interceptor')
 
 Rails.application.configure do |config|
-  ActionMailer::Base.register_interceptor(StagingInterceptor)
+  # Route emails to a mailing list in staging
+  interceptor = Interceptor::MailingListInterceptor.new
+  ActionMailer::Base.register_interceptor(interceptor)
 end
