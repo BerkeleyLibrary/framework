@@ -11,7 +11,44 @@ VCR.configure do |config|
   config.hook_into :webmock
 end
 
-module ModelHelper
+class ActionDispatch::IntegrationTest
+  # Execute the logout flow
+  # @return [void]
+  def logout
+    get '/logout'
+    OmniAuth.config.mock_auth[:calnet] = nil
+
+    follow_redirect!
+  end
+
+  # Execute the login flow with a test user
+  #
+  # @param [String] id a key in test/fixtures/files/omniauth.yml
+  # @param [Block] block called in the context of the user being logged in
+  # @return [void]
+  def with_login(id, &block)
+    mocks = YAML.load_file(file_fixture('omniauth.yml'))
+    mock_hash = OmniAuth::AuthHash.new(mocks.fetch(id.to_s))
+
+    OmniAuth.config.mock_auth[:calnet] = mock_hash
+    mocked_calnet = OmniAuth.config.mock_auth[:calnet]
+
+    get login_path
+    assert_response :redirect
+
+    Rails.application.env_config["omniauth.auth"] = mocked_calnet
+    get omniauth_callback_path(:calnet)
+    assert_redirected_to home_path
+
+    begin
+      block.call
+    ensure
+      logout
+    end
+  end
+end
+
+class ActiveSupport::TestCase
   # Applies a table of attribute tests to a given object. 'tests' is a hash of
   # attribute_name => [:assertion, *assert_args]. The :assertion is applied to
   # the given arguments and the value of the given attribute.
@@ -36,39 +73,7 @@ module ModelHelper
     assert_nil email.bcc if bcc.nil?
     assert_equal bcc, email.bcc unless bcc.nil?
   end
-end
 
-module OmniAuthHelper
-  def logout
-    get '/logout'
-    OmniAuth.config.mock_auth[:calnet] = nil
-
-    follow_redirect!
-  end
-
-  def with_login(id)
-    mocks = YAML.load_file(file_fixture('omniauth.yml'))
-    mock_hash = OmniAuth::AuthHash.new(mocks.fetch(id.to_s))
-
-    OmniAuth.config.mock_auth[:calnet] = mock_hash
-    mocked_calnet = OmniAuth.config.mock_auth[:calnet]
-
-    get login_path
-    assert_response :redirect
-
-    Rails.application.env_config["omniauth.auth"] = mocked_calnet
-    get omniauth_callback_path(:calnet)
-    assert_redirected_to home_path
-
-    begin
-      yield
-    ensure
-      logout
-    end
-  end
-end
-
-module SshHelper
   # Executes the block in a context in which Net::SSH.start() is stubbed out
   # to return a defined "result" and assert that we've passed the right args.
   def with_stubbed_ssh(result, &block)
@@ -88,13 +93,4 @@ module SshHelper
       Net::SSH.stub :start, stubbed_connection, &block
     end
   end
-end
-
-class ActionDispatch::IntegrationTest
-  include OmniAuthHelper
-end
-
-class ActiveSupport::TestCase
-  include ModelHelper
-  include SshHelper
 end
