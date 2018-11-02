@@ -1,3 +1,6 @@
+# Represents a user in our system
+#
+# This is closely coupled to CalNet's user schema.
 class User
   include ActiveModel::Model
 
@@ -5,11 +8,8 @@ class User
     # Returns a new user object from the given "omniauth.auth" hash. That's a
     # hash of all data returned by the auth provider (in our case, calnet).
     #
-    # For a schema, see:
-    #   https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
-    #
-    # For sample data from Calnet, see:
-    #   https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549
+    # @see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema OmniAuth Schema
+    # @see https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549 Sample Calnet Response
     def from_omniauth(auth)
       raise Framework::Errors::InvalidAuthProviderError, auth["provider"] \
         if auth["provider"].to_sym != :calnet
@@ -26,29 +26,57 @@ class User
         uid: auth["extra"]["uid"] || auth["uid"],
       )
     end
-
-    def attribute_names
-      [
-        :affiliations,
-        :department_number,
-        :display_name,
-        :email,
-        :employee_id,
-        :given_name,
-        :student_id,
-        :surname,
-        :uid,
-      ]
-    end
   end
 
-  attr_accessor *self.attribute_names
+  # @return [String]
+  attr_accessor :affiliations
 
+  # @return [String]
+  attr_accessor :department_number
+
+  # @return [String]
+  attr_accessor :display_name
+
+  # @return [String]
+  attr_accessor :email
+
+  # @return [String]
+  attr_accessor :employee_id
+
+  # @return [String]
+  attr_accessor :given_name
+
+  # @return [String]
+  attr_accessor :student_id
+
+  # @return [String]
+  attr_accessor :surname
+
+  # @return [String]
+  attr_accessor :uid
+
+  # Whether the user was authenticated
+  #
+  # The user object is PORO, and we always want to be able to return it even in
+  # cases where the current (anonymous) user hasn't authenticated. This method
+  # is provided as a convenience to tell if the user's actually been auth'd.
+  #
+  # @return [Boolean]
   def authenticated?
     not uid.nil?
   end
 
-  def patron
-    @patron ||= Patron::Record.find(employee_id)
+  # The user's employee patron record
+  # @return [Patron::Record, nil]
+  def employee_patron_record
+    @employee_patron_record ||= \
+      Patron::Record.find(employee_id) unless employee_id.nil?
+  end
+
+  # The user's student patron record (if they have a student ID)
+  # @return [Patron::Record, nil]
+  def student_patron_record
+    @student_patron_record ||= \
+      Patron::Record.find(student_id) unless student_id.nil?
   end
 end

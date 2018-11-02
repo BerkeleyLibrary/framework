@@ -52,8 +52,8 @@ open http://localhost:8808/
 
 Links:
 
-- [yardoc tags](https://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#Reference_Tags)
-- [cheat sheet](https://gist.github.com/chetan/1827484)
+- [Yardoc Tag Reference](https://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#Reference_Tags)
+- [Yardoc Cheat Sheet](https://gist.github.com/chetan/1827484)
 
 ## Deploying
 
