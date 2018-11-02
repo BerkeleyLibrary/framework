@@ -11,12 +11,12 @@ class PatronTest < ActiveSupport::TestCase
 
   def test_configurable_attributes
     default_api_base_url = URI.parse("https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/")
-    assert_equal Patron.api_base_url, default_api_base_url
-    assert_equal Patron.new.api_base_url, default_api_base_url
+    assert_equal Patron::Record.api_base_url, default_api_base_url
+    assert_equal Patron::Record.new.api_base_url, default_api_base_url
 
     default_expect_url = URI.parse("ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote")
-    assert_equal Patron.expect_url, default_expect_url
-    assert_equal Patron.new.expect_url, default_expect_url
+    assert_equal Patron::Record.expect_url, default_expect_url
+    assert_equal Patron::Record.new.expect_url, default_expect_url
   end
 
   def test_finding_records_by_id
@@ -61,15 +61,15 @@ class PatronTest < ActiveSupport::TestCase
         :name   => [:assert],
         :type   => [:assert_equal, Patron::Type::GRAD_STUDENT],
       },
-    }.each{ |id, attrs| assert_attrs(Patron.find(id), attrs) }
+    }.each{ |id, attrs| assert_attrs(Patron::Record.find(id), attrs) }
   end
 
   def test_not_found_returns_nil
-    assert_nil Patron.find('does not exist')
+    assert_nil Patron::Record.find('does not exist')
   end
 
   def test_adding_a_note
-    patron = Patron.new(id: '123')
+    patron = Patron::Record.new(id: '123')
 
     assert_raises { patron.add_note('hello') }
 

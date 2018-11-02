@@ -24,8 +24,8 @@ module Altscan
 
     config.after_initialize do
       # Configure Patron API lookups
-      Patron.api_base_url = URI.parse(config.altmedia['patron_url'])
-      Patron.expect_url = URI.parse(config.altmedia['expect_url'])
+      Patron::Record.api_base_url = URI.parse(config.altmedia['patron_url'])
+      Patron::Record.expect_url = URI.parse(config.altmedia['expect_url'])
     end
 
     config.active_job.queue_adapter = :async

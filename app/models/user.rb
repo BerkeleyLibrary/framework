@@ -49,6 +49,6 @@ class User
   end
 
   def patron
-    @patron ||= Patron.find(employee_id)
+    @patron ||= Patron::Record.find(employee_id)
   end
 end

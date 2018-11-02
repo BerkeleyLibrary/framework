@@ -4,7 +4,7 @@ class ScanRequestOptInJob < ApplicationJob
   queue_as :default
 
   def perform(patron:)
-    patron = Patron.new(**patron)
+    patron = Patron::Record.new(**patron)
     now = Time.now.strftime('%Y%m%d')
     note = "#{now} library book scan eligible [litscript]"
 
