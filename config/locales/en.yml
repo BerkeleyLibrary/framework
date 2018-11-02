@@ -34,8 +34,8 @@ en:
   activemodel:
     attributes:
       scan_request_form:
-        opt_in_yes: Opt in. I confirm I qualify for this service.
-        opt_in_no: Opt out. I wish to terminate use of this service.
+        opt_in_true: Opt in. I confirm I qualify for this service.
+        opt_in_false: Opt out. I wish to terminate use of this service.
         patron_name: Name
       ucop_borrow_request_form:
         department_head_email: Your UCOP Department Head's Email Address

@@ -1,3 +1,5 @@
+<%= form_for(@form) do |f| %>
+
 <h1>Faculty Alt-Media Scanning</h1>
 
 <p>The Library provides alt-media scanning services for Berkeley faculty and instructors who
@@ -27,17 +29,16 @@ service.  This amendment states:</p>
 
 <hr />
 
-<%= form_for(@form) do |f| %>
   <p style="color:#ee0000">* Required</p>
 
   <div class="form-group">
     <div class="form-check">
-      <%= f.radio_button(:opt_in, 'yes', checked: true) %>
-      <%= f.label(:opt_in_yes) %>
+      <%= f.radio_button(:opt_in, true, checked: true) %>
+      <%= f.label(:opt_in_true) %>
     </div>
     <div class="form-check">
-      <%= f.radio_button(:opt_in, 'no') %>
-      <%= f.label(:opt_in_no) %>
+      <%= f.radio_button(:opt_in, false) %>
+      <%= f.label(:opt_in_false) %>
     </div>
   </div>
 

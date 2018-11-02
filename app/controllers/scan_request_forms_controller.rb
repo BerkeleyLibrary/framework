@@ -46,22 +46,12 @@ class ScanRequestFormsController < ApplicationController
   def init_form!
     logger.info(session[:user])
 
-    @user = User.new(session[:user])
-    @patron = @user.patron
     @form = ScanRequestForm.new(
-      opt_in: 'yes',
-      patron_affiliation: @patron.affiliation,
-      patron_blocks: @patron.blocks,
-      patron_email: @patron.email,
-      patron_employee_id: @patron.id,
-      patron_name: @user.display_name,
-      patron_type: @patron.type,
+      patron: current_user.patron,
+      patron_name: current_user.display_name,
     )
 
-    if not form_params.blank?
-      @form.assign_attributes(form_params)
-      @form.validate
-    end
+    @form.validate unless @form.assign_attributes(form_params).blank?
   end
 
   def form_params

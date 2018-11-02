@@ -3,11 +3,28 @@ require 'test_helper'
 class ScanRequestFormTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  setup do
+    @us_grant = Patron::Record.new(
+      affiliation: Patron::Affiliation::UC_BERKELEY,
+      email: 'winner@civil-war.com',
+      id: '1865',
+      type: Patron::Type::VISITING_SCHOLAR,
+    )
+  end
+
+  def test_basics
+    form = ScanRequestForm.new(patron: @us_grant)
+
+    assert_equal '1865', form.patron_id
+    assert_equal 'winner@civil-war.com', form.patron_email
+    assert_equal Patron::Affiliation::UC_BERKELEY, form.patron_affiliation
+    assert_equal Patron::Type::VISITING_SCHOLAR, form.patron_type
+  end
+
   def test_submit_validates_before_submission
-    form = ScanRequestForm.new(patron_blocks: '!')
+    form = ScanRequestForm.new(patron: Patron::Record.new(blocks: 'some'))
 
     assert_raises(ActiveModel::ValidationError) { form.submit! }
-    assert_includes form.errors, :opt_in
     assert_includes form.errors, :patron_blocks
     assert_includes form.errors, :patron_email
     assert_includes form.errors, :patron_name
@@ -16,14 +33,18 @@ class ScanRequestFormTest < ActiveSupport::TestCase
 
   def test_allows_submissions_by_faculty_and_visiting_scholars
     %w(4 22).each do |type|
-      form = ScanRequestForm.new(patron_type: type)
+      patron = Patron::Record.new(type: type)
+
+      form = ScanRequestForm.new(patron: patron)
       refute form.valid?
       assert_empty form.errors[:patron_type]
     end
   end
 
   def test_disallows_other_patron_types
-    form = ScanRequestForm.new(patron_type: '21')
+    patron = Patron::Record.new(type: '21')
+
+    form = ScanRequestForm.new(patron: patron)
     refute form.valid?
     assert_includes form.errors, :patron_type
   end
@@ -35,7 +56,7 @@ class ScanRequestFormTest < ActiveSupport::TestCase
         # NOTE(dcschmidt): The order actually matters here.
         # See: https://github.com/rails/rails/issues/33847
         patron: {
-          email: 'winner@civil-war',
+          email: 'winner@civil-war.com',
           id: '1865',
           name: "Ulysses S. Grant",
         },
@@ -50,7 +71,7 @@ class ScanRequestFormTest < ActiveSupport::TestCase
         # NOTE(dcschmidt): The order actually matters here.
         # See: https://github.com/rails/rails/issues/33847
         patron: {
-          email: 'winner@civil-war',
+          email: 'winner@civil-war.com',
           id: '1865',
           name: "Ulysses S. Grant",
         },
@@ -58,16 +79,13 @@ class ScanRequestFormTest < ActiveSupport::TestCase
     ) { opt_out! }
   end
 
-private
+  private
 
   def opt_in!
     form = ScanRequestForm.new(
-      opt_in: "yes",
+      opt_in: 'true',
       patron_name: "Ulysses S. Grant",
-      patron_email: 'winner@civil-war',
-      patron_employee_id: '1865',
-      patron_type: Patron::Type::VISITING_SCHOLAR,
-      patron_affiliation: Patron::Affiliation::UC_BERKELEY,
+      patron: @us_grant,
     )
 
     assert form.opted_in?, '... opting in'
@@ -77,12 +95,9 @@ private
 
   def opt_out!
     form = ScanRequestForm.new(
-      opt_in: "no",
+      opt_in: 'false',
       patron_name: "Ulysses S. Grant",
-      patron_email: 'winner@civil-war',
-      patron_employee_id: '1865',
-      patron_type: Patron::Type::VISITING_SCHOLAR,
-      patron_affiliation: Patron::Affiliation::UC_BERKELEY,
+      patron: @us_grant,
     )
 
     refute form.opted_in?, '... opting out'
