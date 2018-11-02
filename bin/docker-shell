@@ -3,6 +3,6 @@
 docker-compose run \
   --entrypoint=ash \
   --rm \
-  --user=root \
-  -e RAILS_ENV=test \
+  --user="${2:-root}" \
+  -e RAILS_ENV="${1:-test}" \
   rails
