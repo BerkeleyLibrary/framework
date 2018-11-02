@@ -1,9 +1,7 @@
 # Allow qualified academic patrons to request scans of documents
 #
 # This is commonly referred to as the "AltMedia" form.
-class ScanRequestForm
-  include Submitable
-
+class ScanRequestForm < Form
   attr_accessor(
     :opt_in,
     :patron_affiliation,
@@ -58,13 +56,11 @@ class ScanRequestForm
     opt_in == 'yes'
   end
 
-protected
+  private
 
   def submit
     opted_in? ? opt_in! : opt_out!
   end
-
-private
 
   def opt_in!
     ScanRequestOptInJob.perform_later(

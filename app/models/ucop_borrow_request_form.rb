@@ -1,6 +1,4 @@
-class UcopBorrowRequestForm
-  include Submitable
-
+class UcopBorrowRequestForm < Form
   attr_accessor(
     :department_head_email,
     :department_head_name,
@@ -37,10 +35,9 @@ class UcopBorrowRequestForm
   validates :employee_name,
     presence: true
 
-protected
+  private
 
   def submit
     RequestMailer.ucop_borrow_request_form_email(self).deliver_now
   end
-
 end
