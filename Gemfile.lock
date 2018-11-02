@@ -228,6 +228,8 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.16)
+    yard-minitest (0.0.1)
+      yard
 
 PLATFORMS
   ruby
@@ -261,6 +263,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   webmock
   yard
+  yard-minitest
 
 RUBY VERSION
    ruby 2.5.1p57

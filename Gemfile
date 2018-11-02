@@ -27,6 +27,7 @@ group :development, :test do
   gem 'webmock'
   gem 'vcr'
   gem 'yard'
+  gem 'yard-minitest'
 end
 
 group :development do
