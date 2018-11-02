@@ -79,6 +79,25 @@ assert_select 'problematic-assertion'
 
 (When you call get/post/etc. methods, Rails' test case updates its copy of `@response`.)
 
+### Auth(n|z)
+
+TODO
+
+### Patron Updates
+
+TODO
+
+## Logging
+
+In general, logs are outputted directly to STDOUT/STDERR, conforming to the expectations of modern service managers like docker and systemd. To view the development logs, run:
+
+```sh
+docker-compose logs -f rails # tail the logs
+docker-compose logs rails | less # pipe all of the logs to less
+```
+
+Things are different when testing, however, because testing frameworks use STDOUT/STDERR to display test results. Thus, the test logs can be found at `log/test.log`.
+
 ## CI / Deployment
 
 Every commit is built, tested, and optionally deployed by [Jenkins](https://jenkins.lib.berkeley.edu/) using the {file:Jenkinsfile} configuration in this repository. As of writing, this file instructs Jenkins to:
@@ -91,15 +110,19 @@ Every commit is built, tested, and optionally deployed by [Jenkins](https://jenk
 
 If any step fails, the build is aborted, further steps are cancelled, and the commit status is marked with a red "x" in the GitLab UI. If the overall build succeeds, your commit is marked with a green checkmark in the GitLab UI.
 
-### Staging
-
-Staging is pinned to the ":latest" version of the application. To deploy it, you need only push to the master branch and wait for GitLab to notify the #altmedia slack channel that the pipeline has succeeded.
-
 ---
 
 > **Failed Pipelines** If the pipeline fails, then most likely there was a failed test. This is a good thing — the tests (partially) protect you from pushing bad code. Go view the Jenkins Console output to see what happened.
 
 ---
+
+### Staging
+
+Staging is pinned to the ":latest" version of the application. To deploy it:
+
+- Push to the master branch.
+- Wait for GitLab to notify the #altmedia slack channel that the pipeline has succeeded, or visit the [job page](https://jenkins.lib.berkeley.edu/job/altmedia/) to track progress.
+- Open up the site and test: https://framework.ucblib.org/home.
 
 ### Production
 
