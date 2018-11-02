@@ -16,12 +16,12 @@ class ApplicationController < ActionController::Base
     render "errors/standard_error", status: :internal_server_error
   end
 
-  rescue_from Framework::Errors::UnauthorizedError do |error|
+  rescue_from Error::UnauthorizedError do |error|
     log_error(error)
     redirect_to login_path(url: request.fullpath)
   end
 
-  rescue_from Framework::Errors::PatronApiError do |error|
+  rescue_from Error::PatronApiError do |error|
     log_error(error)
     render "errors/patron_api_error", status: :service_unavailable
   end
@@ -31,11 +31,11 @@ class ApplicationController < ActionController::Base
   # Require that the current user be authenticated
   #
   # @return [void]
-  # @raise [Framework::Errors::UnauthorizedError] If the user is not
+  # @raise [Error::UnauthorizedError] If the user is not
   #   authenticated
   def authenticate!
     if not authenticated?
-      raise Framework::Errors::UnauthorizedError,
+      raise Error::UnauthorizedError,
         "Endpoint #{controller_name}/#{action_name} requires authentication"
     end
   end

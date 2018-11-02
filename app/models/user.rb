@@ -11,7 +11,7 @@ class User
     # @see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema OmniAuth Schema
     # @see https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549 Sample Calnet Response
     def from_omniauth(auth)
-      raise Framework::Errors::InvalidAuthProviderError, auth["provider"] \
+      raise Error::InvalidAuthProviderError, auth["provider"] \
         if auth["provider"].to_sym != :calnet
 
       self.new(

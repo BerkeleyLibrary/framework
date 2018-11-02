@@ -62,7 +62,7 @@ module Patron
       #
       # @return [Patron, nil]
       #
-      # @raise [Framework::Errors::PatronApiError] If an error occurs contacting
+      # @raise [Error::PatronApiError] If an error occurs contacting
       #   the Patron API (commonly due to firewall issues) or if the API returns
       #   an unknown error message.
       def find(id)
@@ -87,7 +87,7 @@ module Patron
           type: data['P TYPE[p47]'],
         )
       rescue OpenURI::HTTPError => e
-        raise Framework::Errors::PatronApiError
+        raise Error::PatronApiError
       end
 
       private
