@@ -1,9 +1,6 @@
-# Read Docker secrets into the environment
-Dir['/run/secrets/*'].each do |filepath|
-  secret = File.read(filepath)
-  secret_name = File.basename(filepath)
-  ENV[secret_name] = secret unless secret.empty?
-end
+# Read Docker secrets into the environment. Must be before 'rails/all'.
+require_relative '../lib/docker'
+Docker::Secret.setup_environment!
 
 require_relative 'boot'
 require 'rails/all'
@@ -22,17 +19,19 @@ module Framework
     # inject those configs like we do with the Patron class.
     config.altmedia = config_for(:altmedia)
 
-    config.after_initialize do
-      # Configure Patron API lookups
+    # @todo Switch to a persistent backend store like delayed_job
+    config.active_job.queue_adapter = :async
+
+    # @note By default, Rails wraps fields that contain a validation error with
+    #   a div classed "field_with_errors". This messes up Bootstrap's styling
+    #   for feedback messages, so I've disabled the Rails' default.
+    config.action_view.field_error_proc = Proc.new { |tag, instance| tag }
+
+    # Configure Patron API lookups. Uses before_initialize hook so that
+    # autoloading finds the Patron::Record class.
+    config.before_initialize do
       Patron::Record.api_base_url = URI.parse(config.altmedia['patron_url'])
       Patron::Record.expect_url = URI.parse(config.altmedia['expect_url'])
     end
-
-    config.active_job.queue_adapter = :async
-
-    # NOTE(dcschmidt): By default, Rails wraps fields that contain a validation
-    # error with a div classed "field_with_errors". This messes up Bootstrap's
-    # styling for feedback messages, so I've disabled the Rails' default.
-    config.action_view.field_error_proc = Proc.new { |tag, instance| tag }
   end
 end
