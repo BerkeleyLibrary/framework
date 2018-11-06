@@ -3,7 +3,7 @@
 ## Getting Started
 
 ```sh
-# Scaffold secrets. More may exist -- see docker-compose.dev.yml for details.
+# Scaffold secrets. More may exist -- see docker-compose.development.yml for details.
 touch secrets/{MAIL_PASSWORD,PRIVATE_KEY,SECRET_KEY_BASE}
 touch secrets/{RECAPTCHA_SECRET_KEY,RECAPTCHA_SITE_KEY}
 
