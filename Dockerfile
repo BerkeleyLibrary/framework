@@ -72,11 +72,6 @@ RUN bundle install --jobs=$(nproc) --deployment --path=/usr/local/bundle
 # Copy the rest of the codebase.
 COPY --chown=altmedia . .
 
-# Pre-compile assets. Because the ./public directory is later declared a
-# volume, this only matters the first time the container is run. On subsequent
-# runs you must precompile assets before launching a new version of the image.
-RUN rails assets:precompile assets:clean
-
 # =============================================================================
 # Target: production
 #
