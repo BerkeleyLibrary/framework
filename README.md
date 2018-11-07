@@ -3,10 +3,6 @@
 ## Getting Started
 
 ```sh
-# Scaffold secrets. More may exist -- see docker-compose.development.yml for details.
-touch secrets/{MAIL_PASSWORD,PRIVATE_KEY,SECRET_KEY_BASE}
-touch secrets/{RECAPTCHA_SECRET_KEY,RECAPTCHA_SITE_KEY}
-
 # Build the images
 docker-compose build --pull
 
@@ -17,16 +13,45 @@ docker-compose up -d --scale updater=0
 docker-compose run --rm updater
 ```
 
-Barring a port collision, the app will be up and running at http://localhost:3000/home.
+Barring port collisions (possible, if you're running multiple development stacks), this will spin up two services:
+
+- `rails` (http://localhost:3000/home), the application itself.
+- `yard` (http://localhost:8808/), a documentation server.
 
 ## Documentation
 
-Framework uses [yard](https://yardoc.org) for documentation. Annotate classes, modules, and methods with comments and yard automatically generates documentation for you. In development, you can view the documentation via:
+Use [yard](https://yardoc.org) to document your code. Our built-in Yard server (see above) automatically parses your comments, modules, classes, and methods to generate documentation, which you can view via:
 
 ```sh
 docker-compose up --build -d yard
 open http://localhost:8808/
 ```
+
+Check the existing classes for examples, but in a nutshell:
+
+```rb
+# Foos are like bars but different
+#
+# @see https://some-external-link.com Description of link
+class Foo
+  class << self
+    # Finds a foo by its ID
+    #
+    # Write some more info about your method here. Don't go crazy, though.
+    # Short and sweet is usually more accurate and maintainable than some long
+    # diatribe.
+    #
+    # @return [Foo] the corresponding Foo
+    # @raise [FooNotFoundError] if the Foo does not exist
+    # @todo For some reason this fails if given id="bar", gotta fix that
+    def find(id)
+      # ...
+    end
+  end
+end
+```
+
+See? Just comments. Nothing too fancy. All of RubyDoc is built like this!
 
 Links:
 
@@ -54,9 +79,11 @@ That boots you into a shell inside of the container, where all of your applicati
 ```sh
 rails c # open a rails console
 rails t # run the whole test suite
-rails test:{models,controllers,mailed,…} # run a subset of tests
+rails test:{models,controllers,mailers,…} # run a subset of tests
 ruby -Itest test/path/to/my_test.rb # run a specific test
 ```
+
+Note that when running commands via `rails`, what you're really doing is running something called a rake task. (Get it? "Rake" as in "Make", but for Ruby!) As per usual, the [rails documentation](https://guides.rubyonrails.org/command_line.html#custom-rake-tasks) provides some good info.
 
 ### Sending and Testing Emails
 
@@ -66,6 +93,8 @@ Two critical aspects of email behavior are:
 
 - Unit Testing: If you implement a feature that involves sending emails, make sure to write a test for it. See {ScanRequestOptInJobTest} for an example of how to test emails.
 - QA: The staging environment uses {Interceptor::MailingListInterceptor} to route all outgoing emails to a [mailing list](https://groups.google.com/a/lists.berkeley.edu/forum/#!forum/lib-testmail), allowing you to test the behavior "live", using a real SMTP account, without accidentally emailing people. See that class's documentation for how to determine if it _would have_ emailed the correct people.
+
+In development (the default) and test mode, Framework uses a [`:test` delivery method](https://guides.rubyonrails.org/action_mailer_basics.html#action-mailer-configuration). That means it will only simulate sending emails by logging their delivery and storing them in an in-memory array. In production and staging, we use the `:smtp` delivery method with a [SPA email account](https://git.lib.berkeley.edu/lap/workflow/wikis/CreateSPAwithEmail).
 
 ### Integration/Controller Testing
 

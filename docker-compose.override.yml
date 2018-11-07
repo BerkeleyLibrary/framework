@@ -1,1 +1,34 @@
-docker-compose.development.yml
+---
+
+services:
+  rails:
+    build:
+      target: development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/opt/app:delegated
+      - ./public:/opt/app/public:delegated # clobber main public volume
+      - ./vendor/bundle/cache:/usr/local/bundle/cache:delegated
+
+  updater:
+    build:
+      target: development
+    volumes:
+      - ./:/opt/app:delegated
+      - ./public:/opt/app/public:delegated # clobber main public volume
+      - ./vendor/bundle/cache:/usr/local/bundle/cache:delegated
+
+  yard:
+    build:
+      context: .
+      target: development
+    entrypoint: ['bundle', 'exec', '--', 'yard', 'server', '--reload']
+    ports:
+      - 8808:8808
+    volumes:
+      - ./:/opt/app:delegated
+      - ./public:/opt/app/public:delegated # clobber main public volume
+      - ./vendor/bundle/cache:/usr/local/bundle/cache:delegated
+
+version: "3.5"
