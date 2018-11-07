@@ -3,7 +3,7 @@
 ## Getting Started
 
 ```sh
-# Build the images
+# Build images. This takes ~5m if building from complete scratch, no cache.
 docker-compose build --pull
 
 # Spin up everything except the updater service
@@ -57,6 +57,30 @@ Links:
 
 - [Yardoc Tag Reference](https://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#Reference_Tags)
 - [Yardoc Cheat Sheet](https://gist.github.com/chetan/1827484)
+
+## Dependencies
+
+Framework is a Ruby on Rails application deployed in an Alpine Linux Docker container. That implies two different dependency managers:
+
+- For Ruby/Rails, we use [Bundler](https://bundler.io), whose config files are {https://git.lib.berkeley.edu/lap/altmedia/blob/master/Gemfile Gemfile} (a developer-oriented listing of Ruby dependencies) and {https://git.lib.berkeley.edu/lap/altmedia/blob/master/Gemfile.lock Gemfile.lock} (a machine-oriented listing of _precise_ Ruby dependencies).
+- For Alpine, we use [apk](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management). The {https://git.lib.berkeley.edu/lap/altmedia/blob/master/Dockerfile Dockerfile} shows exactly what apk commands were executed to install our system-level dependencies.
+
+---
+
+> **Why APK?** We need APK because Ruby applications (and Python, Perl, PHP, …) often depend on having underlying C libraries for functionality. For example, Ruby's famous Nokogiri XML parsing library relies on libxml2 to do the actual parsing work, for performance and de-duplication reasons.
+>
+> We use Alpine Linux, specifically, because it's tiny: 5MB to start, versus 100MBs for Ubuntu or CentOS, making it easier to [package, store, and distribute](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#from) our application images.
+
+---
+
+### Adding RubyGems
+
+First update the Gemfile to include your dependency, then shell into the test container to run bundle update:
+
+```sh
+bin/docker-shell
+bundle install --no-deployment
+```
 
 ## Testing
 
@@ -118,14 +142,31 @@ TODO
 
 ## Logging
 
-In general, logs are outputted directly to STDOUT/STDERR, conforming to the expectations of modern service managers like docker and systemd. To view the development logs, run:
+In general, logs are piped directly to STDOUT/STDERR, conforming to [12-Factor App guidelines](https://12factor.net/logs) and the expectations of modern service managers like Docker and Systemd.
+
+In development, use docker-compose to view logs:
 
 ```sh
 docker-compose logs -f rails # tail the logs
 docker-compose logs rails | less # pipe all of the logs to less
 ```
 
-Things are different when testing, however, because testing frameworks use STDOUT/STDERR to display test results. Thus, the test logs can be found at `log/test.log`.
+In testing, things are a bit different. Because the test framework hijacks STDOUT/STDERR to display test results, we must use a traditional logfile:
+
+```sh
+rails test
+tail -f log/test.log # in a separate shell
+```
+
+Staging and production logs are only slightly different from development, and can be accessed either via journald (RHEL7's default logging service) or docker service logs:
+
+```sh
+# Aggregates logs from all nodes
+docker service logs -f altmedia_rails
+
+# Faster to update, but restricted to a single node
+journalctl COM_DOCKER_SWARM_SERVICE_NAME=altmedia_rails -f
+```
 
 ## CI / Deployment
 
