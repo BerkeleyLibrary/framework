@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   get 'home', to: 'home#index'
 
+  resources :campus_networks, path: 'campus-networks'
+
   scope(:forms) do
     resources :scan_request_forms, path: 'altmedia'
     resources :ucop_borrow_request_forms, path: 'ucop-borrowing-card'
