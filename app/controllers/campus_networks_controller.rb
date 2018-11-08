@@ -2,7 +2,7 @@ class CampusNetworksController < ApplicationController
   layout false
 
   def index
-    render content_type: 'text/plain', locals: {
+    render formats: :txt, locals: {
       networks: CampusNetwork.all(organization: org_param),
     }
   end
