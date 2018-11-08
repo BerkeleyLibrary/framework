@@ -3,30 +3,22 @@ class CampusNetworksController < ApplicationController
 
   def index
     render content_type: 'text/plain', locals: {
-      networks: CampusNetwork.all,
-    }
-  end
-
-  def show
-    render :index, content_type: 'text/plain', locals: {
-      networks: CampusNetwork.all.select do |network|
-        network.organization == network_params[:id].to_sym
-      end,
+      networks: CampusNetwork.all(organization: org_param),
     }
   end
 
   private
 
+  def org_param
+    params.permit(:organization)[:organization]
+  end
+
   def page_header
-    case network_params[:id]
-      when "ucb" then 'UCB-only IP Addresses'
-      when "lbl" then 'LBL-only IP Addresses'
-                 else 'UCB + LBL IP Addresses'
+    if org_param.blank?
+      "UCB + LBL IP Addresses"
+    else
+      "#{org_param.upcase}-only IP Addresses"
     end
   end
   helper_method :page_header
-
-  def network_params
-    params.permit(:id)
-  end
 end

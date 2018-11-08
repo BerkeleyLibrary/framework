@@ -9,17 +9,21 @@ class CampusNetworksControllerTest < ActionDispatch::IntegrationTest
     VCR.eject_cassette
   end
 
+  def test_campus_networks_route_is_hyphen_separated
+    assert_equal campus_networks_path, '/campus-networks'
+  end
+
   def test_renders_the_different_formats
-    get '/campus-networks'
+    get campus_networks_path
     assert_response :ok
     assert_match /UCB \+ LBL IP Addresses/m, @response.body
 
-    get '/campus-networks/ucb'
-    assert_response :ok
-    assert_match /UCB-only IP Addresses/m, @response.body
-
-    get '/campus-networks/lbl'
+    get campus_networks_path(organization: "lbl")
     assert_response :ok
     assert_match /LBL-only IP Addresses/m, @response.body
+
+    get campus_networks_path(organization: "ucb")
+    assert_response :ok
+    assert_match /UCB-only IP Addresses/m, @response.body
   end
 end

@@ -2,6 +2,10 @@ require 'nokogiri'
 require 'open-uri'
 
 class CampusNetwork < IPAddr
+  # @return [Symbol] Organization that owns the network (:ucb, :lbl)
+  attr_accessor :organization
+
+  # @return [Array<String>] list of known LBL networks (manually curated...)
   class_attribute :lbl_networks, default: %w(
     128.3.0.0/16
     128.55.0.0/16
@@ -19,19 +23,19 @@ class CampusNetwork < IPAddr
     204.62.155.0/24
   )
 
+  # @return [String] Address of the nettools page listing all campus networks
   class_attribute :source_url, default: 'https://nettools.net.berkeley.edu/pubtools/info/campusnetworks.html'
 
   class << self
-    def all
-      get_ucb_networks + get_lbl_networks
+    # @param [String] organization Only return networks belonging to this org
+    # @return [Array<CampusNetwork>]
+    def all(organization: nil)
+      (get_ucb_networks + get_lbl_networks).select do |network|
+        organization.blank? || network.organization == organization.to_sym
+      end
     end
 
     private
-
-    def get_ucb_networks
-      raw_html = open(self.source_url).read
-      parse_campus_addresses(raw_html)
-    end
 
     def get_lbl_networks
       lbl_networks.map do |str|
@@ -39,6 +43,11 @@ class CampusNetwork < IPAddr
         network.organization = :lbl
         network
       end
+    end
+
+    def get_ucb_networks
+      raw_html = open(self.source_url).read
+      parse_campus_addresses(raw_html)
     end
 
     # Parses list of campus networks from the raw HTML IST page
@@ -65,9 +74,8 @@ class CampusNetwork < IPAddr
     end
   end
 
-  attr_accessor :organization
-
   # Render as a star-formatted string
+  # @return [String]
   def to_vendor_star_format
     raise "Star format doesn't work for IPv6" if ipv6?
 
@@ -82,6 +90,7 @@ class CampusNetwork < IPAddr
   end
 
   # Render as a range string
+  # @return [String]
   def to_vendor_range_format
     "#{to_range.first.to_s}-#{to_range.last.to_s}"
   end
