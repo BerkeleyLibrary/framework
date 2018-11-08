@@ -8,12 +8,12 @@ services:
   rails:
     environment:
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-1d13da55
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
 
   updater:
     environment:
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-1d13da55
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
 
 version: "3.5"
 
