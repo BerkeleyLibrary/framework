@@ -8,6 +8,20 @@ class RequestMailer < ActionMailer::Base
     mail(to: borrow_request.department_head_email)
   end
 
+  # Send LibstaffEdevicesLoanRequest confirmation email to user
+  def libdevice_confirmation_email(email)
+    mail(to: email)
+  end
+
+  # Send email describing a failure of the LibstaffEdevicesLoanRequest job
+  def libdevice_failure_email(empid, displayname, note)
+    @empid = empid
+    @displayname = displayname
+    @note = note
+
+    mail(to: admin_to)
+  end
+
   # Send email describing a failure of a ScanRequest job
   def failure_email(empid, displayname, note)
     @empid = empid

@@ -33,6 +33,17 @@ ucb_scholar:
     employeeNumber: "87651234"
     uid: "123545"
 
+ucb_lib_staff:
+  provider: calnet
+  uid: "212387"
+  info:
+    name: EMP-STAFF TEST
+    email: test-212387@berkeley.edu
+  extra:
+    displayName: EMP-STAFF TEST
+    employeeNumber: "019999944"
+    uid: "212387"
+
 ucb_grad_student:
   provider: calnet
   uid: "danschmidt5189"

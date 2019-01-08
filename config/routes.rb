@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   scope(:forms) do
     resources :scan_request_forms, path: 'altmedia'
     resources :ucop_borrow_request_forms, path: 'ucop-borrowing-card'
+    resources :libstaff_edevices_loan_forms, path: 'library-staff-devices'
   end
 
   # Omniauth automatically handles requests to /auth/:provider. We need only

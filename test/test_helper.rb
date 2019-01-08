@@ -21,14 +21,22 @@ class ActionDispatch::IntegrationTest
     follow_redirect!
   end
 
+  # Return a test user with specified category of patron (blocked, library staff, etc.)
+  #
+  # @param [String] id a key in test/fixtures/files/omniauth.yml
+  # @return [void]
+  def retrieve_mock_user_hash(id)
+    mocks = YAML.load_file(file_fixture('omniauth.yml'))
+    mock_hash = OmniAuth::AuthHash.new(mocks.fetch(id.to_s))
+  end
+
   # Execute the login flow with a test user
   #
   # @param [String] id a key in test/fixtures/files/omniauth.yml
   # @param [Block] block called in the context of the user being logged in
   # @return [void]
   def with_login(id, &block)
-    mocks = YAML.load_file(file_fixture('omniauth.yml'))
-    mock_hash = OmniAuth::AuthHash.new(mocks.fetch(id.to_s))
+    mock_hash = retrieve_mock_user_hash(id)
 
     OmniAuth.config.mock_auth[:calnet] = mock_hash
     mocked_calnet = OmniAuth.config.mock_auth[:calnet]
