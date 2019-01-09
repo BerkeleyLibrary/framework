@@ -139,7 +139,14 @@ class LibstaffEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
   def test_submit_button_text
     with_login(:ucb_lib_staff) do
       get new_libstaff_edevices_loan_form_path
-      assert_select 'form input[type="submit"][value="Create Libstaff edevices loan form"]'
+      assert_select 'form input[type="submit"][value="Submit"]'
+    end
+  end
+
+  def test_no_reset_button
+    with_login(:ucb_lib_staff) do
+      get new_libstaff_edevices_loan_form_path
+      assert_select 'form input[type="reset"]', {count: 0}
     end
   end
 

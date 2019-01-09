@@ -66,6 +66,8 @@ en:
 
   helpers:
     submit:
+      libstaff_edevices_loan_form:
+        create: Submit
       scan_request_form:
         create: Submit
       ucop_borrow_request_form:
