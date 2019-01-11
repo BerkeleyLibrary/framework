@@ -31,6 +31,8 @@ secrets/*
 !/log/.keep
 !/tmp/.keep
 
+/test/reports
+
 # Ignore uploaded files in development
 /storage/*
 
@@ -42,5 +44,7 @@ secrets/*
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+/vendor
 
 !.keep

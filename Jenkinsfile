@@ -27,22 +27,20 @@ pipeline {
     }
 
     stage("Test") {
-      parallel {
-        stage('Security') {
-          steps {
-            sh 'docker-compose run --rm --name `uuidgen` rails brakeman'
-            sh 'docker-compose run --rm --name `uuidgen` rails bundle:audit'
-          }
-        }
-        stage('Unit') {
-          steps {
-            sh 'docker-compose run --rm --name `uuidgen` rails test'
-          }
-        }
-        stage('System') {
-          steps {
-            sh "docker-compose exec -T rails wget --spider http://localhost:3000/home"
-          }
+      steps {
+        // Note: ci_reporter_minitest deletes the test/reports directory before
+        // running, so you should run the tests *first*. Otherwise, brakeman
+        // results would be deleted!
+        sh 'docker-compose exec -Tu root rails rails test:junit'
+        sh 'docker-compose exec -Tu root rails rails brakeman'
+        sh 'docker-compose exec -Tu root rails rails bundle:audit'
+        sh 'docker-compose exec -T rails wget --spider http://localhost:3000/home'
+      }
+      post {
+        always {
+          sh 'docker cp $(docker-compose ps -q rails):/opt/app/test/reports test/'
+          junit 'test/reports/*.xml'
+          publishBrakeman 'test/reports/brakeman.json'
         }
       }
     }

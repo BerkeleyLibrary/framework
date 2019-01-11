@@ -4,9 +4,14 @@ services:
   rails:
     environment:
       RAILS_ENV: test
+    volumes:
+      - reports:/opt/app/test/reports
 
   updater:
     environment:
       RAILS_ENV: test
 
 version: "3.5"
+
+volumes:
+  reports:
