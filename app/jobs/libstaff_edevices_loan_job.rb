@@ -6,7 +6,7 @@ class LibstaffEdevicesLoanJob < ApplicationJob
   def perform(patron:)
     patron = Patron::Record.new(**patron)
     now = Time.now.strftime('%Y%m%d')
-    note = "#{now} library book scan eligible [litscript]"
+    note = "#{now} Library Staff Electronic Devices eligible [litscript]"
 
     patron.add_note(note)
     send_patron_email(patron)
