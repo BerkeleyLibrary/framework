@@ -42,4 +42,6 @@ group :test do
   gem 'chromedriver-helper'
   gem 'ci_reporter_minitest'
   gem 'selenium-webdriver'
+  gem "simplecov", "~> 0.16.1", require: false
+  gem 'simplecov-rcov', require: false
 end

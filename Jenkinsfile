@@ -41,6 +41,14 @@ pipeline {
           sh 'docker cp $(docker-compose ps -q rails):/opt/app/test/reports test/'
           junit 'test/reports/*.xml'
           publishBrakeman 'test/reports/brakeman.json'
+          publishHTML(target: [
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: true,
+            reportDir: 'test/reports/rcov',
+            reportFiles: 'index.html',
+            reportName: 'Code Coverage Report',
+          ])
         }
       }
     }
