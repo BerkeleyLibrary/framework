@@ -30,14 +30,8 @@ class SessionsController < ApplicationController
     redirect_to params[:url] || request.env['omniauth.origin'] || home_path
   end
 
-  # Logout the user by destroying their session
-  def destroy
-    sign_out
-    redirect_to home_path
-  end
-
   # Logout the user by redirecting to CAS logout screen
-  def destroy_libstaff
+  def destroy
     sign_out
     end_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
     redirect_to end_url

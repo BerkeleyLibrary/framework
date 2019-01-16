@@ -19,7 +19,12 @@ class ActionDispatch::IntegrationTest
     get '/logout'
     OmniAuth.config.mock_auth[:calnet] = nil
 
-    follow_redirect!
+    return_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
+    my_domain = "auth#{'-test' unless Rails.env.production?}.berkeley.edu"
+    request.headers["HTTP_HOST"] = my_domain
+    assert_redirected_to return_url
+
+    #follow_redirect!
   end
 
   # Return a test user with specified category of patron (blocked, library staff, etc.)

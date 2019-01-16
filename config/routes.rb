@@ -15,7 +15,6 @@ Rails.application.routes.draw do
   # implement the callback.
   get '/login', to: 'sessions#new', as: :login
   get '/logout', to: 'sessions#destroy', as: :logout
-  get '/libstaff_logout', to: 'sessions#destroy_libstaff', as: :libstaff_logout
   get '/auth/:provider/callback', to: 'sessions#callback', as: :omniauth_callback
   get '/auth/failure', to: 'sessions#failure'
 end

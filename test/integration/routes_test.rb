@@ -24,16 +24,8 @@ class RoutesTest < ActionDispatch::IntegrationTest
     assert_response :ok
   end
 
-  def test_redirect_home_on_logout
+  def test_redirect_logout_cas_logout_page
     get '/logout'
-    assert_redirected_to controller: :home
-    follow_redirect!
-
-    assert_select "h1", /Library Forms/
-  end
-
-  def test_redirect_logout_libstaff
-    get '/libstaff_logout'
     return_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
     my_domain = "auth#{'-test' unless Rails.env.production?}.berkeley.edu"
     request.headers["HTTP_HOST"] = my_domain
