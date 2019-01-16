@@ -31,4 +31,12 @@ class RoutesTest < ActionDispatch::IntegrationTest
 
     assert_select "h1", /Library Forms/
   end
+
+  def test_redirect_logout_libstaff
+    get '/libstaff_logout'
+    return_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
+    my_domain = "auth#{'-test' unless Rails.env.production?}.berkeley.edu"
+    request.headers["HTTP_HOST"] = my_domain
+    assert_redirected_to return_url
+  end
 end

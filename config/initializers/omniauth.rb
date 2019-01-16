@@ -14,6 +14,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     name: :calnet,
     host: "auth#{'-test' unless Rails.env.production?}.berkeley.edu",
     login_url: '/cas/login',
+    logout_url: "https://auth.berkeley.edu/cas/logout",
     service_validate_url: '/cas/p3/serviceValidate'
 
   # Override the default 'puts' logger that Omniauth uses.

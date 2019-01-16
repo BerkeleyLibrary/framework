@@ -36,6 +36,13 @@ class SessionsController < ApplicationController
     redirect_to home_path
   end
 
+  # Logout the user by redirecting to CAS logout screen
+  def destroy_libstaff
+    sign_out
+    end_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
+    redirect_to end_url
+  end
+
   # Handle Calnet authentication failures
   #
   # Currently, Calnet has no way of triggering this, although it's rumored to
