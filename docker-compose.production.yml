@@ -9,11 +9,25 @@ services:
     environment:
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
+    logging:
+      driver: awslogs
+      options:
+        awslogs-create-group: "true"
+        awslogs-group: production/framework/rails
+        awslogs-region: us-west-1
+        mode: non-blocking
 
   updater:
     environment:
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
+    logging:
+      driver: awslogs
+      options:
+        awslogs-create-group: "true"
+        awslogs-group: production/framework/updater
+        awslogs-region: us-west-1
+        mode: non-blocking
 
 version: "3.5"
 
