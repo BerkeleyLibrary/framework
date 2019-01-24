@@ -26,6 +26,16 @@ class ApplicationController < ActionController::Base
     render "errors/patron_api_error", status: :service_unavailable
   end
 
+  rescue_from Error::ForbiddenError do |error|
+    Rails.logger.error(error)
+    render :forbidden, status: :forbidden
+  end
+
+  rescue_from Error::PatronBlockedError do |error|
+    Rails.logger.error(error)
+    render :blocked, status: :forbidden
+  end
+
   private
 
   # Require that the current user be authenticated

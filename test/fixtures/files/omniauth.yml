@@ -38,6 +38,7 @@ ucb_lib_staff:
   uid: "212387"
   info:
     name: EMP-STAFF TEST
+    displayName: EMP-STAFF TEST
     email: test-212387@berkeley.edu
   extra:
     displayName: EMP-STAFF TEST

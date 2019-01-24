@@ -55,7 +55,7 @@ class ActionDispatch::IntegrationTest
     assert_redirected_to home_path
 
     begin
-      block.call
+      block.call(mocked_calnet)
     ensure
       logout
     end

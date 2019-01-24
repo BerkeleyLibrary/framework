@@ -40,7 +40,8 @@ class LibstaffEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
     with_login(:ucb_scholar) do
       get new_libstaff_edevices_loan_form_path
       assert_response :forbidden
-      assert_select "h1", /Only Library Staff are eligible to borrow an electronic device/
+      assert_select "h1", /Forbidden/
+      assert_select "p", /Only Library Staff are eligible to borrow an electronic device/
     end
   end
 
@@ -80,58 +81,24 @@ class LibstaffEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_staff_name_readonly
-    with_login(:ucb_lib_staff) do
+  def test_patron_email_readonly
+    with_login(:ucb_lib_staff) do |user_data|
       get new_libstaff_edevices_loan_form_path
-      assert_select "input:match('id', ?)", /libstaff_edevices_loan_form_full_name/ do |elements|
-        assert_select "[readonly=?]", "readonly"
+
+      assert_select '#libstaff_edevices_loan_form_patron_email' do
+        assert_select '[readonly=?]', 'readonly'
+        assert_select '[value=?]', user_data["info"]["email"]
       end
     end
   end
 
-  def test_staff_name_retrieved
-    with_login(:ucb_lib_staff) do
+  def test_patron_name_readonly
+    with_login(:ucb_lib_staff) do |user_data|
       get new_libstaff_edevices_loan_form_path
-      mock_hash = retrieve_mock_user_hash(:ucb_lib_staff)
-      employee_name = mock_hash["extra"]["displayName"]
-      assert_select "input:match('id', ?)", /libstaff_edevices_loan_form_full_name/ do |elements|
-        assert_select "[value=?]", employee_name
-      end
-    end
-  end
 
-  def test_staff_email_hidden_field_passed
-    with_login(:ucb_lib_staff) do
-      get new_libstaff_edevices_loan_form_path
-      mock_hash = retrieve_mock_user_hash(:ucb_lib_staff)
-      employee_email = mock_hash["info"]["email"]
-      assert_select "input:match('id', ?)", /libstaff_edevices_loan_form_staff_email/ do |elements|
-        assert_select "[value=?]", employee_email
-        assert_select "[type=?]", "hidden"
-      end
-    end
-  end
-
-  def test_staff_id_hidden_field_passed
-    with_login(:ucb_lib_staff) do
-      get new_libstaff_edevices_loan_form_path
-      mock_hash = retrieve_mock_user_hash(:ucb_lib_staff)
-      employee_id = mock_hash["extra"]["employeeNumber"]
-      assert_select "input:match('id', ?)", /libstaff_edevices_loan_form_staff_id_number/ do |elements|
-        assert_select "[value=?]", employee_id
-        assert_select "[type=?]", "hidden"
-      end
-    end
-  end
-
-  def test_today_date_hidden_field_passed
-    with_login(:ucb_lib_staff) do
-      get new_libstaff_edevices_loan_form_path
-      d = DateTime.now
-      sign_date = d.strftime("%m/%d/%Y")
-      assert_select "input:match('id', ?)", /libstaff_edevices_loan_form_today_date/ do |elements|
-        assert_select "[value=?]", sign_date
-        assert_select "[type=?]", "hidden"
+      assert_select '#libstaff_edevices_loan_form_display_name' do
+        assert_select '[readonly=?]', 'readonly'
+        assert_select '[value=?]', user_data["info"]["displayName"]
       end
     end
   end
@@ -152,8 +119,21 @@ class LibstaffEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
 
   def test_success_if_all_boxes_checked_submission
     with_login(:ucb_lib_staff) do
-      get new_libstaff_edevices_loan_form_path
-      post "/forms/library-staff-devices", params: { libstaff_edevices_loan_form: { borrow_check: "checked", lending_check: "checked", fines_check: "checked", edevices_check: "checked" } }
+      form_params = {
+        libstaff_edevices_loan_form: {
+          borrow_check: "unchecked",
+          lending_check: "checked",
+          fines_check: "checked",
+          edevices_check: "checked"
+        }
+      }
+
+      post "/forms/library-staff-devices", params: form_params
+      assert_redirected_to new_libstaff_edevices_loan_form_path(form_params)
+
+      form_params[:libstaff_edevices_loan_form][:borrow_check] = "checked"
+      post "/forms/library-staff-devices", params: form_params
+
       #All 4 boxes must be checked to get to confirmation page
       assert_redirected_to "/forms/library-staff-devices/all_check"
     end

@@ -16,4 +16,8 @@ module Error
 
   # Raised if someone attempts to authenticate with an invalid provider.
   class InvalidAuthProviderError < BaseError; end
+
+  # Raised if a patron has blocks
+  class ForbiddenError < BaseError; end
+  class PatronBlockedError < ForbiddenError; end
 end
