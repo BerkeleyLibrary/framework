@@ -6,6 +6,8 @@ secrets:
 
 services:
   rails:
+    deploy:
+      replicas: 2
     environment:
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
