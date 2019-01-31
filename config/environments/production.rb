@@ -1,3 +1,5 @@
+require Rails.root.join('app/mailers/interceptor/mailing_list_interceptor')
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -102,4 +104,10 @@ Rails.application.configure do
     authentication: 'plain',
     enable_starttls_auto: true,
   }
+
+  if ENV["INTERCEPT_EMAILS"].present?
+    # Route emails to a mailing list in staging
+    interceptor = Interceptor::MailingListInterceptor.new
+    ActionMailer::Base.register_interceptor(interceptor)
+  end
 end

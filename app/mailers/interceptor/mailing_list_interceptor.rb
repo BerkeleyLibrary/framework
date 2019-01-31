@@ -15,7 +15,7 @@ module Interceptor
   # them to recipients. The original to/cc/bcc are stored in custom headers
   # named X-Original-{To,CC,BCC}, which are viewable in most mail clients.
   #
-  # This should be configured in `config/environments/staging`.
+  # Enable this via ENV['INTERCEPT_EMAILS'] (see production.rb).
   #
   # @see https://support.google.com/mail/answer/29436?hl=en GMail: How to view headers
   class MailingListInterceptor

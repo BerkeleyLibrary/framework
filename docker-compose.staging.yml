@@ -8,7 +8,8 @@ networks:
 services:
   rails:
     environment:
-      RAILS_ENV: staging
+      INTERCEPT_EMAILS: present
+      RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
     logging:
       driver: awslogs
@@ -20,7 +21,8 @@ services:
 
   updater:
     environment:
-      RAILS_ENV: staging
+      INTERCEPT_EMAILS: present
+      RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
     logging:
       driver: awslogs

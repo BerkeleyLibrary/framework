@@ -1,11 +1,21 @@
 ---
 
 secrets:
-  MAIL_PASSWORD:        { external: { name: MAIL_LIB_NOREPLY_PASSWORD } }
-  PRIVATE_KEY:          { external: { name: ALTMEDIA_PRIVATE_KEY } }
-  RECAPTCHA_SECRET_KEY: { external: { name: RECAPTCHA_UCBLIB_ORG_SECRET_KEY } }
-  RECAPTCHA_SITE_KEY:   { external: { name: RECAPTCHA_UCBLIB_ORG_SITE_KEY } }
-  SECRET_KEY_BASE:      { external: { name: ALTMEDIA_SECRET_KEY_BASE } }
+  MAIL_PASSWORD:
+    external: true
+    name: MAIL_LIB_NOREPLY_PASSWORD
+  PRIVATE_KEY:
+    external: true
+    name: ALTMEDIA_PRIVATE_KEY
+  RECAPTCHA_SECRET_KEY:
+    external: true
+    name: RECAPTCHA_UCBLIB_ORG_SECRET_KEY
+  RECAPTCHA_SITE_KEY:
+    external: true
+    name: RECAPTCHA_UCBLIB_ORG_SITE_KEY
+  SECRET_KEY_BASE:
+    external: true
+    name: ALTMEDIA_SECRET_KEY_BASE
 
 services:
   rails: &services-rails

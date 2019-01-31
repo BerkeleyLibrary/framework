@@ -1,14 +1,19 @@
 ---
 
 secrets:
-  RECAPTCHA_SECRET_KEY: { external: { name: RECAPTCHA_LIB_BERKELEY_EDU_SECRET_KEY } }
-  RECAPTCHA_SITE_KEY:   { external: { name: RECAPTCHA_LIB_BERKELEY_EDU_SITE_KEY } }
+  RECAPTCHA_SECRET_KEY:
+    external: true
+    name: RECAPTCHA_LIB_BERKELEY_EDU_SECRET_KEY
+  RECAPTCHA_SITE_KEY:
+    external: true
+    name: RECAPTCHA_LIB_BERKELEY_EDU_SITE_KEY
 
 services:
   rails:
     deploy:
       replicas: 2
     environment:
+      PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
     logging:
@@ -21,6 +26,7 @@ services:
 
   updater:
     environment:
+      PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-c9f9d5d3
     logging:
