@@ -57,6 +57,11 @@ module Patron
     # @return [String]
     attr_accessor :type
 
+    # An optional note in the patron record, i.e. an indication that he/she is book scan eligible
+    #
+    # @return [String]
+    attr_accessor :note
+
     class << self
       # Returns the patron record for a given ID, or nil if it is not found
       #
@@ -85,6 +90,7 @@ module Patron
           email: data['EMAIL ADDR[pz]'],
           name: data['PATRN NAME[pn]'],
           type: data['P TYPE[p47]'],
+          note: data['NOTE[px]'],
         )
       rescue OpenURI::HTTPError => e
         raise Error::PatronApiError

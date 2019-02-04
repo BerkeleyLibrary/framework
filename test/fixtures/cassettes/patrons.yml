@@ -525,6 +525,7 @@ http_interactions:
         PATRN NAME[pn]=THOMAS,ELISSA<BR>
         ADDRESS[pa]=Library Administration$289 Doe Annex<BR>
         TELEPHONE[pt]=510-470-6268<BR>
+        NOTE[px]=20190129 library book scan eligible sydr
         BAKER PRIV[pv]=N<BR>
         MAJOR/DEPT[pd]=KPADMIN<BR>
         P BARCODE[pb]=A3191304<BR>

@@ -55,3 +55,15 @@ ucb_grad_student:
     displayName: Daniel C. Schmidt
     employeeNumber: "18273645"
     uid: "00000005"
+
+ucb_eligible_scan:
+  provider: calnet
+  uid: "ethomas"
+  info:
+    name: Elissa Thomas
+    displayName: Elissa Thomas
+    email: ethomas@berkeley.edu
+  extra:
+    displayName: Elissa Thomas
+    employeeNumber: "013191304"
+    uid: "00000008"
