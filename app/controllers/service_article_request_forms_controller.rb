@@ -11,9 +11,16 @@ class ServiceArticleRequestFormsController < ApplicationController
 
   def new
     #Check to confirm eligibility for the article request service, which is more complicated than a yes/no validation
-    #TO DO: HANDLE LOGIC FOR FACULTIY AND STUDENT USERS
     if @form.eligible_note?
       render :new
+    elsif @form.faculty?
+      if not @form.eligible_note?
+        render :required, status: :forbidden
+      end
+    elsif @form.student?
+      if not @form.eligible_note?
+        render :student, status: :forbidden
+      end
     else
       render :ineligible, status: :forbidden
     end

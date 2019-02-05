@@ -42,10 +42,37 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   #A test user who does not have scan access and is not student or faculty
-  def test_ineligbile_other_not_allowed
+  def test_ineligible_other_not_allowed
     with_login(:ucb_scholar) do
       get new_service_article_request_form_path
       assert_response :forbidden
+    end
+  end
+
+  def test_forbidden_view_message_for_user_ineligible_faculty
+    with_login(:ucb_faculty) do
+      get new_service_article_request_form_path
+      assert_response :forbidden
+      assert_select "h1", /More is required/
+      assert_select "p", /Sorry, you have not filled out the Opt in/
+    end
+  end
+
+  def test_forbidden_view_message_for_user_ineligible_grad_student
+    with_login(:ucb_grad_student) do
+      get new_service_article_request_form_path
+      assert_response :forbidden
+      assert_select "h1", /Ineligible/
+      assert_select "p", /Sorry, you are not eligible for this service/
+    end
+  end
+
+  def test_forbidden_view_message_for_user_ineligible_other
+    with_login(:ucb_lib_staff) do
+      get new_service_article_request_form_path
+      assert_response :forbidden
+      assert_select "h1", /Ineligible/
+      assert_select "p", /Sorry, you are not eligible for this service/
     end
   end
 

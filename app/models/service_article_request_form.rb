@@ -56,6 +56,14 @@ class ServiceArticleRequestForm < Form
     end
   end
 
+  def faculty?
+    self.patron.type == Patron::Type::FACULTY
+  end
+
+  def student?
+    self.patron.type == Patron::Type::GRAD_STUDENT or self.patron.type == Patron::Type::UNDERGRAD
+  end
+
   # Apply strict (error-raising) validations
   def authorize!
     self.class.validators.select{|v| v.options[:strict]}.each do |validator|
