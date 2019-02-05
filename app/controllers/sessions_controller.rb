@@ -35,7 +35,7 @@ class SessionsController < ApplicationController
     sign_out
     end_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
     redirect_to end_url
-  end 
+  end
 
   # Handle Calnet authentication failures
   #

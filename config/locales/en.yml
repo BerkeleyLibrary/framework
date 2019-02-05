@@ -72,6 +72,8 @@ en:
         create: Submit
       ucop_borrow_request_form:
         create: Submit
+      service_article_request_form:
+        create: Submit
 
   omniauth_callbacks:
     calnet:

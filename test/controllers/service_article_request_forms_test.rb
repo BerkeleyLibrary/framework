@@ -33,7 +33,7 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
 
   #This particular test user does not have scan access
   #TO DO: ADD VALID UNDERGRAD USER TO OMNIAUTH.YML
-  def test_ineligbile_undergrad_student_not_allowed
+  def test_ineligible_undergrad_student_not_allowed
     skip("Need to add undergrad student user")
       with_login(:ucb_grad_student) do
         get new_service_article_request_form_path
@@ -96,6 +96,54 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
       get new_service_article_request_form_path
       assert_select '.page-footer .support-email[href=?]',
         'mailto:privdesk@library.berkeley.edu'
+    end
+  end
+
+  def test_new_page_renders_with_correct_secondary_headers
+    with_login(:ucb_eligible_scan) do
+      get new_service_article_request_form_path
+      assert_response :ok
+      assert_select "h2", /Patron Information/
+      assert_select "h2", /Journal Information/
+    end
+  end
+
+  def test_patron_email_required_with_value
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_service_article_request_form_path
+
+      assert_select '#service_article_request_form_patron_email' do
+        assert_select '[required=?]', 'required'
+        assert_select '[value=?]', user_data["info"]["email"]
+      end
+    end
+  end
+
+  def test_patron_name_required_with_value
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_service_article_request_form_path
+
+      assert_select '#service_article_request_form_display_name' do
+        assert_select '[required=?]', 'required'
+        assert_select '[value=?]', user_data["info"]["displayName"]
+      end
+    end
+  end
+
+  def test_pub_title_required
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_service_article_request_form_path
+
+      assert_select '#service_article_request_form_pub_title' do
+        assert_select '[required=?]', 'required'
+      end
+    end
+  end
+
+  def test_submit_button_text
+    with_login(:ucb_eligible_scan) do
+      get new_service_article_request_form_path
+      assert_select 'form input[type="submit"][value="Submit"]'
     end
   end
 
