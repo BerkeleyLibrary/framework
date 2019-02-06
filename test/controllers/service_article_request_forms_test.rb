@@ -34,11 +34,10 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
   #This particular test user does not have scan access
   #TO DO: ADD VALID UNDERGRAD USER TO OMNIAUTH.YML
   def test_ineligible_undergrad_student_not_allowed
-    skip("Need to add undergrad student user")
-      with_login(:ucb_grad_student) do
-        get new_service_article_request_form_path
-        assert_response :forbidden
-      end
+    with_login(:ucb_undergrad_student) do
+      get new_service_article_request_form_path
+      assert_response :forbidden
+    end
   end
 
   #A test user who does not have scan access and is not student or faculty

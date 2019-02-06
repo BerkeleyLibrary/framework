@@ -882,4 +882,71 @@ http_interactions:
         <HTML><BODY>
     http_version: 
   recorded_at: Tue, 18 Dec 2018 19:07:04 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/99999997/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 6 Feb 2019 00:00:02 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=05-01-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=a<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=1<BR>
+        TOT CHKOUT[p48]=1<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none<BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1347731<BR>
+        REC LENG[p82]=198<BR>
+        CREATED[p83]=02-23-15<BR>
+        UPDATED[p84]=02-05-19<BR>
+        REVISIONS[p85]=9<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=02-23-18<BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=test-212381<BR>
+        EMAIL ADDR[pz]=test-212381@berkeley.edu<BR>
+        PIN[p=]=WedBwqSZnE79.<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Wed, 06 Feb 2019 00:01:45 GMT
 recorded_with: VCR 4.0.0

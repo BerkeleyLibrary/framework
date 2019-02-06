@@ -56,6 +56,17 @@ ucb_grad_student:
     employeeNumber: "18273645"
     uid: "00000005"
 
+ucb_undergrad_student:
+  provider: calnet
+  uid: "test-212381"
+  info:
+    name: Registered Test Student
+    email: test-212381@berkeley.edu
+  extra:
+    displayName: Registered Test Student
+    employeeNumber: "99999997"
+    uid: "00000003"
+
 ucb_eligible_scan:
   provider: calnet
   uid: "ethomas"
