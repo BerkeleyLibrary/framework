@@ -32,7 +32,6 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   #This particular test user does not have scan access
-  #TO DO: ADD VALID UNDERGRAD USER TO OMNIAUTH.YML
   def test_ineligible_undergrad_student_not_allowed
     with_login(:ucb_undergrad_student) do
       get new_service_article_request_form_path
@@ -47,6 +46,23 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
       assert_response :forbidden
     end
   end
+
+  #A test user who has one note in his/her Millenium account that includes the eligibility note
+  def test_eligible_user
+    with_login(:ucb_eligible_scan) do
+      get new_service_article_request_form_path
+      assert_response :ok
+    end
+  end
+
+  #A test user who has multiple notes in his/her Millenium account, one of which includes the eligibility note
+  #TO DO: ADD THIS USER TO OMNIAUTH.YML FILE
+  # def test_eligible_user_multiple_notes
+  #   with_login(:ucb_multiple_notes) do
+  #     get new_service_article_request_form_path
+  #     assert_response :ok
+  #   end
+  # end
 
   def test_forbidden_view_message_for_user_ineligible_faculty
     with_login(:ucb_faculty) do
