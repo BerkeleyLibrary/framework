@@ -11,19 +11,9 @@ class ServiceArticleRequestFormsController < ApplicationController
 
   def new
     #Check to confirm eligibility for the article request service, which is more complicated than a yes/no validation
-    if @form.eligible_note?
-      render :new
-    elsif @form.faculty?
-      if not @form.eligible_note?
-        render :required, status: :forbidden
-      end
-    elsif @form.student?
-      if not @form.eligible_note?
-        render :student, status: :forbidden
-      end
-    else
-      render :ineligible, status: :forbidden
-    end
+    end_result = @form.determine_view
+    status_response = (end_result == "new") ? "ok" : "forbidden"
+    render end_result.to_sym, status: status_response.to_sym
   end
 
   def create

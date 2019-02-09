@@ -46,31 +46,10 @@ class ServiceArticleRequestForm < Form
   attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
 
   #Check the patron Millenium record to see if the note includes text that grants access to the article scan service
-  def eligible_note?
-    if not patron_note.nil?
-      #Explode the array into a string if an array, else just use the existing note if it is a string
-      if patron_note.kind_of?(Array)
-        patron_note_string = patron_note.join(" ")
-      else
-        patron_note_string = patron_note
-      end
-      #Does either the string or array of notes contain the needed phrase
-      if patron_note_string.include? "book scan eligible"
-        return true
-      else
-        return false
-      end
-    else
-      return false
-    end
-  end
-
-  def faculty?
-    self.patron.type == Patron::Type::FACULTY
-  end
-
-  def student?
-    self.patron.type == Patron::Type::GRAD_STUDENT or self.patron.type == Patron::Type::UNDERGRAD
+  #If yes, this method will return "new"
+  #If no, this method will return the proper view name depending on patron type
+  def determine_view
+    ArticleEligibility.new.view_for(EligibilityFactory.build(patron))
   end
 
   # Apply strict (error-raising) validations
