@@ -128,6 +128,7 @@ pipeline {
   options {
     ansiColor("xterm")
     buildDiscarder(logRotator(numToKeepStr: "60", daysToKeepStr: "7"))
+    disableConcurrentBuilds()
     gitlabCommitStatus(name: 'Jenkins')
     gitLabConnection("git.lib.berkeley.edu")
     timeout(time: 10, unit: "MINUTES")
