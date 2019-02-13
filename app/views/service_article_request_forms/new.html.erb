@@ -44,6 +44,10 @@
 
   <br />
 
+  <span style="color: #ee0000">* Required</span><br />
+
+  <br />
+
   <p style="margin-bottom: 0.5rem;">Journal Title (no abbreviations)<span style="color: #ee0000">*</span>: </p>
   <%= f.text_field :pub_title, required: true, :class => "narrow form-control is-valid" %><br />
   <%= f.label("pub_place", "Place of Publication") %>:
@@ -52,22 +56,18 @@
   <%= f.text_field :issn, :class => "narrow form-control is-valid" %><br />
   <p style="margin-bottom: 0.5rem;">Volume and/or Date<span style="color: #ee0000">*</span>: </p>
   <%= f.text_field :vol, required: true, :class => "narrow form-control is-valid" %><br />
-  <%= f.label("article_title", "Article Title") %>:
+  <p style="margin-bottom: 0.5rem;">Article Title<span style="color: #ee0000">*</span>: </p>
   <%= f.text_field :article_title, required: true, :class => "narrow form-control is-valid" %><br />
   <%= f.label("article_author", "Article Author") %>:
   <%= f.text_field :author, :class => "narrow form-control is-valid" %><br />
   <%= f.label("article_pages", "Article Pages") %>:
   <%= f.text_field :pages, :class => "narrow form-control is-valid" %><br />
-  <p style="margin-bottom: 0.5rem;">Citation Found in (example: OskiCat Call Number; Melvyl/Worldcat Location; OCLC Number; Other<span style="color: #ee0000">*</span>: </p>
+  <p style="margin-bottom: 0.5rem;">Citation Found in (example: OskiCat Call Number; Melvyl/Worldcat Location; OCLC Number; Other)<span style="color: #ee0000">*</span>: </p>
   <%= f.text_field :citation, required: true, :class => "narrow form-control is-valid" %><br />
   <%= f.label "Notes" %>:
   <%= f.text_field :pub_notes, :class => "narrow form-control is-valid" %><br />
 
-  <span style="color: #ee0000">* Required</span><br />
-
   <br />
-
-  <p>This article request form is for patrons who are eligible to use the Library’s Alt-Media Scanning Service. Please see <a href="http://www.lib.berkeley.edu/help/disability-resources-print">Disability resources - Print disabilities</a> for more information about the service. Patrons seeking whole book scanning should request the book through <a href="http://oskicat.berkeley.edu">OskiCat</a>.</p>
 
   <div class="btn-group" role="group">
     <%= f.submit(class: "btn btn-primary") %>

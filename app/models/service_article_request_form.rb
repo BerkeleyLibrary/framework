@@ -4,8 +4,7 @@ class ServiceArticleRequestForm < Form
   attr_accessor :patron
   validates :patron, presence: true, strict: Error::ForbiddenError
 
-  # Display name of the patron making the request
-  # @return [String]
+   # @!attribute [string] display_name
   attr_accessor :display_name
   validates :display_name, presence: true
 
@@ -15,7 +14,7 @@ class ServiceArticleRequestForm < Form
   validates :patron_type, presence: true
 
   # @!attribute [string] patron_email
-  delegate :email, to: :patron, prefix: true
+  attr_accessor :patron_email
   validates :patron_email, email: true
 
   # @!attribute [string] patron_id
@@ -44,6 +43,11 @@ class ServiceArticleRequestForm < Form
 
   #Fields that are not required but can be optionally filled out by the user
   attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
+
+  #Cannot use the delegate method because that is for read-only attributes
+  def patron_email
+    @patron_email ||= @patron.email if @patron
+  end
 
   #Check the patron Millenium record to see if the note includes text that grants access to the article scan service
   #If yes, this method will return "new"

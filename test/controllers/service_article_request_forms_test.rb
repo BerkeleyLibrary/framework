@@ -155,6 +155,36 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def test_article_title_required
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_service_article_request_form_path
+
+      assert_select '#service_article_request_form_article_title' do
+        assert_select '[required=?]', 'required'
+      end
+    end
+  end
+
+  def test_vol_required
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_service_article_request_form_path
+
+      assert_select '#service_article_request_form_vol' do
+        assert_select '[required=?]', 'required'
+      end
+    end
+  end
+
+  def test_citation_required
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_service_article_request_form_path
+
+      assert_select '#service_article_request_form_citation' do
+        assert_select '[required=?]', 'required'
+      end
+    end
+  end
+
   def test_submit_button_text
     with_login(:ucb_eligible_scan) do
       get new_service_article_request_form_path
