@@ -10,7 +10,7 @@ services:
     environment:
       INTERCEPT_EMAILS: present
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-b7dcc6b5
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
     logging:
       driver: awslogs
       options:
@@ -23,7 +23,7 @@ services:
     environment:
       INTERCEPT_EMAILS: present
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-b7dcc6b5
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
     logging:
       driver: awslogs
       options:
