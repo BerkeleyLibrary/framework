@@ -10,7 +10,9 @@ gem 'coffee-rails', '~> 4.2'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'net-ssh'
-gem 'omniauth-cas'
+gem 'omniauth-cas',
+  :git => 'https://github.com/dlindahl/omniauth-cas.git',
+  :ref => '7087bda829e14c0f7cab2aece5045ad7015669b1'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 5.2.0'
 gem 'recaptcha'

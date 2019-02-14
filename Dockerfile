@@ -59,6 +59,7 @@ USER root
 RUN apk --update --no-cache add \
         build-base \
         coreutils \
+        git \
         sqlite-dev && \
     rm -rf /var/cache/apk/*
 

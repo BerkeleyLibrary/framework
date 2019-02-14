@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/dlindahl/omniauth-cas.git
+  revision: 7087bda829e14c0f7cab2aece5045ad7015669b1
+  ref: 7087bda829e14c0f7cab2aece5045ad7015669b1
+  specs:
+    omniauth-cas (1.1.1)
+      addressable (~> 2.3)
+      nokogiri (~> 1.5)
+      omniauth (~> 1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -100,7 +110,7 @@ GEM
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     hashdiff (0.3.7)
-    hashie (3.5.7)
+    hashie (3.6.0)
     i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
@@ -134,13 +144,9 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
-    omniauth (1.8.1)
-      hashie (>= 3.4.6, < 3.6.0)
+    omniauth (1.9.0)
+      hashie (>= 3.4.6, < 3.7.0)
       rack (>= 1.6.2, < 3)
-    omniauth-cas (1.1.1)
-      addressable (~> 2.3)
-      nokogiri (~> 1.5)
-      omniauth (~> 1.2)
     popper_js (1.14.3)
     public_suffix (3.0.3)
     puma (3.12.0)
@@ -261,7 +267,7 @@ DEPENDENCIES
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   net-ssh
-  omniauth-cas
+  omniauth-cas!
   puma (~> 3.11)
   rails (~> 5.2.0)
   recaptcha
