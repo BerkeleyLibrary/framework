@@ -74,6 +74,8 @@ en:
         create: Submit
       service_article_request_form:
         create: Submit
+      doemoff_study_room_use_form:
+        create: Submit
 
   omniauth_callbacks:
     calnet:

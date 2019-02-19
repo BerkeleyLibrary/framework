@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :campus_networks, path: 'campus-networks'
 
   scope(:forms) do
+    resources :doemoff_study_room_use_forms, path: 'doemoff-study-room-use'
     resources :scan_request_forms, path: 'altmedia'
     resources :ucop_borrow_request_forms, path: 'ucop-borrowing-card'
     resources :libstaff_edevices_loan_forms, path: 'library-staff-devices'
