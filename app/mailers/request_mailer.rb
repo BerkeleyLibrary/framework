@@ -22,6 +22,20 @@ class RequestMailer < ActionMailer::Base
     mail(to: admin_to)
   end
 
+  def doemoff_room_confirmation_email(email)
+    mail(to: email)
+  end
+
+  # Send email describing a failure of the DoemoffStudyRoomUse job
+  def doemoff_room_failure_email(empid, displayname, note)
+    p "what's going on??!!"
+    @empid = empid
+    @displayname = displayname
+    @note = note
+
+    mail(to: admin_to)
+  end
+
   # Send email describing a failure of a ScanRequest job
   def failure_email(empid, displayname, note)
     @empid = empid
