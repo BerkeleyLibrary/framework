@@ -4,14 +4,18 @@ class DoemoffStudyRoomUseForm < Form
     #Patron::Affiliation::COMMUNITY_COLLEGE, #including this option for when testing
   ]
 
+  
+  #There's got to be a better way to set all of the Patron::Type items to ALLOWED_PATRON_TYPES (JS)
   ALLOWED_PATRON_TYPES = [
+    Patron::Type::UNDERGRAD,
+    Patron::Type::UNDERGRAD_SLE,
+    Patron::Type::GRAD_STUDENT,
     Patron::Type::FACULTY,
-    Patron::Type::VISITING_SCHOLAR,
-    # Temporary, for testing?
     Patron::Type::MANAGER,
     Patron::Type::LIBRARY_STAFF,
     Patron::Type::STAFF,
-    #Patron::Type::VISITING_SCHOLAR, #including this option for when testing
+    Patron::Type::POST_DOC,
+    Patron::Type::VISITING_SCHOLAR, 
   ]
 
   # Users must explicitly opt-in to each clause of the form.
@@ -31,6 +35,10 @@ class DoemoffStudyRoomUseForm < Form
 
   # @!attribute [r] patron_type
   #   @return [Patron::Type]
+  
+  #Rails.logger.debug{"here?!!!!     "}
+  #p :patron_type
+  #Rails.logger.debug(patron_type.to_json)
   delegate :type, to: :patron, prefix: true
   validates :patron_type, inclusion: {in: ALLOWED_PATRON_TYPES},
     strict: Error::ForbiddenError
@@ -55,8 +63,15 @@ class DoemoffStudyRoomUseForm < Form
   validates :patron_blocks, absence: true,
     strict: Error::PatronBlockedError
 
+  def tellme
+    Rails.logger.debug("HERE!!!!!")
+    Rails.logger.debug(patron.type)
+  end
+
   # Apply strict (error-raising) validations
   def authorize!
+    #Rails.logger.debug("HERE!!!!!")
+    #Rails.logger.debug(self.patron.patron_type)
     self.class.validators.select{|v| v.options[:strict]}.each do |validator|
       validator.attributes.each do |attribute|
         validator.validate_each(self, attribute, send(attribute))

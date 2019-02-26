@@ -8,7 +8,7 @@ class DoemoffStudyRoomUseJob < ApplicationJob
     now = Time.now.strftime('%Y%m%d')
     note = "#{now} Doe/Moffitt study room eligible [litscript]"
 
-    patron.add_note(note)
+    #patron.add_note(note)
     send_patron_email(patron)
   rescue
     send_failure_email(patron, note)

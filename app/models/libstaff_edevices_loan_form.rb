@@ -26,7 +26,7 @@ class LibstaffEdevicesLoanForm < Form
 
   # @!attribute [r] patron_type
   #   @return [Patron::Type]
-  delegate :type, to: :patron, prefix: true
+  delegate :patron_type, to: :patron, prefix: true
   validates :patron_type, inclusion: {in: ALLOWED_PATRON_TYPES},
     strict: Error::ForbiddenError
 

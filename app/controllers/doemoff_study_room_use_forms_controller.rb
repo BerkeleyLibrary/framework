@@ -48,17 +48,15 @@ class DoemoffStudyRoomUseFormsController < ApplicationController
 private
 
   def init_form!
-    Rails.logger.debug{"here?!!!!     "}
-    Rails.logger.debug(current_user.to_json)
+    #Rails.logger.debug{"here?!!!!     "}
+    #Rails.logger.debug(current_user.to_json)
     @form = DoemoffStudyRoomUseForm.new(
       display_name: current_user.display_name,
       patron: current_user.employee_patron_record,
     )
-    Rails.logger.debug{"here?!!!!     "}
-    Rails.logger.debug(current_user.employee_patron_record.to_json)
+    @form.tellme
     @form.authorize!
     @form.validate unless @form.assign_attributes(form_params).blank?
-    #Rails.logger.debug(patron.to_json)
   end
 
   # Make sure only specified attributes are allowed as params

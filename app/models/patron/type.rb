@@ -11,6 +11,7 @@ module Patron
     MANAGER          = '5'
     LIBRARY_STAFF    = '6'
     STAFF            = '7'
+    POST_DOC         = '12'
     VISITING_SCHOLAR = '22'
   end
 end
