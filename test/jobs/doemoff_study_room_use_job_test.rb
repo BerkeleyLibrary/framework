@@ -12,7 +12,7 @@ class DoemoffStudyRoomUseJobTest < ActiveJob::TestCase
   end
 
   def test_emails_the_patron_on_success
-    p @patron
+    #p @patron
     assert_emails 1 do
       with_stubbed_ssh(:succeeded) do
         DoemoffStudyRoomUseJob.perform_now(patron: @patron)
