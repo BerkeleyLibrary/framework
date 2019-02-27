@@ -23,7 +23,8 @@ class ServiceArticleRequestForm < Form
 
   # @!attribute [string] patron_note
   #   @return [Patron::Note]
-  delegate :note, to: :patron, prefix: true
+  attr_accessor :patron_note
+  validates :patron_note, presence: true
 
   # @!attribute [string] pub_title
   attr_accessor :pub_title
@@ -49,11 +50,31 @@ class ServiceArticleRequestForm < Form
     @patron_email ||= @patron.email if @patron
   end
 
-  #Check the patron Millenium record to see if the note includes text that grants access to the article scan service
-  #If yes, this method will return "new"
-  #If no, this method will return the proper view name depending on patron type
-  def determine_view
-    ArticleEligibility.new.view_for(EligibilityFactory.build(patron))
+  #Sometimes the note field is a string and sometimes it is an array, so standardize it
+  def patron_note
+    patron.note.kind_of?(Array) ? patron.note.join("") : patron.note
+  end
+
+  #The UCB SLE undergrad which is type 2 has access but all other student types need to be checked
+  def is_student?
+    patron.type == Patron::Type::GRAD_STUDENT or patron.type == Patron::Type::UNDERGRAD
+  end
+
+  #Faculty and students get specific views, as does all other patron types, so determine if the patron is "other"
+  def is_other_patron_type?
+    patron.type != Patron::Type::FACULTY and patron.type != Patron::Type::GRAD_STUDENT and patron.type != Patron::Type::UNDERGRAD
+  end
+
+  #Check to see if the patron's Millenium account contains a note with text indicating eligibility
+  def is_eligible?
+    not patron_note.nil? and patron_note.include? "book scan eligible"
+  end
+
+  #Raise errors depending on both eligibility and patron type
+  def note_validate!
+    raise Error::FacultyNoteError if (not is_eligible? and patron.type == Patron::Type::FACULTY)
+    raise Error::StudentNoteError if (not is_eligible? and is_student?)
+    raise Error::GeneralNoteError if (not is_eligible? and is_other_patron_type?)
   end
 
   # Apply strict (error-raising) validations

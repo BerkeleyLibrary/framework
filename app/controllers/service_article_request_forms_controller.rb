@@ -9,13 +9,6 @@ class ServiceArticleRequestFormsController < ApplicationController
     redirect_to action: :new
   end
 
-  def new
-    #Check to confirm eligibility for the article request service, which is more complicated than a yes/no validation
-    end_result = @form.determine_view
-    status_response = (end_result == "new") ? "ok" : "forbidden"
-    render end_result.to_sym, status: status_response.to_sym
-  end
-
   def create
     @form.submit!
     redirect_to action: :show, id: :confirmed
@@ -45,6 +38,14 @@ private
     )
     #Run through all the form validators for the strict validations
     @form.authorize!
+    #Specifically check the Millenium patron account for eligibility note and render view associated with eligibility and patron type
+    @form.note_validate!
+    rescue Error::FacultyNoteError => e
+      render :required, status: :forbidden
+    rescue Error::StudentNoteError => e
+      render :student, status: :forbidden
+    rescue Error::GeneralNoteError => e
+      render :ineligible, status: :forbidden
     @form.validate unless @form.assign_attributes(form_params).blank?
   end
 
