@@ -15,6 +15,13 @@ class LibstaffEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path(url: new_scan_request_form_path)
   end
 
+  def test_user_allowed
+    with_login(:ucb_lib_staff) do
+      get new_libstaff_edevices_loan_form_path
+      assert_response :ok
+    end
+  end
+
   def test_non_library_staff_not_allowed
     with_login(:ucb_scholar) do
       get new_libstaff_edevices_loan_form_path
