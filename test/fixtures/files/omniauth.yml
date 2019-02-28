@@ -78,3 +78,14 @@ ucb_eligible_scan:
     displayName: Elissa Thomas
     employeeNumber: "013191304"
     uid: "00000008"
+
+ucb_postdoc:
+  provider: calnet
+  uid: "test-300852"
+  info:
+    name: STUDENT TEST-300852
+    email: test-300852@berkeley.edu
+  extra:
+    displayName: STUDENT TEST-300852
+    employeeNumber: "99999891"
+    uid: "00000003"
