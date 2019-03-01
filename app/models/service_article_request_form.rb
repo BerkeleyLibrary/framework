@@ -21,10 +21,10 @@ class ServiceArticleRequestForm < Form
   delegate :id, to: :patron, prefix: true
   validates :patron_id, presence: true
 
-  # @!attribute [string] patron_note
-  #   @return [Patron::Note]
-  attr_accessor :patron_note
-  validates :patron_note, presence: true
+  # @!attribute [array] patron_notes
+  #   @return [Patron::Notes]
+  attr_accessor :patron_notes
+  validate :note_validate!
 
   # @!attribute [string] pub_title
   attr_accessor :pub_title
@@ -51,8 +51,13 @@ class ServiceArticleRequestForm < Form
   end
 
   #Sometimes the note field is a string and sometimes it is an array, so standardize it
-  def patron_note
-    patron.note.kind_of?(Array) ? patron.note.join("") : patron.note
+  #Return an empty array if there is no notes field. Otherwise return an array of notes
+  def patron_notes
+    if patron.note.nil?
+      patron_notes = []
+    else
+      patron.note.kind_of?(Array) ? patron.note.join("") : (patron_notes ||= []) << patron.note
+    end
   end
 
   #The UCB SLE undergrad which is type 2 has access but all other student types need to be checked
@@ -67,7 +72,7 @@ class ServiceArticleRequestForm < Form
 
   #Check to see if the patron's Millenium account contains a note with text indicating eligibility
   def is_eligible?
-    not patron_note.nil? and patron_note.include? "book scan eligible"
+    patron_notes.grep(/book scan eligible/).any?
   end
 
   #Raise errors depending on both eligibility and patron type
