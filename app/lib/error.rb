@@ -22,7 +22,7 @@ module Error
   class PatronBlockedError < ForbiddenError; end
 
   #Raised for patrons who do not have access to article request form service.
-  class FacultyNoteError < BaseError; end
-  class StudentNoteError < BaseError; end
-  class GeneralNoteError < BaseError; end
+  class FacultyNoteError < ForbiddenError; end
+  class StudentNoteError < ForbiddenError; end
+  class GeneralNoteError < ForbiddenError; end
 end

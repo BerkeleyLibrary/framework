@@ -39,13 +39,15 @@ private
     #Run through all the form validators for the strict validations
     @form.authorize!
     #Specifically check the Millenium patron account for eligibility note and render view associated with eligibility and patron type
-    @form.note_validate!
+    begin
+      @form.note_validate!
     rescue Error::FacultyNoteError => e
       render :required, status: :forbidden
     rescue Error::StudentNoteError => e
       render :student, status: :forbidden
     rescue Error::GeneralNoteError => e
       render :ineligible, status: :forbidden
+    end
     @form.validate unless @form.assign_attributes(form_params).blank?
   end
 
