@@ -28,7 +28,6 @@ class RequestMailer < ActionMailer::Base
 
   # Send email describing a failure of the DoemoffStudyRoomUse job
   def doemoff_room_failure_email(empid, displayname, note)
-    p "what's going on??!!"
     @empid = empid
     @displayname = displayname
     @note = note

@@ -106,11 +106,11 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_questions_link_goes_to_privdesk_email
+  def test_questions_link_goes_to_ibs_email
     with_login(:ucb_eligible_scan) do
       get new_service_article_request_form_path
       assert_select '.page-footer .support-email[href=?]',
-        'mailto:privdesk@library.berkeley.edu'
+        'mailto:ibsweb@library.berkeley.edu'
     end
   end
 
@@ -145,50 +145,39 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_pub_title_required
-    with_login(:ucb_eligible_scan) do |user_data|
-      get new_service_article_request_form_path
-
-      assert_select '#service_article_request_form_pub_title' do
-        assert_select '[required=?]', 'required'
-      end
-    end
-  end
-
-  def test_article_title_required
-    with_login(:ucb_eligible_scan) do |user_data|
-      get new_service_article_request_form_path
-
-      assert_select '#service_article_request_form_article_title' do
-        assert_select '[required=?]', 'required'
-      end
-    end
-  end
-
-  def test_vol_required
-    with_login(:ucb_eligible_scan) do |user_data|
-      get new_service_article_request_form_path
-
-      assert_select '#service_article_request_form_vol' do
-        assert_select '[required=?]', 'required'
-      end
-    end
-  end
-
-  def test_citation_required
-    with_login(:ucb_eligible_scan) do |user_data|
-      get new_service_article_request_form_path
-
-      assert_select '#service_article_request_form_citation' do
-        assert_select '[required=?]', 'required'
-      end
-    end
-  end
-
   def test_submit_button_text
     with_login(:ucb_eligible_scan) do
       get new_service_article_request_form_path
       assert_select 'form input[type="submit"][value="Submit"]'
+    end
+  end
+
+  def test_specified_article_fields_are_required
+    with_login(:ucb_eligible_scan) do
+      get new_service_article_request_form_path
+      assert_select "#service_article_request_form_pub_title[required=required]"
+      assert_select "#service_article_request_form_article_title[required=required]"
+      assert_select "#service_article_request_form_vol[required=required]"
+      assert_select "#service_article_request_form_citation[required=required]"
+    end
+  end
+
+  def test_redirect_to_confirmation_page_after_submit
+    #Mock up a form with article metadata to send
+    with_login(:ucb_eligible_scan) do
+      form_params = {
+        service_article_request_form: {
+          patron_email: "ethomas@berkeley.edu",
+          display_name: "Elissa Thomas",
+          pub_title: "A Test Publication",
+          article_title: "Exciting scholarly article title",
+          vol: "3",
+          citation: "Davis, K. Exciting scholarly article title. A Test Publication: 3"
+        }
+      }
+
+      post "/forms/altmedia-articles", params: form_params
+      assert_redirected_to "/forms/altmedia-articles/confirmed"
     end
   end
 

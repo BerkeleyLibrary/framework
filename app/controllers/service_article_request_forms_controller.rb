@@ -5,6 +5,8 @@ class ServiceArticleRequestFormsController < ApplicationController
   #Before loading the form, check for eligibility for the article scan request service
   before_action :init_form!
 
+  self.support_email = 'ibsweb@library.berkeley.edu'
+
   def index
     redirect_to action: :new
   end
@@ -21,7 +23,7 @@ class ServiceArticleRequestFormsController < ApplicationController
   end
 
   def show
-    if %w(ineligible confirmed).include?(params[:id])
+    if %w(ineligible confirmed forbidden required student).include?(params[:id])
       render params[:id]
     else
       redirect_to action: :new
