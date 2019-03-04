@@ -10,6 +10,7 @@ ucb_faculty:
     displayName: Prof. Emeritus
     employeeNumber: "12345678"
     uid: "123545"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_blocked_faculty:
   provider: calnet
@@ -21,6 +22,7 @@ ucb_blocked_faculty:
     displayName: Prof. Emeritus
     employeeNumber: "87654321"
     uid: "123545"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_scholar:
   provider: calnet
@@ -32,6 +34,7 @@ ucb_scholar:
     displayName: Prof. Emeritus
     employeeNumber: "87651234"
     uid: "123545"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_lib_staff:
   provider: calnet
@@ -44,6 +47,7 @@ ucb_lib_staff:
     displayName: EMP-STAFF TEST
     employeeNumber: "019999944"
     uid: "212387"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_grad_student:
   provider: calnet
@@ -55,6 +59,7 @@ ucb_grad_student:
     displayName: Daniel C. Schmidt
     employeeNumber: "18273645"
     uid: "00000005"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_undergrad_student:
   provider: calnet
@@ -66,6 +71,7 @@ ucb_undergrad_student:
     displayName: Registered Test Student
     employeeNumber: "99999997"
     uid: "00000003"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_eligible_scan:
   provider: calnet
@@ -78,6 +84,7 @@ ucb_eligible_scan:
     displayName: Elissa Thomas
     employeeNumber: "013191304"
     uid: "00000008"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu"]
 
 ucb_postdoc:
   provider: calnet
@@ -89,3 +96,4 @@ ucb_postdoc:
     displayName: STUDENT TEST-300852
     employeeNumber: "99999891"
     uid: "00000003"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]

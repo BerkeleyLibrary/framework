@@ -4,4 +4,15 @@
 # to have in development.
 class HomeController < ApplicationController
   def index; end
+
+  def admin
+    authenticate!
+    if not current_user.framework_admin
+      raise Error::ForbiddenError,
+        "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
+    else
+      render :admin
+    end
+  end
+
 end

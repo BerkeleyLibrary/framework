@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: redirect('/forms/altmedia/new')
 
   get 'home', to: 'home#index'
+  get 'admin', to: 'home#admin'
 
   resources :campus_networks, path: 'campus-networks'
 

@@ -24,6 +24,7 @@ class User
         student_id: auth["extra"]["berkeleyEduStuID"] || auth["extra"]["berkeleyEduCSID"],
         surname: auth["extra"]["surname"],
         uid: auth["extra"]["uid"] || auth["uid"],
+        framework_admin: auth["extra"]["berkeleyEduIsMemberOf"].include?('cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'),
       )
     end
   end
@@ -54,6 +55,9 @@ class User
 
   # @return [String]
   attr_accessor :uid
+
+  # @return [Boolean]
+  attr_accessor :framework_admin
 
   # Whether the user was authenticated
   #
