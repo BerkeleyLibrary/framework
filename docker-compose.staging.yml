@@ -11,6 +11,13 @@ services:
       INTERCEPT_EMAILS: present
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
+    deploy:
+      labels:
+        traefik.backend: altmedia_rails
+        traefik.docker.network: lb_default
+        traefik.enable: "true"
+        traefik.frontend.rule: Host:framework.ucblib.org
+        traefik.port: "3000"
     logging:
       driver: awslogs
       options:

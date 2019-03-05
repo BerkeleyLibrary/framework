@@ -11,6 +11,12 @@ secrets:
 services:
   rails:
     deploy:
+      labels:
+        traefik.backend: altmedia_rails
+        traefik.docker.network: altmedia_default
+        traefik.enable: "true"
+        traefik.frontend.rule: Host:altmedia.lib.berkeley.edu,framework.lib.berkeley.edu
+        traefik.port: "3000"
       replicas: 2
     environment:
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/

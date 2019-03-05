@@ -24,12 +24,6 @@ services:
 
     #
     deploy:
-      labels:
-        traefik.backend: altmedia_rails
-        traefik.docker.network: lb_default
-        traefik.enable: "true"
-        traefik.frontend.rule: Host:framework.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
-        traefik.port: "3000"
       placement:
         constraints:
           - node.labels.patronapi == allowed
@@ -37,13 +31,6 @@ services:
         delay: 10s
         failure_action: rollback
         order: start-first
-
-    labels:
-      traefik.backend: altmedia_rails
-      traefik.docker.network: lb_default
-      traefik.enable: "true"
-      traefik.frontend.rule: Host:framework.ucblib.org,Host:altmedia.lib.berkeley.edu,Host:altmedia.localhost
-      traefik.port: "3000"
 
     # Expose on a randomly available port on the host.
     ports:
@@ -69,12 +56,8 @@ services:
     command:
       - assets:precompile
     deploy:
-      labels:
-        traefik.enable: "false"
       restart_policy:
         condition: none
-    labels:
-      traefik.enable: "false"
     restart: "no"
 
 version: "3.5"
