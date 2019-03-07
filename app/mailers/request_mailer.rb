@@ -35,6 +35,32 @@ class RequestMailer < ActionMailer::Base
     mail(to: admin_to)
   end
 
+  # Send ServiceArticleRequest confirmation email to user
+  def service_article_confirmation_email(email, publication, patron)
+    @pub_title = publication[:pub_title]
+    @pub_location = publication[:pub_location]
+    @issn = publication[:issn]
+    @vol = publication[:vol]
+    @article_title = publication[:article_title]
+    @author = publication[:author]
+    @pages = publication[:pages]
+    @citation = publication[:citation]
+    @pub_notes = publication[:pub_notes]
+
+    @patron_name = patron.email
+    @patron_email = patron.name
+
+    mail(to: email)
+  end
+
+  # Send email describing a failure of the ServiceArticleRequest job
+  def service_article_failure_email(empid, displayname)
+    @empid = empid
+    @displayname = displayname
+
+    mail(to: admin_to)
+  end
+
   # Send email describing a failure of a ScanRequest job
   def failure_email(empid, displayname, note)
     @empid = empid

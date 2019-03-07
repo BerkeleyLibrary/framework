@@ -26,6 +26,10 @@ class ServiceArticleRequestForm < Form
   attr_accessor :patron_notes
   validate :note_validate!
 
+  # @!attribute [object] publication
+  #  Stores the related article attributes to pass more easily to email job
+  attr_accessor :publication
+
   # @!attribute [string] pub_title
   attr_accessor :pub_title
   validates :pub_title, presence: true
@@ -45,6 +49,26 @@ class ServiceArticleRequestForm < Form
   #Fields that are not required but can be optionally filled out by the user
   attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
 
+  attr_accessor :support_email
+
+  def support_email
+    @support_email ||= 'ibsweb@library.berkeley.edu'
+  end
+
+  def publication
+    @publication ||= {
+        pub_title: pub_title,
+        pub_location: pub_location,
+        issn: issn,
+        vol: vol,
+        article_title: article_title,
+        author: author,
+        pages: pages,
+        citation: citation,
+        pub_notes: pub_notes,
+      }
+  end
+
   #Cannot use the delegate method because that is for read-only attributes
   def patron_email
     @patron_email ||= @patron.email if @patron
@@ -56,7 +80,7 @@ class ServiceArticleRequestForm < Form
     if patron.note.nil?
       patron_notes = []
     else
-      patron.note.kind_of?(Array) ? patron.note.join("") : (patron_notes ||= []) << patron.note
+      patron.note.kind_of?(Array) ? patron.note : (patron_notes ||= []) << patron.note
     end
   end
 
@@ -93,8 +117,15 @@ class ServiceArticleRequestForm < Form
 
 private
 
-  #TO DO: ADD A MAILER JOB
   def submit
-    Rails.logger.debug(self.to_json)
+    ServiceArticleRequestJob.perform_later(
+      support_email,
+      publication,
+      patron: {
+        email: patron_email,
+        id: patron_id,
+        name: display_name,
+      },
+    )
   end
 end

@@ -56,13 +56,12 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   #A test user who has multiple notes in his/her Millenium account, one of which includes the eligibility note
-  #TO DO: ADD THIS USER TO OMNIAUTH.YML FILE
-  # def test_eligible_user_multiple_notes
-  #   with_login(:ucb_multiple_notes) do
-  #     get new_service_article_request_form_path
-  #     assert_response :ok
-  #   end
-  # end
+  def test_eligible_user_multiple_notes
+    with_login(:ucb_postdoc) do
+      get new_service_article_request_form_path
+      assert_response :ok
+    end
+  end
 
   def test_forbidden_view_message_for_user_ineligible_faculty
     with_login(:ucb_faculty) do
