@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+
+  <body>
+
+  <h3>Form Submission:</h3>
+  <div class="gathered-info">
+  <br/>
+  Patron name: <%= @patron_name %>
+  Patron email: <%= @patron_email %>
+  <br/>
+  Journal Title: <%= "#{@pub_title}" %>
+  Place of Publication: <%= @pub_location %>
+  ISSN: <%= @issn %>
+  Volume and/or Date: <%= @vol %>
+  Article Title: <%= @article_title %>
+  Article Author: <%= @author %>
+  Article Pages: <%= @pages %>
+  Citation Found: <%= @citation %>
+  Notes: <%= @pub_notes %>
+  </div>
+  </body>
+</html>
