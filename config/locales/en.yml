@@ -94,6 +94,10 @@ en:
       subject: alt-media scanning service opt-out
     ucop_borrow_request_form_email:
       subject: UC Berkeley Borrowing Card Requested
+    service_article_confirmation_email:
+      subject: Alt-Media Service - Article Request
+    service_article_failure_email:
+      subject: Alt-Media Service - Article Request
 
   scan_request_forms:
     new:
