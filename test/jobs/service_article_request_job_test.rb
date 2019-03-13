@@ -36,19 +36,17 @@ class ServiceArticleRequestJobTest < ActiveJob::TestCase
       to: [@support_email]
   end
 
-  # def test_failure_email
-  #   perform_enqueued_jobs do
-  #     raise "Error so that job fails"
-  #     ServiceArticleRequestJob.perform_now(
-  #       @support_email,
-  #       @publication,
-  #       patron: @patron,
-  #       )
-  #   end
-  #   test_email = RequestMailer.deliveries.last
-  #   assert_email test_email,
-  #     subject: 'Alt-Media Service - Article Request',
-  #     to: [@support_email]
-  # end
+  def test_email_fail
+    perform_enqueued_jobs do
+      ServiceArticleRequestJob.perform_now(
+        @publication,
+        patron: @patron,
+        )
+    end
+    test_email = RequestMailer.deliveries.last
+    assert_email test_email,
+      subject: 'Alt-Media Service - Article Request',
+      to: [@support_email]
+  end
 
 end
