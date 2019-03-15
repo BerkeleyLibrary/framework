@@ -14,7 +14,7 @@ gem 'omniauth-cas',
   :git => 'https://github.com/dlindahl/omniauth-cas.git',
   :ref => '7087bda829e14c0f7cab2aece5045ad7015669b1'
 gem 'puma', '~> 3.11'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.2'
 gem 'recaptcha'
 gem 'sass-rails', '~> 5.0'
 gem 'sqlite3'
