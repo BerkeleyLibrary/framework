@@ -14,6 +14,7 @@ RUN addgroup -S -g 40035 altmedia && \
 RUN apk --no-cache --update upgrade && \
     apk --no-cache add \
         ca-certificates \
+        git \
         libc6-compat \
         nodejs \
         openssl \
