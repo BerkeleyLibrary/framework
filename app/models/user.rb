@@ -19,7 +19,7 @@ class User
         department_number: auth["extra"]['departmentNumber'],
         display_name: auth["extra"]['displayName'],
         email: auth["extra"]["berkeleyEduOfficialEmail"],
-        employee_id: auth["extra"]['employeeNumber'],
+        employee_id: auth["extra"]['berkeleyEduHCMID'],
         given_name: auth["extra"]['givenName'],
         student_id: auth["extra"]["berkeleyEduStuID"] || auth["extra"]["berkeleyEduCSID"],
         surname: auth["extra"]["surname"],
