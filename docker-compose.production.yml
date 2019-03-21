@@ -19,7 +19,7 @@ services:
     environment:
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-b7dcc6b5
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-6daca1b7
     logging:
       driver: awslogs
       options:
@@ -35,7 +35,7 @@ services:
     environment:
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-b7dcc6b5
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-6daca1b7
     logging:
       driver: awslogs
       options:
