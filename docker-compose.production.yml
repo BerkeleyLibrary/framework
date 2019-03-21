@@ -23,7 +23,7 @@ services:
         /forms/doemoff-study-room-use.*
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-31f1cc93
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-462b8d40
     logging:
       driver: awslogs
       options:
@@ -39,7 +39,7 @@ services:
     environment:
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-31f1cc93
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-462b8d40
     logging:
       driver: awslogs
       options:
