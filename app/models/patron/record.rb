@@ -63,23 +63,22 @@ module Patron
     attr_accessor :note
 
     class << self
-      # Returns the patron record for a given ID, or nil if it is not found
+      # Returns the patron record for a given ID
       #
-      # @return [Patron, nil]
+      # @return [Patron]
       #
       # @raise [Error::PatronApiError] If an error occurs contacting
       #   the Patron API (commonly due to firewall issues) or if the API returns
-      #   an unknown error message.
+      #   an unknown error message or if the API returns nothing.
       def find(id)
         # Fetch raw data from the Patron API
-        url = URI.join(self.api_base_url, "/PATRONAPI/#{URI.escape(id)}/dump")
+        url = URI.join(self.api_base_url, "/PATRONAPI/#{URI.escape("#{id}")}/dump")
         opts = { ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
         data = parse_dump(open(url, opts).read)
 
         # Handle errors
         if data["ERRMSG"].present?
-          return nil if data["ERRMSG"] == "Requested record not found"
-          raise PatronApiError, data["ERRMSG"]
+          raise Error::PatronApiError, data["ERRMSG"]
         end
 
         # Initialize new patron record object from the parsed data
