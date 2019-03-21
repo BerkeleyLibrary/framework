@@ -78,6 +78,7 @@ module Patron
 
         # Handle errors
         if data["ERRMSG"].present?
+          return nil if data["ERRMSG"] == "Requested record not found"
           raise Error::PatronApiError, data["ERRMSG"]
         end
 
