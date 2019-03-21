@@ -17,6 +17,10 @@ services:
         traefik.port: "3000"
       replicas: 2
     environment:
+      LIT_HIDDEN_PATHS: >
+        /forms/altmedia(?!-).*
+        /forms/altmedia-articles.*
+        /forms/doemoff-study-room-use.*
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-31f1cc93

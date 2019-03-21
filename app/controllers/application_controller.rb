@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Base
   helper_method :support_email
   # @!endgroup
 
+  # Return 404 if the requested path is in ENV["LIT_HIDDEN_PATHS"]
+  before_action :hide_paths
+
   # @see https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection/ClassMethods.html
   protect_from_forgery with: :exception
 
@@ -75,6 +78,30 @@ class ApplicationController < ActionController::Base
       error: "#{error.inspect}",
       cause: "#{error.cause.inspect}",
     })
+  end
+
+  # @return Regexp Pattern determining whether a request should be "hidden"
+  #
+  # For example, "LIT_HIDDEN_PATHS='foo bar.*'" will result in a regexp that
+  # matches either "foo" OR "bar.*".
+  def hidden_paths_re
+    @_hidden_paths_re ||= Regexp.union(
+      (ENV["LIT_HIDDEN_PATHS"] || "").
+        split.map(&:strip).reject(&:empty?).map{|s| Regexp.new(s)}
+    )
+  end
+
+  # Before filter that 404s requests whose paths match hidden_paths_re
+  def hide_paths
+    logger.debug({
+      message: "Filtering hidden paths",
+      hidden_paths_re: hidden_paths_re,
+      current_path: request.path,
+    }.to_json)
+
+    hidden_paths_re.match(request.path) do
+      render file: Rails.root.join("public/404.html"), status: :not_found
+    end
   end
 
   # Perform a redirect but keep all existing request parameters
