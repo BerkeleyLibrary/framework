@@ -13,6 +13,7 @@ module Error
 
   # Raised when an error occurs contacting the Patron API.
   class PatronApiError < BaseError; end
+  class PatronNotFoundError < PatronApiError; end
 
   # Raised if someone attempts to authenticate with an invalid provider.
   class InvalidAuthProviderError < BaseError; end

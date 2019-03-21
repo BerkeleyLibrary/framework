@@ -78,8 +78,11 @@ module Patron
 
         # Handle errors
         if data["ERRMSG"].present?
-          return nil if data["ERRMSG"] == "Requested record not found"
-          raise Error::PatronApiError, data["ERRMSG"]
+          if data["ERRMSG"].include?("record not found")
+            raise Error::PatronNotFoundError, "No patron record for '#{id}'"
+          else
+            raise Error::PatronApiError, data["ERRMSG"]
+          end
         end
 
         # Initialize new patron record object from the parsed data

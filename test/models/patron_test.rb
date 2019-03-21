@@ -65,7 +65,9 @@ class PatronTest < ActiveSupport::TestCase
   end
 
   def test_not_found_returns_nil
-    assert_nil Patron::Record.find('does not exist')
+    assert_raises(Error::PatronNotFoundError) do
+      Patron::Record.find('does not exist')
+    end
   end
 
   def test_adding_a_note
