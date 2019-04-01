@@ -47,8 +47,8 @@ class RequestMailer < ActionMailer::Base
     @citation = publication[:citation]
     @pub_notes = publication[:pub_notes]
 
-    @patron_name = patron.email
-    @patron_email = patron.name
+    @patron_name = patron.name
+    @patron_email = patron.email
 
     mail(to: email)
   end
