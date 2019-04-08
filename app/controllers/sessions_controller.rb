@@ -12,15 +12,7 @@
 class SessionsController < ApplicationController
   # Redirect the user to Calnet for authentication
   def new
-    Rails.logger.debug("hOME PATH")
-    Rails.logger.debug(home_path) # /home
-    Rails.logger.debug("ALL PARAMS")
-    Rails.logger.debug(params.to_json) # {"url":"/forms/altmedia-articles","controller":"sessions","action":"new"}
-    Rails.logger.debug("PARAMS URL")
-    Rails.logger.debug(params[:url]) # /forms/library-staff-devices
     redirect_args = { origin: params[:url] || home_path }.to_query
-    Rails.logger.debug("PRINTING THE REDIRECT ARGS")
-    Rails.logger.debug(redirect_args.to_json)  # "origin=%2Fforms%2Flibrary-staff-devices"
     redirect_to "/auth/calnet?#{redirect_args}"
   end
 
