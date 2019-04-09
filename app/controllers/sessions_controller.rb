@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
 
     sign_in @user
 
-    redirect_to params[:url] || request.env['omniauth.origin'] || home_path
+    request.env['omniauth.origin'] || home_path
   end
 
   # Logout the user by redirecting to CAS logout screen
