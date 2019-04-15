@@ -39,6 +39,18 @@ class RoutesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def test_calnet_redirect_works_from_home_path
+    get login_path
+    redirect_args = { origin: home_path }.to_query
+    assert_redirected_to "/auth/calnet?origin=%2Fhome"
+  end
+
+  def test_calnet_redirect_works_from_libstaff_form_origin_url
+    get libstaff_edevices_loan_forms_path
+    follow_redirect!
+    assert_redirected_to "/auth/calnet?origin=%2Fforms%2Flibrary-staff-devices"
+  end
+
   def test_altmedia_requires_sign_in
     get "/forms/altmedia"
     assert_redirected_to login_path(url: '/forms/altmedia')
