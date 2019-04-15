@@ -5,10 +5,16 @@ networks:
     external:
       name: lb_default
 
+secrets:
+  PRIVATE_KEY:
+    external: true
+    name:  framework_mkcallnote_private_key_staging-v1
+
 services:
   rails:
     environment:
       INTERCEPT_EMAILS: present
+      PATRON_UPDATE_URL: ssh://altmedia-staging@vm161.lib.berkeley.edu/home/altmedia-staging/bin/mkcallnote
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
     deploy:
@@ -29,6 +35,7 @@ services:
   updater:
     environment:
       INTERCEPT_EMAILS: present
+      PATRON_UPDATE_URL: ssh://altmedia-staging@vm161.lib.berkeley.edu/home/altmedia-staging/bin/mkcallnote
       RAILS_ENV: production
     image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:latest
     logging:
