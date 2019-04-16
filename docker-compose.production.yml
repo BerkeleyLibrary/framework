@@ -20,10 +20,9 @@ services:
       LIT_HIDDEN_PATHS: >
         /forms/altmedia(?!-).*
         /forms/altmedia-articles.*
-        /forms/doemoff-study-room-use.*
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-0956c98c
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-7368656e
     logging:
       driver: awslogs
       options:
@@ -39,7 +38,7 @@ services:
     environment:
       PATRON_API_URL: https://oskicatp.berkeley.edu:54620/PATRONAPI/
       RAILS_ENV: production
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-0956c98c
+    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-7368656e
     logging:
       driver: awslogs
       options:
