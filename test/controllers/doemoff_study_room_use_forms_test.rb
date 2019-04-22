@@ -1,5 +1,5 @@
 require 'test_helper'
-
+ 
 class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
   #Use the stubbed records in the omniauth.yml file to simulate logins
   setup do
