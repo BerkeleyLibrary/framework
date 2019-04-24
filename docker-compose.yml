@@ -1,66 +1,25 @@
----
-
-secrets:
-  MAIL_PASSWORD:
-    external: true
-    name: MAIL_LIB_NOREPLY_PASSWORD
-  PRIVATE_KEY:
-    external: true
-    name: ALTMEDIA_PRIVATE_KEY
-  RECAPTCHA_SECRET_KEY:
-    external: true
-    name: RECAPTCHA_UCBLIB_ORG_SECRET_KEY
-  RECAPTCHA_SITE_KEY:
-    external: true
-    name: RECAPTCHA_UCBLIB_ORG_SITE_KEY
-  SECRET_KEY_BASE:
-    external: true
-    name: ALTMEDIA_SECRET_KEY_BASE
-
 services:
   rails: &services-rails
-    build: .
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:${DOCKER_SERVICE_RAILS_TAG:-latest}
-
-    #
-    deploy:
-      placement:
-        constraints:
-          - node.labels.patronapi == allowed
-      update_config:
-        delay: 10s
-        failure_action: rollback
-        order: start-first
-
-    # Expose on a randomly available port on the host.
+    build:
+      context: .
+      target: development
     ports:
-      - 3000
-
-    # Tells docker-compose to always try to restart this.
+      - 3000:3000
     restart: always
-
-    # Mount all available secrets.
-    secrets:
-      - {source: MAIL_PASSWORD}
-      - {source: PRIVATE_KEY, target: /home/altmedia/.ssh/id_rsa}
-      - {source: RECAPTCHA_SECRET_KEY}
-      - {source: RECAPTCHA_SITE_KEY}
-      - {source: SECRET_KEY_BASE}
-
-    # Mount the public directory.
     volumes:
-      - public:/opt/app/public
+      - ./:/opt/app
 
   updater:
     <<: *services-rails
     command:
       - assets:precompile
-    deploy:
-      restart_policy:
-        condition: none
+    ports: []
     restart: "no"
 
-version: "3.5"
+  yard:
+    <<: *services-rails
+    entrypoint: ['bundle', 'exec', '--', 'yard', 'server', '--reload']
+    ports:
+      - 8808:8808
 
-volumes:
-  public: {}
+version: "3.5"

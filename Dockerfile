@@ -13,6 +13,7 @@ RUN addgroup -S -g 40035 altmedia && \
 # Install packages common to dev and prod.
 RUN apk --no-cache --update upgrade && \
     apk --no-cache add \
+        bash \
         ca-certificates \
         git \
         libc6-compat \

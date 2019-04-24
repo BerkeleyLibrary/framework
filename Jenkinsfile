@@ -6,105 +6,165 @@ pipeline {
   }
 
   environment {
-    COMPOSE_FILE = "docker-compose.yml:docker-compose.ci.yml"
-    COMPOSE_PROJECT_NAME = "${GIT_COMMIT.take(8)}"
-    DOCKER_REGISTRY = credentials("0A792AEB-FA23-48AC-A824-5FF9066E6CA9")
+    COMPOSE_FILE      = "docker-compose.ci.yml"
+    DOCKER_REPO       = "containers.lib.berkeley.edu/lap/altmedia/altmedia-rails/${GIT_BRANCH}"
+    DOCKER_TAG        = "${DOCKER_REPO}:build-${BUILD_NUMBER}"
+    DOCKER_TAG_LATEST = "${DOCKER_REPO}:latest"
+
+    // Hooks executed after a successful build. These tell tracking
+    // environments to pull the latest image version.
+    SUCCESS_WEBHOOKS = credentials("framework-success-webhook-urls")
   }
 
   stages {
-    stage("Build") {
+    stage("Setup") {
       steps {
-        sh "env | sort"
-        sh "docker-compose build --pull --force-rm"
+        script {
+          def targetBranch = env.GIT_BRANCH == "master" ?
+            "origin/production" :
+            "origin/master"
+
+          def targetCommit = sh(
+            script: "git rev-parse ${targetBranch}",
+            returnStdout: true,
+          )
+
+          def gitlog = sh(
+            script: "git log --pretty=format:'* %h: %s (%ar by %ae)' ${targetBranch}..",
+            returnStdout: true,
+          )
+
+          env.SLACK_THREAD_ID = slackSend(
+            message: "Building <${env.BUILD_URL}console|${env.JOB_NAME}/${env.BUILD_NUMBER}>",
+            attachments: [
+              [
+                title: "git-log (${env.GIT_BRANCH}@${env.GIT_COMMIT.take(8)} .. ${targetBranch}@${targetCommit.take(8)})",
+                text: "${gitlog}",
+              ],
+            ],
+          ).threadId
+
+          // For debugging
+          sh 'env | sort'
+        }
       }
     }
 
-    stage("Run") {
+    stage("Build") {
       steps {
-        sh "docker-compose up -d --scale updater=0"
-        retry(5) { sh "docker-compose run --rm updater" }
+        withDockerRegistry(url: "https://${DOCKER_REPO}", credentialsId: "0A792AEB-FA23-48AC-A824-5FF9066E6CA9") {
+          sh 'docker-compose build --pull'
+          sh 'docker push "${DOCKER_TAG}"'
+        }
       }
     }
 
     stage("Test") {
-      steps {
-        // Note: ci_reporter_minitest deletes the test/reports directory before
-        // running, so you should run the tests *first*. Otherwise, brakeman
-        // results would be deleted!
-        sh 'docker-compose exec -Tu root rails rails test:junit'
-        sh 'docker-compose exec -Tu root rails rails brakeman'
-        sh 'docker-compose exec -Tu root rails rails bundle:audit'
-        sh 'docker-compose exec -T rails wget --spider http://localhost:3000/home'
+      stages {
+        stage("Run") {
+          steps {
+            // Start the test stack
+            sh 'docker-compose up --detach --scale updater=0'
+
+            // Run the updater to scaffold DB, solr, assets, etc.
+            retry(5) {
+              sh 'docker-compose run --rm updater'
+            }
+
+            // Sanity-check the homepage
+            sh 'docker-compose exec -T rails wget --spider http://localhost:3000/home'
+          }
+        }
+        stage("RSpec") {
+          steps {
+            // Run the tests
+            sh 'docker-compose run --rm rails cal:test:ci'
+          }
+          post {
+            always {
+              // Copy test results (if any) before exiting
+              sh 'docker cp "$(docker-compose ps -q rails):/opt/app/test/reports" test/reports'
+
+              // Archive test reports
+              junit 'test/reports/*.xml'
+              publishBrakeman 'test/reports/brakeman.json'
+
+              // Publish code coverage reports (if any)
+              publishHTML([
+                allowMissing: true,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'test/reports/rcov',
+                reportFiles: 'index.html',
+                reportName: 'Code Coverage',
+              ])
+            }
+          }
+        }
+        stage("Audit") {
+          steps {
+            // Run audit checks against rubygems dependencies
+            sh 'docker-compose run --rm rails bundle:audit'
+          }
+        }
       }
       post {
         always {
-          sh 'docker cp $(docker-compose ps -q rails):/opt/app/test/reports test/'
-          junit 'test/reports/*.xml'
-          publishBrakeman 'test/reports/brakeman.json'
-          publishHTML(target: [
-            allowMissing: false,
-            alwaysLinkToLastBuild: false,
-            keepAll: true,
-            reportDir: 'test/reports/rcov',
-            reportFiles: 'index.html',
-            reportName: 'Code Coverage Report',
-          ])
+          // Spin down the stack and cleanup volumes
+          sh 'docker-compose down --remove-orphans --volumes'
+        }
+      }
+    }
+
+    stage("Push") {
+      steps {
+        withDockerRegistry(url: "https://${DOCKER_REPO}", credentialsId: "0A792AEB-FA23-48AC-A824-5FF9066E6CA9") {
+          sh 'docker tag "${DOCKER_TAG}" "${DOCKER_TAG_LATEST}"'
+          sh 'docker push "${DOCKER_TAG_LATEST}"'
         }
       }
     }
 
     stage("Deploy") {
       when {
-        branch "master"
+        anyOf {
+          branch "master"
+          branch "production"
+        }
       }
-
-      stages {
-        stage("Push Images") {
-          steps {
-            sh "bin/docker-push latest"
-            sh "bin/docker-push 'git-${GIT_COMMIT.take(8)}'"
-          }
-        }
-
-        stage('Deploy Staging') {
-          environment {
-            COMPOSE_FILE = "docker-compose.yml:docker-compose.staging.yml"
-            DOCKER_HOST = 'tcp://vm242.lib.berkeley.edu:2376'
-            DOCKER_TLS_VERIFY = '1'
-          }
-          steps {
-            withCredentials([
-              dockerCert(
-                credentialsId: 'b4a13a4f-8e28-4f1c-b13d-d02d899fbfd8',
-                variable: 'DOCKER_CERT_PATH',
-              ),
-            ]) {
-              sh "docker-compose config > tmp/staging-stack.yml"
-              sh "bin/docker-deploy tmp/staging-stack.yml altmedia"
-            }
-          }
-        }
-
-        stage('Deploy Production') {
-          environment {
-            COMPOSE_FILE = "docker-compose.yml:docker-compose.production.yml"
-            DOCKER_HOST = 'tcp://vm244.lib.berkeley.edu:2376'
-            DOCKER_TLS_VERIFY = '1'
-          }
-          steps {
-            withCredentials([
-              dockerCert(
-                credentialsId: '5f3bdd53-05c4-4575-a438-7fe979425bb9',
-                variable: 'DOCKER_CERT_PATH',
-              ),
-            ]) {
-              sh "docker-compose config > tmp/production-stack.yml"
-              sh "bin/docker-deploy tmp/production-stack.yml altmedia"
-            }
+      steps {
+        script {
+          readFile(env.SUCCESS_WEBHOOKS).split('\n').each {
+            httpRequest(httpMode: 'POST', url: it)
           }
         }
       }
     }
+  }
+
+  post {
+    success {
+      slackSend(
+        message: "Woot! Finished without errors.",
+        channel: "${env.SLACK_THREAD_ID}",
+        color: 'good',
+      )
+    }
+    unsuccessful {
+      slackSend(
+        message: "The build failed or was aborted. Check the link above for details.",
+        channel: "${env.SLACK_THREAD_ID}",
+        color: 'danger',
+      )
+    }
+  }
+
+  options {
+    ansiColor("xterm")
+    buildDiscarder(logRotator(numToKeepStr: "60", daysToKeepStr: "7"))
+    gitlabCommitStatus(name: 'Jenkins')
+    gitLabConnection("git.lib.berkeley.edu")
+    timeout(time: 10, unit: "MINUTES")
   }
 
   triggers {
@@ -123,20 +183,5 @@ pipeline {
       triggerOnPush: true,
       triggerOpenMergeRequestOnPush: "both",
     )
-  }
-
-  options {
-    ansiColor("xterm")
-    buildDiscarder(logRotator(numToKeepStr: "60", daysToKeepStr: "7"))
-    disableConcurrentBuilds()
-    gitlabCommitStatus(name: 'Jenkins')
-    gitLabConnection("git.lib.berkeley.edu")
-    timeout(time: 10, unit: "MINUTES")
-  }
-
-  post {
-    always {
-      sh 'docker-compose down -v --remove-orphans || true'
-    }
   }
 }
