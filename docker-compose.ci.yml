@@ -8,7 +8,7 @@ services:
         edu.berkeley.lib.git-commit: "${GIT_COMMIT}"
         edu.berkeley.lib.git-repo: "${GIT_URL}"
         edu.berkeley.lib.project-description: Rails application providing a variety of administrative forms.
-        edu.berkeley.lib.project-tier: 24/7
+        edu.berkeley.lib.project-tier: business-hours
     environment:
       RAILS_ENV: test
     image: "${DOCKER_TAG}"

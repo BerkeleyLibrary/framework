@@ -100,13 +100,5 @@ EXPOSE 3000
 # only the volume's data is used.
 VOLUME ["/opt/app/public"]
 
-# Adds metadata we can query in production. The idea is to use this for routing
-# alerts and triggering auto-scaling, but it's currently unused.
-LABEL edu.berkeley.lib.author-1="Dave Zuckerman <dzuckerm@berkeley.edu>"
-LABEL edu.berkeley.lib.author-2="Dan Schmidt <dcschmidt@berkeley.edu>"
-LABEL edu.berkeley.lib.maintainer="Dave Zuckerman <dzuckerm@berkeley.edu>"
-LABEL edu.berkeley.lib.project-url="https://git.lib.berkeley.edu/lap/altmedia"
-LABEL edu.berkeley.lib.support-tier="business-hours"
-
 # Run the production stage in production mode.
 ENV RACK_ENV=production RAILS_ENV=production RAILS_SERVE_STATIC_FILES=true
