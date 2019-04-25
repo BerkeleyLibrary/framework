@@ -16,6 +16,7 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
           employee_name: ["can't be blank"],
           employee_personal_email: ["can't be blank", "is not a valid email address"],
           employee_phone: ["can't be blank"],
+          employee_address: ["can't be blank"],
         },
       },
       {
@@ -28,6 +29,7 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
           employee_name: '',
           employee_personal_email: 'not an email',
           employee_phone: '',
+          employee_address: '',
         },
         errors: {
           department_head_email: ["is not a valid email address"],
@@ -37,6 +39,7 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
           employee_name: ["can't be blank"],
           employee_personal_email: ["is not a valid email address"],
           employee_phone: ["can't be blank"],
+          employee_address: ["can't be blank"],
         },
       },
       {
@@ -49,6 +52,7 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
           employee_name: 'not blank',
           employee_personal_email: 'email@mail.com',
           employee_phone: 'not blank',
+          employee_address: 'not blank',
         },
         errors: {
           department_head_email: [],
@@ -58,6 +62,7 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
           employee_name: [],
           employee_personal_email: [],
           employee_phone: [],
+          employee_address: [],
         },
       },
     ].each do |attributes:, errors:, valid:|
@@ -88,6 +93,7 @@ class UcopBorrowRequestFormTest < ActiveSupport::TestCase
         employee_name: 'Glenn Kotche',
         employee_personal_email: 'glenn@gmail.com',
         employee_phone: '1(773)009-4526',
+        employee_address: '123 North St, Berkeley, CA 94707',
       )
       form.submit!
     end
