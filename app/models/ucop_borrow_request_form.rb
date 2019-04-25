@@ -9,6 +9,7 @@ class UcopBorrowRequestForm < Form
     :employee_personal_email,
     :employee_phone,
     :employee_preferred_name,
+    :employee_address
   )
 
   validates :department_name,
@@ -33,6 +34,9 @@ class UcopBorrowRequestForm < Form
     presence: true
 
   validates :employee_name,
+    presence: true
+
+  validates :employee_address,
     presence: true
 
   private

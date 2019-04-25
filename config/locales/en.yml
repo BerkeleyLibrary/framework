@@ -47,6 +47,7 @@ en:
         employee_personal_email: Your Preferred Email Address
         employee_phone: Your Phone Number
         employee_preferred_name: Your Preferred Name (if different from legal name)
+        employee_address: Your Personal Mailing Address
       models:
         scan_request_form:
           attributes:
