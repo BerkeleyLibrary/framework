@@ -9,10 +9,13 @@ Rails.application.config.middleware.use OmniAuth::Builder do
       :uid_field => :uid
   end
 
-  # omniauth-cas provides integration with Calnet.
+  cas_host = ENV.fetch("CAS_HOST") {
+    "auth#{'-test' unless Rails.env.production?}.berkeley.edu"
+  }
+
   provider :cas,
     name: :calnet,
-    host: "auth#{'-test' unless Rails.env.production?}.berkeley.edu",
+    host: cas_host,
     login_url: '/cas/login',
     service_validate_url: '/cas/p3/serviceValidate',
     fetch_raw_info: Proc.new { |strategy, opts, ticket, user_info, rawxml|
