@@ -1,4 +1,4 @@
-class DoemoffStudyRoomUseFormsController < ApplicationController
+class StudentEdevicesLoanFormsController < ApplicationController
   # class ForbiddenError < StandardError; end
 
   before_action :authenticate!
@@ -12,15 +12,13 @@ class DoemoffStudyRoomUseFormsController < ApplicationController
   # private
 
   def authorize!
-    patron = current_user.employee_patron_record || \
-      current_user.student_patron_record
+    patron = current_user.student_patron_record
 
     raise ForbiddenError, "Missing Patron record" if patron.nil?
     raise ForbiddenError, "Patron has manual blocks" if not patron.blocks.nil?
   end
 
   #Before loading the form, check that the user is library staff. If not, display a you cannot enter message
-  
 
   def index
     redirect_to action: :new
@@ -50,23 +48,25 @@ private
   def init_form!
     #Rails.logger.debug{"here?!!!!     "}
     #Rails.logger.debug(current_user.to_json)
-    @form = DoemoffStudyRoomUseForm.new(
+    @form = StudentEdevicesLoanForm.new(
       display_name: current_user.display_name,
       patron: current_user.employee_patron_record || current_user.student_patron_record,
     )
-    @form.tellme
     @form.authorize!
+    @form.tellme
     @form.validate unless @form.assign_attributes(form_params).blank?
   end
 
   # Make sure only specified attributes are allowed as params
   def form_params
-    params.require(:doemoff_study_room_use_form).permit(
+    params.require(:student_edevices_loan_form).permit(
       :borrow_check,
+      :edev_check,
       :fines_check,
-      :roomUse_check,
+      :lend_check,
     )
   rescue ActionController::ParameterMissing
     {}
   end
 end
+

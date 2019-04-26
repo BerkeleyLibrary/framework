@@ -73,12 +73,12 @@ class User
   # The user's employee patron record
   # @return [Patron::Record, nil]
   def employee_patron_record
-    @employee_patron_record ||= Patron::Record.find(employee_id)
+    @employee_patron_record ||= Patron::Record.find(employee_id) if self.employee_id
   end
 
   # The user's student patron record (if they have a student ID)
   # @return [Patron::Record, nil]
   def student_patron_record
-    @student_patron_record ||= Patron::Record.find(student_id)
+    @student_patron_record ||= Patron::Record.find(student_id) if self.student_id
   end
 end

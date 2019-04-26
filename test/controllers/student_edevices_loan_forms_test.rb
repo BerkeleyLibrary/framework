@@ -1,6 +1,6 @@
 require 'test_helper'
- 
-class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
+
+class StudentEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
   #Use the stubbed records in the omniauth.yml file to simulate logins
   setup do
     VCR.insert_cassette 'patrons'
@@ -15,31 +15,31 @@ class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to login_path(url: new_scan_request_form_path)
   # end
 
-  def test_user_allowed_undergrad
-    with_login(:ucb_undergrad_student) do
-      get new_doemoff_study_room_use_form_path
+  def test_user_allowed
+    with_login(:ucb_grad_student) do
+      get new_student_edevices_loan_form_path
       assert_response :ok
     end
   end
 
   def test_non_student_not_allowed
     with_login(:ucb_scholar) do
-      get new_doemoff_study_room_use_form_path
-      assert_response :ok
+      get new_student_edevices_loan_form_path
+      assert_response :forbidden
     end
   end
 
    def test_blocked_user_not_allowed
      with_login(:ucb_blocked_faculty) do
-      get new_doemoff_study_room_use_form_path
+      get new_student_edevices_loan_form_path
       assert_response :forbidden
     end
   end
 
   def test_index_redirects_to_new
     with_login(:ucb_undergrad_student) do
-      get new_doemoff_study_room_use_form_path
-      assert_response :ok
+      get student_edevices_loan_forms_path
+      assert_redirected_to "/forms/student_edevices_loan/new"
     end
   end
 
@@ -156,3 +156,4 @@ class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
 #     end
 #   end
 end
+
