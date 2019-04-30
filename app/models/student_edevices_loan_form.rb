@@ -76,7 +76,7 @@ class StudentEdevicesLoanForm < Form
 private
 
   def submit
-    DoemoffStudyRoomUseJob.perform_later(
+    StudentEdevicesLoanJob.perform_later(
       patron: {
         email: patron_email,
         id: patron_id,
