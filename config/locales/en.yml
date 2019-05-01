@@ -79,6 +79,8 @@ en:
         create: Submit
       student_edevices_loan_form:
         create: Submit
+      galc_request_form:
+        create: Submit
 
   omniauth_callbacks:
     calnet:

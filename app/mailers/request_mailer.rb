@@ -75,6 +75,20 @@ class RequestMailer < ActionMailer::Base
     mail(to: admin_to)
   end
 
+  # Send GalcRequest confirmation email to user
+  def galc_confirmation_email(email)
+    mail(to: email)
+  end
+
+  # Send email describing a failure of the GalcRequest job
+  def galc_failure_email(empid, displayname, note)
+    @empid = empid
+    @displayname = displayname
+    @note = note
+
+    mail(to: admin_to)
+  end
+
   # Send email describing a failure of a ScanRequest job
   def failure_email(empid, displayname, note)
     @empid = empid

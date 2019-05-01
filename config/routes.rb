@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :libstaff_edevices_loan_forms, path: 'library-staff-devices'
     resources :service_article_request_forms, path: 'altmedia-articles'
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'
+    resources :galc_request_forms, path: 'galc-agreement'
   end
 
   # Omniauth automatically handles requests to /auth/:provider. We need only
