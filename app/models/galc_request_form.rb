@@ -1,4 +1,21 @@
 class GalcRequestForm < Form
+
+  ALLOWED_PATRON_AFFILIATIONS = [
+    Patron::Affiliation::UC_BERKELEY,
+    #Patron::Affiliation::COMMUNITY_COLLEGE, #including this option for when testing
+  ]
+
+  ALLOWED_PATRON_TYPES = [
+    Patron::Type::UNDERGRAD,
+    Patron::Type::UNDERGRAD_SLE,
+    Patron::Type::GRAD_STUDENT,
+    Patron::Type::FACULTY,
+    Patron::Type::MANAGER,
+    Patron::Type::LIBRARY_STAFF,
+    Patron::Type::STAFF,
+    #Patron::Type::VISITING_SCHOLAR, #including this option for when testing
+  ]
+
   # Patron making the request
   # @return [Patron::Record]
   attr_accessor :patron
@@ -11,7 +28,14 @@ class GalcRequestForm < Form
   # @!attribute [r] patron_type
   #   @return [Patron::Type]
   delegate :type, to: :patron, prefix: true
-  validates :patron_type, presence: true
+  validates :patron_type, inclusion: {in: ALLOWED_PATRON_TYPES},
+    strict: Error::ForbiddenError
+
+  # @!attribute [r] patron_affiliation
+  #   @return [Patron::Affiliation]
+  delegate :affiliation, to: :patron, prefix: true
+  validates :patron_affiliation, inclusion: {in: ALLOWED_PATRON_AFFILIATIONS},
+    strict: Error::ForbiddenError
 
   # @!attribute [string] patron_email
   attr_accessor :patron_email
@@ -34,7 +58,7 @@ class GalcRequestForm < Form
   # @!attribute [object] publication
 
   #Fields that are not required but can be optionally filled out by the user
-  attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
+  #attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
 
   attr_accessor :support_email
 
@@ -57,16 +81,6 @@ class GalcRequestForm < Form
     end
   end
 
-  #The UCB SLE undergrad which is type 2 has access but all other student types need to be checked
-  def is_student?
-    patron.type == Patron::Type::GRAD_STUDENT or patron.type == Patron::Type::UNDERGRAD
-  end
-
-  #Faculty and students get specific views, as does all other patron types, so determine if the patron is "other"
-  def is_other_patron_type?
-    patron.type != Patron::Type::FACULTY and patron.type != Patron::Type::GRAD_STUDENT and patron.type != Patron::Type::UNDERGRAD
-  end
-
   #Check to see if the patron's Millenium account contains a note with text indicating eligibility
   def is_eligible?
     #patron_notes.grep(/GALC eligible/).any?
@@ -75,9 +89,7 @@ class GalcRequestForm < Form
 
   #Raise errors depending on both eligibility and patron type
   def note_validate!
-    raise Error::FacultyNoteError if (not is_eligible? and patron.type == Patron::Type::FACULTY)
-    raise Error::StudentNoteError if (not is_eligible? and is_student?)
-    raise Error::GeneralNoteError if (not is_eligible? and is_other_patron_type?)
+    raise Error::GalcNoteError if not is_eligible?
   end
 
   # Apply strict (error-raising) validations

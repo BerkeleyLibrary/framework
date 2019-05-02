@@ -23,7 +23,7 @@ class GalcRequestFormsController < ApplicationController
   end
 
   def show
-    if %w(ineligible confirmed forbidden required student).include?(params[:id])
+    if %w(ineligible confirmed forbidden).include?(params[:id])
       render params[:id]
     else
       redirect_to action: :new
@@ -40,14 +40,10 @@ private
     )
     #Run through all the form validators for the strict validations
     @form.authorize!
-    #Specifically check the Millenium patron account for eligibility note and render view associated with eligibility and patron type
+    #Specifically check the Millenium patron account for eligibility note
     begin
       @form.note_validate!
-    rescue Error::FacultyNoteError => e
-      render :required, status: :forbidden
-    rescue Error::StudentNoteError => e
-      render :student, status: :forbidden
-    rescue Error::GeneralNoteError => e
+    rescue Error::GalcNoteError => e
       render :ineligible, status: :forbidden
     end
     @form.validate unless @form.assign_attributes(form_params).blank?
@@ -58,14 +54,6 @@ private
     params.require(:galc_request_form).permit(
       :display_name,
       :patron_email,
-      :pub_title,
-      :pub_location,
-      :issn,
-      :vol,
-      :article_title,
-      :author,
-      :pages,
-      :citation,
       :pub_notes
     )
   rescue ActionController::ParameterMissing
