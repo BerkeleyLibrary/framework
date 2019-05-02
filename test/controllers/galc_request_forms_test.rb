@@ -15,33 +15,9 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path(url: new_galc_request_form_path)
   end
 
-  #This particular test user does not have access to the GALC request form
-  def test_ineligible_faculty_not_allowed
-    with_login(:ucb_faculty) do
-      get new_galc_request_form_path
-      assert_response :forbidden
-    end
-  end
-
-  #This particular test user does not have access to the GALC request form
-  def test_ineligbile_grad_student_not_allowed
-    with_login(:ucb_grad_student) do
-      get new_galc_request_form_path
-      assert_response :forbidden
-    end
-  end
-
-  #This particular test user does not have access to the GALC request form
-  def test_ineligible_undergrad_student_not_allowed
-    with_login(:ucb_undergrad_student) do
-      get new_galc_request_form_path
-      assert_response :forbidden
-    end
-  end
-
-  #A test user who does not have scan access and is not student or faculty
-  def test_ineligible_other_not_allowed
-    with_login(:ucb_scholar) do
+  #Patron type Postdoc does not have access to the GALC request form
+  def test_ineligible_user_not_allowed
+    with_login(:ucb_postdoc) do
       get new_galc_request_form_path
       assert_response :forbidden
     end
@@ -49,40 +25,33 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
 
   #A test user who has one note in his/her Millenium account that includes the eligibility note
   def test_eligible_user
-    with_login(:ucb_eligible_scan) do
+    with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_response :ok
     end
   end
 
   #A test user who has multiple notes in his/her Millenium account, one of which includes the eligibility note
-  def test_eligible_user_multiple_notes
+  # def test_eligible_user_multiple_notes
+  #   with_login(:ucb_postdoc) do
+  #     get new_galc_request_form_path
+  #     assert_response :ok
+  #   end
+  # end
+
+  #Patron type or affiliation are not within the specifications
+  def test_forbidden_view_message_for_forbidden_user
     with_login(:ucb_postdoc) do
       get new_galc_request_form_path
-      assert_response :ok
-    end
-  end
-
-  def test_forbidden_view_message_for_user_ineligible_faculty
-    with_login(:ucb_faculty) do
-      get new_galc_request_form_path
       assert_response :forbidden
-      assert_select "h1", /More is required/
-      assert_select "p", /Sorry, you have not filled out the Opt in/
+      assert_select "h1", /Forbidden/
+      assert_select "p", /The Graphic Arts Loan Collection is only available to UC Berkeley students, faculty and staff/
     end
   end
 
-  def test_forbidden_view_message_for_user_ineligible_grad_student
+  #User has correct patron type and affiliation but no GALC eligible note in patron account
+  def test_forbidden_view_message_for_ineligible_user
     with_login(:ucb_grad_student) do
-      get new_galc_request_form_path
-      assert_response :forbidden
-      assert_select "h1", /Ineligible/
-      assert_select "p", /Sorry, you are not eligible for this service/
-    end
-  end
-
-  def test_forbidden_view_message_for_user_ineligible_other
-    with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_response :forbidden
       assert_select "h1", /Ineligible/
@@ -91,14 +60,14 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_index_redirects_to_new
-    with_login(:ucb_eligible_scan) do
+    with_login(:ucb_lib_staff) do
       get galc_request_forms_path
       assert_redirected_to "/forms/galc-agreement/new"
     end
   end
 
   def test_new_page_renders_with_correct_headline
-    with_login(:ucb_eligible_scan) do
+    with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_response :ok
       assert_select "h1", /Graphics Arts Loan Collection (GALC) - Borrowing Contract/
@@ -106,7 +75,7 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_questions_link_goes_to_webman_email
-    with_login(:ucb_eligible_scan) do
+    with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_select '.page-footer .support-email[href=?]',
         'mailto:webman@library.berkeley.edu'
@@ -114,71 +83,41 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_new_page_renders_with_correct_secondary_headers
-    with_login(:ucb_eligible_scan) do
+    with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_response :ok
-      assert_select "h2", /Patron Information/
-      assert_select "h2", /Journal Information/
-    end
-  end
-
-  def test_patron_email_required_with_value
-    with_login(:ucb_eligible_scan) do |user_data|
-      get new_galc_request_form_path
-
-      assert_select '#galc_request_form_patron_email' do
-        assert_select '[required=?]', 'required'
-        assert_select '[value=?]', user_data["info"]["email"]
-      end
-    end
-  end
-
-  def test_patron_name_required_with_value
-    with_login(:ucb_eligible_scan) do |user_data|
-      get new_galc_request_form_path
-
-      assert_select '#galc_request_form_display_name' do
-        assert_select '[required=?]', 'required'
-        assert_select '[value=?]', user_data["info"]["displayName"]
-      end
+      assert_select "h2", /Borrowing Guidelines/
+      assert_select "h2", /Fines and Liability/
     end
   end
 
   def test_submit_button_text
-    with_login(:ucb_eligible_scan) do
+    with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_select 'form input[type="submit"][value="Submit"]'
     end
   end
 
-  def test_specified_article_fields_are_required
-    with_login(:ucb_eligible_scan) do
-      get new_galc_request_form_path
-      assert_select "#galc_request_form_pub_title[required=required]"
-      assert_select "#galc_request_form_article_title[required=required]"
-      assert_select "#galc_request_form_vol[required=required]"
-      assert_select "#galc_request_form_citation[required=required]"
-    end
-  end
+  # def test_required_all_boxes_checked
+  #   with_login(:ucb_lib_staff) do
+  #     get new_galc_request_form_path
+  #     assert_select "#galc_request_form_borrow_check[required=required]"
+  #     assert_select "#galc_request_form_fine_check[required=required]"
+  #   end
+  # end
 
-  def test_redirect_to_confirmation_page_after_submit
-    #Mock up a form with article metadata to send
-    with_login(:ucb_eligible_scan) do
-      form_params = {
-        galc_request_form: {
-          patron_email: "ethomas@berkeley.edu",
-          display_name: "Elissa Thomas",
-          pub_title: "A Test Publication",
-          article_title: "Exciting scholarly article title",
-          vol: "3",
-          citation: "Davis, K. Exciting scholarly article title. A Test Publication: 3"
-        }
-      }
+  # def test_redirect_to_confirmation_page_after_submit
+  #   with_login(:ucb_lib_staff) do
+  #     form_params = {
+  #       galc_request_form: {
+  #         patron_email: "ethomas@berkeley.edu",
+  #         display_name: "Elissa Thomas",
+  #       }
+  #     }
 
-      post "/forms/galc-agreement", params: form_params
-      assert_redirected_to "/forms/galc-agreement/confirmed"
-    end
-  end
+  #     post "/forms/galc-agreement", params: form_params
+  #     assert_redirected_to "/forms/galc-agreement/confirmed"
+  #   end
+  # end
 
 end
-
