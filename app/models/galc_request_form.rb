@@ -84,7 +84,7 @@ class GalcRequestForm < Form
   #Check to see if the patron's Millenium account contains a note with text indicating eligibility
   def is_eligible?
     #patron_notes.grep(/GALC eligible/).any?
-    patron_notes.grep(/book scan eligible/).any?
+    patron_notes.grep(/GALC eligible/).any?
   end
 
   #Raise errors depending on both eligibility and patron type

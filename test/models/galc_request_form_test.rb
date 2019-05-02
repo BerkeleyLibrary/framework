@@ -8,7 +8,7 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       id: 111111,
       name: "test-111111",
       type: "4",
-      note: "book scan eligible"
+      note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
       display_name: "Test1",
@@ -31,7 +31,7 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       patron: patron,
     )
 
-    assert_raises Error::FacultyNoteError do
+    assert_raises Error::GalcNoteError do
       form.note_validate!
     end
   end
@@ -41,7 +41,7 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       id: 111113,
       name: "test-111113",
       type: "1",
-      note: "book scan eligible"
+      note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
       display_name: "Test3",
@@ -65,7 +65,7 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       patron: patron,
     )
 
-    assert_raises Error::StudentNoteError do
+    assert_raises Error::GalcNoteError do
       form.note_validate!
     end
   end
@@ -75,7 +75,7 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       id: 111115,
       name: "test-111115",
       type: "3",
-      note: "book scan eligible"
+      note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
       display_name: "Test5",
@@ -98,17 +98,17 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       patron: patron,
     )
 
-    assert_raises Error::StudentNoteError do
+    assert_raises Error::GalcNoteError do
       form.note_validate!
     end
   end
 
-  def test_eligibility_validation_for_other_patron_type
+  def test_eligibility_validation_for_eligible_undergrad_SLE
     patron = Patron::Record.new(
-      id: 111117,
+      id: 111113,
       name: "test-111117",
-      type: "6",
-      note: "book scan eligible"
+      type: "2",
+      note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
       display_name: "Test7",
@@ -120,21 +120,123 @@ class GalcRequestFormTest < ActiveSupport::TestCase
     end
   end
 
-  def test_eligibility_validation_for_other_patron_type
+  def test_eligibility_validation_for_ineligible_undergrad_SLE
     patron = Patron::Record.new(
-      id: 111118,
+      id: 111114,
       name: "test-111118",
-      type: "12"
+      type: "2",
+      note: "garbage"
       )
     form = GalcRequestForm.new(
       display_name: "Test8",
       patron: patron,
     )
 
-    assert_raises Error::GeneralNoteError do
+    assert_raises Error::GalcNoteError do
+      form.note_validate!
+    end
+  end
+
+  def test_eligibility_validation_for_eligible_manager
+    patron = Patron::Record.new(
+      id: 111113,
+      name: "test-111119",
+      type: "5",
+      note: "20180931 GALC eligible [litscript]"
+      )
+    form = GalcRequestForm.new(
+      display_name: "Test9",
+      patron: patron,
+    )
+
+    assert_nothing_raised do
+      form.note_validate!
+    end
+  end
+
+  def test_eligibility_validation_for_ineligible_manager
+    patron = Patron::Record.new(
+      id: 111114,
+      name: "test-1111110",
+      type: "5",
+      note: "garbage"
+      )
+    form = GalcRequestForm.new(
+      display_name: "Test10",
+      patron: patron,
+    )
+
+    assert_raises Error::GalcNoteError do
+      form.note_validate!
+    end
+  end
+
+  def test_eligibility_validation_for_eligible_library_staff
+    patron = Patron::Record.new(
+      id: 111113,
+      name: "test-1111111",
+      type: "6",
+      note: "20180931 GALC eligible [litscript]"
+      )
+    form = GalcRequestForm.new(
+      display_name: "Test11",
+      patron: patron,
+    )
+
+    assert_nothing_raised do
+      form.note_validate!
+    end
+  end
+
+  def test_eligibility_validation_for_ineligible_library_staff
+    patron = Patron::Record.new(
+      id: 111114,
+      name: "test-1111112",
+      type: "6",
+      note: "garbage"
+      )
+    form = GalcRequestForm.new(
+      display_name: "Test12",
+      patron: patron,
+    )
+
+    assert_raises Error::GalcNoteError do
+      form.note_validate!
+    end
+  end
+
+  def test_eligibility_validation_for_eligible_staff
+    patron = Patron::Record.new(
+      id: 111113,
+      name: "test-1111113",
+      type: "7",
+      note: "20180931 GALC eligible [litscript]"
+      )
+    form = GalcRequestForm.new(
+      display_name: "Test13",
+      patron: patron,
+    )
+
+    assert_nothing_raised do
+      form.note_validate!
+    end
+  end
+
+  def test_eligibility_validation_for_ineligible_staff
+    patron = Patron::Record.new(
+      id: 111114,
+      name: "test-1111114",
+      type: "7",
+      note: "garbage"
+      )
+    form = GalcRequestForm.new(
+      display_name: "Test14",
+      patron: patron,
+    )
+
+    assert_raises Error::GalcNoteError do
       form.note_validate!
     end
   end
  
 end
-
