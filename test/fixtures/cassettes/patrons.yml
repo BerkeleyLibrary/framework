@@ -798,6 +798,7 @@ http_interactions:
         AGENCY[p86]=1<BR>
         CL RTRND[p95]=0<BR>
         MONEY OWED[p96]=$0.00<BR>
+        NOTE[px]=20180931 GALC eligible [litscript]
         CUR ITEMA[p102]=0<BR>
         CUR ITEMB[p103]=0<BR>
         CUR ITEMC[p124]=0<BR>
@@ -874,6 +875,7 @@ http_interactions:
         CIRCACTIVE[p163]=09-22-17<BR>
         NOTICE PREF[p268]=-<BR>
         WAITLIST[p297]=0<BR>
+        NOTE[px]=20180931 GALC eligible [litscript]
         PATRN NAME[pn]=EMP-STAFF TEST<BR>
         MESSAGE[pm]=Please do not delete this test patron (sypb)<BR>
         P BARCODE[pb]=019999944<BR>

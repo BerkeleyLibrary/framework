@@ -70,7 +70,7 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
     with_login(:ucb_lib_staff) do
       get new_galc_request_form_path
       assert_response :ok
-      assert_select "h1", /Graphics Arts Loan Collection (GALC) - Borrowing Contract/
+      assert_select "h1", /Graphics Arts Loan Collection/
     end
   end
 
