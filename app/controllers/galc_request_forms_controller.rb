@@ -35,7 +35,6 @@ private
   def init_form!
     #Instantiate new form object
     @form = GalcRequestForm.new(
-      display_name: current_user.display_name,
       patron: current_user.employee_patron_record || current_user.student_patron_record
     )
     #Run through all the form validators for the strict validations
@@ -52,9 +51,7 @@ private
   # Make sure only specified attributes are allowed as params
   def form_params
     params.require(:galc_request_form).permit(
-      :display_name,
-      :patron_email,
-      :pub_notes
+      :patron_email
     )
   rescue ActionController::ParameterMissing
     {}

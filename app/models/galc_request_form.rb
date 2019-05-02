@@ -21,10 +21,6 @@ class GalcRequestForm < Form
   attr_accessor :patron
   validates :patron, presence: true, strict: Error::ForbiddenError
 
-   # @!attribute [string] display_name
-  attr_accessor :display_name
-  validates :display_name, presence: true
-
   # @!attribute [r] patron_type
   #   @return [Patron::Type]
   delegate :type, to: :patron, prefix: true
@@ -45,6 +41,10 @@ class GalcRequestForm < Form
   delegate :id, to: :patron, prefix: true
   validates :patron_id, presence: true
 
+  # @!attribute [string] patron_name
+  delegate :name, to: :patron, prefix: true
+  validates :patron_name, presence: true
+
   # @!attribute [array] patron_notes
   #   @return [Patron::Notes]
   attr_accessor :patron_notes
@@ -54,11 +54,6 @@ class GalcRequestForm < Form
   attr_accessor :borrow_check, :fine_check
   validates :borrow_check, :fine_check,
     inclusion: { in: %w(checked) }
-
-  # @!attribute [object] publication
-
-  #Fields that are not required but can be optionally filled out by the user
-  #attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
 
   attr_accessor :support_email
 
@@ -105,12 +100,10 @@ private
 
   def submit
     GalcRequestJob.perform_later(
-      support_email,
-      publication,
       patron: {
         email: patron_email,
         id: patron_id,
-        name: display_name,
+        name: patron_name,
       },
     )
   end

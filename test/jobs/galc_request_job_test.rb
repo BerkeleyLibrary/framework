@@ -4,36 +4,51 @@ class GalcRequestJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
   setup do
-    #Dummy employee and article data.
+    # Dummy patron data.
     @patron = { email: 'some-patron@totally-fake.com',
-                id: '019999944',
+                id: '0123456789',
                 name: 'Testy Testerson' }
-    @support_email = "lib-testmail@lists.berkeley.edu"
-    # @publication = {
-    #     pub_title: "J Malarial Stud",
-    #     pub_location: "London",
-    #     issn: "12345678",
-    #     vol: "4",
-    #     article_title: "The epidemiology of rat-based vector diseases",
-    #     author: "Dr Testperson",
-    #     pages: "212-59",
-    #     citation: "Testperson, K. The epidemiology of rat-based vector diseases. J Malarial Stud. London: (4) 212-59.",
-    #     pub_notes: "Cannot be retrieved in English",
-    #   }
   end
 
-  def test_email_success
-    perform_enqueued_jobs do
-      GalcRequestJob.perform_now(
-        @support_email,
-        patron: @patron,
-        )
+  def test_emails_the_patron_on_success
+    assert_emails 1 do
+      with_stubbed_ssh(:succeeded) do
+        GalcRequestJob.perform_now(patron: @patron)
+      end
     end
-    test_email = RequestMailer.deliveries.last
-    assert_email test_email,
-      subject: 'Graphic Arts Loan Collection (GALC) - Borrowing Contract',
-      to: [@support_email]
+
+    patron_email = RequestMailer.deliveries.last
+
+    assert_email patron_email,
+      subject: 'Galc confirmation email',
+      to: [@patron[:email]]
   end
 
-end
+  def test_send_failure_email_on_ssh_error
+    assert_emails 1 do
+      assert_raises StandardError do
+        with_stubbed_ssh(:raised) do
+          GalcRequestJob.perform_now(patron: @patron)
+        end
+      end
+    end
 
+    assert_email RequestMailer.deliveries.last,
+      subject: 'Galc failure email',
+      to: ['prntscan@lists.berkeley.edu']
+  end
+
+  def test_send_failure_email_on_script_error
+    assert_emails 1 do
+      assert_raises StandardError do
+        with_stubbed_ssh(:failed) do
+          GalcRequestJob.perform_now(patron: @patron)
+        end
+      end
+    end
+
+    assert_email RequestMailer.deliveries.last,
+      subject: 'Galc failure email',
+      to: ['prntscan@lists.berkeley.edu']
+  end
+end

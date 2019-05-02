@@ -11,7 +11,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test1",
       patron: patron,
     )
 
@@ -27,7 +26,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       type: "4",
       )
     form = GalcRequestForm.new(
-      display_name: "Test2",
       patron: patron,
     )
 
@@ -44,7 +42,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test3",
       patron: patron,
     )
 
@@ -61,7 +58,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "garbage"
       )
     form = GalcRequestForm.new(
-      display_name: "Test4",
       patron: patron,
     )
 
@@ -78,7 +74,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test5",
       patron: patron,
     )
 
@@ -94,7 +89,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       type: "3"
       )
     form = GalcRequestForm.new(
-      display_name: "Test6",
       patron: patron,
     )
 
@@ -111,7 +105,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test7",
       patron: patron,
     )
 
@@ -128,7 +121,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "garbage"
       )
     form = GalcRequestForm.new(
-      display_name: "Test8",
       patron: patron,
     )
 
@@ -145,7 +137,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test9",
       patron: patron,
     )
 
@@ -162,7 +153,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "garbage"
       )
     form = GalcRequestForm.new(
-      display_name: "Test10",
       patron: patron,
     )
 
@@ -179,7 +169,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test11",
       patron: patron,
     )
 
@@ -196,7 +185,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "garbage"
       )
     form = GalcRequestForm.new(
-      display_name: "Test12",
       patron: patron,
     )
 
@@ -213,7 +201,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "20180931 GALC eligible [litscript]"
       )
     form = GalcRequestForm.new(
-      display_name: "Test13",
       patron: patron,
     )
 
@@ -230,7 +217,6 @@ class GalcRequestFormTest < ActiveSupport::TestCase
       note: "garbage"
       )
     form = GalcRequestForm.new(
-      display_name: "Test14",
       patron: patron,
     )
 

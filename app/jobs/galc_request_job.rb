@@ -1,24 +1,28 @@
 require 'request_mailer'
 
-class ServiceArticleRequestJob < ApplicationJob
+class GalcRequestJob < ApplicationJob
   queue_as :default
 
-  def perform(email, publication, patron:)
+  def perform(patron:)
     patron = Patron::Record.new(**patron)
-    send_patron_email(email, publication, patron)
+    now = Time.now.strftime('%Y%m%d')
+    note = "#{now} GALC eligible [litscript]"
+
+    patron.add_note(note)
+    send_patron_email(patron)
   rescue
-    send_failure_email(patron)
+    send_failure_email(patron, note)
     raise # so rails will log it
   end
 
   private
 
-  def send_patron_email(email, publication, patron)
-    RequestMailer.service_article_confirmation_email(email, publication, patron).deliver_now
+  def send_patron_email(patron)
+    RequestMailer.galc_confirmation_email(patron.email).deliver_now
   end
 
-  def send_failure_email(patron)
-    RequestMailer.service_article_failure_email(patron.id, patron.name).deliver_now
+  def send_failure_email(patron, note)
+    RequestMailer.galc_failure_email(patron.id, patron.name, note).deliver_now
   end
 
 end
