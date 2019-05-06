@@ -12,8 +12,8 @@ class DoemoffStudyRoomUseFormsController < ApplicationController
   # private
 
   def authorize!
-    patron = current_user.employee_patron_record || \
-      current_user.student_patron_record
+    patron = current_user.student_patron_record || \
+      current_user.employee_patron_record
 
     raise ForbiddenError, "Missing Patron record" if patron.nil?
     raise ForbiddenError, "Patron has manual blocks" if not patron.blocks.nil?
@@ -52,7 +52,7 @@ private
     #Rails.logger.debug(current_user.to_json)
     @form = DoemoffStudyRoomUseForm.new(
       display_name: current_user.display_name,
-      patron: current_user.employee_patron_record || current_user.student_patron_record,
+      patron: current_user.student_patron_record || current_user.employee_patron_record,
     )
     @form.tellme
     @form.authorize!

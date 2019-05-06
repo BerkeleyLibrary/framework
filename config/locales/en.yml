@@ -38,8 +38,8 @@ en:
         opt_in_false: Opt out. I wish to terminate use of this service.
         patron_name: Name
       ucop_borrow_request_form:
-        department_head_email: Your UCOP Department Head's Email Address
-        department_head_name: Your UCOP Department Head's Full Name
+        department_head_email: Your UCOP Supervisor/Department Head's Email Address
+        department_head_name: Your UCOP Supervisor/Department Head's Full Name
         department_name: Your UCOP Department Name
         employee_email: Your Email Address
         employee_id: Your UCOP Employee ID number
@@ -78,6 +78,8 @@ en:
       doemoff_study_room_use_form:
         create: Submit
       student_edevices_loan_form:
+        create: Submit
+      galc_request_form:
         create: Submit
 
   omniauth_callbacks:

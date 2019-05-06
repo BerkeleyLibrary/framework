@@ -26,4 +26,7 @@ module Error
   class FacultyNoteError < ForbiddenError; end
   class StudentNoteError < ForbiddenError; end
   class GeneralNoteError < ForbiddenError; end
+
+  #Raised for patrons who do not have access to the GALC request service.
+  class GalcNoteError < ForbiddenError; end
 end
