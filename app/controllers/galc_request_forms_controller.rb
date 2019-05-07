@@ -23,7 +23,7 @@ class GalcRequestFormsController < ApplicationController
   end
 
   def show
-    if %w(ineligible confirmed forbidden).include?(params[:id])
+    if %w(confirmed forbidden).include?(params[:id])
       render params[:id]
     else
       redirect_to action: :new
@@ -39,19 +39,15 @@ private
     )
     #Run through all the form validators for the strict validations
     @form.authorize!
-    #Specifically check the Millenium patron account for eligibility note
-    begin
-      @form.note_validate!
-    rescue Error::GalcNoteError => e
-      render :ineligible, status: :forbidden
-    end
     @form.validate unless @form.assign_attributes(form_params).blank?
   end
 
   # Make sure only specified attributes are allowed as params
   def form_params
     params.require(:galc_request_form).permit(
-      :patron_email
+      :patron_email,
+      :borrow_check,
+      :fine_check
     )
   rescue ActionController::ParameterMissing
     {}

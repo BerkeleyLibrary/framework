@@ -45,11 +45,6 @@ class GalcRequestForm < Form
   delegate :name, to: :patron, prefix: true
   validates :patron_name, presence: true
 
-  # @!attribute [array] patron_notes
-  #   @return [Patron::Notes]
-  attr_accessor :patron_notes
-  validate :note_validate!
-
   # Users must explicitly opt-in to each clause of the form.
   attr_accessor :borrow_check, :fine_check
   validates :borrow_check, :fine_check,
@@ -64,27 +59,6 @@ class GalcRequestForm < Form
   #Cannot use the delegate method because that is for read-only attributes
   def patron_email
     @patron_email ||= @patron.email if @patron
-  end
-
-  #Sometimes the note field is a string and sometimes it is an array, so standardize it
-  #Return an empty array if there is no notes field. Otherwise return an array of notes
-  def patron_notes
-    if patron.note.nil?
-      patron_notes = []
-    else
-      patron.note.kind_of?(Array) ? patron.note : (patron_notes ||= []) << patron.note
-    end
-  end
-
-  #Check to see if the patron's Millenium account contains a note with text indicating eligibility
-  def is_eligible?
-    #patron_notes.grep(/GALC eligible/).any?
-    patron_notes.grep(/GALC eligible/).any?
-  end
-
-  #Raise errors depending on both eligibility and patron type
-  def note_validate!
-    raise Error::GalcNoteError if not is_eligible?
   end
 
   # Apply strict (error-raising) validations

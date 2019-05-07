@@ -49,16 +49,6 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  #User has correct patron type and affiliation but no GALC eligible note in patron account
-  def test_forbidden_view_message_for_ineligible_user
-    with_login(:ucb_grad_student) do
-      get new_galc_request_form_path
-      assert_response :forbidden
-      assert_select "h1", /Ineligible/
-      assert_select "p", /Sorry, you are not eligible for this service/
-    end
-  end
-
   def test_index_redirects_to_new
     with_login(:ucb_lib_staff) do
       get galc_request_forms_path
@@ -98,26 +88,31 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # def test_required_all_boxes_checked
-  #   with_login(:ucb_lib_staff) do
-  #     get new_galc_request_form_path
-  #     assert_select "#galc_request_form_borrow_check[required=required]"
-  #     assert_select "#galc_request_form_fine_check[required=required]"
-  #   end
-  # end
+  def test_required_all_boxes_checked
+    with_login(:ucb_lib_staff) do
+      get new_galc_request_form_path
+      assert_select "#galc_request_form_borrow_check[required=required]"
+      assert_select "#galc_request_form_fine_check[required=required]"
+    end
+  end
 
-  # def test_redirect_to_confirmation_page_after_submit
-  #   with_login(:ucb_lib_staff) do
-  #     form_params = {
-  #       galc_request_form: {
-  #         patron_email: "ethomas@berkeley.edu",
-  #         display_name: "Elissa Thomas",
-  #       }
-  #     }
+  def test_redirect_to_confirmation_page_after_submit
+    with_login(:ucb_lib_staff) do
+      form_params = {
+        galc_request_form: {
+          patron_email: "test-212387@berkeley.edu",
+          borrow_check: "unchecked",
+          fine_check: "unchecked"
+        }
+      }
 
-  #     post "/forms/galc-agreement", params: form_params
-  #     assert_redirected_to "/forms/galc-agreement/confirmed"
-  #   end
-  # end
+      post "/forms/galc-agreement", params: form_params
+      assert_redirected_to new_galc_request_form_path(form_params)
+      form_params[:galc_request_form][:borrow_check] = "checked"
+      form_params[:galc_request_form][:fine_check] = "checked"
+      post "/forms/galc-agreement", params: form_params
+      assert_redirected_to "/forms/galc-agreement/confirmed"
+    end
+  end
 
 end
