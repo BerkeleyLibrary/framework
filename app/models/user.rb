@@ -21,7 +21,7 @@ class User
         email: auth["extra"]["berkeleyEduOfficialEmail"],
         employee_id: auth["extra"]['employeeNumber'],
         given_name: auth["extra"]['givenName'],
-        student_id: auth["extra"]["berkeleyEduStuID"] || auth["extra"]["berkeleyEduCSID"],
+        student_id: auth["extra"]["berkeleyEduStuID"],
         surname: auth["extra"]["surname"],
         uid: auth["extra"]["uid"] || auth["uid"],
         framework_admin: auth["extra"]["berkeleyEduIsMemberOf"].include?('cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'),
