@@ -7,7 +7,7 @@ pipeline {
 
   environment {
     COMPOSE_FILE      = "docker-compose.ci.yml"
-    DOCKER_REPO       = "containers.lib.berkeley.edu/lap/altmedia/altmedia-rails/${GIT_BRANCH}"
+    DOCKER_REPO       = "containers.lib.berkeley.edu/lap/altmedia/altmedia-rails/${env.GIT_BRANCH.toLowerCase()}"
     DOCKER_TAG        = "${DOCKER_REPO}:build-${BUILD_NUMBER}"
     DOCKER_TAG_LATEST = "${DOCKER_REPO}:latest"
 
