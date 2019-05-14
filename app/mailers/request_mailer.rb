@@ -77,7 +77,7 @@ class RequestMailer < ActionMailer::Base
 
   # Send GalcRequest confirmation email to user
   def galc_confirmation_email(email)
-    mail(to: email)
+    mail(to: email, :subject => "GALC confirmation email")
   end
 
   # Send email describing a failure of the GalcRequest job

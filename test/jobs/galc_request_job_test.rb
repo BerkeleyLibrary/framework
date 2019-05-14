@@ -20,7 +20,7 @@ class GalcRequestJobTest < ActiveJob::TestCase
     patron_email = RequestMailer.deliveries.last
 
     assert_email patron_email,
-      subject: 'Galc confirmation email',
+      subject: 'GALC confirmation email',
       to: [@patron[:email]]
   end
 
