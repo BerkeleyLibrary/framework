@@ -63,9 +63,16 @@ class DoemoffStudyRoomUseForm < Form
   validates :patron_blocks, absence: true,
     strict: Error::PatronBlockedError
 
+  # @!attribute [r] patron_exp_date
+  # @return [Patron::Exp_date]
+  delegate :exp_date, to: :patron, prefix: true
+  validates :patron_exp_date, presence: true
+
   def tellme
     Rails.logger.debug("HERE!!!!!")
     Rails.logger.debug(patron.type)
+    Rails.logger.debug(patron.exp_date)
+    Rails.logger.debug(patron.id)
   end
 
   # Apply strict (error-raising) validations

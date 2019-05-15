@@ -62,6 +62,11 @@ module Patron
     # @return [String]
     attr_accessor :note
 
+    # The expiration date of patron record
+    #
+    # @return [String] ? I want to return date type.
+    attr_accessor :exp_date
+
     class << self
       # Returns the patron record for a given ID
       #
@@ -94,6 +99,7 @@ module Patron
           name: data['PATRN NAME[pn]'],
           type: data['P TYPE[p47]'],
           note: data['NOTE[px]'],
+          exp_date: data['EXP DATE[p43]'],
         )
       rescue OpenURI::HTTPError => e
         raise Error::PatronApiError
