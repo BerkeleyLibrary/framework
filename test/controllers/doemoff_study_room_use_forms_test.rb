@@ -43,14 +43,14 @@ class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # def test_forbidden_view_message
-  #   with_login(:ucb_scholar) do
-  #     get new_student_edevices_loan_form_path
-  #     assert_response :forbidden
-  #     assert_select "h1", /Forbidden/
-  #     assert_select "p", /Only Library Staff are eligible to borrow an electronic device/
-  #   end
-  # end
+  def test_forbidden_view_message
+    with_login(:ucb_lbnl_academic_staff) do
+      get new_doemoff_study_room_use_form_path
+      assert_response :forbidden
+      assert_select "h1", /Forbidden/
+      assert_select "p", /Only current UC Berkeley students, faculty, staff, post-docs and visiting scholars are eligible to use a Doe/
+    end
+  end
 
 #   #Need a valid community college user in the omniauth.yml file for testing
 #   #There are basically no users that could be CC-affiliated with CalNet IDs, so this is an edge case
@@ -61,13 +61,13 @@ class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
 #   #   end
 #   # end
 
-#   def test_new_page_renders_with_correct_headline
-#     with_login(:ucb_lib_staff) do
-#       get new_libstaff_edevices_loan_form_path
-#       assert_response :ok
-#       assert_select "h1", /Library Staff Electronic Devices Loan/
-#     end
-#   end
+  def test_new_page_renders_with_correct_headline
+    with_login(:ucb_lib_staff) do
+      get new_doemoff_study_room_use_form_path
+      assert_response :ok
+      assert_select "h1", /Moffitt Study Room/
+    end
+  end
 
 #   def test_new_page_renders_with_correct_secondary_headers
 #     with_login(:ucb_lib_staff) do
