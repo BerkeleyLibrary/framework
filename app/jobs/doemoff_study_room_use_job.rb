@@ -8,8 +8,6 @@ class DoemoffStudyRoomUseJob < ApplicationJob
     now = Time.now.strftime('%Y%m%d')
     note = "#{now} Doe/Moffitt study room eligible [litscript]"
 
-    Rails.logger.debug("Here in job")
-    Rails.logger.debug(patron.exp_date)
     patron.add_note(note)
     send_patron_email(patron)
   rescue

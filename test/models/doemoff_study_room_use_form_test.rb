@@ -11,7 +11,6 @@ class DoemoffStudyRoomUseFormTest < ActiveSupport::TestCase
       affiliation: '0',
       email: "whoever@example.com",
      # note: "Doe/Moffitt study room eligible"
-      exp_date: "10-31-20"
       )
     form = DoemoffStudyRoomUseForm.new(
       display_name: "Test1",
@@ -35,7 +34,6 @@ class DoemoffStudyRoomUseFormTest < ActiveSupport::TestCase
       affiliation: '0',
       email: "whoever@example.com",
       #note: "Doe/Moffitt study room eligible"
-      exp_date: "10-31-20"
       )
     form = DoemoffStudyRoomUseForm.new(
       display_name: "Test3",

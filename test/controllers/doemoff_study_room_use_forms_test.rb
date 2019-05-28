@@ -52,6 +52,18 @@ class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  #Check to see if the correct patron record is chosen when a user has a student and patron ids
+  #TODO: Add a test user with SLE status who has 2 different Millennium accounts
+  def test_valid_patron_record
+    with_login(:ucb_eligible_scan) do |user_data|
+      get new_doemoff_study_room_use_form_path
+
+      assert_select '#doemoff_study_room_use_form_patron_id' do
+        assert_select '[value=?]', user_data["extra"]["employeeNumber"]
+      end
+    end
+  end
+
 #   #Need a valid community college user in the omniauth.yml file for testing
 #   #There are basically no users that could be CC-affiliated with CalNet IDs, so this is an edge case
 #   # def test_unaffiliated_user_not_allowed
