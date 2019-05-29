@@ -5,6 +5,7 @@ require_relative '../config/environment'
 require 'rails/test_help'
 require 'minitest/autorun'
 require 'vcr'
+require 'concerns/patron_eligibility_tests'
 
 VCR.configure do |config|
   config.cassette_library_dir = "test/fixtures/cassettes"
