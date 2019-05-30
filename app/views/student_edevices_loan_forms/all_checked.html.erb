@@ -3,6 +3,5 @@
 <p class="success">I have read and agreed to the Student Electronic Devices Loan - Terms and Conditions.
 I will go to the participating library Circulation Desk to borrow the requested equipment. 
 I will present my Cal 1 Card at the Circulation Desk to borrow the equipment. When I check out the equipment, I will verify that it is in good working order.</p>
-
-<p>Date: <%= Date.today %> </p>
+<p>Date: <%= DateTime.now.strftime('%d %b %y') %> </p>
 <p>Name: <%= "#{@form.surname}, #{@form.given_name}" %> </p>
