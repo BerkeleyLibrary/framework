@@ -20,7 +20,7 @@ class StudentEdevicesLoanJobTest < ActiveJob::TestCase
     patron_email = RequestMailer.deliveries.last
 
     assert_email patron_email,
-      subject: 'Student edevices confirmation email',
+      subject: 'Student Electronic Devices Loan confirmation',
       to: [@patron[:email]]
   end
 
@@ -34,7 +34,7 @@ class StudentEdevicesLoanJobTest < ActiveJob::TestCase
     end
 
     assert_email RequestMailer.deliveries.last,
-      subject: 'Student edevices failure email',
+      subject: 'Student Electronic Devices Loan error',
       to: ['prntscan@lists.berkeley.edu']
   end
 
@@ -48,7 +48,7 @@ class StudentEdevicesLoanJobTest < ActiveJob::TestCase
     end
 
     assert_email RequestMailer.deliveries.last,
-      subject: 'Student edevices failure email',
+      subject: 'Student Electronic Devices Loan error',
       to: ['prntscan@lists.berkeley.edu']
   end
 end

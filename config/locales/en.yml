@@ -103,6 +103,10 @@ en:
       subject: Alt-Media Service - Article Request
     service_article_failure_email:
       subject: Alt-Media Service - Article Request
+    student_edevices_confirmation_email:
+      subject: Student Electronic Devices Loan confirmation
+    student_edevices_failure_email:
+      subject: Student Electronic Devices Loan error
 
   scan_request_forms:
     new:
