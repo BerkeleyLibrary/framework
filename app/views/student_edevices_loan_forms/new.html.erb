@@ -99,6 +99,7 @@
 
   <%= field_for(f, :display_name, required: true, readonly: true) %>
   <%= field_for(f, :patron_email, required: true, readonly: true) %>
+  <%= f.hidden_field :patron_id %>
   
   <h2>Electronic Devices Loan Agreement</h2>
   

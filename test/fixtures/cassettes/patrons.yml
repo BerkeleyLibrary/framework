@@ -1104,4 +1104,42 @@ http_interactions:
         <HTML><BODY>
     http_version: 
   recorded_at: Thu, 16 May 2019 15:57:22 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/18273645/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 30 May 2019 00:51:47 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <BODY>ERRNUM=1<BR>
+        ERRMSG=Requested record not found<BR>
+        </BODY>
+    http_version: 
+  recorded_at: Thu, 30 May 2019 00:51:20 GMT
 recorded_with: VCR 4.0.0
