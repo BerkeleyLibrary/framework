@@ -105,11 +105,11 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_questions_link_goes_to_ibs_email
+  def test_questions_link_goes_to_baker_email
     with_login(:ucb_eligible_scan) do
       get new_service_article_request_form_path
       assert_select '.page-footer .support-email[href=?]',
-        'mailto:ibsweb@library.berkeley.edu'
+        'mailto:baker@library.berkeley.edu'
     end
   end
 
@@ -157,7 +157,6 @@ class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
       assert_select "#service_article_request_form_pub_title[required=required]"
       assert_select "#service_article_request_form_article_title[required=required]"
       assert_select "#service_article_request_form_vol[required=required]"
-      assert_select "#service_article_request_form_citation[required=required]"
     end
   end
 

@@ -42,17 +42,20 @@ class ServiceArticleRequestForm < Form
   attr_accessor :article_title
   validates :article_title, presence: true
 
-  # @!attribute [string] citation
-  attr_accessor :citation
-  validates :citation, presence: true
-
   #Fields that are not required but can be optionally filled out by the user
-  attr_accessor :pub_location, :issn, :author, :pages, :pub_notes
+  attr_accessor :pub_location, :issn, :author, :pages, :pub_notes, :citation
 
+  # @!attribute [string] support_email
+  #  The help email address in case the user has questions or problems
   attr_accessor :support_email
 
-  def support_email
-    @support_email ||= 'ibsweb@library.berkeley.edu'
+  # @!attribute [string] submit_email
+  #  Determines where the information from the form submission is sent
+  attr_accessor :submit_email
+
+
+  def submit_email
+    @submit_email ||= 'requests@library.berkeley.edu'
   end
 
   def publication
@@ -119,7 +122,7 @@ private
 
   def submit
     ServiceArticleRequestJob.perform_later(
-      support_email,
+      submit_email,
       publication,
       patron: {
         email: patron_email,
