@@ -11,6 +11,11 @@ class StudentEdevicesLoanForm < Form
     Patron::Type::GRAD_STUDENT, 
   ]
 
+  ALLOWED_PATRON_REGISTRATION = [
+    Patron::Registration::REG_STUDENT,
+    #Patron::Registration::UNREG_STUDENT, #including this option for when testing
+  ]
+
   # Users must explicitly opt-in to each clause of the form.
   attr_accessor :borrow_check, :lend_check, :fines_check, :edev_check
   validates :borrow_check, :lend_check, :fines_check, :edev_check,
@@ -40,6 +45,12 @@ class StudentEdevicesLoanForm < Form
   #   @return [Patron::Type]
   delegate :type, to: :patron, prefix: true
   validates :patron_type, inclusion: {in: ALLOWED_PATRON_TYPES},
+    strict: Error::ForbiddenError
+
+  # @!attribute [r] registered
+  #   @return [Patron::Registration]
+  delegate :registered, to: :patron, prefix: true
+  validates :patron_registered, inclusion: {in: ALLOWED_PATRON_REGISTRATION},
     strict: Error::ForbiddenError
 
   # @!attribute [string] patron_email

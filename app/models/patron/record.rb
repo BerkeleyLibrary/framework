@@ -57,6 +57,13 @@ module Patron
     # @return [String]
     attr_accessor :type
 
+    # The patron's registration status for school enrollment
+    #
+    # See Library page for list of codes: https://asktico.lib.berkeley.edu/patron-codes
+    #
+    # @return [String]
+    attr_accessor :registered
+
     # An optional note in the patron record, i.e. an indication that he/she is book scan eligible
     #
     # @return [String]
@@ -97,6 +104,7 @@ module Patron
             email: data['EMAIL ADDR[pz]'],
             name: data['PATRN NAME[pn]'],
             type: data['P TYPE[p47]'],
+            registered: data['PCODE2[p45]'],
             note: data['NOTE[px]']
           )
         end
