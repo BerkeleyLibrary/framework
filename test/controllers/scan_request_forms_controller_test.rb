@@ -42,6 +42,27 @@ class ScanRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def test_ucb_undergrad_students_are_forbidden
+    with_login(:ucb_undergrad_student) do
+      get new_scan_request_form_path
+      assert_response :forbidden
+    end
+  end
+
+  def test_ucb_postdocs_are_forbidden
+    with_login(:ucb_postdoc) do
+      get new_scan_request_form_path
+      assert_response :forbidden
+    end
+  end
+
+  def test_ucb_library_staff_are_forbidden
+    with_login(:ucb_lib_staff) do
+      get new_scan_request_form_path
+      assert_response :forbidden
+    end
+  end
+
   def test_questions_link_goes_to_prntscan_email_list
     with_login(:ucb_scholar) do
       get new_scan_request_form_path
