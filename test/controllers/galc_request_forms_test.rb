@@ -40,11 +40,11 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
   # end
 
   #Patron type or affiliation are not within the specifications
-  def test_forbidden_view_message_for_forbidden_user
+  def test_forbidden_view_message_for_ineligible_user
     with_login(:ucb_postdoc) do
       get new_galc_request_form_path
       assert_response :forbidden
-      assert_select "h1", /Forbidden/
+      assert_select "h1", /Ineligible/
       assert_select "p", /The Graphic Arts Loan Collection is only available to UC Berkeley students, faculty and staff/
     end
   end
