@@ -13,7 +13,7 @@ class ServiceArticleRequestJob < ApplicationJob
 
   private
 
-  def send_patron_email(email, publication, patron)
+  def send_patron_email(email, patron)
     RequestMailer.service_article_confirmation_email(email, publication, patron).deliver_now
   end
 

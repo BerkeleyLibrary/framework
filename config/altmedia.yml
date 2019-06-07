@@ -2,7 +2,7 @@
 # config/altmedia.yml
 
 default: &default
-  expect_url: <%= ENV["PATRON_UPDATE_URL"] || "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote" %>
+  expect_url: <%= ENV["PATRON_UPDATE_URL"] || "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote8" %>
   mail_admin_email: <%= ENV["ADMIN_EMAIL"] || "prntscan@lists.berkeley.edu" %>
   mail_confirm_email: <%= ENV["CONFIRM_EMAIL"] || "baker@library.berkeley.edu" %>
   mail_smtp_password: <%= ENV["MAIL_PASSWORD"] %>
