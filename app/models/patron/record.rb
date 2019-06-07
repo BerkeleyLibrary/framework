@@ -20,7 +20,7 @@ module Patron
     #
     # @return [URI]
     class_attribute :expect_url, default: URI.parse(
-      "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote8"
+      "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote"
     )
 
     # The patron's affiliation code (UC Berkeley, Community College, etc.)

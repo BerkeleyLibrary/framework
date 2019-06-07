@@ -22,18 +22,18 @@ class ServiceArticleRequestJobTest < ActiveJob::TestCase
       }
   end
 
-  # def test_email_success
-  #   perform_enqueued_jobs do
-  #     ServiceArticleRequestJob.perform_now(
-  #       @support_email,
-  #       @publication,
-  #       patron: @patron,
-  #       )
-  #   end
-  #   test_email = RequestMailer.deliveries.last
-  #   assert_email test_email,
-  #     subject: 'Alt-Media Service - Article Request',
-  #     to: [@support_email]
-  # end
+  def test_email_success
+    perform_enqueued_jobs do
+      ServiceArticleRequestJob.perform_now(
+        @support_email,
+        @publication,
+        patron: @patron,
+        )
+    end
+    test_email = RequestMailer.deliveries.last
+    assert_email test_email,
+      subject: 'Alt-Media Service - Article Request',
+      to: [@support_email]
+  end
 
 end
