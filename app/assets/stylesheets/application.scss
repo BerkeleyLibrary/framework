@@ -15,3 +15,7 @@ a, a:link, a:visited {
 a:hover, a:active, a:focus {
   background: #FDB515;
 }
+
+a.no-link-style {
+  box-shadow: none;
+}
