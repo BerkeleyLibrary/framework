@@ -4,3 +4,18 @@
    content: " *";
    color: #ee0000;
 }
+
+a, a:link, a:visited {
+  box-shadow: inset 0 -4px 0 #FDB515;
+  transition: background 0.25s ease-in-out, color 0.25s ease-in-out;
+  text-decoration: none;
+  color: black;
+}
+
+a:hover, a:active, a:focus {
+  background: #FDB515;
+}
+
+a.no-link-style {
+  box-shadow: none;
+}

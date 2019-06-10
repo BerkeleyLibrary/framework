@@ -4,12 +4,16 @@ class StudentEdevicesLoanForm < Form
     #Patron::Affiliation::COMMUNITY_COLLEGE, #including this option for when testing
   ]
 
-  
   #There's got to be a better way to set all of the Patron::Type items to ALLOWED_PATRON_TYPES (JS)
   ALLOWED_PATRON_TYPES = [
     Patron::Type::UNDERGRAD,
     Patron::Type::UNDERGRAD_SLE,
     Patron::Type::GRAD_STUDENT, 
+  ]
+
+  ALLOWED_PATRON_REGISTRATION = [
+    Patron::Registration::REG_STUDENT,
+    #Patron::Registration::UNREG_STUDENT, #including this option for when testing
   ]
 
   # Users must explicitly opt-in to each clause of the form.
@@ -27,14 +31,26 @@ class StudentEdevicesLoanForm < Form
   attr_accessor :display_name
   validates :display_name, presence: true
 
+  # First name of the patron making the request
+  # @return [String]
+  attr_accessor :given_name
+  validates :given_name, presence: true
+
+  # Last name of the patron making the request
+  # @return [String]
+  attr_accessor :surname
+  validates :surname, presence: true
+
   # @!attribute [r] patron_type
   #   @return [Patron::Type]
-  
-  #Rails.logger.debug{"here?!!!!     "}
-  #p :patron_type
-  #Rails.logger.debug(patron_type.to_json)
   delegate :type, to: :patron, prefix: true
   validates :patron_type, inclusion: {in: ALLOWED_PATRON_TYPES},
+    strict: Error::ForbiddenError
+
+  # @!attribute [r] registered
+  #   @return [Patron::Registration]
+  delegate :registered, to: :patron, prefix: true
+  validates :patron_registered, inclusion: {in: ALLOWED_PATRON_REGISTRATION},
     strict: Error::ForbiddenError
 
   # @!attribute [string] patron_email
@@ -57,15 +73,9 @@ class StudentEdevicesLoanForm < Form
   validates :patron_blocks, absence: true,
     strict: Error::PatronBlockedError
 
-  def tellme
-    Rails.logger.debug("HERE!!!!!")
-    Rails.logger.debug(patron.type)
-  end
 
   # Apply strict (error-raising) validations
   def authorize!
-    #Rails.logger.debug("HERE!!!!!")
-    #Rails.logger.debug(self.patron.patron_type)
     self.class.validators.select{|v| v.options[:strict]}.each do |validator|
       validator.attributes.each do |attribute|
         validator.validate_each(self, attribute, send(attribute))
@@ -85,4 +95,3 @@ private
     )
   end
 end
-

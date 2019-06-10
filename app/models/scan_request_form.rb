@@ -8,11 +8,7 @@ class ScanRequestForm < Form
 
   ALLOWED_PATRON_TYPES = [
     Patron::Type::FACULTY,
-    Patron::Type::VISITING_SCHOLAR,
-    # Temporary, for testing?
-    Patron::Type::MANAGER,
-    Patron::Type::LIBRARY_STAFF,
-    Patron::Type::STAFF,
+    Patron::Type::VISITING_SCHOLAR
   ]
 
   # Whether the user has opted in or out of the scanning service

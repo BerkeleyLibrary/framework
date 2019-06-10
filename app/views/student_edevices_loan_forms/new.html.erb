@@ -59,8 +59,8 @@
 <p></p>
 
   <ul>
-    <li>4-hour: Due exactly 4 hours (240 minutes) from loan time. Overdue fines begin accruing at 1 minute beyond due time and at 1 minute into each subsequent overdue hour.
-1-day: Due next day by one hour before closing. Devices circulate with bag and charger.</li>
+    <li>4-hour: Due exactly 4 hours (240 minutes) from loan time. Overdue fines begin accruing at 1 minute beyond due time and at 1 minute into each subsequent overdue hour.</li>
+    <li>1-day: Due next day by one hour before closing. Devices circulate with bag and charger.</li>
     <li>14-day: Due 14 days from date of check out (or next operating day). Devices circulate with bag and charger.</li>
     <li>Semester (fixed-date) Data Science Chromebooks: Due finals week (Monday) by 11:59pm.</li>
     <li>Only available at the Moffitt 4th floor service desk.</li>
@@ -99,6 +99,7 @@
 
   <%= field_for(f, :display_name, required: true, readonly: true) %>
   <%= field_for(f, :patron_email, required: true, readonly: true) %>
+  <%= f.hidden_field :patron_id %>
   
   <h2>Electronic Devices Loan Agreement</h2>
   

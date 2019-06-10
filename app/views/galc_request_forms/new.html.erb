@@ -40,7 +40,8 @@
     <li>Clean only with a dry cloth.</li>
 </ul>
 
-  <div> <%= f.check_box :borrow_check, {required: true}, "checked", "unchecked" %> <%= f.label :borrow_check, "I have read and I understand the borrowing guidelines" %> </div>
+
+  <div> <%= f.check_box :borrow_check, {required: true}, "checked", "unchecked" %> <%= f.label :borrow_check, "I agree" %> </div>
 
   <br />
 
@@ -53,7 +54,7 @@
     <li>Prints not returned in the packing materials they were checked out in will be charged a $10 materials fee.</li>
   </ul>
 
-  <div> <%= f.check_box :fine_check, {required: true}, "checked", "unchecked" %> <%= f.label :fine_check, "I have read and I understand the borrowing guidelines" %> </div> 
+  <div> <%= f.check_box :fine_check, {required: true}, "checked", "unchecked" %> <%= f.label :fine_check, "I agree" %> </div>
 
   <br />  
 

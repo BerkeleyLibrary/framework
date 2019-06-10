@@ -24,7 +24,7 @@ module ApplicationHelper
     link_to(
       image_tag('logo.png', height: '30', alt: "UC Berkeley Library"),
       'http://www.lib.berkeley.edu/',
-      { class: "navbar-brand" },
+      { class: "navbar-brand no-link-style" },
     )
   end
 

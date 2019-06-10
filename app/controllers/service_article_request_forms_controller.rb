@@ -5,7 +5,7 @@ class ServiceArticleRequestFormsController < ApplicationController
   #Before loading the form, check for eligibility for the article scan request service
   before_action :init_form!
 
-  self.support_email = 'ibsweb@library.berkeley.edu'
+  self.support_email = 'baker@library.berkeley.edu'
 
   def index
     redirect_to action: :new

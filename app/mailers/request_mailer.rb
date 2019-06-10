@@ -61,12 +61,12 @@ class RequestMailer < ActionMailer::Base
     mail(to: admin_to)
   end
 
-  # Send confirmation email
+  # Send StudentEdevicesLoanJob confirmation email to user
   def student_edevices_confirmation_email(email)
     mail(to: email)
   end
 
-  # Send email describing a failure of the DoemoffStudyRoomUse job
+  # Send email describing a failure of the StudentEdevicesLoanJob job
   def student_edevices_failure_email(empid, displayname, note)
     @empid = empid
     @displayname = displayname
@@ -77,7 +77,7 @@ class RequestMailer < ActionMailer::Base
 
   # Send GalcRequest confirmation email to user
   def galc_confirmation_email(email)
-    mail(to: email)
+    mail(to: email, :subject => "GALC confirmation email")
   end
 
   # Send email describing a failure of the GalcRequest job

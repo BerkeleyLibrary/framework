@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GalcRequestJobTest < ActiveJob::TestCase
+class StudentEdevicesLoanJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
   setup do
@@ -13,14 +13,14 @@ class GalcRequestJobTest < ActiveJob::TestCase
   def test_emails_the_patron_on_success
     assert_emails 1 do
       with_stubbed_ssh(:succeeded) do
-        GalcRequestJob.perform_now(patron: @patron)
+        StudentEdevicesLoanJob.perform_now(patron: @patron)
       end
     end
 
     patron_email = RequestMailer.deliveries.last
 
     assert_email patron_email,
-      subject: 'GALC confirmation email',
+      subject: 'Student Electronic Devices Loan confirmation',
       to: [@patron[:email]]
   end
 
@@ -28,13 +28,13 @@ class GalcRequestJobTest < ActiveJob::TestCase
     assert_emails 1 do
       assert_raises StandardError do
         with_stubbed_ssh(:raised) do
-          GalcRequestJob.perform_now(patron: @patron)
+          StudentEdevicesLoanJob.perform_now(patron: @patron)
         end
       end
     end
 
     assert_email RequestMailer.deliveries.last,
-      subject: 'Galc failure email',
+      subject: 'Student Electronic Devices Loan error',
       to: ['prntscan@lists.berkeley.edu']
   end
 
@@ -42,13 +42,13 @@ class GalcRequestJobTest < ActiveJob::TestCase
     assert_emails 1 do
       assert_raises StandardError do
         with_stubbed_ssh(:failed) do
-          GalcRequestJob.perform_now(patron: @patron)
+          StudentEdevicesLoanJob.perform_now(patron: @patron)
         end
       end
     end
 
     assert_email RequestMailer.deliveries.last,
-      subject: 'Galc failure email',
+      subject: 'Student Electronic Devices Loan error',
       to: ['prntscan@lists.berkeley.edu']
   end
 end

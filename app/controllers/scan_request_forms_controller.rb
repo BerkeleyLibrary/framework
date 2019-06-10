@@ -47,7 +47,7 @@ class ScanRequestFormsController < ApplicationController
     logger.info(session[:user])
 
     @form = ScanRequestForm.new(
-      patron: current_user.employee_patron_record,
+      patron: current_user.employee_patron_record || current_user.student_patron_record,
       patron_name: current_user.display_name,
     )
 

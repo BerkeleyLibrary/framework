@@ -57,10 +57,18 @@ module Patron
     # @return [String]
     attr_accessor :type
 
+    # The patron's registration status for school enrollment
+    #
+    # See Library page for list of codes: https://asktico.lib.berkeley.edu/patron-codes
+    #
+    # @return [String]
+    attr_accessor :registered
+
     # An optional note in the patron record, i.e. an indication that he/she is book scan eligible
     #
     # @return [String]
     attr_accessor :note
+
 
     class << self
       # Returns the patron record for a given ID
@@ -85,16 +93,22 @@ module Patron
           end
         end
 
-        # Initialize new patron record object from the parsed data
-        self.new(
-          id: id,
-          affiliation: data['PCODE1[p44]'],
-          blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
-          email: data['EMAIL ADDR[pz]'],
-          name: data['PATRN NAME[pn]'],
-          type: data['P TYPE[p47]'],
-          note: data['NOTE[px]'],
-        )
+        expiration_date = Date.strptime(data['EXP DATE[p43]'], '%m-%d-%y')
+
+        if not (expiration_date < Date.today)
+          # Initialize new patron record object from the parsed data
+          self.new(
+            id: id,
+            affiliation: data['PCODE1[p44]'],
+            blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
+            email: data['EMAIL ADDR[pz]'],
+            name: data['PATRN NAME[pn]'],
+            type: data['P TYPE[p47]'],
+            registered: data['PCODE2[p45]'],
+            note: data['NOTE[px]']
+          )
+        end
+
       rescue OpenURI::HTTPError => e
         raise Error::PatronApiError
       end

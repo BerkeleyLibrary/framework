@@ -9,8 +9,7 @@ class DoemoffStudyRoomUseFormTest < ActiveSupport::TestCase
       name: "test-111111",
       type: "4",
       affiliation: '0',
-      email: "whoever@example.com"
-     # note: "Doe/Moffitt study room eligible"
+      email: "whoever@example.com",
       )
     form = DoemoffStudyRoomUseForm.new(
       display_name: "Test1",
@@ -32,8 +31,7 @@ class DoemoffStudyRoomUseFormTest < ActiveSupport::TestCase
       name: "test-111113",
       type: "1",
       affiliation: '0',
-      email: "whoever@example.com"
-      #note: "Doe/Moffitt study room eligible"
+      email: "whoever@example.com",
       )
     form = DoemoffStudyRoomUseForm.new(
       display_name: "Test3",
@@ -47,40 +45,6 @@ class DoemoffStudyRoomUseFormTest < ActiveSupport::TestCase
       form.validate!
     end
   end
-
-  # def test_eligibility_validation_for_eligible_grad
-  #   patron = Patron::Record.new(
-  #     id: 111113,
-  #     name: "test-111116",
-  #     type: "3",
-  #     #note: "Doe/Moffitt study room eligible"
-  #     )
-  #   form = DoemoffStudyRoomUseForm.new(
-  #     display_name: "Test3",
-  #     patron: patron,
-  #   )
-
-  #   assert_nothing_raised do
-  #     form.note_validate!
-  #   end
-  # end
-
-
-  # def test_eligibility_validation_for_other_patron_type
-  #   patron = Patron::Record.new(
-  #     id: 111117,
-  #     name: "test-111117",
-  #     type: "6",
-  #     )
-  #   form = DoemoffStudyRoomUseForm.new(
-  #     display_name: "Test7",
-  #     patron: patron,
-  #   )
-
-  #   assert_nothing_raised do
-  #     form.note_validate!
-  #   end
-  # end
  
 end
 
