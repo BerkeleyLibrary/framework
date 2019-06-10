@@ -1142,4 +1142,72 @@ http_interactions:
         </BODY>
     http_version: 
   recorded_at: Thu, 30 May 2019 00:51:20 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/99999890/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 10 Jun 2019 22:28:44 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=05-31-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=b<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=3<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none<BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1497676<BR>
+        REC LENG[p82]=232<BR>
+        CREATED[p83]=06-04-19<BR>
+        UPDATED[p84]=06-10-19<BR>
+        REVISIONS[p85]=2<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=  -  -  <BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=test-300851<BR>
+        NOTE[px]=20190604 library book scan eligible [litscript]<BR>
+        P BARCODE[pb]=99999890<BR>
+        EMAIL ADDR[pz]=test-300851@berkeley.edu<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Mon, 10 Jun 2019 22:28:43 GMT
 recorded_with: VCR 4.0.0

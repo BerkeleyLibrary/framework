@@ -29,8 +29,17 @@ class StudentEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  #Test with a user with a PType that is not 1, 2, or 3
   def test_non_student_not_allowed
     with_login(:ucb_scholar) do
+      get new_student_edevices_loan_form_path
+      assert_response :forbidden
+    end
+  end
+
+  #Test user is a grad student with PCode2 value of 'b'
+  def test_nonregistered_student_not_allowed
+    with_login(:ucb_unregistered_student) do
       get new_student_edevices_loan_form_path
       assert_response :forbidden
     end
