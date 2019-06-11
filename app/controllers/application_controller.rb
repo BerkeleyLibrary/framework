@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Error::PatronNotFoundError do |error|
     log_error(error)
-    render "errors/patron_not_found_error", status: :service_unavailable
+    render "errors/patron_not_found_error", status: :forbidden
   end
 
   rescue_from Error::ForbiddenError do |error|
