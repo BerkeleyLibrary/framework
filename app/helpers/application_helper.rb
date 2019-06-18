@@ -16,7 +16,7 @@ module ApplicationHelper
 
   def login_link
     if authenticated?
-      link_to 'Logout', logout_path, class: "nav-link"
+      link_to 'CalNet Logout', logout_path, class: "nav-link"
     end
   end
 
