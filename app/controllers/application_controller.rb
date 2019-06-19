@@ -29,6 +29,11 @@ class ApplicationController < ActionController::Base
     render "errors/patron_api_error", status: :service_unavailable
   end
 
+  rescue_from Error::PatronNotFoundError do |error|
+    log_error(error)
+    render "errors/patron_not_found_error", status: :forbidden
+  end
+
   rescue_from Error::ForbiddenError do |error|
     Rails.logger.error(error)
     render :forbidden, status: :forbidden

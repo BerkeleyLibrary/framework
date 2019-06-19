@@ -73,6 +73,18 @@ ucb_undergrad_student:
     uid: "00000003"
     berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
+ucb_unregistered_student:
+  provider: calnet
+  uid: "test-300851"
+  info:
+    name: STUDENT TEST-300851
+    email: test-300851@berkeley.edu
+  extra:
+    displayName: STUDENT TEST-300851
+    berkeleyEduStuID: "99999890"
+    uid: "00000012"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
+
 ucb_eligible_scan:
   provider: calnet
   uid: "ethomas"
