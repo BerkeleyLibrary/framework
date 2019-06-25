@@ -13,6 +13,7 @@ class StudentEdevicesLoanForm < Form
 
   ALLOWED_PATRON_REGISTRATION = [
     Patron::Registration::REG_STUDENT,
+    Patron::Registration::SLE
     #Patron::Registration::UNREG_STUDENT, #including this option for when testing
   ]
 
@@ -24,7 +25,7 @@ class StudentEdevicesLoanForm < Form
   # Patron making the request
   # @return [Patron::Record]
   attr_accessor :patron
-  validates :patron, presence: true, strict: Error::ForbiddenError
+  validates :patron, presence: true, strict: Error::PatronNotFoundError
 
   # Display name of the patron making the request
   # @return [String]
@@ -47,10 +48,10 @@ class StudentEdevicesLoanForm < Form
   validates :patron_type, inclusion: {in: ALLOWED_PATRON_TYPES},
     strict: Error::ForbiddenError
 
-  # @!attribute [r] registered
+  # @!attribute [r] registration_status
   #   @return [Patron::Registration]
-  delegate :registered, to: :patron, prefix: true
-  validates :patron_registered, inclusion: {in: ALLOWED_PATRON_REGISTRATION},
+  delegate :registration_status, to: :patron, prefix: true
+  validates :patron_registration_status, inclusion: {in: ALLOWED_PATRON_REGISTRATION},
     strict: Error::ForbiddenError
 
   # @!attribute [string] patron_email

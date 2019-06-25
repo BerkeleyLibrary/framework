@@ -2,7 +2,7 @@ class ServiceArticleRequestForm < Form
   # Patron making the request
   # @return [Patron::Record]
   attr_accessor :patron
-  validates :patron, presence: true, strict: Error::ForbiddenError
+  validates :patron, presence: true, strict: Error::PatronNotFoundError
 
    # @!attribute [string] display_name
   attr_accessor :display_name

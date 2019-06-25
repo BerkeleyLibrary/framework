@@ -34,9 +34,7 @@ private
 
   def init_form!
     #Instantiate new form object
-    @form = GalcRequestForm.new(
-      patron: current_user.employee_patron_record || current_user.student_patron_record
-    )
+    @form = GalcRequestForm.new(patron: current_user.primary_patron_record)
     #Run through all the form validators for the strict validations
     @form.authorize!
     @form.validate unless @form.assign_attributes(form_params).blank?

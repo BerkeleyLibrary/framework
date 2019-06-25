@@ -19,7 +19,7 @@ class GalcRequestForm < Form
   # Patron making the request
   # @return [Patron::Record]
   attr_accessor :patron
-  validates :patron, presence: true, strict: Error::ForbiddenError
+  validates :patron, presence: true, strict: Error::PatronNotFoundError
 
   # @!attribute [r] patron_type
   #   @return [Patron::Type]

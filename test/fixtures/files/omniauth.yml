@@ -24,6 +24,20 @@ ucb_blocked_faculty:
     uid: "123545"
     berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 
+ucb_faculty_no_patron_record:
+  provider: calnet
+  uid: "tony"
+  info:
+    name: "Prof. Emeritus"
+    email: "tony@stark.com"
+  extra:
+    displayName: Prof. Emeritus
+    employeeNumber: does not exist
+    givenName: Tony
+    surname: Stark
+    uid: "123545"
+    berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
+
 ucb_scholar:
   provider: calnet
   uid: "tony"
@@ -58,6 +72,8 @@ ucb_grad_student:
   extra:
     displayName: Daniel C. Schmidt
     employeeNumber: "18273645"
+    givenName: Daniel
+    surname: Schmidt
     uid: "00000005"
     berkeleyEduIsMemberOf: ["cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu"]
 

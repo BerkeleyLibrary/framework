@@ -62,13 +62,17 @@ module Patron
     # See Library page for list of codes: https://asktico.lib.berkeley.edu/patron-codes
     #
     # @return [String]
-    attr_accessor :registered
+    attr_accessor :registration_status
 
     # An optional note in the patron record, i.e. an indication that he/she is book scan eligible
     #
     # @return [String]
     attr_accessor :note
 
+    # The date when the patron record expires in the Millennium account
+    #
+    # @return [Date]
+    attr_accessor :expiration_date
 
     class << self
       # Returns the patron record for a given ID
@@ -93,27 +97,22 @@ module Patron
           end
         end
 
-        expiration_date = Date.strptime(data['EXP DATE[p43]'], '%m-%d-%y')
-
-        if not (expiration_date < Date.today)
-          # Initialize new patron record object from the parsed data
-          self.new(
-            id: id,
-            affiliation: data['PCODE1[p44]'],
-            blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
-            email: data['EMAIL ADDR[pz]'],
-            name: data['PATRN NAME[pn]'],
-            type: data['P TYPE[p47]'],
-            registered: data['PCODE2[p45]'],
-            note: data['NOTE[px]']
-          )
-        end
-
+        self.new(
+          id: id,
+          affiliation: data['PCODE1[p44]'],
+          blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
+          email: data['EMAIL ADDR[pz]'],
+          name: data['PATRN NAME[pn]'],
+          type: data['P TYPE[p47]'],
+          registration_status: data['PCODE2[p45]'],
+          note: data['NOTE[px]'],
+          expiration_date: Date.strptime(data['EXP DATE[p43]'], '%m-%d-%y')
+        )
       rescue OpenURI::HTTPError => e
         raise Error::PatronApiError
       end
 
-      private
+    private
 
       # Parses patron attributes from a raw PATRONAPI response
       def parse_dump(dumpstr)
@@ -132,6 +131,10 @@ module Patron
         end
         return data
       end
+    end
+
+    def expired?
+      expiration_date < Date.today
     end
 
     # Adds a note to the patron's record

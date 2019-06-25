@@ -34,7 +34,7 @@ private
       display_name: current_user.display_name,
       given_name: current_user.given_name,
       surname: current_user.surname,
-      patron: current_user.employee_patron_record || current_user.student_patron_record,
+      patron: current_user.primary_patron_record,
     )
     @form.authorize!
     @form.validate unless @form.assign_attributes(form_params).blank?

@@ -25,7 +25,7 @@ class DoemoffStudyRoomUseForm < Form
   # Patron making the request
   # @return [Patron::Record]
   attr_accessor :patron
-  validates :patron, presence: true, strict: Error::ForbiddenError
+  validates :patron, presence: true, strict: Error::PatronNotFoundError
 
   # Display name of the patron making the request
   # @return [String]

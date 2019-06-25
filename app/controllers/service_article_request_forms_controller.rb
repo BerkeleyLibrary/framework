@@ -36,7 +36,7 @@ private
     #Instantiate new form object
     @form = ServiceArticleRequestForm.new(
       display_name: current_user.display_name,
-      patron: current_user.employee_patron_record || current_user.student_patron_record
+      patron: current_user.primary_patron_record
     )
     #Run through all the form validators for the strict validations
     @form.authorize!

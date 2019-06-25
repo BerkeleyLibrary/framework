@@ -15,6 +15,14 @@ class StudentEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path(url: new_student_edevices_loan_form_path)
   end
 
+  #For case where a user has a CalNet account but no Millennium patron record
+  def test_forbidden_if_missing_patron_record
+    with_login(:ucb_faculty_no_patron_record) do
+      get new_student_edevices_loan_form_path
+      assert_response :forbidden
+    end
+  end
+
   def test_undergrad_student_user_allowed
     with_login(:ucb_undergrad_student) do
       get new_student_edevices_loan_form_path
@@ -137,22 +145,16 @@ class StudentEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_success_if_all_boxes_checked_submission
-    skip("Need to figure out why the error is 503 Service Unavailable")
-      with_login(:ucb_grad_student) do
-        form_params = {
-          student_edevices_loan_form: {
-            borrow_check: "unchecked",
-            lend_check: "checked",
-            fines_check: "checked",
-            edev_check: "checked"
-          }
+    with_login(:ucb_grad_student) do
+      post "/forms/student_edevices_loan", params: {
+        student_edevices_loan_form: {
+          borrow_check: "checked",
+          lend_check: "checked",
+          fines_check: "checked",
+          edev_check: "checked"
         }
-
-        post "/forms/student_edevices_loan", params: form_params
-        assert_redirected_to new_student_edevices_loan_form_path(form_params)
-        form_params[:student_edevices_loan_form][:borrow_check] = "checked"
-        post "/forms/student_edevices_loan", params: form_params
-        assert_redirected_to "/forms/student_edevices_loan/all_checked"
+      }
+      assert_redirected_to "/forms/student_edevices_loan/all_checked"
     end
   end
 

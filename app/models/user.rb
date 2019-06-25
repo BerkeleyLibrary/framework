@@ -70,15 +70,45 @@ class User
     not uid.nil?
   end
 
+  def primary_patron_record
+    @primary_patron_record ||= begin
+      if student_patron_record and not student_patron_record.expired?
+        student_patron_record
+      elsif employee_patron_record and not employee_patron_record.expired?
+        employee_patron_record
+      else
+        nil
+      end
+    end
+  end
+
+private
+
   # The user's employee patron record
   # @return [Patron::Record, nil]
   def employee_patron_record
-    @employee_patron_record ||= Patron::Record.find(employee_id) if self.employee_id
+    @employee_patron_record ||= begin
+      if self.employee_id
+        Patron::Record.find(employee_id)
+      else
+        nil
+      end
+    rescue Error::PatronNotFoundError
+      nil
+    end
   end
 
   # The user's student patron record (if they have a student ID)
   # @return [Patron::Record, nil]
   def student_patron_record
-    @student_patron_record ||= Patron::Record.find(student_id) if self.student_id
+    @student_patron_record ||= begin
+      if self.student_id
+        Patron::Record.find(student_id)
+      else
+        nil
+      end
+    rescue Error::PatronNotFoundError
+      nil
+    end
   end
 end
