@@ -57,13 +57,6 @@ module Patron
     # @return [String]
     attr_accessor :type
 
-    # The patron's registration status for school enrollment
-    #
-    # See Library page for list of codes: https://asktico.lib.berkeley.edu/patron-codes
-    #
-    # @return [String]
-    attr_accessor :registration_status
-
     # An optional note in the patron record, i.e. an indication that he/she is book scan eligible
     #
     # @return [String]
@@ -104,7 +97,6 @@ module Patron
           email: data['EMAIL ADDR[pz]'],
           name: data['PATRN NAME[pn]'],
           type: data['P TYPE[p47]'],
-          registration_status: data['PCODE2[p45]'],
           note: data['NOTE[px]'],
           expiration_date: Date.strptime(data['EXP DATE[p43]'], '%m-%d-%y')
         )

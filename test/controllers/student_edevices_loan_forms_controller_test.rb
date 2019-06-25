@@ -10,7 +10,6 @@ class StudentEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
   FORBIDDEN_USERS = [
     :ucb_blocked_faculty,
     :ucb_scholar, # Test with a user with a PType that is not 1, 2, or 3
-    :ucb_unregistered_student,
   ]
 
   setup    { VCR.insert_cassette 'patrons' }
@@ -66,7 +65,7 @@ class StudentEdevicesLoanFormsControllerTest < ActionDispatch::IntegrationTest
         get new_student_edevices_loan_form_path
         assert_response :forbidden
         assert_select "h1", /Forbidden/
-        assert_select "p", /The Student Electronic Devices Loan Program is only available to registered UC Berkeley Students/
+        assert_select "p", /The Student Electronic Devices Loan Program is only available to UC Berkeley Students/
       end
     end
   end
