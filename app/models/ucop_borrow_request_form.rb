@@ -39,7 +39,7 @@ class UcopBorrowRequestForm < Form
   validates :employee_address,
     presence: true
 
-  private
+private
 
   def submit
     RequestMailer.ucop_borrow_request_form_email(self).deliver_now

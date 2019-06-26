@@ -50,17 +50,17 @@ module Patron
     # @return [String]
     attr_accessor :name
 
+    # Notes added to the patron record
+    #
+    # @return [Array]
+    attr_accessor :notes
+
     # The patron's type code (undergraduate, post-doc, faculty, etc.)
     #
     # See Patron::Type for a partial list of codes.
     #
     # @return [String]
     attr_accessor :type
-
-    # An optional note in the patron record, i.e. an indication that he/she is book scan eligible
-    #
-    # @return [String]
-    attr_accessor :note
 
     # The date when the patron record expires in the Millennium account
     #
@@ -97,7 +97,7 @@ module Patron
           email: data['EMAIL ADDR[pz]'],
           name: data['PATRN NAME[pn]'],
           type: data['P TYPE[p47]'],
-          note: data['NOTE[px]'],
+          notes: [*data['NOTE[px]']].reject(&:blank?),
           expiration_date: Date.strptime(data['EXP DATE[p43]'], '%m-%d-%y')
         )
       rescue OpenURI::HTTPError => e
@@ -129,6 +129,18 @@ module Patron
       expiration_date < Date.today
     end
 
+    def faculty?
+      type == Patron::Type::FACULTY
+    end
+
+    def student?
+      type == Patron::Type::GRAD_STUDENT or type == Patron::Type::UNDERGRAD
+    end
+
+    def notes
+      @notes ||= []
+    end
+
     # Adds a note to the patron's record
     #
     # This uses the super-hacky method of executing an expect script over SSH
@@ -153,9 +165,11 @@ module Patron
         ssh.exec!(command)
       end
 
-      unless res.match('Finished Successfully')
+      if not res.match('Finished Successfully')
         raise StandardError, "Failed updating patron record for #{patron.id}"
       end
+
+      notes << note
     end
   end
 end

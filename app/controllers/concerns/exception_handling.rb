@@ -2,6 +2,8 @@ module ExceptionHandling
   extend ActiveSupport::Concern
 
   included do
+    # Order exceptions from most generic to most specific.
+
     rescue_from StandardError do |error|
       log_error(error)
       render :standard_error, status: :internal_server_error
@@ -25,6 +27,12 @@ module ExceptionHandling
     rescue_from Error::ForbiddenError do |error|
       log_error(error)
       render :forbidden, status: :forbidden
+    end
+
+    rescue_from Error::PatronNotEligibleError do |error|
+      log_error(error)
+      @error = error # so view has access
+      render :patron_not_eligible_error, status: :forbidden
     end
 
     rescue_from Error::PatronBlockedError do |error|

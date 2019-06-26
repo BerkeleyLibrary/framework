@@ -34,8 +34,6 @@ class ScanRequestFormTest < ActiveSupport::TestCase
       assert form.valid?
       assert_equal '1865', form.patron_id
       assert_equal 'winner@civil-war.com', form.patron_email
-      assert_equal Patron::Affiliation::UC_BERKELEY, form.patron_affiliation
-      assert_equal patron_type, form.patron_type
 
       begin
         form.patron.blocks = "something"

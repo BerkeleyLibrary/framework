@@ -30,14 +30,6 @@ class ScanRequestForm < Form
   # @return [String]
   attr_accessor :patron_name
 
-  # @!attribute [r] patron_affiliation
-  #   @return [Patron::Affiliation]
-  delegate :affiliation, to: :patron, prefix: true
-
-  # @!attribute [r] patron_blocks
-  #   @return [String, nil]
-  delegate :blocks, to: :patron, prefix: true
-
   # @!attribute [r] patron_email
   #   @return [String]
   delegate :email, to: :patron, prefix: true
@@ -46,24 +38,15 @@ class ScanRequestForm < Form
   #   @return [String]
   delegate :id, to: :patron, prefix: true
 
-  # @!attribute [r] patron_type
-  #   @return [Patron::Type]
-  delegate :type, to: :patron, prefix: true
-
   validates :opt_in,
     inclusion: { in: %w(true false) }
 
   validates :patron,
-    presence: true,
-    strict: Error::PatronNotFoundError
-
-  validates :patron_affiliation,
-    inclusion: { in: ALLOWED_PATRON_AFFILIATIONS },
-    strict: Error::ForbiddenError
-
-  validates :patron_blocks,
-    absence: true,
-    strict: Error::PatronBlockedError
+    patron: {
+      affiliations: ALLOWED_PATRON_AFFILIATIONS,
+      types: ALLOWED_PATRON_TYPES,
+    },
+    strict: true
 
   validates :patron_email,
     email: true,
@@ -71,10 +54,6 @@ class ScanRequestForm < Form
 
   validates :patron_name,
     presence: true
-
-  validates :patron_type,
-    inclusion: { in: ALLOWED_PATRON_TYPES },
-    strict: Error::ForbiddenError
 
   def opted_in?
     'true' == opt_in
