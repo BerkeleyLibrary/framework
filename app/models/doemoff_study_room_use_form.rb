@@ -3,7 +3,7 @@ class DoemoffStudyRoomUseForm < Form
     Patron::Affiliation::UC_BERKELEY,
     #Patron::Affiliation::COMMUNITY_COLLEGE, #including this option for when testing
   ]
-  
+
   #There's got to be a better way to set all of the Patron::Type items to ALLOWED_PATRON_TYPES (JS)
   ALLOWED_PATRON_TYPES = [
     Patron::Type::UNDERGRAD,
@@ -14,7 +14,7 @@ class DoemoffStudyRoomUseForm < Form
     Patron::Type::LIBRARY_STAFF,
     Patron::Type::STAFF,
     Patron::Type::POST_DOC,
-    Patron::Type::VISITING_SCHOLAR, 
+    Patron::Type::VISITING_SCHOLAR,
   ]
 
   # Users must explicitly opt-in to each clause of the form.
@@ -57,15 +57,6 @@ class DoemoffStudyRoomUseForm < Form
   delegate :blocks, to: :patron, prefix: true
   validates :patron_blocks, absence: true,
     strict: Error::PatronBlockedError
-
-  # Apply strict (error-raising) validations
-  def authorize!
-    self.class.validators.select{|v| v.options[:strict]}.each do |validator|
-      validator.attributes.each do |attribute|
-        validator.validate_each(self, attribute, send(attribute))
-      end
-    end
-  end
 
 private
 

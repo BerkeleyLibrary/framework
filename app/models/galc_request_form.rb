@@ -61,15 +61,6 @@ class GalcRequestForm < Form
     @patron_email ||= @patron.email if @patron
   end
 
-  # Apply strict (error-raising) validations
-  def authorize!
-    self.class.validators.select{|v| v.options[:strict]}.each do |validator|
-      validator.attributes.each do |attribute|
-        validator.validate_each(self, attribute, send(attribute))
-      end
-    end
-  end
-
 private
 
   def submit

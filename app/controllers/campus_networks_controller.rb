@@ -7,7 +7,7 @@ class CampusNetworksController < ApplicationController
     }
   end
 
-  private
+private
 
   def org_param
     params.permit(:organization)[:organization]

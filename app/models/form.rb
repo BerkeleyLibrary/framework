@@ -9,7 +9,17 @@ class Form
     submit
   end
 
-  private
+  # Executes all validators marked as "strict", raising whatever exception was
+  # specified in the attribute config.
+  def authorize!
+    self.class.validators.select{|v| v.options[:strict]}.each do |validator|
+      validator.attributes.each do |attribute|
+        validator.validate_each(self, attribute, send(attribute))
+      end
+    end
+  end
+
+private
 
   # @!method submit
   #   @abstract Subclass should implement {#submit} to perform form submission

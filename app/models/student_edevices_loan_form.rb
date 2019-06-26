@@ -8,7 +8,7 @@ class StudentEdevicesLoanForm < Form
   ALLOWED_PATRON_TYPES = [
     Patron::Type::UNDERGRAD,
     Patron::Type::UNDERGRAD_SLE,
-    Patron::Type::GRAD_STUDENT, 
+    Patron::Type::GRAD_STUDENT,
   ]
 
   # Users must explicitly opt-in to each clause of the form.
@@ -61,16 +61,6 @@ class StudentEdevicesLoanForm < Form
   delegate :blocks, to: :patron, prefix: true
   validates :patron_blocks, absence: true,
     strict: Error::PatronBlockedError
-
-
-  # Apply strict (error-raising) validations
-  def authorize!
-    self.class.validators.select{|v| v.options[:strict]}.each do |validator|
-      validator.attributes.each do |attribute|
-        validator.validate_each(self, attribute, send(attribute))
-      end
-    end
-  end
 
 private
 
