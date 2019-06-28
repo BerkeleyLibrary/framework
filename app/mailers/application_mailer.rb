@@ -1,8 +1,13 @@
 class ApplicationMailer < ActionMailer::Base
   default from: 'lib-noreply@berkeley.edu'
 
-  def send_email(email)
-    @email = email
-    mail(to: @email, subject: 'Sample Email',body: 'testing')
+private
+
+  def admin_to
+    Rails.application.config.altmedia['mail_admin_email']
+  end
+
+  def confirm_to
+    Rails.application.config.altmedia['mail_confirm_email']
   end
 end
