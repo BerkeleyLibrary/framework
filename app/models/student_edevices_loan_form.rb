@@ -47,12 +47,6 @@ class StudentEdevicesLoanForm < Form
 private
 
   def submit
-    StudentEdevicesLoanJob.perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: display_name,
-      },
-    )
+    StudentEdevicesLoanJob.perform_later(patron_id)
   end
 end

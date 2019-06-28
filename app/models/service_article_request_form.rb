@@ -85,11 +85,7 @@ private
     ServiceArticleRequestJob.perform_later(
       submit_email,
       publication,
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: display_name,
-      },
+      patron_id,
     )
   end
 end

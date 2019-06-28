@@ -62,12 +62,10 @@ class ScanRequestForm < Form
 private
 
   def submit
-    (opted_in? ? ScanRequestOptInJob : ScanRequestOptOutJob).perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: patron_name
-      }
-    )
+    if opted_in?
+      ScanRequestOptInJob.perform_later(patron_id)
+    else
+      ScanRequestOptOutJob.perform_later(patron_id)
+    end
   end
 end

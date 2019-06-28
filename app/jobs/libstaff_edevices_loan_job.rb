@@ -3,11 +3,8 @@ require 'request_mailer'
 class LibstaffEdevicesLoanJob < ApplicationJob
   queue_as :default
 
-  def perform(patron:)
-    patron = Patron::Record.new(**patron)
-    now = Time.now.strftime('%Y%m%d')
-    note = "#{now} Library Staff Electronic Devices eligible [litscript]"
-
+  def perform(patron_id)
+    patron = Patron::Record.find(patron_id)
     patron.add_note(note)
     send_patron_email(patron)
   rescue
@@ -15,7 +12,11 @@ class LibstaffEdevicesLoanJob < ApplicationJob
     raise # so rails will log it
   end
 
-  private
+  def note
+    @note ||= "#{today} Library Staff Electronic Devices eligible [litscript]"
+  end
+
+private
 
   def send_patron_email(patron)
     RequestMailer.libdevice_confirmation_email(patron.email).deliver_now

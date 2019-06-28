@@ -20,14 +20,17 @@ class ScanRequestFormTest < ActiveSupport::TestCase
 
   ALLOWED_PATRON_TYPES.each do |patron_type|
     test "patron_type_#{patron_type}_allowed" do
+      patron = Patron::Record.new(
+        affiliation: Patron::Affiliation::UC_BERKELEY,
+        email: 'winner@civil-war.com',
+        id: '1865',
+        name: 'Ulysses S. Grant',
+        type: patron_type,
+      )
+
       form = ScanRequestForm.new(
         opt_in: "true",
-        patron: Patron::Record.new(
-          affiliation: Patron::Affiliation::UC_BERKELEY,
-          email: 'winner@civil-war.com',
-          id: '1865',
-          type: patron_type,
-        ),
+        patron: patron,
         patron_name: "Ulysses S. Grant",
       )
 
@@ -56,22 +59,12 @@ class ScanRequestFormTest < ActiveSupport::TestCase
         form.opt_in = "true"
       end
 
-      job_args = [{
-        # NOTE(dcschmidt): The order actually matters here.
-        # See: https://github.com/rails/rails/issues/33847
-        patron: {
-          email: 'winner@civil-war.com',
-          id: '1865',
-          name: "Ulysses S. Grant",
-        },
-      }]
-
-      assert_enqueued_with(job: ScanRequestOptInJob, args: job_args) do
+      assert_enqueued_with(job: ScanRequestOptInJob, args: [patron.id]) do
         form.opt_in = "true"
         form.submit!
       end
 
-      assert_enqueued_with(job: ScanRequestOptOutJob, args: job_args) do
+      assert_enqueued_with(job: ScanRequestOptOutJob, args: [patron.id]) do
         form.opt_in = "false"
         form.submit!
       end

@@ -37,12 +37,6 @@ class LibstaffEdevicesLoanForm < Form
 private
 
   def submit
-    LibstaffEdevicesLoanJob.perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: display_name,
-      },
-    )
+    LibstaffEdevicesLoanJob.perform_later(patron_id)
   end
 end

@@ -49,12 +49,6 @@ class DoemoffStudyRoomUseForm < Form
 private
 
   def submit
-    DoemoffStudyRoomUseJob.perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: display_name,
-      },
-    )
+    DoemoffStudyRoomUseJob.perform_later(patron_id)
   end
 end

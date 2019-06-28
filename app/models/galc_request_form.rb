@@ -51,12 +51,6 @@ class GalcRequestForm < Form
 private
 
   def submit
-    GalcRequestJob.perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: patron_name,
-      },
-    )
+    GalcRequestJob.perform_later(patron_id)
   end
 end

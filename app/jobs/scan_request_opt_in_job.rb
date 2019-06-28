@@ -3,11 +3,8 @@ require 'request_mailer'
 class ScanRequestOptInJob < ApplicationJob
   queue_as :default
 
-  def perform(patron:)
-    patron = Patron::Record.new(**patron)
-    now = Time.now.strftime('%Y%m%d')
-    note = "#{now} library book scan eligible [litscript]"
-
+  def perform(patron_id)
+    patron = Patron::Record.find(patron_id)
     patron.add_note(note)
     send_patron_email(patron)
     send_baker_email(patron)
@@ -16,7 +13,11 @@ class ScanRequestOptInJob < ApplicationJob
     raise # so rails will log it
   end
 
-  private
+  def note
+    @note ||= "#{today} library book scan eligible [litscript]"
+  end
+
+private
 
   def send_patron_email(patron)
     RequestMailer.confirmation_email(patron.email).deliver_now

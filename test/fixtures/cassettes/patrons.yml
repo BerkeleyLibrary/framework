@@ -76,7 +76,7 @@ http_interactions:
         EMAIL ADDR[pz]=danschmidt5189@berkeley.edu<BR>
         PIN[p=]=.DWI06K5riSfI<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 05 Oct 2018 17:32:41 GMT
 - request:
     method: get
@@ -145,7 +145,7 @@ http_interactions:
         P BARCODE[pb]=12345678<BR>
         EMAIL ADDR[pz]=notreal@nowhere.com<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
 - request:
     method: get
@@ -214,7 +214,7 @@ http_interactions:
         P BARCODE[pb]=87654321<BR>
         EMAIL ADDR[pz]=hopeless@nowhere.gov<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
 - request:
     method: get
@@ -283,7 +283,7 @@ http_interactions:
         P BARCODE[pb]=12348765<BR>
         EMAIL ADDR[pz]=dispair@supremecourt.gov<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
 - request:
     method: get
@@ -352,7 +352,7 @@ http_interactions:
         P BARCODE[pb]=87651234<BR>
         EMAIL ADDR[pz]=lunatic@whitehowz.gov<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
 - request:
     method: get
@@ -421,7 +421,7 @@ http_interactions:
         P BARCODE[pb]=18273645<BR>
         EMAIL ADDR[pz]=danschmidt5189@berkeley.edu<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 05 Oct 2018 18:01:27 GMT
 - request:
     method: get
@@ -459,7 +459,7 @@ http_interactions:
         <BODY>ERRNUM=1<BR>
         ERRMSG=Requested record not found<BR>
         </BODY>
-    http_version:
+    http_version: 
   recorded_at: Tue, 09 Oct 2018 20:19:03 GMT
 - request:
     method: get
@@ -532,7 +532,7 @@ http_interactions:
         P BARCODE[pb]=013191304<BR>
         EMAIL ADDR[pz]=ethomas@berkeley.edu<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Mon, 26 Nov 2018 19:08:07 GMT
 - request:
     method: get
@@ -604,7 +604,7 @@ http_interactions:
         P BARCODE[pb]=013191304<BR>
         EMAIL ADDR[pz]=ethomas@berkeley.edu<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Fri, 07 Dec 2018 21:16:53 GMT
 - request:
     method: get
@@ -673,7 +673,7 @@ http_interactions:
         EMAIL ADDR[pz]=epinto@library.berkeley.edu<BR>
         PIN[p=]=EfGvKi.32onxw<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Sat, 08 Dec 2018 00:13:54 GMT
 - request:
     method: get
@@ -742,7 +742,7 @@ http_interactions:
         EMAIL ADDR[pz]=epinto@library.berkeley.edu<BR>
         PIN[p=]=EfGvKi.32onxw<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Sat, 08 Dec 2018 00:13:54 GMT
 - request:
     method: get
@@ -812,7 +812,7 @@ http_interactions:
         P BARCODE[pb]=A9999944<BR>
         EMAIL ADDR[pz]=test-212387@berkeley.edu<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Tue, 18 Dec 2018 19:07:03 GMT
 - request:
     method: get
@@ -882,7 +882,7 @@ http_interactions:
         P BARCODE[pb]=A9999944<BR>
         EMAIL ADDR[pz]=test-212387@berkeley.edu<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Tue, 18 Dec 2018 19:07:04 GMT
 - request:
     method: get
@@ -949,7 +949,7 @@ http_interactions:
         EMAIL ADDR[pz]=test-212381@berkeley.edu<BR>
         PIN[p=]=WedBwqSZnE79.<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Wed, 06 Feb 2019 00:01:45 GMT
 - request:
     method: get
@@ -1019,7 +1019,7 @@ http_interactions:
         EMAIL ADDR[pz]=test-300852@berkeley.edu<BR>
         PIN[p=]=zyK0ZQ5dRmyRo<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Tue, 05 Mar 2019 23:19:26 GMT
 - request:
     method: get
@@ -1102,7 +1102,7 @@ http_interactions:
         PIN[p=]=e.1EAg19GFHbc<BR>
         LINK REC[p^]=i<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Thu, 16 May 2019 15:57:22 GMT
 - request:
     method: get
@@ -1140,7 +1140,7 @@ http_interactions:
         <BODY>ERRNUM=1<BR>
         ERRMSG=Requested record not found<BR>
         </BODY>
-    http_version:
+    http_version: 
   recorded_at: Thu, 30 May 2019 00:51:20 GMT
 - request:
     method: get
@@ -1208,7 +1208,7 @@ http_interactions:
         P BARCODE[pb]=99999890<BR>
         EMAIL ADDR[pz]=test-300851@berkeley.edu<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Mon, 10 Jun 2019 22:28:43 GMT
 - request:
     method: get
@@ -1286,6 +1286,84 @@ http_interactions:
         EMAIL ADDR[pz]=test-212381@berkeley.edu<BR>
         PIN[p=]=WedBwqSZnE79.<BR>
         <HTML><BODY>
-    http_version:
+    http_version: 
   recorded_at: Mon, 24 Jun 2019 21:40:04 GMT
+- request:
+    method: get
+    uri: https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/019999944/dump
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 27 Jun 2019 23:33:47 GMT
+      Server:
+      - III 100
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Content-Type:
+      - text/html; charset=UTF-8
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |-
+        <HTML><BODY>REC INFO[p!]=p<BR>
+        EXP DATE[p43]=02-28-20<BR>
+        PCODE1[p44]=0<BR>
+        PCODE2[p45]=h<BR>
+        PCODE3[p46]=0<BR>
+        P TYPE[p47]=6<BR>
+        TOT CHKOUT[p48]=0<BR>
+        TOT RENWAL[p49]=0<BR>
+        CUR CHKOUT[p50]=0<BR>
+        HOME LIBR[p53]=none<BR>
+        PMESSAGE[p54]=-<BR>
+        MBLOCK[p56]=-<BR>
+        REC TYPE[p80]=p<BR>
+        RECORD #[p81]=1344616<BR>
+        REC LENG[p82]=627<BR>
+        CREATED[p83]=01-09-15<BR>
+        UPDATED[p84]=06-27-19<BR>
+        REVISIONS[p85]=25<BR>
+        AGENCY[p86]=1<BR>
+        CL RTRND[p95]=0<BR>
+        MONEY OWED[p96]=$0.00<BR>
+        CUR ITEMA[p102]=0<BR>
+        CUR ITEMB[p103]=0<BR>
+        CUR ITEMC[p124]=0<BR>
+        CUR ITEMD[p125]=0<BR>
+        CIRCACTIVE[p163]=09-22-17<BR>
+        NOTICE PREF[p268]=-<BR>
+        WAITLIST[p297]=0<BR>
+        PATRN NAME[pn]=test-212387<BR>
+        MESSAGE[pm]=Please do not delete this test patron (sypb)<BR>
+        NOTE[px]=20180931 GALC eligible [litscript]<BR>
+        NOTE[px]=20190430 Doe/Moffitt study room eligible [litscript]<BR>
+        NOTE[px]=20190507 GALC eligible [litscript]<BR>
+        NOTE[px]=20190514 GALC eligible [litscript]<BR>
+        NOTE[px]=20190514 GALC eligible [litscript]<BR>
+        NOTE[px]=20190627 Library Staff Electronic Devices eligible [litscript]<BR>
+        NOTE[px]=20190627 Doe/Moffitt study room eligible [litscript]<BR>
+        NOTE[px]=20190627 GALC eligible [litscript]<BR>
+        P BARCODE[pb]=019999944<BR>
+        P BARCODE[pb]=A9999944<BR>
+        EMAIL ADDR[pz]=test-212387@berkeley.edu<BR>
+        PIN[p=]=ZZ3nZh0Gjmsns<BR>
+        <HTML><BODY>
+    http_version: 
+  recorded_at: Thu, 27 Jun 2019 23:33:45 GMT
 recorded_with: VCR 4.0.0
