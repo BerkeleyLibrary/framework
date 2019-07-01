@@ -11,7 +11,7 @@ module ApplicationHelper
   end
 
   def questions_link
-    mail_to support_email, 'Questions?', class: 'support-email', tabindex: 5
+    mail_to support_email, 'Questions?', class: 'support-email'
   end
 
   def login_link
@@ -30,8 +30,8 @@ module ApplicationHelper
 
   def page_title
     return content_for :page_title if content_for?(:page_title)
-
-    t_path = "#{controller_path.tr('/', '.')}.#{action_name}.page_title"
+    t_action = action_name == "show" ? params[:id].to_s : action_name
+    t_path = "#{controller_path.tr('/', '.')}.#{t_action}.page_title"
     t(t_path, default: :site_name)
   end
 

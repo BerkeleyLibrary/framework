@@ -60,10 +60,18 @@ en:
       scan_request_form: Faculty Alt-Media Scanning
       ucop_borrow_request_form: UCB Library Resources for Select UCOP Staff
 
+  doemoff_study_room_use_forms:
+    all_checked:
+      page_title: Agreement submitted
+
   errors:
     messages:
       blank: can't be blank
       email: is not a valid email address
+
+  galc_request_forms:
+    confirmed:
+      page_title: Agreement submitted
 
   helpers:
     submit:
@@ -81,6 +89,10 @@ en:
         create: Submit
       galc_request_form:
         create: Submit
+
+  libstaff_edevices_loan_forms:
+    all_check:
+      page_title: Agreement submitted
 
   omniauth_callbacks:
     calnet:
@@ -112,7 +124,15 @@ en:
     new:
       page_title: Faculty Alt-Media Scanning form- UC Berkeley Library
 
+  service_article_request_forms:
+    confirmed:
+      page_title: Request submitted
+
   site_name: UC Berkeley Library Forms
+
+  student_edevices_loan_forms:
+    all_checked:
+      page_title: Agreement submitted
 
   ucop_borrow_request_forms:
     new:
