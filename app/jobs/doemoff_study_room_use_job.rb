@@ -3,11 +3,8 @@ require 'request_mailer'
 class DoemoffStudyRoomUseJob < ApplicationJob
   queue_as :default
 
-  def perform(patron:)
-    patron = Patron::Record.new(**patron)
-    now = Time.now.strftime('%Y%m%d')
-    note = "#{now} Doe/Moffitt study room eligible [litscript]"
-
+  def perform(patron_id)
+    patron = Patron::Record.find(patron_id)
     patron.add_note(note)
     send_patron_email(patron)
   rescue
@@ -15,7 +12,11 @@ class DoemoffStudyRoomUseJob < ApplicationJob
     raise # so rails will log it
   end
 
-  private
+  def note
+    @note ||= "#{today} Doe/Moffitt study room eligible [litscript]"
+  end
+
+private
 
   def send_patron_email(patron)
     RequestMailer.doemoff_room_confirmation_email(patron.email).deliver_now

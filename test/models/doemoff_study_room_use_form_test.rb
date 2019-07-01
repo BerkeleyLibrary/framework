@@ -45,6 +45,22 @@ class DoemoffStudyRoomUseFormTest < ActiveSupport::TestCase
       form.validate!
     end
   end
+
+  #For the case of a user who logs in with a CalNet account but has no Millennium patron account
+  def test_eligibility_for_missing_patron
+    patron = nil
+    form = DoemoffStudyRoomUseForm.new(
+      display_name: "Test3",
+      patron: patron,
+      borrow_check: "checked",
+      fines_check: "checked",
+      roomUse_check: "checked"
+    )
+
+    assert_raises Error::PatronNotFoundError do
+      form.authorize!
+    end
+  end
  
 end
 

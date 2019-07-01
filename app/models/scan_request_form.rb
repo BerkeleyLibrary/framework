@@ -21,77 +21,51 @@ class ScanRequestForm < Form
   # @return [String]
   # @see http://ruby-doc.org/core-2.1.1/FalseClass.html
   attr_accessor :opt_in
-  validates_inclusion_of :opt_in, in: %w(true false)
 
   # Patron making the request
   # @return [Patron::Record]
   attr_accessor :patron
-  validates :patron, presence: true
 
   # Display name of the patron making the request
   # @return [String]
   attr_accessor :patron_name
-  validates :patron_name, presence: true
-
-  # @!attribute [r] patron_affiliation
-  #   @return [Patron::Affiliation]
-  delegate :affiliation, to: :patron, prefix: true
-  validates :patron_affiliation, inclusion: { in: ALLOWED_PATRON_AFFILIATIONS }
-
-  # @!attribute [r] patron_blocks
-  #   @return [String, nil]
-  delegate :blocks, to: :patron, prefix: true
-  validates :patron_blocks, absence: true
 
   # @!attribute [r] patron_email
   #   @return [String]
   delegate :email, to: :patron, prefix: true
-  validates :patron_email, presence: true, email: true
 
   # @!attribute [r] patron_id
   #   @return [String]
   delegate :id, to: :patron, prefix: true
 
-  # @!attribute [r] patron_type
-  #   @return [Patron::Type]
-  delegate :type, to: :patron, prefix: true
-  validates :patron_type, inclusion: { in: ALLOWED_PATRON_TYPES }
+  validates :opt_in,
+    inclusion: { in: %w(true false) }
 
-  def allowed?
-    valid? or not errors.include?(:patron_type)
-  end
+  validates :patron,
+    patron: {
+      affiliations: ALLOWED_PATRON_AFFILIATIONS,
+      types: ALLOWED_PATRON_TYPES,
+    },
+    strict: true
 
-  def blocked?
-    not valid? and errors.include?(:patron_blocks)
-  end
+  validates :patron_email,
+    email: true,
+    presence: true
+
+  validates :patron_name,
+    presence: true
 
   def opted_in?
-    opt_in == 'true'
+    'true' == opt_in
   end
 
-  private
+private
 
   def submit
-    opted_in? ? opt_in! : opt_out!
-  end
-
-  def opt_in!
-    ScanRequestOptInJob.perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: patron_name,
-      },
-    )
-  end
-
-  def opt_out!
-    ScanRequestOptOutJob.perform_later(
-      patron: {
-        email: patron_email,
-        id: patron_id,
-        name: patron_name,
-      },
-    )
+    if opted_in?
+      ScanRequestOptInJob.perform_later(patron_id)
+    else
+      ScanRequestOptOutJob.perform_later(patron_id)
+    end
   end
 end

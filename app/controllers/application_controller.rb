@@ -1,5 +1,7 @@
 # Base class for all controllers
 class ApplicationController < ActionController::Base
+  include ExceptionHandling
+
   # @!group Class Attributes
   # @!attribute [rw]
   # Value of the "Questions?" mailto link in the footer
@@ -14,37 +16,7 @@ class ApplicationController < ActionController::Base
   # @see https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection/ClassMethods.html
   protect_from_forgery with: :exception
 
-  rescue_from StandardError do |error|
-    log_error(error)
-    render "errors/standard_error", status: :internal_server_error
-  end
-
-  rescue_from Error::UnauthorizedError do |error|
-    log_error(error)
-    redirect_to login_path(url: request.fullpath)
-  end
-
-  rescue_from Error::PatronApiError do |error|
-    log_error(error)
-    render "errors/patron_api_error", status: :service_unavailable
-  end
-
-  rescue_from Error::PatronNotFoundError do |error|
-    log_error(error)
-    render "errors/patron_not_found_error", status: :forbidden
-  end
-
-  rescue_from Error::ForbiddenError do |error|
-    Rails.logger.error(error)
-    render :forbidden, status: :forbidden
-  end
-
-  rescue_from Error::PatronBlockedError do |error|
-    Rails.logger.error(error)
-    render :blocked, status: :forbidden
-  end
-
-  private
+private
 
   # Require that the current user be authenticated
   #

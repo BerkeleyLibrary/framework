@@ -33,23 +33,11 @@ class ServiceArticleRequestFormsController < ApplicationController
 private
 
   def init_form!
-    #Instantiate new form object
     @form = ServiceArticleRequestForm.new(
       display_name: current_user.display_name,
-      patron: current_user.employee_patron_record || current_user.student_patron_record
+      patron: current_user.primary_patron_record
     )
-    #Run through all the form validators for the strict validations
     @form.authorize!
-    #Specifically check the Millenium patron account for eligibility note and render view associated with eligibility and patron type
-    begin
-      @form.note_validate!
-    rescue Error::FacultyNoteError => e
-      render :required, status: :forbidden
-    rescue Error::StudentNoteError => e
-      render :student, status: :forbidden
-    rescue Error::GeneralNoteError => e
-      render :ineligible, status: :forbidden
-    end
     @form.validate unless @form.assign_attributes(form_params).blank?
   end
 

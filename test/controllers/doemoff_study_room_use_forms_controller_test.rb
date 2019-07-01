@@ -15,6 +15,14 @@ class DoemoffStudyRoomUseFormsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path(url: new_doemoff_study_room_use_form_path)
   end
 
+  #Occasionally someone will have a CalNet account for login but no Millennium patron records
+  def test_forbidden_if_missing_patron_record
+    with_login(:ucb_faculty_no_patron_record) do
+      get new_doemoff_study_room_use_form_path
+      assert_response :forbidden
+    end
+  end
+
   # PTYPE = 1
   def test_user_allowed_undergrad
     with_login(:ucb_undergrad_student) do

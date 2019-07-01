@@ -1,18 +1,20 @@
 require 'test_helper'
 
 class ServiceArticleRequestFormsControllerTest < ActionDispatch::IntegrationTest
-  #Use the stubbed records in the omniauth.yml file to simulate logins
-  setup do
-    VCR.insert_cassette 'patrons'
-  end
-
-  teardown do
-    VCR.eject_cassette
-  end
+  setup { VCR.insert_cassette 'patrons' }
+  teardown { VCR.eject_cassette }
 
   def test_unauthenticated_users_must_login
     get new_service_article_request_form_path
     assert_redirected_to login_path(url: new_service_article_request_form_path)
+  end
+
+   #Occasionally someone will have a CalNet account for login but no Millennium patron records
+  def test_forbidden_if_missing_patron_record
+    with_login(:ucb_faculty_no_patron_record) do
+      get new_service_article_request_form_path
+      assert_response :forbidden
+    end
   end
 
   #This particular test user does not have scan access

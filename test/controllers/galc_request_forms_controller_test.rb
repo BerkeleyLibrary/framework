@@ -1,14 +1,8 @@
 require 'test_helper'
 
 class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
-  #Use the stubbed records in the omniauth.yml file to simulate logins
-  setup do
-    VCR.insert_cassette 'patrons'
-  end
-
-  teardown do
-    VCR.eject_cassette
-  end
+  setup { VCR.insert_cassette 'patrons' }
+  teardown { VCR.eject_cassette }
 
   def test_unauthenticated_users_must_login
     get new_galc_request_form_path
@@ -31,13 +25,21 @@ class GalcRequestFormsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  #Occasionally someone will have a CalNet account for login but no Millennium patron records
+  def test_forbidden_if_missing_patron_record
+    with_login(:ucb_faculty_no_patron_record) do
+      get new_galc_request_form_path
+      assert_response :forbidden
+    end
+  end
+
   #A test user who has multiple notes in his/her Millenium account, one of which includes the eligibility note
-  # def test_eligible_user_multiple_notes
-  #   with_login(:ucb_postdoc) do
-  #     get new_galc_request_form_path
-  #     assert_response :ok
-  #   end
-  # end
+  def test_eligible_user_multiple_notes
+    with_login(:ucb_lib_staff) do
+      get new_galc_request_form_path
+      assert_response :ok
+    end
+  end
 
   #Patron type or affiliation are not within the specifications
   def test_forbidden_view_message_for_ineligible_user

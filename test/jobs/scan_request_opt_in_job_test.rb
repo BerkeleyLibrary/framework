@@ -1,20 +1,15 @@
-require 'shellwords'
 require 'test_helper'
 
 class ScanRequestOptInJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
-  setup do
-    # Dummy employee data.
-    @patron = { email: 'some-patron@totally-fake.com',
-                id: '011822839',
-                name: 'David Zuckerman' }
-  end
+  setup { VCR.insert_cassette 'patrons' }
+  teardown { VCR.eject_cassette }
 
   def test_emails_the_patron_on_success
     assert_emails 2 do
       with_stubbed_ssh(:succeeded) do
-        ScanRequestOptInJob.perform_now(patron: @patron)
+        ScanRequestOptInJob.perform_now('012158720')
       end
     end
 
@@ -22,7 +17,7 @@ class ScanRequestOptInJobTest < ActiveJob::TestCase
 
     assert_email patron_email,
       subject: 'alt-media scanning service opt-in',
-      to: [@patron[:email]]
+      to: ['danschmidt5189@berkeley.edu']
 
     assert_email staff_email,
       subject: 'alt-media scanning service opt-in',
@@ -33,7 +28,7 @@ class ScanRequestOptInJobTest < ActiveJob::TestCase
     assert_emails 1 do
       assert_raises StandardError do
         with_stubbed_ssh(:raised) do
-          ScanRequestOptInJob.perform_now(patron: @patron)
+          ScanRequestOptInJob.perform_now('012158720')
         end
       end
     end
@@ -47,7 +42,7 @@ class ScanRequestOptInJobTest < ActiveJob::TestCase
     assert_emails 1 do
       assert_raises StandardError do
         with_stubbed_ssh(:failed) do
-          ScanRequestOptInJob.perform_now(patron: @patron)
+          ScanRequestOptInJob.perform_now('012158720')
         end
       end
     end

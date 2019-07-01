@@ -1,6 +1,4 @@
-class RequestMailer < ActionMailer::Base
-  default from: 'lib-noreply@berkeley.edu'
-
+class RequestMailer < ApplicationMailer
   # Sends the UcopBorrowRequestForm
   def ucop_borrow_request_form_email(borrow_request)
     @borrow_request = borrow_request
@@ -119,15 +117,5 @@ class RequestMailer < ActionMailer::Base
 
   def opt_out_faculty(email)
     mail(to: email)
-  end
-
-private
-
-  def admin_to
-    Rails.application.config.altmedia['mail_admin_email']
-  end
-
-  def confirm_to
-    Rails.application.config.altmedia['mail_confirm_email']
   end
 end
