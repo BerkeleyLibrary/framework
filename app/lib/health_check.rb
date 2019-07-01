@@ -29,6 +29,13 @@ class HealthCheck
     end
   end
 
+  def as_json(*)
+    {
+      "status" => @status,
+      "details" => @details,
+    }
+  end
+
   def http_status_code
     if passing?
       200
