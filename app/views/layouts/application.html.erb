@@ -9,13 +9,16 @@
   </head>
 
   <body>
-    <div id="app" class="container">
-      <%= render "layouts/navbar" %>
-      <%= alerts %>
+    <main id="main">
+      <a href="#main" class="visually-hidden focusable skip-link">Skip to main content</a>
+      <div id="app" class="container">
+        <%= render "layouts/navbar" %>
+        <%= alerts %>
 
-      <%= yield %>
+        <%= yield %>
 
-      <%= render "layouts/footer" %>
-    </div>
+        <%= render "layouts/footer" %>
+      </div>
+    </main>
   </body>
 </html>

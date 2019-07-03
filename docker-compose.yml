@@ -16,10 +16,4 @@ services:
     ports: []
     restart: "no"
 
-  yard:
-    <<: *services-rails
-    entrypoint: ['bundle', 'exec', '--', 'yard', 'server', '--reload']
-    ports:
-      - 8808:8808
-
 version: "3.5"

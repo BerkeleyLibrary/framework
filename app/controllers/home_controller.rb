@@ -6,7 +6,10 @@ class HomeController < ApplicationController
 
   self.support_email = 'webman@library.berkeley.edu'
 
-  def index; end
+  def health
+    check = HealthCheck.new
+    render json: check, status: check.http_status_code
+  end
 
   def admin
     authenticate!
@@ -17,5 +20,4 @@ class HomeController < ApplicationController
       render :admin
     end
   end
-
 end
