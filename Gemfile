@@ -28,8 +28,6 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'webmock'
   gem 'vcr'
-  gem 'yard'
-  gem 'yard-minitest'
 end
 
 group :development do
