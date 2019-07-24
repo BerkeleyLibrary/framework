@@ -1,4 +1,8 @@
-require 'bundler/audit/task'
-Bundler::Audit::Task.new
-
-task default: 'bundle:audit'
+namespace :bundle do
+  desc 'Updates the ruby-advisory-db then runs bundle-audit'
+  task :audit do
+    require 'bundler/audit/cli'
+    Bundler::Audit::CLI.start ['update']
+    Bundler::Audit::CLI.start ['check', '--ignore', 'CVE-2015-9284']
+  end
+end
