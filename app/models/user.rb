@@ -14,8 +14,10 @@ class User
       raise Error::InvalidAuthProviderError, auth["provider"] \
         if auth["provider"].to_sym != :calnet
 
+      # Note: berkeleyEduCSID should be same as berkeleyEduStuID for students
       self.new(
         affiliations: auth["extra"]["berkeleyEduAffiliations"],
+        cs_id: auth["extra"]["berkeleyEduCSID"],
         department_number: auth["extra"]['departmentNumber'],
         display_name: auth["extra"]['displayName'],
         email: auth["extra"]["berkeleyEduOfficialEmail"],
@@ -31,6 +33,13 @@ class User
 
   # @return [String]
   attr_accessor :affiliations
+
+  # "Unique identifier from Campus Solutions (Emplid)" per CalNet docs.
+  # For students, should be the same value as berkeleyEduStuID.
+  #
+  # @see https://calnetweb.berkeley.edu/calnet-technologists/ldap-directory-service/ldap-simplification-and-standardization CalNet docs
+  # @return [String]
+  attr_accessor :cs_id
 
   # @return [String]
   attr_accessor :department_number
@@ -74,6 +83,8 @@ class User
     @primary_patron_record ||= begin
       if student_patron_record and not student_patron_record.expired?
         student_patron_record
+      elsif csid_patron_record and not csid_patron_record.expired?
+        csid_patron_record
       elsif employee_patron_record and not employee_patron_record.expired?
         employee_patron_record
       else
@@ -104,6 +115,20 @@ private
     @student_patron_record ||= begin
       if self.student_id
         Patron::Record.find(student_id)
+      else
+        nil
+      end
+    rescue Error::PatronNotFoundError
+      nil
+    end
+  end
+
+  # The user's Campus Solutions patron record (if they have a Campus Solutions ID)
+  # @return [Patron::Record, nil]
+  def csid_patron_record
+    @csid_patron_record ||= begin
+      if self.cs_id
+        Patron::Record.find(cs_id)
       else
         nil
       end
