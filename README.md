@@ -158,6 +158,26 @@ rails test
 tail -f log/test.log # in a separate shell
 ```
 
+### Viewing staging and production logs in CloudWatch
+
+Staging and production logs are aggregated in Amazon CloudWatch.
+
+- [staging](https://us-west-1.console.aws.amazon.com/cloudwatch/home?region=us-west-1#logStream:group=staging/framework/rails;streamFilter=typeLogStreamPrefix)
+- [production](https://us-west-1.console.aws.amazon.com/cloudwatch/home?region=us-west-1#logStream:group=production/framework/rails;streamFilter=typeLogStreamPrefix)
+
+You'll need to sign in with the IAM account alias `uc-berkeley-library-it`
+and then with your IAM user name and password (created by the DevOps team).
+
+You can also navigate to the logs by:
+
+- logging into the [AWS Management console](https://uc-berkeley-library-it.signin.aws.amazon.com/console)
+  (using the `uc-berkeley-library-it` alias and IAM username/password as above)
+- selecting "CloudWatch" under "Management and Governance"
+- clicking "Logs" in the left sidebar menu
+- selecting "staging/framework/rails" or "production/framework/rails" as appropriate.
+
+### Viewing logs from a Docker swarm manager node
+
 Staging and production logs are only slightly different from development, and can be accessed either via journald (RHEL7's default logging service) or docker service logs:
 
 ```sh
@@ -176,72 +196,23 @@ Every commit is built, tested, and optionally deployed by [Jenkins](https://jenk
 - Run the test suite (`rails test`) as well as security-related checks.
 - For the master branch:
     - Tag and push the built application images to [the registry](https://git.lib.berkeley.edu/lap/altmedia/container_registry).
-    - Deploy the staging (https://framework.ucblib.org/home) and production (https://framework.lib.berkeley.edu/home) environments.
+    - Deploy the staging (https://framework.ucblib.org/home) environment.
+
 
 If any step fails, the build is aborted, further steps are cancelled, and the commit status is marked with a red "x" in the GitLab UI. If the overall build succeeds, your commit is marked with a green checkmark in the GitLab UI.
 
----
-
 > **Failed Pipelines** If the pipeline fails, then most likely there was a failed test. This is a good thing — the tests (partially) protect you from pushing bad code. Go view the Jenkins Console output to see what happened.
 
----
+You can follow the build progress on the Jenkins [job page](https://jenkins.lib.berkeley.edu/job/apps/job/framework-rails/).
 
-### Staging
+### Deployment to production
 
-Staging is pinned to the ":latest" version of the application. To deploy it:
+To deploy to the production environment (https://framework.lib.berkeley.edu/home):
 
-- Push to the master branch.
-- Wait for GitLab to notify the #altmedia slack channel that the pipeline has succeeded, or visit the [job page](https://jenkins.lib.berkeley.edu/job/altmedia/) to track progress.
-- Open up the site and test: https://framework.ucblib.org/home.
+1. Make sure the `master` branch has been successfully built, tested, and deployed to stage (see above).
+2. Merge from `master` to `production`.
 
-### Production
-
-The production stack is pinned to a specific version of the application. To deploy it, you must:
-
-- Visit [the registry](https://git.lib.berkeley.edu/lap/altmedia/container_registry) and find the version (tag) of the application that you with to deploy.
-- Update the {file:docker-compose.production.yml production stack} to reference that new version.
-
-Each master commit is tagged in the registry as `git-########`, where "###" refers to the first eight characters of the commit hash. You can find that by running `git rev-parse --short HEAD` in your console, or by viewing the [master commit logs](https://git.lib.berkeley.edu/lap/altmedia/commits/master).
-
----
-
-> **Double-Check Tags:** Make sure to verify that the desired tag is actually in the registry!
-
----
-
-For example, suppose we want to deploy the latest master. Make sure you're on _exactly_ the version of master that's in GitLab, then get its commit hash:
-
-```sh
-git fetch origin
-git reset --hard origin/master
-git rev-parse --short HEAD # "fbdd4bb"
-```
-
-Then update the production config:
-
-```yml
-services:
-  rails:
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-fbdd4bb
-    # ... SNIP ...
-
-  updater:
-    image: containers.lib.berkeley.edu/lap/altmedia/altmedia-rails:git-fbdd4bb
-    # ... SNIP ...
-```
-
-Finally, commit your change and push:
-
-```sh
-git add docker-compose.production.yml
-git commit -m 'Deploying rails:git-fbdd4bb to production'
-```
-
----
-
-> **Small Commits:** It's always a good idea to write small commits, but it is especially important that production deploys be a single, isolated commit, so that you can easily rollback if needed.
-
----
+Jenkins should take it from there.
 
 ### Docker Tags
 
