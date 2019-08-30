@@ -1,11 +1,11 @@
 class LibstaffEdevicesLoanForm < Form
   ALLOWED_PATRON_AFFILIATIONS = [
-    Patron::Affiliation::UC_BERKELEY,
-  ]
+    Patron::Affiliation::UC_BERKELEY
+  ].freeze
 
   ALLOWED_PATRON_TYPES = [
-    Patron::Type::LIBRARY_STAFF,
-  ]
+    Patron::Type::LIBRARY_STAFF
+  ].freeze
 
   attr_accessor :borrow_check
   attr_accessor :display_name
@@ -18,23 +18,23 @@ class LibstaffEdevicesLoanForm < Form
   delegate :id, to: :patron, prefix: true
 
   # Users must explicitly opt-in to each clause of the form.
-  validates :borrow_check, :lending_check, :fines_check, :edevices_check,
-    inclusion: { in: %w(checked) }
+  validates :borrow_check, :edevices_check, :fines_check, :lending_check,
+            inclusion: { in: %w[checked] }
 
   validates :display_name,
-    presence: true
+            presence: true
 
   validates :patron,
-    patron: {
-      affiliations: ALLOWED_PATRON_AFFILIATIONS,
-      types: ALLOWED_PATRON_TYPES,
-    },
-    strict: true
+            patron: {
+              affiliations: ALLOWED_PATRON_AFFILIATIONS,
+              types: ALLOWED_PATRON_TYPES
+            },
+            strict: true
 
   validates :patron_email,
-    email: true
+            email: true
 
-private
+  private
 
   def submit
     LibstaffEdevicesLoanJob.perform_later(patron_id)

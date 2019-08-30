@@ -7,7 +7,7 @@ class DoemoffStudyRoomUseJob < ApplicationJob
     patron = Patron::Record.find(patron_id)
     patron.add_note(note)
     send_patron_email(patron)
-  rescue
+  rescue StandardError
     send_failure_email(patron, note)
     raise # so rails will log it
   end
@@ -16,7 +16,7 @@ class DoemoffStudyRoomUseJob < ApplicationJob
     @note ||= "#{today} Doe/Moffitt study room eligible [litscript]"
   end
 
-private
+  private
 
   def send_patron_email(patron)
     RequestMailer.doemoff_room_confirmation_email(patron.email).deliver_now

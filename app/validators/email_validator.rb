@@ -13,8 +13,6 @@
 # @see https://guides.rubyonrails.org/active_record_validations.html#custom-validators Custom Validators
 class EmailValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    unless value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-      record.errors.add(attribute, :email, options.merge(value: value))
-    end
+    record.errors.add(attribute, :email, options.merge(value: value)) unless value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
   end
 end

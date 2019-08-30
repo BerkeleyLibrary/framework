@@ -84,7 +84,7 @@ bundle install --no-deployment
 
 ## Testing
 
-Tests are written using Rails' default minitest framework. Rails offers [extensive documentation](https://guides.rubyonrails.org/testing.html) on testing, much more than can be covered here, so take a look at it.
+Tests are written using [RSpec](https://rspec.info/). Rails offers [extensive documentation](https://guides.rubyonrails.org/testing.html) on testing, much more than can be covered here, so take a look at it. (The Rails docs are based on Minitest, the default Rails test framework, but the general advice there still applies.) See the [rspec-rails](https://github.com/rspec/rspec-rails) documentation for additional features that support testing Rails applications with RSpec.
 
 After following the steps above to build your application, the easiest way to test it is to shell into a container running in "test mode":
 
@@ -102,9 +102,16 @@ That boots you into a shell inside of the container, where all of your applicati
 
 ```sh
 rails c # open a rails console
-rails t # run the whole test suite
-rails test:{models,controllers,mailers,…} # run a subset of tests
-ruby -Itest test/path/to/my_test.rb # run a specific test
+rails spec # run the whole test suite
+rails spec:{models,controllers,mailers,…} # run a subset of specs
+rails spec SPEC=spec/path/to/my_spec.rb # run a specific spec
+```
+
+To generate a test coverage report, you can either use the `cal:test:coverage` task, or set the `COVERAGE` environment variable:
+
+```sh
+rails cal:test:coverage
+COVERAGE=true rails spec
 ```
 
 Note that when running commands via `rails`, what you're really doing is running something called a rake task. (Get it? "Rake" as in "Make", but for Ruby!) As per usual, the [rails documentation](https://guides.rubyonrails.org/command_line.html#custom-rake-tasks) provides some good info.

@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   # @see https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection/ClassMethods.html
   protect_from_forgery with: :exception
 
-private
+  private
 
   # Require that the current user be authenticated
   #
@@ -24,10 +24,7 @@ private
   # @raise [Error::UnauthorizedError] If the user is not
   #   authenticated
   def authenticate!
-    if not authenticated?
-      raise Error::UnauthorizedError,
-        "Endpoint #{controller_name}/#{action_name} requires authentication"
-    end
+    raise Error::UnauthorizedError, "Endpoint #{controller_name}/#{action_name} requires authentication" unless authenticated?
   end
 
   # Return whether the current user is authenticated
@@ -51,10 +48,12 @@ private
 
   # Log an exception
   def log_error(error)
-    logger.error({
-      error: "#{error.inspect}",
-      cause: "#{error.cause.inspect}",
-    })
+    msg = {
+      error: error.inspect.to_s,
+      cause: error.cause.inspect.to_s
+    }
+    msg[:backtrace] = error.backtrace if Rails.logger.level < Logger::INFO
+    logger.error(msg)
   end
 
   # @return Regexp Pattern determining whether a request should be "hidden"
@@ -63,28 +62,28 @@ private
   # matches either "foo" OR "bar.*".
   def hidden_paths_re
     @_hidden_paths_re ||= Regexp.union(
-      (ENV["LIT_HIDDEN_PATHS"] || "").
-        split.map(&:strip).reject(&:empty?).map{|s| Regexp.new(s)}
+      (ENV['LIT_HIDDEN_PATHS'] || '')
+        .split.map(&:strip).reject(&:empty?).map { |s| Regexp.new(s) }
     )
   end
 
   # Before filter that 404s requests whose paths match hidden_paths_re
   def hide_paths
     logger.debug({
-      message: "Filtering hidden paths",
+      message: 'Filtering hidden paths',
       hidden_paths_re: hidden_paths_re,
-      current_path: request.path,
+      current_path: request.path
     }.to_json)
 
     hidden_paths_re.match(request.path) do
-      render file: Rails.root.join("public/404.html"), status: :not_found
+      render file: Rails.root.join('public/404.html'), status: :not_found
     end
   end
 
   # Perform a redirect but keep all existing request parameters
   #
   # This is a workaround for not being able to redirect a POST/PUT request.
-  def redirect_with_params(opts={})
+  def redirect_with_params(opts = {})
     redirect_to request.parameters.update(opts)
   end
 
@@ -96,9 +95,9 @@ private
     session[:user] = user
 
     logger.debug({
-      message: "Signed in user",
-      user: session[:user],
-    })
+                   message: 'Signed in user',
+                   user: session[:user]
+                 })
   end
 
   # Sign out the current user by clearing all session data

@@ -9,18 +9,24 @@ module Patron
   class Record
     include ActiveModel::Model
 
+    # Any two-digit year over this, and Ruby's Date.parse() will wrap back to 1969.
+    MILLENNIUM_MAX_DATE = Date.new(2068, 12, 31)
+
+    # Any two-digit year below this, and Ruby's Date.parse() will wrap ahead to 2068.
+    MILLENNIUM_MIN_DATE = Date.new(1969, 1, 1)
+
     # Base URL for the Patron API.
     #
     # @return [URI]
     class_attribute :api_base_url, default: URI.parse(
-      "https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/"
+      'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/'
     )
 
     # URL of the expect script used to add notes to patron records
     #
     # @return [URI]
     class_attribute :expect_url, default: URI.parse(
-      "ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote"
+      'ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote'
     )
 
     # The patron's affiliation code (UC Berkeley, Community College, etc.)
@@ -50,11 +56,6 @@ module Patron
     # @return [String]
     attr_accessor :name
 
-    # Notes added to the patron record
-    #
-    # @return [Array]
-    attr_accessor :notes
-
     # The patron's type code (undergraduate, post-doc, faculty, etc.)
     #
     # See Patron::Type for a partial list of codes.
@@ -70,62 +71,50 @@ module Patron
     class << self
       # Returns the patron record for a given ID
       #
-      # @return [Patron]
+      # @return [Patron::Record]
       #
       # @raise [Error::PatronApiError] If an error occurs contacting
       #   the Patron API (commonly due to firewall issues) or if the API returns
       #   an unknown error message or if the API returns nothing.
       def find(id)
-        # Fetch raw data from the Patron API
-        url = URI.join(self.api_base_url, "/PATRONAPI/#{URI.escape("#{id}")}/dump")
-        opts = { ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE }
-        data = parse_dump(open(url, opts).read)
+        patron_dump = Dump.from_patron_api(api_base_url, id)
+        from_patron_dump(patron_dump)
+      end
 
-        # Handle errors
-        if data["ERRMSG"].present?
-          if data["ERRMSG"].include?("record not found")
-            raise Error::PatronNotFoundError, "No patron record for '#{id}'"
-          else
-            raise Error::PatronApiError, data["ERRMSG"]
-          end
-        end
+      # Returns the patron record for a given ID, if it exists, and
+      # otherwise returns nil. Also returns nil for a nil ID.
+      #
+      # @return [Patron::Record, nil]
+      def find_if_exists(id)
+        return unless id
 
-        self.new(
-          id: id,
-          affiliation: data['PCODE1[p44]'],
-          blocks: data['MBLOCK[p56]'] == '-' ? nil : data['MBLOCK[p56]'],
-          email: data['EMAIL ADDR[pz]'],
-          name: data['PATRN NAME[pn]'],
-          type: data['P TYPE[p47]'],
-          notes: [*data['NOTE[px]']].reject(&:blank?),
-          expiration_date: Date.strptime(data['EXP DATE[p43]'], '%m-%d-%y')
+        find(id)
+      rescue Error::PatronNotFoundError
+        nil
+      end
+
+      private
+
+      # @param dump [Patron::Dump]
+      def from_patron_dump(dump)
+        new(
+          id: dump.patron_id,
+          affiliation: dump['PCODE1[p44]'],
+          blocks: dump['MBLOCK[p56]'] == '-' ? nil : dump['MBLOCK[p56]'],
+          email: dump['EMAIL ADDR[pz]'],
+          name: dump['PATRN NAME[pn]'],
+          type: dump['P TYPE[p47]'],
+          notes: [*dump['NOTE[px]']].reject(&:blank?),
+          expiration_date: Date.strptime(dump['EXP DATE[p43]'], '%m-%d-%y')
         )
-      rescue OpenURI::HTTPError => e
-        raise Error::PatronApiError
       end
 
-    private
-
-      # Parses patron attributes from a raw PATRONAPI response
-      def parse_dump(dumpstr)
-        data = {}
-        ActionController::Base.helpers.strip_tags(dumpstr).each_line do |line|
-          if matches = line.match(/^(?<key>[\/\w\s]+(\[.+\]+)?)=(?<val>.*)$/)
-            key, val = matches[:key], matches[:val]
-
-            if data.include?(key) # multivalued field
-              data[key] = [data[key]] unless data[key].kind_of?(Array)
-              data[key] << val
-            else
-              data[key] = val
-            end
-          end
-        end
-        return data
-      end
     end
 
     def expired?
+      # missing date shouldn't happen, but if it does, err on the side of expiring
+      return true unless expiration_date
+
       expiration_date < Date.today
     end
 
@@ -134,11 +123,24 @@ module Patron
     end
 
     def student?
-      type == Patron::Type::GRAD_STUDENT or type == Patron::Type::UNDERGRAD
+      (type == Patron::Type::GRAD_STUDENT) || (type == Patron::Type::UNDERGRAD)
     end
 
+    # Notes added to the patron record
+    #
+    # @return [Array]
     def notes
       @notes ||= []
+    end
+
+    # Notes added to the patron record
+    # @param val The new array of notes
+    # @return [Array]
+    def notes=(val)
+      val = [] if val.nil?
+      raise ArgumentError, "Can't set Patron::Record.notes to non-array value #{val.inspect}" unless val.is_a?(Array)
+
+      @notes = val
     end
 
     # Adds a note to the patron's record
@@ -155,21 +157,19 @@ module Patron
     #   robust and easier to test/monitor/verify.
     def add_note(note)
       Rails.logger.debug "Updating patron record: #{id}"
+      notes << ssh_add_note(note)
+    end
 
-      ssh_opts = {
-        non_interactive: true,
-      }
+    private
 
-      res = Net::SSH.start(expect_url.host, expect_url.user, ssh_opts) do |ssh|
+    def ssh_add_note(note)
+      res = Net::SSH.start(expect_url.host, expect_url.user, non_interactive: true) do |ssh|
         command = [expect_url.path, note, id].shelljoin
         ssh.exec!(command)
       end
+      return note if res.match('Finished Successfully')
 
-      if not res.match('Finished Successfully')
-        raise StandardError, "Failed updating patron record for #{patron.id}"
-      end
-
-      notes << note
+      raise StandardError, "Failed updating patron record for #{id}"
     end
   end
 end

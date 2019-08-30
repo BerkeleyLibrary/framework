@@ -25,7 +25,7 @@ module Framework
     # @note By default, Rails wraps fields that contain a validation error with
     #   a div classed "field_with_errors". This messes up Bootstrap's styling
     #   for feedback messages, so I've disabled the Rails' default.
-    config.action_view.field_error_proc = Proc.new { |tag, instance| tag }
+    config.action_view.field_error_proc = proc { |tag, _instance| tag }
 
     # Configure Patron API lookups. Uses before_initialize hook so that
     # autoloading finds the Patron::Record class.

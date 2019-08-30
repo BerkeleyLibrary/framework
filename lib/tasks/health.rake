@@ -1,6 +1,6 @@
 namespace :health do
-  desc "Query the healthcheck endpoint"
-  task :check => :environment do
+  desc 'Query the healthcheck endpoint'
+  task check: :environment do
     session = ActionDispatch::Integration::Session.new(Rails.application)
     session.get(Rails.application.routes.url_helpers.health_path)
     puts session.response.body

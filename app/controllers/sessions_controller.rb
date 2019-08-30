@@ -19,8 +19,8 @@ class SessionsController < ApplicationController
   # Generate a new user session using data returned from a valid Calnet login
   def callback
     logger.debug({
-      message: "Received omniauth callback",
-      omniauth: auth_params,
+      message: 'Received omniauth callback',
+      omniauth: auth_params
     }.to_json)
 
     @user = User.from_omniauth(auth_params)
@@ -37,18 +37,9 @@ class SessionsController < ApplicationController
     redirect_to end_url
   end
 
-  # Handle Calnet authentication failures
-  #
-  # Currently, Calnet has no way of triggering this, although it's rumored to
-  # be in development for a future release.
-  def failure
-    flash[:danger] = t('.forbidden')
-    redirect_to home_path
-  end
-
   private
 
   def auth_params
-    request.env["omniauth.auth"]
+    request.env['omniauth.auth']
   end
 end

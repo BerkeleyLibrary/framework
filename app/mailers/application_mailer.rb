@@ -1,7 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
   default from: 'lib-noreply@berkeley.edu'
 
-private
+  private
 
   def admin_to
     Rails.application.config.altmedia['mail_admin_email']

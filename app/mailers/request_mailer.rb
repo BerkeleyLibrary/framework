@@ -34,6 +34,7 @@ class RequestMailer < ApplicationMailer
   end
 
   # Send ServiceArticleRequest confirmation email to user
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def service_article_confirmation_email(email, publication, patron)
     @pub_title = publication[:pub_title]
     @pub_location = publication[:pub_location]
@@ -50,6 +51,7 @@ class RequestMailer < ApplicationMailer
 
     mail(to: email)
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # Send email describing a failure of the ServiceArticleRequest job
   def service_article_failure_email(empid, displayname)
@@ -75,7 +77,7 @@ class RequestMailer < ApplicationMailer
 
   # Send GalcRequest confirmation email to user
   def galc_confirmation_email(email)
-    mail(to: email, :subject => "GALC confirmation email")
+    mail(to: email, subject: 'GALC confirmation email')
   end
 
   # Send email describing a failure of the GalcRequest job
