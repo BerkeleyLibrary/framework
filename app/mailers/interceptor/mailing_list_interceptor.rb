@@ -23,7 +23,7 @@ module Interceptor
     # @return [String]
     attr_accessor :mailing_list
 
-    def initialize(mailing_list='lib-testmail@lists.berkeley.edu')
+    def initialize(mailing_list = 'lib-testmail@lists.berkeley.edu')
       @mailing_list = mailing_list
     end
 
@@ -35,7 +35,7 @@ module Interceptor
       mail.header['X-Original-BCC'] = mail.bcc
 
       # Forward solely to the test list
-      mail.to = self.mailing_list
+      mail.to = mailing_list
       mail.cc = mail.bcc = ''
     end
   end

@@ -1,8 +1,8 @@
 class ServiceArticleRequestFormsController < ApplicationController
-  #First redirect the user to the CalNet login page
+  # First redirect the user to the CalNet login page
   before_action :authenticate!
 
-  #Before loading the form, check for eligibility for the article scan request service
+  # Before loading the form, check for eligibility for the article scan request service
   before_action :init_form!
 
   self.support_email = 'baker@library.berkeley.edu'
@@ -18,19 +18,19 @@ class ServiceArticleRequestFormsController < ApplicationController
     Rails.logger.error(e)
 
     flash[:danger] ||= []
-    @form.errors.full_messages.each{|msg| flash[:danger] << msg}
+    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
     redirect_with_params(action: :new)
   end
 
   def show
-    if %w(ineligible confirmed forbidden required student).include?(params[:id])
+    if %w[ineligible confirmed forbidden required student].include?(params[:id])
       render params[:id]
     else
       redirect_to action: :new
     end
   end
 
-private
+  private
 
   def init_form!
     @form = ServiceArticleRequestForm.new(
@@ -42,6 +42,7 @@ private
   end
 
   # Make sure only specified attributes are allowed as params
+  # rubocop:disable Metrics/MethodLength
   def form_params
     params.require(:service_article_request_form).permit(
       :display_name,
@@ -59,4 +60,5 @@ private
   rescue ActionController::ParameterMissing
     {}
   end
+  # rubocop:enable Metrics/MethodLength
 end

@@ -10,29 +10,35 @@
 #
 # @see https://guides.rubyonrails.org/active_record_validations.html#custom-validators Custom Validators
 class PatronValidator < ActiveModel::EachValidator
-  def validate_each(model, attrname, patron)
-    affiliations = options[:affiliations] || []
-    note_pattern = options[:note]
-    types = options[:types] || []
-
-    if not patron.kind_of?(Patron::Record)
-      raise Error::PatronNotFoundError
-    end
-
-    if affiliations.any? and not affiliations.include?(patron.affiliation)
-      raise Error::ForbiddenError
-    end
-
-    if types.any? and not types.include?(patron.type)
-      raise Error::ForbiddenError
-    end
-
-    if note_pattern and patron.notes.none?(note_pattern)
-      raise Error::PatronNotEligibleError.new(nil, patron)
-    end
-
-    if patron.blocks
-      raise Error::PatronBlockedError
-    end
+  # rubocop:disable Metrics/AbcSize
+  def validate_each(_model, _attrname, patron)
+    raise Error::PatronNotFoundError unless patron.is_a?(Patron::Record)
+    raise Error::ForbiddenError if affiliation_missing?(patron, options[:affiliations])
+    raise Error::ForbiddenError if wrong_type?(patron, options[:types])
+    raise Error::PatronNotEligibleError.new(nil, patron) if note_missing?(patron, options[:note])
+    raise Error::PatronBlockedError if patron.blocks
   end
+  # rubocop:enable Metrics/AbcSize
+
+  private
+
+  def affiliation_missing?(patron, affiliations)
+    return if affiliations.blank?
+
+    !affiliations.include?(patron.affiliation)
+  end
+
+  def wrong_type?(patron, types)
+    return if types.blank?
+
+    !types.include?(patron.type)
+  end
+
+  def note_missing?(patron, note_pattern)
+    return unless note_pattern
+
+    note_pattern = Regexp.new(note_pattern) if note_pattern.is_a?(String)
+    patron.notes.none? { |n| n =~ note_pattern }
+  end
+
 end

@@ -18,27 +18,27 @@ class ScanRequestFormsController < ApplicationController
     end
   rescue ActiveModel::ValidationError
     flash[:danger] ||= []
-    @form.errors.full_messages.each {|msg| flash[:danger] << msg}
+    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
 
     redirect_with_params(action: :new)
   end
 
   def show
-    if %w(blocked forbidden optin optout).include?(params[:id])
+    if %w[blocked forbidden optin optout].include?(params[:id])
       render params[:id]
     else
       redirect_to(action: :new)
     end
   end
 
-private
+  private
 
   def init_form!
     logger.info(session[:user])
 
     @form = ScanRequestForm.new(
       patron: current_user.primary_patron_record,
-      patron_name: current_user.display_name,
+      patron_name: current_user.display_name
     )
 
     @form.authorize!

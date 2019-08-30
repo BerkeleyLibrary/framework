@@ -3,13 +3,13 @@
 # This is commonly referred to as the "AltMedia" form.
 class ScanRequestForm < Form
   ALLOWED_PATRON_AFFILIATIONS = [
-    Patron::Affiliation::UC_BERKELEY,
-  ]
+    Patron::Affiliation::UC_BERKELEY
+  ].freeze
 
   ALLOWED_PATRON_TYPES = [
     Patron::Type::FACULTY,
     Patron::Type::VISITING_SCHOLAR
-  ]
+  ].freeze
 
   # Whether the user has opted in or out of the scanning service
   #
@@ -39,27 +39,27 @@ class ScanRequestForm < Form
   delegate :id, to: :patron, prefix: true
 
   validates :opt_in,
-    inclusion: { in: %w(true false) }
+            inclusion: { in: %w[true false] }
 
   validates :patron,
-    patron: {
-      affiliations: ALLOWED_PATRON_AFFILIATIONS,
-      types: ALLOWED_PATRON_TYPES,
-    },
-    strict: true
+            patron: {
+              affiliations: ALLOWED_PATRON_AFFILIATIONS,
+              types: ALLOWED_PATRON_TYPES
+            },
+            strict: true
 
   validates :patron_email,
-    email: true,
-    presence: true
+            email: true,
+            presence: true
 
   validates :patron_name,
-    presence: true
+            presence: true
 
   def opted_in?
-    'true' == opt_in
+    opt_in == 'true'
   end
 
-private
+  private
 
   def submit
     if opted_in?

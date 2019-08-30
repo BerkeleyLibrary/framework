@@ -13,33 +13,33 @@ class UcopBorrowRequestForm < Form
   )
 
   validates :department_name,
-    presence: true
+            presence: true
 
   validates :department_head_email,
-    presence: true,
-    email: true
+            presence: true,
+            email: true
 
   validates :employee_email,
-    presence: true,
-    email: true
+            presence: true,
+            email: true
 
   validates :employee_id,
-    presence: true
+            presence: true
 
   validates :employee_personal_email,
-    presence: true,
-    email: true
+            presence: true,
+            email: true
 
   validates :employee_phone,
-    presence: true
+            presence: true
 
   validates :employee_name,
-    presence: true
+            presence: true
 
   validates :employee_address,
-    presence: true
+            presence: true
 
-private
+  private
 
   def submit
     RequestMailer.ucop_borrow_request_form_email(self).deliver_now

@@ -14,24 +14,24 @@ class DoemoffStudyRoomUseFormsController < ApplicationController
     Rails.logger.error(e)
 
     flash[:danger] ||= []
-    @form.errors.full_messages.each{|msg| flash[:danger] << msg}
+    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
     redirect_with_params(action: :new)
   end
 
   def show
-    if %w(blocked forbidden all_checked).include?(params[:id])
+    if %w[blocked forbidden all_checked].include?(params[:id])
       render params[:id]
     else
       redirect_to action: :new
     end
   end
 
-private
+  private
 
   def init_form!
     @form = DoemoffStudyRoomUseForm.new(
       display_name: current_user.display_name,
-      patron: current_user.primary_patron_record,
+      patron: current_user.primary_patron_record
     )
     @form.authorize!
     @form.validate unless @form.assign_attributes(form_params).blank?
@@ -42,7 +42,7 @@ private
     params.require(:doemoff_study_room_use_form).permit(
       :borrow_check,
       :fines_check,
-      :roomUse_check,
+      :roomUse_check
     )
   rescue ActionController::ParameterMissing
     {}

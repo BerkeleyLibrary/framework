@@ -3,11 +3,11 @@ class CampusNetworksController < ApplicationController
 
   def index
     render formats: :txt, locals: {
-      networks: CampusNetwork.all(organization: org_param),
+      networks: CampusNetwork.all(organization: org_param)
     }
   end
 
-private
+  private
 
   def org_param
     params.permit(:organization)[:organization]
@@ -15,7 +15,7 @@ private
 
   def page_header
     if org_param.blank?
-      "UCB + LBL IP Addresses"
+      'UCB + LBL IP Addresses'
     else
       "#{org_param.upcase}-only IP Addresses"
     end

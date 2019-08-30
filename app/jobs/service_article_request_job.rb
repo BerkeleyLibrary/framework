@@ -6,12 +6,12 @@ class ServiceArticleRequestJob < ApplicationJob
   def perform(email, publication, patron_id)
     patron = Patron::Record.find(patron_id)
     send_patron_email(email, publication, patron)
-  rescue
+  rescue StandardError
     send_failure_email(patron)
     raise # so rails will log it
   end
 
-private
+  private
 
   def send_patron_email(email, publication, patron)
     RequestMailer.service_article_confirmation_email(email, publication, patron).deliver_now

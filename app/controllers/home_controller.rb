@@ -7,15 +7,15 @@ class HomeController < ApplicationController
   self.support_email = 'webman@library.berkeley.edu'
 
   def health
-    check = HealthCheck.new
+    check = Health::Check.new
     render json: check, status: check.http_status_code
   end
 
   def admin
     authenticate!
-    if not current_user.framework_admin
+    if !current_user.framework_admin
       raise Error::ForbiddenError,
-        "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
+            "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
     else
       render :admin
     end

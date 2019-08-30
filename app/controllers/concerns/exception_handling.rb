@@ -1,6 +1,7 @@
 module ExceptionHandling
   extend ActiveSupport::Concern
 
+  # rubocop:disable Metrics/BlockLength
   included do
     # Order exceptions from most generic to most specific.
 
@@ -40,4 +41,5 @@ module ExceptionHandling
       render :blocked, status: :forbidden
     end
   end
+  # rubocop:enable Metrics/BlockLength
 end

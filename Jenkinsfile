@@ -86,7 +86,7 @@ pipeline {
               sh 'docker cp "$(docker-compose ps -q rails):/opt/app/test/reports" test/reports'
 
               // Archive test reports
-              junit 'test/reports/*.xml'
+              junit 'test/reports/SPEC-*.xml'
               publishBrakeman 'test/reports/brakeman.json'
 
               // Publish code coverage reports (if any)

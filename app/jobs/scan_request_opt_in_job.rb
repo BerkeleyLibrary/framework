@@ -8,7 +8,7 @@ class ScanRequestOptInJob < ApplicationJob
     patron.add_note(note)
     send_patron_email(patron)
     send_baker_email(patron)
-  rescue
+  rescue StandardError
     send_failure_email(patron, note)
     raise # so rails will log it
   end
@@ -17,7 +17,7 @@ class ScanRequestOptInJob < ApplicationJob
     @note ||= "#{today} library book scan eligible [litscript]"
   end
 
-private
+  private
 
   def send_patron_email(patron)
     RequestMailer.confirmation_email(patron.email).deliver_now

@@ -11,7 +11,7 @@ class ServiceArticleRequestForm < Form
 
   attr_accessor :issn
 
-  #Fields that are not required but can be optionally filled out by the user
+  # Fields that are not required but can be optionally filled out by the user
   attr_accessor :pages
 
   # Patron making the request
@@ -19,7 +19,7 @@ class ServiceArticleRequestForm < Form
   attr_accessor :patron
 
   # @!attribute [string] patron_email
-  attr_accessor :patron_email
+  attr_writer :patron_email
 
   attr_accessor :pub_location
   attr_accessor :pub_notes
@@ -28,11 +28,11 @@ class ServiceArticleRequestForm < Form
   # @!attribute [object] publication
   #   Stores the related article attributes to pass more easily to email job
   # @todo Make an object?
-  attr_accessor :publication
+  attr_writer :publication
 
   # @!attribute [string] submit_email
   #  Determines where the information from the form submission is sent
-  attr_accessor :submit_email
+  attr_writer :submit_email
 
   # @!attribute [string] support_email
   #  The help email address in case the user has questions or problems
@@ -47,10 +47,10 @@ class ServiceArticleRequestForm < Form
   validates :article_title, presence: true
   validates :display_name, presence: true
   validates :patron,
-    patron: {
-      note: /book scan eligible/,
-    },
-    strict: true
+            patron: {
+              note: /book scan eligible/
+            },
+            strict: true
   validates :patron_email, email: true
   validates :patron_id, presence: true
   validates :pub_title, presence: true
@@ -60,6 +60,7 @@ class ServiceArticleRequestForm < Form
     @submit_email ||= 'requests@library.berkeley.edu'
   end
 
+  # rubocop:disable Metrics/MethodLength
   def publication
     @publication ||= {
       pub_title: pub_title,
@@ -70,22 +71,23 @@ class ServiceArticleRequestForm < Form
       author: author,
       pages: pages,
       citation: citation,
-      pub_notes: pub_notes,
+      pub_notes: pub_notes
     }
   end
+  # rubocop:enable Metrics/MethodLength
 
-  #Cannot use the delegate method because that is for read-only attributes
+  # Cannot use the delegate method because that is for read-only attributes
   def patron_email
     @patron_email ||= @patron.email if @patron
   end
 
-private
+  private
 
   def submit
     ServiceArticleRequestJob.perform_later(
       submit_email,
       publication,
-      patron_id,
+      patron_id
     )
   end
 end
