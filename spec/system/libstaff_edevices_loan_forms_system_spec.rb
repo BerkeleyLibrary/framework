@@ -55,7 +55,7 @@ describe :libstaff_edevices_loan_forms, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page.current_path).to eq('/forms/library-staff-devices/all_check')
+      expect(page.current_path).to eq('/forms/library-staff-devices/all_checked')
     end
   end
 end

@@ -1,36 +1,16 @@
-class ServiceArticleRequestFormsController < ApplicationController
-  # First redirect the user to the CalNet login page
-  before_action :authenticate!
-
-  # Before loading the form, check for eligibility for the article scan request service
-  before_action :init_form!
+class ServiceArticleRequestFormsController < AuthenticatedFormController
 
   self.support_email = 'baker@library.berkeley.edu'
 
-  def index
-    redirect_to action: :new
-  end
-
-  def create
-    @form.submit!
-    redirect_to action: :show, id: :confirmed
-  rescue ActiveModel::ValidationError => e
-    Rails.logger.error(e)
-
-    flash[:danger] ||= []
-    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
-    redirect_with_params(action: :new)
-  end
-
-  def show
-    if %w[ineligible confirmed forbidden required student].include?(params[:id])
-      render params[:id]
-    else
-      redirect_to action: :new
-    end
-  end
-
   private
+
+  def success_id
+    :confirmed
+  end
+
+  def special_ids
+    %w[ineligible confirmed forbidden required student]
+  end
 
   def init_form!
     @form = ServiceArticleRequestForm.new(

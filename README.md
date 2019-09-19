@@ -1,5 +1,7 @@
 # Framework (aka Mission Control)
 
+[Original spec](https://docs.google.com/document/d/1wB4MGg-8mp1DdYjvCuFGs3n9Q6g0HBaESdTlqPUzCo4) (Google docs).
+
 ## Getting Started
 
 ```sh

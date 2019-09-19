@@ -1,37 +1,16 @@
-class ScanRequestFormsController < ApplicationController
-  before_action :authenticate!
-  before_action :init_form!
+class ScanRequestFormsController < AuthenticatedFormController
 
   self.support_email = 'prntscan@lists.berkeley.edu'
 
-  def index
-    redirect_to(action: :new)
-  end
-
-  def create
-    @form.submit!
-
-    if @form.opted_in?
-      redirect_to action: :show, id: :optin
-    else
-      redirect_to action: :show, id: :optout
-    end
-  rescue ActiveModel::ValidationError
-    flash[:danger] ||= []
-    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
-
-    redirect_with_params(action: :new)
-  end
-
-  def show
-    if %w[blocked forbidden optin optout].include?(params[:id])
-      render params[:id]
-    else
-      redirect_to(action: :new)
-    end
-  end
-
   private
+
+  def success_id
+    @form.opted_in? ? :optin : :optout
+  end
+
+  def special_ids
+    %w[blocked forbidden optin optout]
+  end
 
   def init_form!
     logger.info(session[:user])
