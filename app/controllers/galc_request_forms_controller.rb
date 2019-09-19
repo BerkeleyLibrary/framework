@@ -1,36 +1,16 @@
-class GalcRequestFormsController < ApplicationController
-  # First redirect the user to the CalNet login page
-  before_action :authenticate!
-
-  # Before loading the form, check for GALC eligibility
-  before_action :init_form!
+class GalcRequestFormsController < AuthenticatedFormController
 
   self.support_email = 'webman@library.berkeley.edu'
 
-  def index
-    redirect_to action: :new
-  end
-
-  def create
-    @form.submit!
-    redirect_to action: :show, id: :confirmed
-  rescue ActiveModel::ValidationError => e
-    Rails.logger.error(e)
-
-    flash[:danger] ||= []
-    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
-    redirect_with_params(action: :new)
-  end
-
-  def show
-    if %w[confirmed forbidden].include?(params[:id])
-      render params[:id]
-    else
-      redirect_to action: :new
-    end
-  end
-
   private
+
+  def success_id
+    :confirmed
+  end
+
+  def special_ids
+    %w[confirmed forbidden]
+  end
 
   def init_form!
     # Instantiate new form object

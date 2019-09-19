@@ -1,33 +1,14 @@
-class StudentEdevicesLoanFormsController < ApplicationController
-  # First redirect the user to the CalNet login page
-  before_action :authenticate!
-  # Before loading the form, check that the user is a student
-  before_action :init_form!
-
-  def index
-    redirect_to action: :new
-  end
-
-  def create
-    @form.submit!
-    redirect_to action: :show, id: :all_checked
-  rescue ActiveModel::ValidationError => e
-    Rails.logger.error(e)
-
-    flash[:danger] ||= []
-    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
-    redirect_with_params(action: :new)
-  end
-
-  def show
-    if %w[blocked forbidden all_checked].include?(params[:id])
-      render params[:id]
-    else
-      redirect_to action: :new
-    end
-  end
+class StudentEdevicesLoanFormsController < AuthenticatedFormController
 
   private
+
+  def success_id
+    :all_checked
+  end
+
+  def special_ids
+    %w[blocked forbidden all_checked]
+  end
 
   def init_form!
     @form = StudentEdevicesLoanForm.new(

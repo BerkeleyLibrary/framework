@@ -91,7 +91,7 @@ en:
         create: Submit
 
   libstaff_edevices_loan_forms:
-    all_check:
+    all_checked:
       page_title: Agreement submitted
 
   omniauth_callbacks:

@@ -1,32 +1,14 @@
-class DoemoffStudyRoomUseFormsController < ApplicationController
-
-  before_action :authenticate!
-  before_action :init_form!
-
-  def index
-    redirect_to action: :new
-  end
-
-  def create
-    @form.submit!
-    redirect_to action: :show, id: :all_checked
-  rescue ActiveModel::ValidationError => e
-    Rails.logger.error(e)
-
-    flash[:danger] ||= []
-    @form.errors.full_messages.each { |msg| flash[:danger] << msg }
-    redirect_with_params(action: :new)
-  end
-
-  def show
-    if %w[blocked forbidden all_checked].include?(params[:id])
-      render params[:id]
-    else
-      redirect_to action: :new
-    end
-  end
+class DoemoffStudyRoomUseFormsController < AuthenticatedFormController
 
   private
+
+  def success_id
+    :all_checked
+  end
+
+  def special_ids
+    %w[blocked forbidden all_checked]
+  end
 
   def init_form!
     @form = DoemoffStudyRoomUseForm.new(
