@@ -90,5 +90,4 @@ describe :service_article_request_forms, type: :request do
       expect(response).to redirect_to(new_service_article_request_form_path)
     end
   end
-
 end
