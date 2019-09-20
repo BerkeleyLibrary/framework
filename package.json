@@ -1,7 +1,5 @@
 {
   "name": "altscan",
   "private": true,
-  "dependencies": {
-    "yard": "^1.0.3"
-  }
+  "dependencies": {}
 }
