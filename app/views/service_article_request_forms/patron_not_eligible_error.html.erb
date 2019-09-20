@@ -1,4 +1,4 @@
-<% if ScanRequestForm.patron_eligible?(@error.patron.type) %>
+<% if ScanRequestForm.patron_eligible?(@error.patron) %>
   <h1>More is required</h1>
 
   <p class="blocked">Sorry, you have not filled out the Opt in/out of alt-media scanning form. Please go to <a href="https://framework.lib.berkeley.edu/forms/altmedia/new" target="_blank">https://framework.lib.berkeley.edu/forms/altmedia/new</a> first before filling out this form.</p>
