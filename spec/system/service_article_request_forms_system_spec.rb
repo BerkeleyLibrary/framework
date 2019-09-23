@@ -53,4 +53,17 @@ describe :service_article_request_forms, type: :system do
       expect(page.current_path).to eq('/forms/altmedia-articles/confirmed')
     end
   end
+
+  describe 'with an invalid patron type' do
+    it 'throws patron not eligible error' do
+      patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD)
+      login_as(patron_id)
+      patron = Patron::Record.find(patron_id)
+      patron.notes = nil
+
+      visit new_service_article_request_form_path
+
+      expect(page).to have_content('you are not eligible')
+    end
+  end
 end

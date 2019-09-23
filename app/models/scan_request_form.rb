@@ -55,6 +55,10 @@ class ScanRequestForm < Form
   validates :patron_name,
             presence: true
 
+  def self.patron_eligible?(patron)
+    ALLOWED_PATRON_TYPES.include?(patron.type) && ALLOWED_PATRON_AFFILIATIONS.include?(patron.affiliation)
+  end
+
   def opted_in?
     opt_in == 'true'
   end

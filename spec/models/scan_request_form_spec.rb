@@ -32,6 +32,7 @@ describe ScanRequestForm do
         it 'is valid' do
           expect(form.valid?).to eq(true)
           expect(form.patron_id).to eq('1865')
+          expect(ScanRequestForm.patron_eligible?(form.patron)).to eq(true)
         end
 
         it 'populates the patron email' do
@@ -95,6 +96,7 @@ describe ScanRequestForm do
 
         it 'is invalid' do
           expect { form.valid? }.to raise_error(Error::ForbiddenError)
+          expect(ScanRequestForm.patron_eligible?(form.patron)).to eq(false)
         end
       end
     end
