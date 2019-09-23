@@ -2,6 +2,15 @@
 
 [Original spec](https://docs.google.com/document/d/1wB4MGg-8mp1DdYjvCuFGs3n9Q6g0HBaESdTlqPUzCo4) (Google docs).
 
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Dependencies](#dependencies)
+- [Testing](#testing)
+- [CI / Deployment](#ci--deployment)
+- [Documentation](#documentation)
+- [Logging](#logging)
+
 ## Getting Started
 
 ```sh
@@ -19,46 +28,6 @@ Barring port collisions (possible, if you're running multiple development stacks
 
 - `rails` (http://localhost:3000/home), the application itself.
 - `yard` (http://localhost:8808/), a documentation server.
-
-## Documentation
-
-Use [yard](https://yardoc.org) to document your code. Our built-in Yard server (see above) automatically parses your comments, modules, classes, and methods to generate documentation, which you can view via:
-
-```sh
-docker-compose up --build -d yard
-open http://localhost:8808/
-```
-
-Check the existing classes for examples, but in a nutshell:
-
-```rb
-# Foos are like bars but different
-#
-# @see https://some-external-link.com Description of link
-class Foo
-  class << self
-    # Finds a foo by its ID
-    #
-    # Write some more info about your method here. Don't go crazy, though.
-    # Short and sweet is usually more accurate and maintainable than some long
-    # diatribe.
-    #
-    # @return [Foo] the corresponding Foo
-    # @raise [FooNotFoundError] if the Foo does not exist
-    # @todo For some reason this fails if given id="bar", gotta fix that
-    def find(id)
-      # ...
-    end
-  end
-end
-```
-
-See? Just comments. Nothing too fancy. All of RubyDoc is built like this!
-
-Links:
-
-- [Yardoc Tag Reference](https://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#Reference_Tags)
-- [Yardoc Cheat Sheet](https://gist.github.com/chetan/1827484)
 
 ## Dependencies
 
@@ -129,25 +98,84 @@ Two critical aspects of email behavior are:
 
 In development (the default) and test mode, Framework uses a [`:test` delivery method](https://guides.rubyonrails.org/action_mailer_basics.html#action-mailer-configuration). That means it will only simulate sending emails by logging their delivery and storing them in an in-memory array. In production and staging, we use the `:smtp` delivery method with a [SPA email account](https://git.lib.berkeley.edu/lap/workflow/wikis/CreateSPAwithEmail).
 
-### Integration/Controller Testing
+## CI / Deployment
 
-If you're having trouble with an `assert_select` or similar assertion, try debugging the raw response body:
+Every commit is built, tested, and optionally deployed by [Jenkins](https://jenkins.lib.berkeley.edu/) using the [Jenkinsfile](Jenkinsfile) configuration in this repository. Builds can be found in Jenkins at [GitLab > lap > lap/altmedia](https://jenkins.lib.berkeley.edu/job/gitlab/job/lap/job/lap%252Faltmedia/).
 
-```ruby
-get '/some-page'
-puts @response.body
-assert_select 'problematic-assertion'
+The job defined by the Jenkinsfile:
+
+- Builds the application by overlaying the [base](docker-compose.yml) and [CI-specific](docker-compose.ci.yml) stack configurations.
+- Runs the `cal:test:ci` Rake task, which:
+  - runs all specs, checking for 100% coverage
+  - verifies code style consistency with RuboCop
+  - checks for security vulnerabilities with Brakeman
+- Runs the `bundle:audit` Rake task, which checks bundled gems for known vulnerabilities
+- Tags and pushes built container images to the [the registry](https://git.lib.berkeley.edu/lap/altmedia/container_registry).
+- For `master` and `production` branches, uses a Portainer webhook to trigger deployment.
+
+If any step fails, the build is aborted, further steps are cancelled, and the commit status is marked with a red "x" in the GitLab UI. If the overall build succeeds, your commit is marked with a green checkmark in the GitLab UI.
+
+It's good practice to run `rails cal:test:ci` before pushing, so you can find problems before Jenkins does.
+
+> **Failed Pipelines** If the pipeline fails, then most likely there was a failed test or failed style check. This is a good thing — the tests (partially) protect you from pushing bad code. Go view the Jenkins Console output to see what happened.
+
+You can follow the build progress on the Jenkins [job page](https://jenkins.lib.berkeley.edu/job/apps/job/framework-rails/).
+
+### Deployment to production
+
+To deploy to the production environment (https://framework.lib.berkeley.edu/home):
+
+1. Make sure the `master` branch has been successfully built, tested, and deployed to stage (see above).
+2. Merge from `master` to `production`.
+
+Jenkins should take it from there.
+
+### Docker Tags
+
+Commits to the master branch are given two tags:
+
+- latest: The most recently-built commit to master is always tagged "latest", making this a moving target. When a new commit is pushed, it will override the last "latest" tag.
+- git-<commit>: This is an immutable tag that will always point to the image built from the given commit of the codebase. You can rely on this existing forever.
+
+## Documentation
+
+Use [yard](https://yardoc.org) to document your code. Our built-in Yard server (see above) automatically parses your comments, modules, classes, and methods to generate documentation, which you can view via:
+
+```sh
+docker-compose up --build -d yard
+open http://localhost:8808/
 ```
 
-(When you call get/post/etc. methods, Rails' test case updates its copy of `@response`.)
+Check the existing classes for examples, but in a nutshell:
 
-### Auth(n|z)
+```rb
+# Foos are like bars but different
+#
+# @see https://some-external-link.com Description of link
+class Foo
+  class << self
+    # Finds a foo by its ID
+    #
+    # Write some more info about your method here. Don't go crazy, though.
+    # Short and sweet is usually more accurate and maintainable than some long
+    # diatribe.
+    #
+    # @return [Foo] the corresponding Foo
+    # @raise [FooNotFoundError] if the Foo does not exist
+    # @todo For some reason this fails if given id="bar", gotta fix that
+    def find(id)
+      # ...
+    end
+  end
+end
+```
 
-TODO
+See? Just comments. Nothing too fancy. All of RubyDoc is built like this!
 
-### Patron Updates
+Links:
 
-TODO
+- [Yardoc Tag Reference](https://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md#Reference_Tags)
+- [Yardoc Cheat Sheet](https://gist.github.com/chetan/1827484)
 
 ## Logging
 
@@ -196,36 +224,3 @@ docker service logs -f altmedia_rails
 # Faster to update, but restricted to a single node
 journalctl COM_DOCKER_SWARM_SERVICE_NAME=altmedia_rails -f
 ```
-
-## CI / Deployment
-
-Every commit is built, tested, and optionally deployed by [Jenkins](https://jenkins.lib.berkeley.edu/) using the {file:Jenkinsfile} configuration in this repository. As of writing, this file instructs Jenkins to:
-
-- Build the application by overlaying the {file:docker-compose.yml base} and {file:docker-compose.ci.yml CI-specific} stack configurations.
-- Run the test suite (`rails test`) as well as security-related checks.
-- For the master branch:
-    - Tag and push the built application images to [the registry](https://git.lib.berkeley.edu/lap/altmedia/container_registry).
-    - Deploy the staging (https://framework.ucblib.org/home) environment.
-
-
-If any step fails, the build is aborted, further steps are cancelled, and the commit status is marked with a red "x" in the GitLab UI. If the overall build succeeds, your commit is marked with a green checkmark in the GitLab UI.
-
-> **Failed Pipelines** If the pipeline fails, then most likely there was a failed test. This is a good thing — the tests (partially) protect you from pushing bad code. Go view the Jenkins Console output to see what happened.
-
-You can follow the build progress on the Jenkins [job page](https://jenkins.lib.berkeley.edu/job/apps/job/framework-rails/).
-
-### Deployment to production
-
-To deploy to the production environment (https://framework.lib.berkeley.edu/home):
-
-1. Make sure the `master` branch has been successfully built, tested, and deployed to stage (see above).
-2. Merge from `master` to `production`.
-
-Jenkins should take it from there.
-
-### Docker Tags
-
-Commits to the master branch are given two tags:
-
-- latest: The most recently-built commit to master is always tagged "latest", making this a moving target. When a new commit is pushed, it will override the last "latest" tag.
-- git-<commit>: This is an immutable tag that will always point to the image built from the given commit of the codebase. You can rely on this existing forever.
