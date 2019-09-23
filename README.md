@@ -33,8 +33,8 @@ Barring port collisions (possible, if you're running multiple development stacks
 
 Framework is a Ruby on Rails application deployed in an Alpine Linux Docker container. That implies two different dependency managers:
 
-- For Ruby/Rails, we use [Bundler](https://bundler.io), whose config files are {https://git.lib.berkeley.edu/lap/altmedia/blob/master/Gemfile Gemfile} (a developer-oriented listing of Ruby dependencies) and {https://git.lib.berkeley.edu/lap/altmedia/blob/master/Gemfile.lock Gemfile.lock} (a machine-oriented listing of _precise_ Ruby dependencies).
-- For Alpine, we use [apk](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management). The {https://git.lib.berkeley.edu/lap/altmedia/blob/master/Dockerfile Dockerfile} shows exactly what apk commands were executed to install our system-level dependencies.
+- For Ruby/Rails, we use [Bundler](https://bundler.io), whose config files are [Gemfile](https://git.lib.berkeley.edu/lap/altmedia/blob/master/Gemfile) (a developer-oriented listing of Ruby dependencies) and [Gemfile.lock](https://git.lib.berkeley.edu/lap/altmedia/blob/master/Gemfile.lock) (a machine-oriented listing of _precise_ Ruby dependencies).
+- For Alpine, we use [apk](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management). The [Dockerfile](https://git.lib.berkeley.edu/lap/altmedia/blob/master/Dockerfile) shows exactly what apk commands were executed to install our system-level dependencies.
 
 ---
 
@@ -93,8 +93,9 @@ Rails offers [numerous facilities](https://guides.rubyonrails.org/action_mailer_
 
 Two critical aspects of email behavior are:
 
-- Unit Testing: If you implement a feature that involves sending emails, make sure to write a test for it. See {ScanRequestOptInJobTest} for an example of how to test emails.
-- QA: The staging environment uses {Interceptor::MailingListInterceptor} to route all outgoing emails to a [mailing list](https://groups.google.com/a/lists.berkeley.edu/forum/#!forum/lib-testmail), allowing you to test the behavior "live", using a real SMTP account, without accidentally emailing people. See that class's documentation for how to determine if it _would have_ emailed the correct people.
+- Unit Testing: If you implement a feature that involves sending emails, make sure to write a test for it. Most of the [job specs](spec/jobs)
+  include email tests, using an RSpec [shared example](https://relishapp.com/rspec/rspec-core/docs/example-groups/shared-examples) in the file [jobs_helper.rb](spec/jobs_helper.rb).
+- QA: The staging environment uses [Interceptor::MailingListInterceptor](app/mailers/interceptor/mailing_list_interceptor.rb) to route all outgoing emails to a [mailing list](https://groups.google.com/a/lists.berkeley.edu/forum/#!forum/lib-testmail), allowing you to test the behavior "live", using a real SMTP account, without accidentally emailing people. See that class's documentation for how to determine if it _would have_ emailed the correct people.
 
 In development (the default) and test mode, Framework uses a [`:test` delivery method](https://guides.rubyonrails.org/action_mailer_basics.html#action-mailer-configuration). That means it will only simulate sending emails by logging their delivery and storing them in an in-memory array. In production and staging, we use the `:smtp` delivery method with a [SPA email account](https://git.lib.berkeley.edu/lap/workflow/wikis/CreateSPAwithEmail).
 
