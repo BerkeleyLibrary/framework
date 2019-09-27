@@ -196,6 +196,8 @@ rails test
 tail -f log/test.log # in a separate shell
 ```
 
+Traditionally, Rails projects will output production logs to a file. Framework opts to log consistently across environments and  will go directly to STDOUT/ERR.
+
 ### Viewing staging and production logs in CloudWatch
 
 Staging and production logs are aggregated in Amazon CloudWatch.

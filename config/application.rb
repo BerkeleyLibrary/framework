@@ -1,14 +1,11 @@
 # Read Docker secrets into the environment. Must be before 'rails/all'.
 require_relative '../lib/docker'
 Docker::Secret.setup_environment!
-
 require_relative 'boot'
 require 'rails/all'
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
-
 module Framework
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
