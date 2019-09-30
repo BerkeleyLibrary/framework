@@ -3,9 +3,8 @@ require_relative '../lib/docker'
 Docker::Secret.setup_environment!
 require_relative 'boot'
 require 'rails/all'
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+require_relative '../app/loggers/altmedia'
 module Framework
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -23,7 +22,21 @@ module Framework
     #   a div classed "field_with_errors". This messes up Bootstrap's styling
     #   for feedback messages, so I've disabled the Rails' default.
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
-
+    config.lograge.enabled = true
+    logger = Altmedia::Logger.new(STDOUT)
+    logger.formatter = Ougai::Formatters::Readable.new
+    config.logger = Altmedia::Logger.new(STDOUT)
+    config.lograge.custom_options = ->(event) do
+      {
+        time: Time.now,
+        remote_ip: event.payload[:remote_ip]
+      }
+    end
+    config.lograge.formatter = Class.new do |fmt|
+      def fmt.call(data)
+        { msg: 'Request', request: data }
+      end
+    end
     # Configure Patron API lookups. Uses before_initialize hook so that
     # autoloading finds the Patron::Record class.
     config.before_initialize do
