@@ -4,15 +4,18 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.1'
 
+gem 'awesome_print', '>=1.8.0'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'bootstrap'
 gem 'coffee-rails', '~> 4.2'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
+gem 'lograge', '>=0.11.2'
 gem 'net-ssh'
 gem 'omniauth-cas',
     git: 'https://github.com/dlindahl/omniauth-cas.git',
     ref: '7087bda829e14c0f7cab2aece5045ad7015669b1'
+gem 'ougai', '>=1.8.2'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 5.2.2'
 gem 'recaptcha'

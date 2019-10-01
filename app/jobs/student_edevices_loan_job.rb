@@ -9,7 +9,7 @@ class StudentEdevicesLoanJob < ApplicationJob
     send_patron_email(patron)
   rescue StandardError
     send_failure_email(patron, note)
-    raise # so rails will log it
+    raise
   end
 
   def note
