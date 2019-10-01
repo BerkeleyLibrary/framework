@@ -9,7 +9,12 @@ module Altmedia
     end
 
     def create_formatter
-      Ougai::Formatters::Readable.new
+      if Rails.env.development? || Rails.env.test?
+        Ougai::Formatters::Readable.new
+      else
+        Ougai::Formatters::Bunyan.new
+      end
     end
+    
   end
 end
