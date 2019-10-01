@@ -29,6 +29,26 @@ Barring port collisions (possible, if you're running multiple development stacks
 - `rails` (http://localhost:3000/home), the application itself.
 - `yard` (http://localhost:8808/), a documentation server.
 
+### Simulating production
+
+To (somewhat) simulate a production environment, you can pass `RAILS_ENV` into the `docker-compose run` command:
+
+```
+docker-compose build --pull && \
+  docker-compose run --rm -p3000:3000 -e RAILS_ENV=production rails
+```
+
+This tells docker-compose to:
+
+- run `rails` on the stack defined in `docker-compose.yml`
+- exposing container port 3000 as host port 3000 (`-p3000:3000`)
+- passing the environment variable `RAILS_ENV=production` into the container
+- removing (`-rm)
+
+(You won't be able to get anywhere since the app will redirect to CAS, which won't see
+`localhost` as a valid application, but you'll at least be able to run with, e.g., a
+production logging configuration.)
+
 ## Dependencies
 
 Framework is a Ruby on Rails application deployed in an Alpine Linux Docker container. That implies two different dependency managers:
