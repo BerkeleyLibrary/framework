@@ -23,7 +23,13 @@ module Framework
     #   for feedback messages, so I've disabled the Rails' default.
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
     config.lograge.enabled = true
+<<<<<<< HEAD
     config.logger = AltmediaLogger::Logger.new(STDOUT)
+=======
+    logger = Altmedia::Logger.new(STDOUT)
+    logger.formatter = Ougai::Formatters::Readable.new
+    config.logger = Altmedia::Logger.new(STDOUT)
+>>>>>>> master
     config.lograge.custom_options = ->(event) do
       {
         time: Time.now,
