@@ -4,7 +4,7 @@ Docker::Secret.setup_environment!
 require_relative 'boot'
 require 'rails/all'
 Bundler.require(*Rails.groups)
-require_relative '../app/loggers/altmedia'
+require_relative '../app/loggers/altmedia_logger'
 module Framework
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -23,7 +23,7 @@ module Framework
     #   for feedback messages, so I've disabled the Rails' default.
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
     config.lograge.enabled = true
-    config.logger = Altmedia::Logger.new(STDOUT)
+    config.logger = AltmediaLogger::Logger.new(STDOUT)
     config.lograge.custom_options = ->(event) do
       {
         time: Time.now,

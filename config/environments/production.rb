@@ -80,6 +80,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.logger.formatter = Ougai::Formatters::Bunyan.new
+
   # Use GMail in production
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
