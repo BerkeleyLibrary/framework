@@ -9,7 +9,7 @@ module AltmediaLogger
     end
 
     def create_formatter
-      Ougai::Formatters::Readable.new
+      Ougai::Formatters::Bunyan.new
     end
   end
 end
