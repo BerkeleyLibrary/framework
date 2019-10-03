@@ -47,4 +47,6 @@ Rails.application.configure do
 
   # Test mode short-circuits the entire auth flow
   OmniAuth.config.test_mode = true
+
+  config.logger = AltmediaLogger::Logger.new(config.root.join('log/test.log'))
 end
