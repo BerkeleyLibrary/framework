@@ -27,7 +27,8 @@ module Framework
     config.lograge.custom_options = ->(event) do
       {
         time: Time.now,
-        remote_ip: event.payload[:remote_ip]
+        request_id: event.payload[:headers].env['action_dispatch.request_id'],
+        remote_ip: event.payload[:headers][:REMOTE_ADDR]
       }
     end
     config.lograge.formatter = Class.new do |fmt|
