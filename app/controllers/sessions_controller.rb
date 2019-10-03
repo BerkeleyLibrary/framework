@@ -19,9 +19,9 @@ class SessionsController < ApplicationController
   # Generate a new user session using data returned from a valid Calnet login
   def callback
     logger.debug({
-      message: 'Received omniauth callback',
-      omniauth: auth_params
-    }.to_json)
+                   msg: 'Received omniauth callback',
+                   omniauth: auth_params
+                 })
 
     @user = User.from_omniauth(auth_params)
 

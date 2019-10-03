@@ -169,7 +169,7 @@ module Patron
       end
       return note if res.match('Finished Successfully')
 
-      raise StandardError, "Failed updating patron record for #{id}"
+      raise StandardError, "Failed updating patron record for #{id}: #{res}"
     end
   end
 end
