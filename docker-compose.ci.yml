@@ -14,7 +14,7 @@ services:
     image: "${DOCKER_TAG}"
     volumes:
       - public:/opt/app/public
-      - tests:/opt/app/test
+      - tmp:/opt/app/tmp
 
   updater:
     <<: *rails
@@ -26,4 +26,4 @@ version: "3.5"
 
 volumes:
   public: {}
-  tests: {}
+  tmp: {}
