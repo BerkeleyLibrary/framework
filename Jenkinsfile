@@ -40,48 +40,75 @@ pipeline {
             retry(5) {
               sh 'docker-compose run --rm updater'
             }
-
-            // Sanity-check the homepage
-            sh 'docker-compose exec -T rails wget --spider http://localhost:3000/home'
           }
         }
-        stage("RSpec") {
-          steps {
-            // Run the tests
-            sh 'docker-compose run --rm rails cal:test:ci'
+
+        stage("Tests") {
+          parallel {
+            stage("Sanity") {
+              steps {
+                sh 'docker-compose exec -T rails wget --spider http://localhost:3000/home'
+              }
+            }
+
+            stage("RSpec") {
+              steps {
+                sh 'docker-compose run --rm rails cal:test:ci'
+              }
+            }
+
+            stage("Rubocop") {
+              steps {
+                sh 'docker-compose run --rm rails cal:test:rubocop'
+              }
+            }
+
+            stage("Brakeman") {
+              steps {
+                sh 'docker-compose run --rm rails brakeman'
+              }
+            }
+
+            stage("Audit") {
+              steps {
+                sh 'docker-compose run --rm rails bundle:audit'
+              }
+            }
           }
+
           post {
             always {
-              // Copy test results (if any) before exiting
-              sh 'docker cp "$(docker-compose ps -q rails):/opt/app/test/reports" test/reports'
+              sh 'docker cp "$(docker-compose ps -q rails):/opt/app/tmp/reports" tmp/reports'
 
-              // Archive test reports
-              junit 'test/reports/SPEC-*.xml'
-              publishBrakeman 'test/reports/brakeman.json'
+              junit 'tmp/reports/specs/*.xml'
 
-              // Publish code coverage reports (if any)
+              publishBrakeman 'tmp/reports/brakeman/brakeman.json'
+
               publishHTML([
-                allowMissing: true,
+                reportName: 'Code Coverage',
+                allowMissing: false,
                 alwaysLinkToLastBuild: false,
                 keepAll: true,
-                reportDir: 'test/reports/rcov',
+                reportDir: 'tmp/reports/rcov',
                 reportFiles: 'index.html',
-                reportName: 'Code Coverage',
+              ])
+
+              publishHTML([
+                reportName: 'Rubocop',
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'tmp/reports/rubocop',
+                reportFiles: 'index.html',
               ])
             }
           }
         }
-        stage("Audit") {
-          steps {
-            // Run audit checks against rubygems dependencies
-            sh 'docker-compose run --rm rails bundle:audit'
-          }
-        }
       }
+
       post {
         always {
-          // Spin down the stack and cleanup volumes
-          sh 'docker-compose down --remove-orphans --volumes'
+          sh 'docker-compose down --remove-orphans --volumes || true'
         }
       }
     }
