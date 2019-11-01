@@ -65,13 +65,21 @@ pipeline {
 
             stage("Brakeman") {
               steps {
-                sh 'docker-compose run --rm rails brakeman'
+                catchError(message: 'Potential security issue in code',
+                           stageResult: 'UNSTABLE',
+                           buildResult: null) {
+                  sh 'docker-compose run --rm rails brakeman'
+                }
               }
             }
 
             stage("Audit") {
               steps {
-                sh 'docker-compose run --rm rails bundle:audit'
+                catchError(message: 'CVE published for a dependency',
+                           stageResult: 'UNSTABLE',
+                           buildResult: null) {
+                  sh 'docker-compose run --rm rails bundle:audit'
+                }
               }
             }
           }
