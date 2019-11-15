@@ -6,10 +6,18 @@ describe :campus_networks, type: :request do
       status: 200,
       body: File.new('spec/data/campusnetworks.html')
     )
+    stub_request(:get, CampusNetwork.lbl_url).to_return(
+      status: 200,
+      body: File.new('spec/data/lblnetworks.html')
+    )
   end
 
   it 'is the :campus_networks path' do
     expect(campus_networks_path).to eq('/campus-networks')
+  end
+
+  it 'is the :lbl path' do
+    expect(lbl_networks_path).to eq('/lbl-networks')
   end
 
   it 'returns the list of all IP addresses' do
@@ -34,20 +42,18 @@ describe :campus_networks, type: :request do
         192.101.42.*
         192.107.102.*
         10.*.*.*
-        128.3.*.*
-        128.55.*.*
-        131.243.*.*
-        192.12.173.*
-        192.58.231.*
-        198.128.192.*-198.128.223.*
-        198.128.24.*-198.128.31.*
-        198.128.40.*-198.128.41.*
-        198.128.42.*
-        198.128.44.*
-        198.128.52.*
-        198.129.88.*-198.129.91.*
-        198.129.96.*-198.129.97.*
+        198.128.208.*-198.128.223.*
         204.62.155.*
+        192.58.231.*
+        192.12.173.*
+        128.3.*.*
+        131.243.*.*
+        198.128.16.*-198.128.19.*
+        198.125.132.*
+        198.125.133.*
+        198.128.52.*
+        198.128.24.*-198.128.31.*
+        198.128.192.*-198.128.207.*
       ]
       get campus_networks_path
       @body = response.body
@@ -73,36 +79,33 @@ describe :campus_networks, type: :request do
         192.101.42.0-192.101.42.255
         192.107.102.0-192.107.102.255
         10.0.0.0-10.255.255.255
-        128.3.0.0-128.3.255.255
-        128.55.0.0-128.55.255.255
-        131.243.0.0-131.243.255.255
-        192.12.173.0-192.12.173.255
-        192.58.231.0-192.58.231.255
-        198.128.192.0-198.128.223.255
-        198.128.24.0-198.128.31.255
-        198.128.40.0-198.128.41.255
-        198.128.42.0-198.128.42.255
-        198.128.44.0-198.128.44.255
-        198.128.52.0-198.128.52.255
-        198.129.88.0-198.129.91.255
-        198.129.96.0-198.129.97.255
+        198.128.208.0-198.128.223.255
         204.62.155.0-204.62.155.255
+        192.58.231.0-192.58.231.255
+        192.12.173.0-192.12.173.255
+        128.3.0.0-128.3.255.255
+        131.243.0.0-131.243.255.255
+        198.128.16.0-198.128.19.255
+        198.125.132.0-198.125.132.255
+        198.125.133.0-198.125.133.255
+        198.128.52.0-198.128.52.255
+        198.128.24.0-198.128.31.255
+        198.128.192.0-198.128.207.255
       LIST
 
       expect(body).to include(expected)
     end
 
-  end
+    it 'can filter for LBL only' do
+      get campus_networks_path(organization: 'lbl')
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to match(/LBL-only IP Addresses/m)
+    end
 
-  it 'can filter for LBL only' do
-    get campus_networks_path(organization: 'lbl')
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to match(/LBL-only IP Addresses/m)
-  end
-
-  it 'can filter for UCB only' do
-    get campus_networks_path(organization: 'ucb')
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to match(/UCB-only IP Addresses/m)
+    it 'can filter for UCB only' do
+      get campus_networks_path(organization: 'ucb')
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to match(/UCB-only IP Addresses/m)
+    end
   end
 end
