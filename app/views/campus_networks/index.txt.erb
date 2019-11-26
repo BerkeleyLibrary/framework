@@ -17,13 +17,7 @@ VERSION 3 (the format preferred by some publishers)
 ============================================
 <%= networks.select(&:ipv4?).map(&:to_vendor_range_format).join("\n") %>
 
-VERSION 4 
-============================================
-<%= networks %>
-
-
 Each "*" means the range from 0 to 255
-
 
 IP Version 6
 ============================================

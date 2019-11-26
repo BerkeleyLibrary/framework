@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe :campus_networks, type: :request do
   before(:each) do
-    stub_request(:get, CampusNetwork.source_url).to_return(
+    stub_request(:get, CampusNetwork.ucb_url).to_return(
       status: 200,
       body: File.new('spec/data/campusnetworks.html')
     )
@@ -97,15 +97,42 @@ describe :campus_networks, type: :request do
     end
 
     it 'can filter for LBL only' do
+      lbl_ranges = %w[
+        198.128.208.*-198.128.223.*
+        204.62.155.* 192.58.231.*
+        192.12.173.* 128.3.*.*
+        131.243.*.*
+        198.128.16.*-198.128.19.*
+        198.125.132.* 198.125.133.*
+        198.128.52.*
+        198.128.24.*-198.128.31.*
+        198.128.192.*-198.128.207.*
+      ]
       get campus_networks_path(organization: 'lbl')
       expect(response).to have_http_status(:ok)
       expect(response.body).to match(/LBL-only IP Addresses/m)
+      expect(response.body).to include(lbl_ranges.join(', '))
     end
 
     it 'can filter for UCB only' do
+
+      ucb_ranges = %w[
+        128.32.*.*
+        136.152.*.*
+        169.229.*.*
+        192.31.95.*
+        192.31.105.*
+        192.31.161.*
+        192.58.221.*
+        192.101.42.*
+        192.107.102.*
+        10.*.*.*
+      ]
+
       get campus_networks_path(organization: 'ucb')
       expect(response).to have_http_status(:ok)
       expect(response.body).to match(/UCB-only IP Addresses/m)
+      expect(response.body).to include(ucb_ranges.join(', '))
     end
   end
 end
