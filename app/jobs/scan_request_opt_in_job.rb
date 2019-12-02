@@ -7,10 +7,9 @@ class ScanRequestOptInJob < ApplicationJob
     patron = Patron::Record.find(patron_id)
     patron.add_note(note)
     send_patron_email(patron)
-    send_baker_email(patron)
   rescue StandardError
     send_failure_email(patron, note)
-    raise # so rails will log it
+    raise
   end
 
   def note
@@ -21,10 +20,6 @@ class ScanRequestOptInJob < ApplicationJob
 
   def send_patron_email(patron)
     RequestMailer.confirmation_email(patron.email).deliver_now
-  end
-
-  def send_baker_email(patron)
-    RequestMailer.confirmation_email_baker(patron.email, patron.id).deliver_now
   end
 
   def send_failure_email(patron, note)
