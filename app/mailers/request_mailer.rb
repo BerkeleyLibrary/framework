@@ -103,13 +103,6 @@ class RequestMailer < ApplicationMailer
     mail(to: email)
   end
 
-  # Send ScanRequest confirmation email to the admins
-  def confirmation_email_baker(displayname, employee_id)
-    @displayname = displayname
-    @empid = employee_id
-    mail(cc: [admin_to, confirm_to])
-  end
-
   def opt_out_staff(empid, displayname)
     @empid = empid
     @displayname = displayname

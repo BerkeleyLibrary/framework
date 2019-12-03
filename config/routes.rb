@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'home', to: 'home#index'
 
   resources :campus_networks, path: 'campus-networks'
+  resources :lbl_networks, path: 'lbl-networks'
 
   scope(:forms) do
     resources :doemoff_study_room_use_forms, path: 'doemoff-study-room-use'

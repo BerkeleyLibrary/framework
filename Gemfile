@@ -8,10 +8,12 @@ gem 'awesome_print', '>=1.8.0'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'bootstrap'
 gem 'coffee-rails', '~> 4.2'
+gem 'ipaddress'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'lograge', '>=0.11.2'
 gem 'net-ssh'
+gem 'netaddr', '~> 1.5', '>= 1.5.1'
 gem 'omniauth-cas',
     git: 'https://github.com/dlindahl/omniauth-cas.git',
     ref: '7087bda829e14c0f7cab2aece5045ad7015669b1'

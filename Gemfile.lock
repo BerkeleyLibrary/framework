@@ -118,6 +118,7 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
+    ipaddress (0.8.3)
     jaro_winkler (1.5.3)
     jbuilder (2.8.0)
       activesupport (>= 4.2.0)
@@ -151,6 +152,7 @@ GEM
     msgpack (1.2.9)
     multi_json (1.13.1)
     net-ssh (5.2.0)
+    netaddr (1.5.1)
     nio4r (2.3.1)
     nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
@@ -321,11 +323,13 @@ DEPENDENCIES
   ci_reporter_rspec
   coffee-rails (~> 4.2)
   colorize
+  ipaddress
   jbuilder (~> 2.5)
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   lograge (>= 0.11.2)
   net-ssh
+  netaddr (~> 1.5, >= 1.5.1)
   omniauth-cas!
   ougai (>= 1.8.2)
   puma (~> 3.11)
