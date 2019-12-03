@@ -101,8 +101,6 @@ en:
   request_mailer:
     confirmation_email:
       subject: alt-media scanning service opt-in
-    confirmation_email_baker:
-      subject: alt-media scanning service opt-in
     failure_email:
       subject: alt-media scanning patron opt-in failure
     opt_out_faculty:
