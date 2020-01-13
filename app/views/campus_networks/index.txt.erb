@@ -1,6 +1,6 @@
 University of California, Berkeley
 <%= page_header %>
-Updated <%= Time.now.strftime('%d %b %Y') %>
+Updated <%= Time.now.in_time_zone("Pacific Time (US & Canada)").strftime('%I:%M:%S %p %Z %b %d %Y')  %>
 
 
 VERSION 1 (comma delimited)
