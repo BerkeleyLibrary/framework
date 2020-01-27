@@ -12,15 +12,26 @@ class CampusNetwork < IPAddr
   # @return [String] Address of the nettools page listing all campus networks
   class_attribute :ucb_url, default: 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
 
+  # @return [[String]] Address of ip's to be ommited and the ranges bounds used
+  class_attribute :omitted_ips, default: [
+    ['2607:f140:6000::/48', '2607:f140:5999:ffff:ffff:ffff:ffff:ffff', '2607:f140:6001:0000:0000:0000:0000:0000']
+  ]
+
   def initialize(range, organization)
     @organization = organization
     super(range)
   end
+
   class << self
     def all(organization: nil)
       (ucb_networks + lbl_networks).select do |network|
         organization.blank? || network.organization == organization.to_sym if network
       end
+    end
+
+    def generated_ranges
+      raw_html = URI(ucb_url).read('Accept' => 'text/html')
+      parse_ranges(raw_html)
     end
 
     private
@@ -36,14 +47,39 @@ class CampusNetwork < IPAddr
     end
 
     def parse_campus_addresses(raw_html)
-      Nokogiri::HTML(raw_html)
-        .css('table:first')
-        .css('tr:nth-child(n+3)')
-        .css('td:first')
-        .map do |node|
-          node.css('strong').remove
-          new(node.text, :ucb)
+      Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
+        next unless node.search('sup').empty?
+
+        new(node.text, :ucb) unless node.text.start_with?('10.') || node.text.start_with?('192.')
+      end
+    end
+
+    def parse_ranges(raw_html)
+      generated = []
+      Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
+        unless node.search('sup').empty?
+          generated.concat(generate_from_network(node.text.chop)) if node.search('sup').text == '2'
         end
+      end
+      generated
+    end
+
+    def generate_from_network(current_ip_range)
+      ip = IPAddr.new(current_ip_range)
+      generated_networks = []
+      omitted_ips.each do |omit|
+        next unless ip.include? omit[0]
+
+        generated_networks.concat(network_bounds(ip, omit))
+      end
+      generated_networks
+    end
+
+    def network_bounds(ip, omit)
+      range = ip.to_range
+      first_ip = range.first
+      last_ip = range.last
+      [first_ip.to_s + ' - ' + omit[1], omit[2] + ' - ' + last_ip.to_s]
     end
 
     def parse_lbl_addresses(raw_html)
@@ -51,7 +87,7 @@ class CampusNetwork < IPAddr
         .css('td:nth-child(n+2)')
         .map do |node|
         range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
-        convert_to_range(range)
+        convert_to_range(range) unless range[0].start_with?('10.') || range[0].start_with?('192.') || (IPAddress.valid_ipv6? range[0])
       end
     end
 
@@ -90,4 +126,5 @@ class CampusNetwork < IPAddr
   def to_vendor_range_format
     "#{to_range.first}-#{to_range.last}"
   end
+
 end
