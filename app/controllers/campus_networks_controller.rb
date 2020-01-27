@@ -2,6 +2,7 @@ class CampusNetworksController < ApplicationController
   layout false
 
   def index
+    @generated = CampusNetwork.generated_ranges
     render formats: :txt, locals: {
       networks: CampusNetwork.all(organization: org_param)
     }
