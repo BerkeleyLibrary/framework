@@ -2,7 +2,7 @@ class CampusNetworksController < ApplicationController
   layout false
 
   def index
-    @generated = CampusNetwork.generated_ranges
+    @generated = CampusNetwork.ipv6_ranges(org_param)
     render formats: :txt, locals: {
       networks: CampusNetwork.all(organization: org_param)
     }
