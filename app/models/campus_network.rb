@@ -17,6 +17,8 @@ class CampusNetwork < IPAddr
     ['2607:f140:6000::/48', '2607:f140:5999:ffff:ffff:ffff:ffff:ffff', '2607:f140:6001:0000:0000:0000:0000:0000']
   ]
 
+  class_attribute :visitor_ips, default: ['2001:400:613:: - 2001:400:613:FFFF:FFFF:FFFF:FFFF:FFFF']
+
   def initialize(range, organization)
     @organization = organization
     super(range)
@@ -29,9 +31,12 @@ class CampusNetwork < IPAddr
       end
     end
 
-    def generated_ranges
-      raw_html = URI(ucb_url).read('Accept' => 'text/html')
-      parse_ranges(raw_html)
+    def ipv6_ranges(org)
+      ipv6 = []
+      ipv6.concat(parse_lbl_ipv6_ranges(URI(lbl_url).read('Accept' => 'text/html'))) unless org == 'ucb'
+      ipv6.concat(parse_campus_ipv6_ranges(URI(ucb_url).read('Accept' => 'text/html'))) unless org == 'lbl'
+
+      ipv6
     end
 
     private
@@ -50,11 +55,11 @@ class CampusNetwork < IPAddr
       Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
         next unless node.search('sup').empty?
 
-        new(node.text, :ucb) unless node.text.start_with?('10.') || node.text.start_with?('192.')
+        new(node.text, :ucb) unless IPAddr.new(node.text).private?
       end
     end
 
-    def parse_ranges(raw_html)
+    def parse_campus_ipv6_ranges(raw_html)
       generated = []
       Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
         unless node.search('sup').empty?
@@ -62,6 +67,15 @@ class CampusNetwork < IPAddr
         end
       end
       generated
+    end
+
+    def parse_lbl_ipv6_ranges(raw_html)
+      lbl_ranges = []
+      Nokogiri::HTML(raw_html).css('td:nth-child(n+2)').map do |node|
+        range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
+        lbl_ranges.push(node.text) unless IPAddress.valid_ipv4?(range[1]) || visitor_ips.include?(node.text)
+      end
+      lbl_ranges
     end
 
     def generate_from_network(current_ip_range)
@@ -83,18 +97,10 @@ class CampusNetwork < IPAddr
     end
 
     def parse_lbl_addresses(raw_html)
-      Nokogiri::HTML(raw_html)
-        .css('td:nth-child(n+2)')
-        .map do |node|
+      Nokogiri::HTML(raw_html).css('td:nth-child(n+2)').map do |node|
         range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
-        convert_to_range(range) unless range[0].start_with?('10.') || range[0].start_with?('192.') || (IPAddress.valid_ipv6? range[0])
+        new(convert_to_cidrs(range), :lbl) unless IPAddr.new(range[1]).private? || IPAddress.valid_ipv6?(range[1])
       end
-    end
-
-    def convert_to_range(range)
-      formatted_range = range[1]
-      formatted_range = convert_to_cidrs(range) if IPAddress.valid_ipv4? range[1]
-      new(formatted_range, :lbl)
     end
 
     def convert_to_cidrs(range)

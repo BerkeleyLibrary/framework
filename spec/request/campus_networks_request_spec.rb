@@ -37,6 +37,8 @@ describe :campus_networks, type: :request do
         169.229.*.*
         198.128.208.*-198.128.223.*
         204.62.155.*
+        192.58.231.*
+        192.12.173.*
         128.3.*.*
         131.243.*.*
         198.128.16.*-198.128.19.*
@@ -71,6 +73,8 @@ describe :campus_networks, type: :request do
         169.229.0.0-169.229.255.255
         198.128.208.0-198.128.223.255
         204.62.155.0-204.62.155.255
+        192.58.231.0-192.58.231.255
+        192.12.173.0-192.12.173.255
         128.3.0.0-128.3.255.255
         131.243.0.0-131.243.255.255
         198.128.16.0-198.128.19.255
@@ -88,6 +92,8 @@ describe :campus_networks, type: :request do
       lbl_ranges = %w[
         198.128.208.*-198.128.223.*
         204.62.155.*
+        192.58.231.*
+        192.12.173.*
         128.3.*.*
         131.243.*.*
         198.128.16.*-198.128.19.*
@@ -97,6 +103,7 @@ describe :campus_networks, type: :request do
         198.128.192.*-198.128.207.*
       ]
       get campus_networks_path(organization: 'lbl')
+
       expect(response).to have_http_status(:ok)
       expect(response.body).to match(/LBL-only IP Addresses/m)
       expect(response.body).to include(lbl_ranges.join(', '))

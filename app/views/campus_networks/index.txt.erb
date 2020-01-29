@@ -19,9 +19,9 @@ VERSION 3 (the format preferred by some publishers)
 
 Each "*" means the range from 0 to 255
 
+
 IP Version 6
 ============================================
-<%= networks.select(&:ipv6?).map(&:to_vendor_range_format).join("\n") %>
-    <% @generated.each do |network| %>
-        <%= network %>
-    <% end %>
+<% @generated.each do |network| %>
+<%= network %>
+<% end %>
