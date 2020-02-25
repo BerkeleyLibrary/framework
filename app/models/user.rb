@@ -28,6 +28,7 @@ class User
         given_name: auth['extra']['givenName'],
         student_id: auth['extra']['berkeleyEduStuID'],
         surname: auth['extra']['surname'],
+        ucpath_id: auth['extra']['berkeleyEduUCPathID'],
         uid: auth['extra']['uid'] || auth['uid'],
         framework_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(FRAMEWORK_ADMIN_GROUP)
       )
@@ -67,6 +68,9 @@ class User
   attr_accessor :surname
 
   # @return [String]
+  attr_accessor :ucpath_id
+
+  # @return [String]
   attr_accessor :uid
 
   # @return [Boolean]
@@ -92,27 +96,33 @@ class User
   # The user's employee patron record
   # @return [Patron::Record, nil]
   def employee_patron_record
-    @employee_patron_record ||= Patron::Record.find_if_exists(employee_id)
+    @employee_patron_record ||= Patron::Record.find_if_active(employee_id)
   end
 
   # The user's student patron record (if they have a student ID)
   # @return [Patron::Record, nil]
   def student_patron_record
-    @student_patron_record ||= Patron::Record.find_if_exists(student_id)
+    @student_patron_record ||= Patron::Record.find_if_active(student_id)
   end
 
   # The user's Campus Solutions patron record (if they have a Campus Solutions ID)
   # @return [Patron::Record, nil]
   def csid_patron_record
-    @csid_patron_record ||= Patron::Record.find_if_exists(cs_id)
+    @csid_patron_record ||= Patron::Record.find_if_active(cs_id)
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  # The user's UC Path patron record (if they have a UC Path ID)
+  # @return [Patron::Record, nil]
+  def ucpath_patron_record
+    @ucpath_patron_record ||= Patron::Record.find_if_active(ucpath_id)
+  end
+
+
   def find_primary_record
-    return student_patron_record if student_patron_record && !student_patron_record.expired?
-    return csid_patron_record if csid_patron_record && !csid_patron_record.expired?
+    return student_patron_record if student_patron_record
+    return csid_patron_record if csid_patron_record
+    return ucpath_patron_record if ucpath_patron_record
 
-    employee_patron_record if employee_patron_record && !employee_patron_record.expired?
+    employee_patron_record
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 end
