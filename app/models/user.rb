@@ -117,7 +117,6 @@ class User
     @ucpath_patron_record ||= Patron::Record.find_if_active(ucpath_id)
   end
 
-
   def find_primary_record
     return student_patron_record if student_patron_record
     return csid_patron_record if csid_patron_record

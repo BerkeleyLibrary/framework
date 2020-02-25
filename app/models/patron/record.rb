@@ -95,7 +95,7 @@ module Patron
 
       def find_if_active(id)
         find_if_exists(id).tap do |record|
-          return unless record && record.active?
+          return nil unless record && record.active?
         end
       end
 
