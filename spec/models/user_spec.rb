@@ -7,21 +7,27 @@ describe User do
   attr_reader :employee_record
   attr_reader :cs_id
   attr_reader :cs_record
+  attr_reader :ucpath_id
+  attr_reader :ucpath_record
 
   before(:each) do
     allow(Patron::Record).to receive(:find).and_raise(Error::PatronNotFoundError)
 
-    @student_id = 123_456_789
+    @student_id = 1000
     @student_record = Patron::Record.new(id: student_id, expiration_date: Patron::Record::MILLENNIUM_MAX_DATE)
     allow(Patron::Record).to receive(:find).with(student_id).and_return(student_record)
 
-    @employee_id = 987_654_321
+    @employee_id = 2000
     @employee_record = Patron::Record.new(id: employee_id, expiration_date: Patron::Record::MILLENNIUM_MAX_DATE)
     allow(Patron::Record).to receive(:find).with(employee_id).and_return(employee_record)
 
-    @cs_id = 246_813_579
+    @cs_id = 3000
     @cs_record = Patron::Record.new(id: cs_id, expiration_date: Patron::Record::MILLENNIUM_MAX_DATE)
     allow(Patron::Record).to receive(:find).with(cs_id).and_return(cs_record)
+
+    @ucpath_id = 4000
+    @ucpath_record = Patron::Record.new(id: ucpath_id, expiration_date: Patron::Record::MILLENNIUM_MAX_DATE)
+    allow(Patron::Record).to receive(:find).with(ucpath_id).and_return(ucpath_record)
   end
 
   describe :from_omniauth do
@@ -43,6 +49,7 @@ describe User do
           'givenName' => 'expected given name',
           'berkeleyEduStuID' => 'expected student ID',
           'surname' => 'expected surname',
+          'berkeleyEduUCPathID' => 'expected UC Path ID',
           'uid' => 'expected UID',
           'berkeleyEduIsMemberOf' => framework_admin_ldap
         }
@@ -59,6 +66,7 @@ describe User do
         expect(user.given_name).to eq('expected given name')
         expect(user.student_id).to eq('expected student ID')
         expect(user.surname).to eq('expected surname')
+        expect(user.ucpath_id).to eq('expected UC Path ID')
         expect(user.uid).to eq('expected UID')
         expect(user.framework_admin).to eq(is_framework_admin)
       end
@@ -78,82 +86,86 @@ describe User do
   end
 
   describe :primary_patron_record do
-    it 'returns a student record' do
-      user = User.new(student_id: student_id)
-      expect(user.primary_patron_record).to eq(student_record)
-    end
+    attr_reader :user
 
-    it 'returns an employee record' do
-      user = User.new(employee_id: employee_id)
-      expect(user.primary_patron_record).to eq(employee_record)
-    end
-
-    it 'prefers a student ID to an employee ID' do
-      user = User.new(
+    before(:each) do
+      @user = User.new(
         student_id: student_id,
-        employee_id: employee_id
-      )
-      expect(Patron::Record).not_to receive(:find).with(employee_id)
-      expect(user.primary_patron_record).to eq(student_record)
-    end
-
-    it 'prefers a student ID to a CSID' do
-      user = User.new(
-        student_id: student_id,
-        cs_id: cs_id
-      )
-      expect(Patron::Record).not_to receive(:find).with(cs_id)
-      expect(user.primary_patron_record).to eq(student_record)
-    end
-
-    it 'prefers a CSID to an employee ID' do
-      user = User.new(
         cs_id: cs_id,
+        ucpath_id: ucpath_id,
         employee_id: employee_id
       )
-      expect(Patron::Record).not_to receive(:find).with(employee_id)
+    end
+
+    it 'prefers a student ID' do
+      expect(user.primary_patron_record).to eq(student_record)
+      [cs_id, ucpath_id, employee_id].each do |id|
+        expect(Patron::Record).not_to receive(:find).with(id)
+      end
+    end
+
+    it 'prefers a CSID if no student ID is present' do
+      user.student_id = nil
       expect(user.primary_patron_record).to eq(cs_record)
+      [ucpath_id, employee_id].each do |id|
+        expect(Patron::Record).not_to receive(:find).with(id)
+      end
     end
 
     it 'returns CS record if student record expired' do
-      user = User.new(student_id: student_id, cs_id: cs_id, employee_id: employee_id)
       expect(student_record).to receive(:expired?).and_return(true)
       expect(user.primary_patron_record).to eq(cs_record)
+      [ucpath_id, employee_id].each do |id|
+        expect(Patron::Record).not_to receive(:find).with(id)
+      end
     end
 
-    it 'falls back to an employee ID' do
-      user = User.new(
-        student_id: (1 + student_id),
-        cs_id: (employee_id - 1),
-        employee_id: employee_id
-      )
+    it 'prefers a UC Path ID if no student ID or CSID is present' do
+      user.student_id = nil
+      user.cs_id = nil
+      expect(user.primary_patron_record).to eq(ucpath_record)
+      expect(Patron::Record).not_to receive(:find).with(employee_id)
+    end
+
+    it 'prefers a UC Path ID if student and CSID records expired' do
+      [student_record, cs_record].each do |record|
+        expect(record).to receive(:expired?).and_return(true)
+      end
+      expect(user.primary_patron_record).to eq(ucpath_record)
+      expect(Patron::Record).not_to receive(:find).with(employee_id)
+    end
+
+    it 'falls back to an employee ID if no other ID present' do
+      user.student_id = nil
+      user.cs_id = nil
+      user.ucpath_id = nil
       expect(user.primary_patron_record).to eq(employee_record)
     end
 
     it 'returns employee record if other records expired' do
-      user = User.new(student_id: student_id, cs_id: cs_id, employee_id: employee_id)
-      [student_record, cs_record].each do |record|
+      [student_record, cs_record, ucpath_record].each do |record|
         expect(record).to receive(:expired?).and_return(true)
       end
       expect(user.primary_patron_record).to eq(employee_record)
     end
 
-    it 'returns nil if no student or employee patron ID found' do
-      user = User.new(
-        student_id: (1 + student_id),
-        employee_id: (1 + employee_id)
-      )
+    it 'returns nil if no patron records found' do
+      %i[student_id cs_id ucpath_id employee_id].each do |attr|
+        old_id = user.send(attr)
+        user.send("#{attr}=", old_id + 1)
+      end
       expect(user.primary_patron_record).to be_nil
     end
 
     it 'returns nil if no IDs set' do
-      user = User.new
+      %i[student_id cs_id ucpath_id employee_id].each do |attr|
+        user.send("#{attr}=", nil)
+      end
       expect(user.primary_patron_record).to be_nil
     end
 
     it 'returns nil if all records expired' do
-      user = User.new(student_id: student_id, cs_id: cs_id, employee_id: employee_id)
-      [student_record, cs_record, employee_record].each do |record|
+      [student_record, cs_record, ucpath_record, employee_record].each do |record|
         expect(record).to receive(:expired?).and_return(true)
       end
       expect(user.primary_patron_record).to be_nil

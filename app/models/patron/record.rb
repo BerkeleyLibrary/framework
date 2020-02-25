@@ -93,6 +93,12 @@ module Patron
         nil
       end
 
+      def find_if_active(id)
+        find_if_exists(id).tap do |record|
+          return nil unless record && record.active?
+        end
+      end
+
       private
 
       # @param dump [Patron::Dump]
@@ -116,6 +122,10 @@ module Patron
       return true unless expiration_date
 
       expiration_date < Date.today
+    end
+
+    def active?
+      !expired?
     end
 
     def faculty?
