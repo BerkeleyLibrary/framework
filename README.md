@@ -27,7 +27,6 @@ docker-compose run --rm updater
 Barring port collisions (possible, if you're running multiple development stacks), this will spin up two services:
 
 - `rails` (http://localhost:3000/home), the application itself.
-- `yard` (http://localhost:8808/), a documentation server.
 
 ### Simulating production
 
@@ -159,8 +158,6 @@ Commits to the master branch are given two tags:
 - git-<commit>: This is an immutable tag that will always point to the image built from the given commit of the codebase. You can rely on this existing forever.
 
 ## Documentation
-
-Use [yard](https://yardoc.org) to document your code. Our built-in Yard server (see above) automatically parses your comments, modules, classes, and methods to generate documentation, which you can view via:
 
 ```sh
 docker-compose up --build -d yard
