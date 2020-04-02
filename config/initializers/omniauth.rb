@@ -16,7 +16,9 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     next {} if rawxml.empty?
 
     groups_txt = rawxml.xpath('//cas:berkeleyEduIsMemberOf').map(&:text)
-    { 'berkeleyEduIsMemberOf' => groups_txt }
+    affiliations_txt = rawxml.xpath('//cas:berkeleyEduAffiliations').map(&:text)
+
+    { 'berkeleyEduIsMemberOf' => groups_txt, 'berkeleyEduAffiliations' => affiliations_txt }
   end
 
   provider :cas,

@@ -1,0 +1,16 @@
+<h3>Proxy Borrower Card Forms</h3>
+<p>Allows faculty or disabled students to request that the Library allow a named other person to withdraw books on their behalf.</p>
+<br />
+<!-- Faculty only visible if affiliated as one of: EMPLOYEE-TYPE-ACADEMIC','EMPLOYEE-TYPE-STAFF -->
+<% if @faculty %>
+  <%= link_to "Request Faculty", forms_proxy_borrower_faculty_path %>
+  <br />
+<% end %>
+<!-- DSP visible as long as you can get through calnet -->
+<%= link_to "Request Disabled Student", forms_proxy_borrower_dsp_path %>
+<br />
+<!-- Admin page only avaiable for administrators -->
+<% if @user_role %>
+  <%= link_to "Admin User", forms_proxy_borrower_admin_path %>
+  <br />
+<% end %>

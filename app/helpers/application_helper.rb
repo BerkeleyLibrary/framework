@@ -45,4 +45,11 @@ module ApplicationHelper
     )
     field_builder.build
   end
+
+  def sortable(column, title = nil, param = nil)
+    title ||= column.titleize
+    css_class = column == sort_column ? "current #{sort_direction} no-link-style" : 'no-link-style'
+    direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
+    link_to title, { sort: column, direction: direction, param: param }, { class: css_class }
+  end
 end
