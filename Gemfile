@@ -33,7 +33,10 @@ group :development, :test do
   gem 'bundle-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'colorize'
+  gem 'rspec'
   gem 'rspec-rails'
+  gem 'rspec-support'
+  gem 'rspec_junit_formatter'
   gem 'vcr'
   gem 'webmock'
 end
@@ -49,8 +52,6 @@ end
 group :test do
   gem 'capybara', '>= 2.15', '< 4.0'
   gem 'chromedriver-helper'
-  gem 'ci_reporter_rspec'
-  gem 'rspec-support'
   gem 'selenium-webdriver'
   gem 'simplecov', '~> 0.16.1', require: false
   gem 'simplecov-rcov', require: false

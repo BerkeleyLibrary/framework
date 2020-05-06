@@ -11,8 +11,7 @@ services:
 
   updater:
     <<: *services-rails
-    command:
-      - assets:precompile
+    command: rails assets:precompile
     ports: []
     restart: "no"
 
