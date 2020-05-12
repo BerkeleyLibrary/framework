@@ -1,6 +1,7 @@
 require 'net/ssh'
 require 'open-uri'
 require 'shellwords'
+require 'patron/dump'
 
 module Patron
   # Represents a patron record pulled from oskicat's PATRONAPI

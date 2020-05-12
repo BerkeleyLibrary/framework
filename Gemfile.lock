@@ -89,11 +89,6 @@ GEM
     chromedriver-helper (2.1.0)
       archive-zip (~> 0.10)
       nokogiri (~> 1.8)
-    ci_reporter (2.0.0)
-      builder (>= 2.1.2)
-    ci_reporter_rspec (1.0.0)
-      ci_reporter (~> 2.0)
-      rspec (>= 2.14, < 4)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0)
@@ -226,6 +221,8 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
+    rspec_junit_formatter (0.4.1)
+      rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (0.74.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -320,7 +317,6 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15, < 4.0)
   chromedriver-helper
-  ci_reporter_rspec
   coffee-rails (~> 4.2)
   colorize
   ipaddress
@@ -335,8 +331,10 @@ DEPENDENCIES
   puma (~> 3.11)
   rails (~> 5.2.2)
   recaptcha
+  rspec
   rspec-rails
   rspec-support
+  rspec_junit_formatter
   rubocop (~> 0.74.0)
   sass-rails (~> 5.0)
   selenium-webdriver

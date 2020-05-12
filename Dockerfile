@@ -35,18 +35,9 @@ USER altmedia
 ENV PATH="/opt/app/bin:$PATH" \
     RAILS_LOG_TO_STDOUT=yes
 
-# Specifies the "rails" command as the entrypoint. This allows you to treat the
-# `docker run` command as essentially a frontend to Rails. Whatever you pass as
-# argument is forwarded to rails, e.g.:
-#   docker run <image> assets:precompile db:create db:migrate
-#
-# Note that we use tini, a small process manager, because the application
-# forks.
-ENTRYPOINT ["/opt/app/bin/docker-entrypoint.sh"]
-
 # Sets "server" as the default command. If you docker-run this image with no
 # additional arguments, it simply starts the server.
-CMD ["server"]
+CMD ["rails", "server"]
 
 # =============================================================================
 # Target: development
