@@ -77,7 +77,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
   def faculty?
     return false if current_user.affiliations.nil?
 
-    @faculty = current_user.affiliations.include?('EMPLOYEE-TYPE-ACADEMIC') || current_user.affiliations.include?('EMPLOYEE-TYPE-STAFF')
+    @faculty = current_user.affiliations.include?('EMPLOYEE-TYPE-ACADEMIC')
   end
 
   def init_form!; end

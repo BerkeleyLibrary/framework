@@ -1,7 +1,7 @@
 <h3>Proxy Borrower Card Forms</h3>
 <p>Allows faculty or disabled students to request that the Library allow a named other person to withdraw books on their behalf.</p>
 <br />
-<!-- Faculty only visible if affiliated as one of: EMPLOYEE-TYPE-ACADEMIC','EMPLOYEE-TYPE-STAFF -->
+<!-- Faculty only visible if affiliated as: EMPLOYEE-TYPE-ACADEMIC -->
 <% if @faculty %>
   <%= link_to "Request Faculty", forms_proxy_borrower_faculty_path %>
   <br />

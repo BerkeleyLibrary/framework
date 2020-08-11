@@ -21,9 +21,17 @@ describe :forms_proxy_borrower_faculty, type: :system do
   end
 
   before(:each) do
-    @patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD_SLE)
+    @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
     @user = login_as(patron_id)
+
+    # Need to add the faculty affiliation and email for user:
+    @user.affiliations = 'EMPLOYEE-TYPE-ACADEMIC'
+    @user.email = 'notreal@nowhere.com'
+
     @patron = Patron::Record.find(patron_id)
+
+    # And pass @user to the controller as the current_user:
+    allow_any_instance_of(ProxyBorrowerFormsController).to receive(:current_user).and_return(@user)
 
     visit forms_proxy_borrower_faculty_path
   end
