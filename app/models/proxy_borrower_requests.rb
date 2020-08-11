@@ -32,7 +32,8 @@ class ProxyBorrowerRequests < ActiveRecord::Base
   end
 
   def full_name
-    "#{research_last}, #{research_first}"
+    full_name = "#{research_last}, #{research_first} #{research_middle}"
+    full_name.gsub(/\s+$/, '')
   end
 
   def self.to_csv
@@ -56,7 +57,8 @@ class ProxyBorrowerRequests < ActiveRecord::Base
 
   # Export also wants the proxy name in one field (first last):
   def proxy_name
-    "#{research_first} #{research_last}"
+    proxy_name = "#{research_first} #{research_middle} #{research_last}"
+    proxy_name.gsub(/\s+/, ' ')
   end
 
   def date_limit
