@@ -35,6 +35,7 @@ Rails.application.routes.draw do
   post '/forms/proxy-borrower/request_dsp', to: 'proxy_borrower_forms#process_dsp_request'
   post '/forms/proxy-borrower/request_faculty', to: 'proxy_borrower_forms#process_faculty_request'
   get '/forms/proxy-borrower/result', to: 'proxy_borrower_forms#result'
+  get '/forms/proxy-borrower/forbidden', to: 'proxy_borrower_forms#forbidden'
 
   # Omniauth automatically handles requests to /auth/:provider. We need only
   # implement the callback.

@@ -32,9 +32,11 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
       @request_form = ProxyBorrowerRequests.new
       @current_user = current_user
     else
-      redirect_to proxy_borrower_forms_path
+      redirect_to forms_proxy_borrower_forbidden_path
     end
   end
+
+  def forbidden; end
 
   # Processes a request from DSP form: (eventually dry this up)
   def process_dsp_request
