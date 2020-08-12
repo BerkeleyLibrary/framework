@@ -1,18 +1,10 @@
 ---
 
-default: &default
-  adapter: sqlite3
-  pool: 5
-  timeout: 5000
-
 development:
-  <<: *default
-  database: db/development.sqlite3
+  url: postgres://root:root@db/framework-dev?pool=5
 
 test:
-  <<: *default
-  database: db/test.sqlite3
+  url: postgres://root:root@db/framework-test?pool=5
 
 production:
-  <<: *default
-  database: db/production.sqlite3
+  url: <%= ENV['DATABASE_URL'] || 'postgres://root:root@db/framework-prod' %>

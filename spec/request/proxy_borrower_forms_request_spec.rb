@@ -1,0 +1,171 @@
+require 'forms_helper'
+
+describe 'Proxy Borrower Forms', type: :request do
+  attr_reader :patron_id
+  attr_reader :patron
+  attr_reader :user
+
+  context 'specs without admin privledges' do
+    before(:each) do
+      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      @user = login_as(patron_id)
+      @patron = Patron::Record.find(patron_id)
+    end
+
+    after(:each) do
+      logout!
+    end
+
+    it 'Admin page redirects to main proxy borrower card page if user is non-admin', :non_admin do
+      get forms_proxy_borrower_admin_path
+      expect(response.status).to eq 302
+    end
+
+    it 'Index page renders' do
+      get proxy_borrower_forms_path
+      expect(response.status).to eq 200
+    end
+  end
+
+  context 'specs with created admin privledges' do
+    # First create an Administrator:
+    before(:all) do
+      ProxyBorrowerUsers.delete_all
+
+      # Need to create a request for search!!!
+      @req = ProxyBorrowerRequests.new
+      @req.faculty_name = 'Test Search User'
+      @req.department = 'ABCD'
+      @req.faculty_id = '12345'
+      @req.student_name = nil
+      @req.student_dsp = nil
+      @req.dsp_rep = nil
+      @req.research_last = 'RLast'
+      @req.research_first = 'RFirst'
+      @req.research_middle = nil
+      @req.date_term = Date.tomorrow
+      @req.renewal = 0
+      @req.status = nil
+      @req.save
+    end
+
+    before(:each) do |_test|
+      @admin = ProxyBorrowerUsers.new
+      @admin.lcasid = '333333'
+      @admin.name = 'John Doe'
+      @admin.role = 'Admin'
+      @admin.save
+
+      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      @user = login_as(patron_id)
+      @patron = Patron::Record.find(patron_id)
+
+      admin_user = User.new(uid: '333333', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      allow_any_instance_of(ProxyBorrowerFormsController).to receive(:current_user).and_return(admin_user)
+    end
+
+    it 'Index contain disabled student links' do
+      get proxy_borrower_forms_path
+      expect(response.body).to include('<a href="/forms/proxy-borrower/dsp">Request Disabled Student</a>')
+      expect(response.status).to eq 200
+    end
+
+    it 'Faculty Form renders for faculty members' do
+      get forms_proxy_borrower_faculty_path
+      expect(response.status).to eq 200
+    end
+  end
+
+  context 'specs with hard-coded admin privledges' do
+
+    before(:each) do |_test|
+      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      @user = login_as(patron_id)
+      @patron = Patron::Record.find(patron_id)
+
+      admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      allow_any_instance_of(ProxyBorrowerAdminController).to receive(:current_user).and_return(admin_user)
+    end
+
+    it 'DSP Form renders correct form' do
+      get forms_proxy_borrower_dsp_path
+      expect(response.body).to include('<h1>Proxy Borrower Card Application Form - DSP</h1>')
+      expect(response.status).to eq 200
+    end
+
+    it 'Faculty Form redirects for non faculty members' do
+      get forms_proxy_borrower_faculty_path
+      expect(response.status).to eq 302
+    end
+
+    it 'Admin page renders' do
+      get forms_proxy_borrower_admin_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Admin View DB page renders' do
+      get forms_proxy_borrower_admin_view_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Admin Export redirects' do
+      get forms_proxy_borrower_admin_export_path
+      expect(response.status).to eq 302
+    end
+
+    it 'Admin Search renders page' do
+      get forms_proxy_borrower_admin_search_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Admin Search indicates if there are no search results found' do
+      get(forms_proxy_borrower_admin_search_path, params: {
+            search_term: 'SEARCHVALUE'
+          })
+
+      expect(response.status).to eq 200
+      expect(response.body).to match(/we could not find any results/)
+    end
+
+    it 'Admin Search finds a record' do
+      get(forms_proxy_borrower_admin_search_path, params: {
+            search_term: 'RLast'
+          })
+
+      expect(response.status).to eq 200
+      expect(response.body).to match(/Test Search User/)
+    end
+
+    it 'Admin Search handles date searches' do
+      get(forms_proxy_borrower_admin_search_path, params: {
+            search_term: '4/13/1996'
+          })
+
+      expect(response.status).to eq 200
+      expect(response.body).to match(/we could not find any results/)
+    end
+
+    it 'Admin Add/Edit Users form renders' do
+      get forms_proxy_borrower_admin_users_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Results page renders' do
+      get forms_proxy_borrower_result_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Faculty Form rejects a submission with missing fields' do
+      post(forms_proxy_borrower_request_faculty_path, params: {
+             faculty_name: 'John Doe',
+             research_last: '',
+             research_first: '',
+             term: '',
+             renewal: ''
+           })
+
+      expect(response.status).to eq 200
+      expect(response.body).to match(/Please correct them before submitting the form again/)
+    end
+  end
+end

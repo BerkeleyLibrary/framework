@@ -1,3 +1,6 @@
+/*
+*= require jquery-ui/datepicker
+*/
 @import "bootstrap";
 
 .form-group.required .control-label:after {
@@ -37,4 +40,59 @@ a:hover, a:active, a:focus {
   position: absolute;
   top: -9999px;
   left: -9999px;
+}
+
+.tblheader	{
+  font-weight:bold;
+  color:blue;
+}
+
+.btn-white-text {
+  color: white !important;
+  box-shadow: none !important;
+}
+
+.btn-link:hover {
+  text-decoration: none;
+}
+
+.btn.btn-primary:disabled {
+  background-color: lightgrey;
+  border-color: lightgrey;
+}
+
+.proxy-borrower-heading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.proxy-borrower-admin-link {
+  max-height: 1.5rem;
+}
+
+.blue_bg {
+  background-color: #0275d8;
+}
+
+.proxy-borrower-title {
+  display: inline;
+}
+
+.table-header {
+  background-color: #e5e7e9;
+  color: #3b3b3b;
+  font-weight: 700;
+  margin: 0;
+}
+
+th .asc::after {
+  content: "▲";
+  padding-left: 3px;
+  color: gray;
+}
+
+th .desc::after {
+  content: "▼";
+  padding-left: 3px;
+  color: gray;
 }

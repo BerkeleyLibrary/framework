@@ -1,5 +1,18 @@
 services:
-  rails: &services-rails
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  db:
+    image: postgres:12.2
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+
+  app: &services-app
     build:
       context: .
       target: development
@@ -10,8 +23,12 @@ services:
       - ./:/opt/app
 
   updater:
-    <<: *services-rails
-    command: rails assets:precompile
+    <<: *services-app
+    command: rails setup
+    depends_on:
+      - adminer
+      - app
+      - db
     ports: []
     restart: "no"
 

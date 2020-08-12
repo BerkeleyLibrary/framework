@@ -117,6 +117,10 @@ en:
       subject: Student Electronic Devices Loan confirmation
     student_edevices_failure_email:
       subject: Student Electronic Devices Loan error
+    proxy_borrower_request_email:
+      subject: Proxy Borrower Card Request
+    proxy_borrower_alert_email:
+      subject: Proxy Borrower Card alert email
 
   scan_request_forms:
     new:
@@ -138,3 +142,24 @@ en:
     create:
       recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
       success: Request successfully submitted to %{department_head_email}.
+
+  proxy_borrower_forms:
+    index:
+      page_title: Proxy Borrower Card Application
+    dsp_form:
+      page_title: Proxy Borrower Card Application Form - DSP
+    faculty_form:
+      page_title: Proxy Borrower Card Application Form - Faculty
+    process_faculty_request:
+      page_title: Proxy Borrower Card Application Submitted
+    process_dsp_request:
+      page_title: Proxy Borrower Card Application Submitted
+  proxy_borrower_admin:
+    admin_users:
+      page_title: Add/Edit Administrators
+    admin_view:
+      page_title: Proxy Borrower Card - Administration
+    admin_search:
+      page_title: Search the Proxy Borrower Card Database
+    admin:
+      page_title: Proxy Borrower Card - Administration

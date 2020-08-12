@@ -113,4 +113,16 @@ class RequestMailer < ApplicationMailer
   def opt_out_faculty(email)
     mail(to: email)
   end
+
+  # Send Proxy-Borrower Card Request Instructions to user
+  def proxy_borrower_request_email(proxy_request)
+    @proxy_request = proxy_request
+    mail(to: @proxy_request.user_email)
+  end
+
+  # Send Proxy-Borrower Card Request Alert to privdesk
+  def proxy_borrower_alert_email(proxy_request)
+    @proxy_request = proxy_request
+    mail(to: privdesk_to)
+  end
 end

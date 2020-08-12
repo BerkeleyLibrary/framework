@@ -14,4 +14,3 @@ patrons["http_interactions"].each do | http_interaction |
     f.write(body)
   end
 end
-
