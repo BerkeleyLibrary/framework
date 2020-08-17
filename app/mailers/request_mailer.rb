@@ -1,6 +1,6 @@
 class RequestMailer < ApplicationMailer
-  # Sends the UcopBorrowRequestForm
-  def ucop_borrow_request_form_email(borrow_request)
+  # Sends the AffiliateBorrowRequestForm
+  def affiliate_borrow_request_form_email(borrow_request)
     @borrow_request = borrow_request
 
     mail(to: borrow_request.department_head_email)

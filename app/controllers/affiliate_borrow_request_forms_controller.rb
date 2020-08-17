@@ -1,4 +1,4 @@
-class UcopBorrowRequestFormsController < ApplicationController
+class AffiliateBorrowRequestFormsController < ApplicationController
   before_action :init_form!
 
   def index
@@ -21,13 +21,13 @@ class UcopBorrowRequestFormsController < ApplicationController
   private
 
   def form_params
-    params.require(:ucop_borrow_request_form).permit!
+    params.require(:affiliate_borrow_request_form).permit!
   rescue ActionController::ParameterMissing
     {}
   end
 
   def init_form!
-    @form = UcopBorrowRequestForm.new
+    @form = AffiliateBorrowRequestForm.new
     return if form_params.empty?
 
     @form.attributes = form_params

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   scope(:forms) do
     resources :doemoff_study_room_use_forms, path: 'doemoff-study-room-use'
     resources :scan_request_forms, path: 'altmedia'
-    resources :ucop_borrow_request_forms, path: 'ucop-borrowing-card'
+    resources :affiliate_borrow_request_forms, path: 'berkeley-affiliate-borrowing-card'
     resources :libstaff_edevices_loan_forms, path: 'library-staff-devices'
     resources :service_article_request_forms, path: 'altmedia-articles'
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'

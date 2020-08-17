@@ -1,4 +1,4 @@
-class UcopBorrowRequestForm < Form
+class AffiliateBorrowRequestForm < Form
   attr_accessor(
     :department_head_email,
     :department_head_name,
@@ -42,6 +42,6 @@ class UcopBorrowRequestForm < Form
   private
 
   def submit
-    RequestMailer.ucop_borrow_request_form_email(self).deliver_now
+    RequestMailer.affiliate_borrow_request_form_email(self).deliver_now
   end
 end
