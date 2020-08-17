@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UcopBorrowRequestForm do
+describe AffiliateBorrowRequestForm do
   it 'validates the form' do
     tests = [
       {
@@ -65,7 +65,7 @@ describe UcopBorrowRequestForm do
       }
     ]
     tests.each do |attributes:, errors:, valid:|
-      form = UcopBorrowRequestForm.new(attributes)
+      form = AffiliateBorrowRequestForm.new(attributes)
       expect(form.valid?).to eq(valid)
       next if valid
 
@@ -78,7 +78,7 @@ describe UcopBorrowRequestForm do
   end
 
   it 'sends the email' do
-    form = UcopBorrowRequestForm.new(
+    form = AffiliateBorrowRequestForm.new(
       department_head_email: 'jeff@wilco.com',
       department_name: "Beat Keepin'",
       employee_email: 'glenn@wilco.com',
@@ -97,7 +97,7 @@ describe UcopBorrowRequestForm do
 
   describe :model_name do
     it 'has a human name' do
-      expect(UcopBorrowRequestForm.model_name.human).to eq('UCB Library Resources for Select UCOP Staff')
+      expect(AffiliateBorrowRequestForm.model_name.human).to eq('UCB Library Resources for Select Affiliate Staff')
     end
   end
 end

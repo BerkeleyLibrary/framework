@@ -37,12 +37,12 @@ en:
         opt_in_true: Opt in. I confirm I qualify for this service.
         opt_in_false: Opt out. I wish to terminate use of this service.
         patron_name: Name
-      ucop_borrow_request_form:
-        department_head_email: Your UCOP Supervisor/Department Head's Email Address
-        department_head_name: Your UCOP Supervisor/Department Head's Full Name
-        department_name: Your UCOP Department Name
+      affiliate_borrow_request_form:
+        department_head_email: Your Supervisor/Department Head's Email Address
+        department_head_name: Your Supervisor/Department Head's Full Name
+        department_name: Your Department/Agency Name
         employee_email: Your Email Address
-        employee_id: Your UCOP Employee ID number
+        employee_id: Your Employee ID number
         employee_name: Your First, Middle (if any) and Last Name
         employee_personal_email: Your Preferred Email Address
         employee_phone: Your Phone Number
@@ -58,7 +58,7 @@ en:
 
     models:
       scan_request_form: Faculty Alt-Media Scanning
-      ucop_borrow_request_form: UCB Library Resources for Select UCOP Staff
+      affiliate_borrow_request_form: UCB Library Resources for Select Affiliate Staff
 
   doemoff_study_room_use_forms:
     all_checked:
@@ -79,7 +79,7 @@ en:
         create: Submit
       scan_request_form:
         create: Submit
-      ucop_borrow_request_form:
+      affiliate_borrow_request_form:
         create: Submit
       service_article_request_form:
         create: Submit
@@ -107,7 +107,7 @@ en:
       subject: alt-media scanning service opt-out
     opt_out_staff:
       subject: alt-media scanning service opt-out
-    ucop_borrow_request_form_email:
+    affiliate_borrow_request_form_email:
       subject: UC Berkeley Borrowing Card Requested
     service_article_confirmation_email:
       subject: Alt-Media Service - Article Request
@@ -136,9 +136,9 @@ en:
     all_checked:
       page_title: Agreement submitted
 
-  ucop_borrow_request_forms:
+  affiliate_borrow_request_forms:
     new:
-      page_title: UCOP Staff Access Request
+      page_title: Berkeley Affiliate Staff Access Request
     create:
       recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
       success: Request successfully submitted to %{department_head_email}.
