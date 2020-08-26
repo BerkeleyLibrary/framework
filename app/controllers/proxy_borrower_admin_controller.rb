@@ -73,25 +73,31 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def admin_users
-    # I'll need to grab all of the Proxy Borrower User's (admins...not requesters)
-    @users = ProxyBorrowerUsers.all.order(:name)
+    @users = FrameworkUsers.users_with_role('proxyborrow_admin')
+    @users.sort! { |a, b| a.name <=> b.name }
   end
 
   def add_admin
-    admin = ProxyBorrowerUsers.new
-    admin.name = params['name'] || nil
-    admin.lcasid = params['lcasid'] || nil
-    # We've removed the 'Sub-Admin' role so just hardcoding role to 'Admin' now:
-    admin.role = 'Admin'
-    admin.save
-    flash[:success] = "Added #{admin.name} as an administrator"
+    # First check if the user exists in framework user - or create the user
+    framework_user = FrameworkUsers.check_db(params['lcasid']) || FrameworkUsers.create(name: params['name'], lcasid: params['lcasid'], role: 'Admin')
+
+    # Now that we have the user, create the assignment:
+    Assignment.create(framework_users_id: framework_user.id, role_id: 1)
+
+    # And redirect back to the admin users page:
+    flash[:success] = "Added #{framework_user.name} as an administrator"
     redirect_to forms_proxy_borrower_admin_users_path
   end
 
   def destroy_admin
-    admin = ProxyBorrowerUsers.find(params[:id])
+    # First grab the user (so we can grab the name!)
+    admin = FrameworkUsers.find(params[:id])
     admin_name = admin.name
-    admin.destroy
+
+    # Now lets find the assignment
+    # role id 1 == proxyborrower_admin
+    user_assignment = Assignment.where(framework_users_id: admin.id, role_id: 1).first
+    user_assignment.destroy
     flash[:success] = "Removed #{admin_name} from administrator list"
     redirect_to forms_proxy_borrower_admin_users_path
   end
@@ -102,15 +108,12 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
 
   # You shall not pass....unless you're an admin
   def admin?
-    user_role = ProxyBorrowerUsers.proxy_user_role(current_user.uid)
-
-    if user_role.blank?
-      # In this case we'll want to re-route the user to the main (index) page
-      redirect_to proxy_borrower_forms_path
+    if FrameworkUsers.role?(current_user.uid, 'proxyborrow_admin')
+      # User is PBC admin.... PASS!
+      @user_role = 'Admin'
     else
-      # Might not be necessary to pass the role
-      # I don't think there's much of a difference now between admin/subadmin
-      @user_role = user_role
+      # Not an admin...you do not pass go, you do not collect 200 dollars!
+      redirect_to proxy_borrower_forms_path
     end
   end
 
@@ -120,7 +123,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   end
 
   def sort_direction
-    # only alow asc||desc for direction param
+    # only allow asc||desc for direction param
     %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
   end
 end
