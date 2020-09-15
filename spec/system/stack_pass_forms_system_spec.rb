@@ -3,6 +3,11 @@ require 'time'
 
 describe :stack_pass_form, type: :system do
 
+  before(:each) do
+    # Clear the way:
+    StackPassForm.delete_all
+  end
+
   context 'request specs' do
     it 'marks all required fields as required' do
       visit new_stack_pass_form_path
