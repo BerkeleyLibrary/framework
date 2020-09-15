@@ -64,15 +64,4 @@ class FrameworkUsers < ActiveRecord::Base
     where(lcasid: user_id).first
   end
 
-  # TO BE DELETED: This will be removed and replaced with has_role above
-  # def self.proxy_user_role(user_id)
-  #   return 'Admin' if @hardcoded_admins.include?(user_id)
-
-  #   user = FrameworkUsers.find_by(lcasid: user_id)
-
-  #   return nil if user.blank?
-
-  #   user.role
-  # end
-
 end
