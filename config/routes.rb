@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'
     resources :galc_request_forms, path: 'galc-agreement'
     resources :proxy_borrower_forms, path: 'proxy-borrower', only: [:index]
+    resources :stack_pass_forms, path: 'stack-pass'
   end
 
   # Proxy Borrower Admin Routes:
