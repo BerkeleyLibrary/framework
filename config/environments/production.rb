@@ -97,4 +97,8 @@ Rails.application.configure do
     interceptor = Interceptor::MailingListInterceptor.new
     ActionMailer::Base.register_interceptor(interceptor)
   end
+
+  # Configure the default host - this is used by Stack Pass's mailer, to create a link
+  # back to the application (directly to the approval form for an pass request):
+  config.action_mailer.default_url_options = { host: 'framework.lib.berkeley.edu' }
 end
