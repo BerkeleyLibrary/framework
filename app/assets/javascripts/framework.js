@@ -14,6 +14,28 @@ function formshowhide(id) {
 }
 
 /**
+ * Display or hide an element
+ */
+function toggleBlock(id, display) {
+  if (display) {
+    document.getElementById(id).style.display = "block";
+  } else {
+    document.getElementById(id).style.display = "none";
+  }
+}
+
+/**
+ * Disable or enable an element - such as a button
+ */
+function toggleDisable(id, disable) {
+  if (disable) {
+    document.getElementById(id).disabled = true;
+  } else {
+    document.getElementById(id).disabled = false;
+  }
+}
+
+/**
  * hardReset
  * Resets the Proxy Borrower Card DSP and Faculty forms
  * Needed in the event someone submits bad data and we
@@ -36,5 +58,18 @@ function hardReset() {
   // DSP Form only:
   if (document.getElementById("dsp_rep")) {
     document.getElementById("dsp_rep").value = "";
+  }
+}
+
+function handleDenialSelect() {
+  selection = document.getElementById("stack_pass_denial_denial_reason").value;
+  if (selection === 'Other') {
+    document.getElementById("denial_reason").value = '';
+    toggleDisable("process_btn", false);
+    toggleBlock("other_denial", true);
+  } else {
+    toggleBlock("other_denial", false);
+    toggleDisable("process_btn", false);
+    document.getElementById("denial_reason").value = selection;
   }
 }

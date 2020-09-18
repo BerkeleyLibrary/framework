@@ -30,7 +30,6 @@ describe 'Proxy Borrower Forms', type: :request do
   context 'specs with created admin privledges' do
     # First create an Administrator:
     before(:all) do
-      ProxyBorrowerUsers.delete_all
 
       # Need to create a request for search!!!
       @req = ProxyBorrowerRequests.new
@@ -50,11 +49,19 @@ describe 'Proxy Borrower Forms', type: :request do
     end
 
     before(:each) do |_test|
-      @admin = ProxyBorrowerUsers.new
-      @admin.lcasid = '333333'
-      @admin.name = 'John Doe'
-      @admin.role = 'Admin'
-      @admin.save
+      # make sure we have a fresh set of tables:
+      Assignment.delete_all
+      Role.delete_all
+      FrameworkUsers.delete_all
+
+      # Create your role:
+      Role.create(id: 1, role: 'proxyborrow_admin')
+
+      # Create a user:
+      framework_user = FrameworkUsers.create(lcasid: '333333', name: 'John Doe', role: 'Admin')
+
+      # Create an assignment:
+      Assignment.create(framework_users_id: framework_user.id, role_id: 1)
 
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
       @user = login_as(patron_id)

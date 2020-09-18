@@ -1,0 +1,43 @@
+<!-- Header and Admin Link -->
+<span class="proxy-borrower-heading">
+  <span>
+    <h1 class="proxy-borrower-title">All Stack Pass Requests:</h1>
+  </span>
+  <span>
+    <%= link_to 'Admin Home', 
+      forms_stack_pass_admin_path, 
+      class: "proxy-borrower-admin-link text-nowrap" %>
+  </span>
+</span>
+<table class="table table-bordered mt-5">
+  <!-- the header row -->
+  <thead class="thead-light">
+    <tr>
+      <th scope="col"><%= sortable "name", "Name" %></th>
+      <th scope="col"><%= sortable "email", "Email" %></th>
+      <th scope="col"><%= sortable "phone", "Phone Number" %></th>
+      <th scope="col"><%= sortable "pass_date", "Pass Date" %></th>
+      <th scope="col"><%= sortable "local_id", "Location ID" %></th>
+      <th scope="col"><%= sortable "approved", "Approved" %></th>
+      <th scope="col"><%= sortable "approved_by", "Approved By" %></th>
+      <th scope="col"><%= sortable "denial_reason", "Denial Reason" %></th>
+      <th scope="col"><%= sortable "created_at", "Request Date" %></th>
+    </tr>
+  </thead>
+  <!-- Layout all those beautiful requests -->
+  <tbody>
+    <% @requests.each do |r| %>
+      <tr>
+        <td><%= r.name %></td>
+        <td><%= r.email %></td>
+        <td><%= r.phone() %></td>
+        <td><%= r.pass_date %></td>
+        <td><%= r.local_id %></td>
+        <td><%= r.approved %></td>
+        <td><%= r.approved_by %></td>
+        <td><%= r.denial_reason %></td>
+        <td><%= r.created_at.strftime("%m/%d/%Y") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

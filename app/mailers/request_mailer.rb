@@ -1,3 +1,6 @@
+require 'prawn'
+
+# rubocop:disable Metrics/ClassLength
 class RequestMailer < ApplicationMailer
   # Sends the AffiliateBorrowRequestForm
   def affiliate_borrow_request_form_email(borrow_request)
@@ -125,4 +128,51 @@ class RequestMailer < ApplicationMailer
     @proxy_request = proxy_request
     mail(to: privdesk_to)
   end
+
+  # Send Stack Pass Request Alert to privdesk
+  def stack_pass_email(stackpass_form)
+    @stackpass_form = stackpass_form
+    mail(to: privdesk_to)
+  end
+
+  # Send Stack Pass Denial to requester
+  def stack_pass_denied(stackpass_form)
+    @stackpass_form = stackpass_form
+    mail(to: @stackpass_form.email)
+  end
+
+  # Send Stack Pass Approval to requester
+  def stack_pass_approved(stackpass_form)
+    # Generate the Approval PDF File:
+    pdf = stackpass_pdf(stackpass_form)
+
+    # To write the pdf to a local file uncomment the following line:
+    # pdf.render_file('approval_pass.pdf')
+
+    attachments[pdf]
+    mail(to: stackpass_form.email)
+  end
+
+  private
+
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def stackpass_pdf(stackpass_form)
+    pdf = Prawn::Document.new
+    pdf.move_down 10
+    pdf.font_size 24
+    pdf.text 'Gardner (MAIN) Stack Pass Approval', align: :center
+    pdf.move_down 10
+    pdf.font_size 12
+    pdf.text 'Print out this Stack Pass or save it to your phone and bring it to the Doe Library,
+              Gardner Stacks Level A along with a government-issued photo ID.', align: :center
+    pdf.move_down 10
+    pdf.text "Name: #{stackpass_form.name}", align: :center
+    pdf.text "Date of Stack Pass: #{stackpass_form.pass_date.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "Approved by: #{stackpass_form.approved_by}", align: :center
+    pdf.move_down 10
+    pdf.text 'University of California, Berkeley Library'
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
 end
+# rubocop:enable Metrics/ClassLength

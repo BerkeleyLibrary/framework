@@ -1,8 +1,8 @@
 <span class="proxy-borrower-heading">
-  <h1 class="proxy-borrower-title">Add/Edit Proxy Borrower Card Administrators</h1>
-  <%= link_to 'Admin Home',  forms_proxy_borrower_admin_path, class: "proxy-borrower-admin-link text-nowrap" %>
+  <h1 class="proxy-borrower-title">Manage Stack Pass/Reference Card Administrators</h1>
+  <%= link_to 'Admin Home',  forms_stack_pass_admin_path, class: "proxy-borrower-admin-link text-nowrap" %>
 </span>
-<%= form_with url: "/forms/proxy-borrower/add_admin", local:true do %>
+<%= form_with url: "/forms/stack-pass-admin/add_user", local:true do %>
   <div class="form-group pt-3">
     <h2>Add Admin:</h2>
     <div class="form-group row">
@@ -32,22 +32,20 @@
 </div>
 <div class="container">
   <% @users.each do |u| %>
-    <%= form_with url: "/forms/proxy-borrower/update_admin", method: :patch, local:true do %>
-      <div class="row pt-3 pb-3 border-top align-middle">
-        <!-- USER ID -->
-        <%= hidden_field( :FrameworkUsers, :id, :value => u.id ) %>
-        <!-- USER NAME -->
-        <div class="col user-col">
-          <%= u.name %>
-        </div>
-        <!-- USER ACTIONS -->
-        <div class="col action-col text-center">
-          <%= link_to 'Remove', forms_proxy_borrower_delete_admin_path(u), 
+    <div class="row pt-3 pb-3 border-top align-middle">
+      <!-- USER ID -->
+      <%= hidden_field( :FrameworkUsers, :id, :value => u.id ) %>
+      <!-- USER NAME -->
+      <div class="col user-col">
+        <%= u.name %>
+      </div>
+      <!-- USER ACTIONS -->
+      <div class="col action-col text-center">
+        <%= link_to 'Remove', forms_stack_pass_delete_user_path(u), 
             method: :delete, 
             data: {confirm: "Are you sure you want to delete #{u.name}?"},
             class: 'btn btn-sm btn-danger btn-link btn-white-text' %>
-        </div>
       </div>
-    <% end %>
+    </div>
   <% end %>
 </div>
