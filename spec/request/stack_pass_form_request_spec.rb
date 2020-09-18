@@ -1,7 +1,9 @@
-# require 'forms_helper'
-require 'rails_helper'
+require 'forms_helper'
 
 describe 'Stack Pass Form', type: :request do
+  attr_reader :patron_id
+  attr_reader :patron
+  attr_reader :user
 
   context 'specs without admin privledges' do
     before(:all) do
@@ -78,6 +80,45 @@ describe 'Stack Pass Form', type: :request do
       expect(response.body).to include('<h1>404 - Page not found</h1>')
     end
 
+  end
+
+  context 'specs with hard-coded admin privledges' do
+
+    before(:each) do |_test|
+      admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
+    end
+
+    it 'Admin page renders' do
+      get forms_stack_pass_admin_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Admin View DB page renders' do
+      get forms_stack_pass_admin_requests_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Admin Add/Edit Users form renders' do
+      get forms_stack_pass_admin_users_path
+      expect(response.status).to eq 200
+    end
+
+  end
+
+  context 'specs with non-admin user logged in' do
+
+    before(:each) do
+
+      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      @user = login_as(patron_id)
+      @patron = Patron::Record.find(patron_id)
+    end
+
+    it 'Admin page redirects to if user is non-admin', :non_admin do
+      get forms_stack_pass_admin_path
+      expect(response.status).to eq 302
+    end
   end
 
 end

@@ -30,6 +30,13 @@ Rails.application.routes.draw do
   patch '/forms/proxy-borrower/update_admin', to: 'proxy_borrower_admin#update_admin', as: :forms_proxy_borrower_update_admin
   delete '/forms/proxy-borrower/delete_admin/:id(.:format)', to: 'proxy_borrower_admin#destroy_admin', as: :forms_proxy_borrower_delete_admin
 
+  # Stack Pass Admin Routes:
+  get '/forms/stack-pass-admin/', to: 'stack_pass_admin#admin'
+  get '/forms/stack-pass-admin/requests', to: 'stack_pass_admin#requests'
+  get '/forms/stack-pass-admin/users', to: 'stack_pass_admin#users'
+  post '/forms/stack-pass-admin/add_user', to: 'stack_pass_admin#add_user'
+  delete '/forms/stack-pass-admin/delete_user/:id(.:format)', to: 'stack_pass_admin#destroy_user', as: :forms_stack_pass_delete_user
+
   # Proxy Borrower Form (DSP and Faculty) Routes:
   get '/forms/proxy-borrower/dsp', to: 'proxy_borrower_forms#dsp_form'
   get '/forms/proxy-borrower/faculty', to: 'proxy_borrower_forms#faculty_form'
