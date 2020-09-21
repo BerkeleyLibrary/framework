@@ -17,9 +17,9 @@ describe 'Stack Pass Form', type: :request do
                            phone: '925-555-5678', pass_date: Date.today, main_stack: true)
     end
 
-    it 'index page redirects to new forms page' do
+    it 'index page does not include admin link for non admins' do
       get stack_pass_forms_path
-      expect(response).to redirect_to(new_stack_pass_form_path)
+      expect(response.body).not_to include('Admin User')
     end
 
     it 'renders forbidden page if user is not a stack pass admin' do
@@ -63,6 +63,12 @@ describe 'Stack Pass Form', type: :request do
     before(:each) do |_test|
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
+    end
+
+    it 'index page renders' do
+      get stack_pass_forms_path
+      expect(response.status).to eq 200
+      expect(response.body).to include('Admin User')
     end
 
     it 'renders process form for unprocessed request' do
