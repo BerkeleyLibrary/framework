@@ -1,3 +1,3 @@
-There is a new request for day <%= @stackpass_form.pass_date %> ready for review at http://servlet2.lib.berkeley.edu:8080/stackpass/approval.displayApproval.logic?reqID=<%= @stackpass_form.id%>
+There is a new request for day <%= @stackpass_form.pass_date %> ready for review at https://framework.ucblib.org/forms/stack-pass/<%= @stackpass_form.id %>
 <%= url_for(host: 'localhost:3000', controller: 'stack_pass_forms', action: 'show', id: @stackpass_form.id) %>
-[Link to Approve/Deny Admin interface in framework]
+[Link to Approve/Deny Admin interface in framework]</p>
