@@ -13,14 +13,11 @@
   <!-- the header row -->
   <thead class="thead-light">
     <tr>
+      <th scope="col" style="text-align: center">Link</th>
       <th scope="col"><%= sortable "name", "Name" %></th>
       <th scope="col"><%= sortable "email", "Email" %></th>
-      <th scope="col"><%= sortable "phone", "Phone Number" %></th>
       <th scope="col"><%= sortable "pass_date", "Pass Date" %></th>
-      <th scope="col"><%= sortable "local_id", "Location ID" %></th>
-      <th scope="col"><%= sortable "approved", "Approved" %></th>
-      <th scope="col"><%= sortable "approved_by", "Approved By" %></th>
-      <th scope="col"><%= sortable "denial_reason", "Denial Reason" %></th>
+      <th scope="col"><%= sortable "approved", "Status" %></th>
       <th scope="col"><%= sortable "created_at", "Request Date" %></th>
     </tr>
   </thead>
@@ -28,14 +25,19 @@
   <tbody>
     <% @requests.each do |r| %>
       <tr>
+        <td style="text-align: center">
+          <%= link_to raw("&#x1F517"), stack_pass_form_path(r.id), class: "no-link-style" %>
+        </td>
         <td><%= r.name %></td>
         <td><%= r.email %></td>
-        <td><%= r.phone() %></td>
-        <td><%= r.pass_date %></td>
-        <td><%= r.local_id %></td>
-        <td><%= r.approved %></td>
-        <td><%= r.approved_by %></td>
-        <td><%= r.denial_reason %></td>
+        <td><%= r.pass_date.strftime("%m/%d/%Y") %></td>
+        <% if r.approved.nil? %>
+          <td>Unprocessed</td>
+        <% elsif r.approved == true %>
+          <td>Approved</td>
+        <% else %>
+          <td>Denied</td>
+        <% end %>
         <td><%= r.created_at.strftime("%m/%d/%Y") %></td>
       </tr>
     <% end %>
