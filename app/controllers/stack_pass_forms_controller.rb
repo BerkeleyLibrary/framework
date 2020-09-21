@@ -11,7 +11,13 @@ class StackPassFormsController < ApplicationController
   def forbidden; end
 
   def index
-    redirect_with_params(action: :new)
+    # redirect_with_params(action: :new)
+    user_role = FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
+    @user_role = if user_role.blank?
+                   nil
+                 else
+                   user_role
+                 end
   end
 
   def result; end
