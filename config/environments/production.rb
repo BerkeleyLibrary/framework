@@ -100,5 +100,9 @@ Rails.application.configure do
 
   # Configure the default host - this is used by Stack Pass's mailer, to create a link
   # back to the application (directly to the approval form for an pass request):
-  config.action_mailer.default_url_options = { host: 'framework.lib.berkeley.edu' }
+  # For master staging area use:
+  config.action_mailer.default_url_options = { host: 'framework.ucblib.org' }
+
+  # For production make sure you comment out above line and uncomment the following:
+  # config.action_mailer.default_url_options = { host: 'framework.lib.berkeley.edu' }
 end
