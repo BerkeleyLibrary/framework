@@ -1,15 +1,15 @@
 <!-- Header and Admin Link -->
-<span class="proxy-borrower-heading">
+<span class="flex-heading">
   <span>
-    <h1 class="proxy-borrower-title">All Proxy Borrower Card Requests:</h1>
+    <h1 class="inline-title">All Proxy Borrower Card Requests:</h1>
   </span>
   <span>
     <%= link_to 'Export Data', 
       forms_proxy_borrower_admin_export_path(:format => :csv),
-      class: "btn btn-sm btn-primary proxy-borrower-admin-link btn-white-text blue_bg pb-4 mr-3" %>
+      class: "btn btn-sm btn-primary title-link btn-white-text blue_bg pb-4 mr-3" %>
     <%= link_to 'Admin Home', 
       forms_proxy_borrower_admin_path, 
-      class: "proxy-borrower-admin-link text-nowrap" %>
+      class: "title-link text-nowrap" %>
   </span>
 </span>
 <table class="table table-bordered mt-5">

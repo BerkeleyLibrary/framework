@@ -1,4 +1,7 @@
-<h1>Stack Pass Approval</h1>
+<span class="flex-heading">
+  <h1 class="inline-title">Stack Pass Approval</h1>
+  <%= link_to 'Stack Pass Requests',  forms_stack_pass_admin_requests_path, class: "title-link text-nowrap" %>
+</span>
 <% if @req.approved == nil && @req.denial_reason == nil %>
   <%= form_for(@form, :url=> {:action => "update"}, :method => "patch", class: 'needs-validation') do |f| %>
     <h3>This request needs to be processed.</h3>

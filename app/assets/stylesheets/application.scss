@@ -61,12 +61,12 @@ a:hover, a:active, a:focus {
   border-color: lightgrey;
 }
 
-.proxy-borrower-heading {
+.flex-heading {
   display: flex;
   justify-content: space-between;
 }
 
-.proxy-borrower-admin-link {
+.title-link {
   max-height: 1.5rem;
 }
 
@@ -74,7 +74,7 @@ a:hover, a:active, a:focus {
   background-color: #0275d8;
 }
 
-.proxy-borrower-title {
+.inline-title {
   display: inline;
 }
 
