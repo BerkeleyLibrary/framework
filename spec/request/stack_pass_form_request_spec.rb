@@ -8,7 +8,8 @@ describe 'Stack Pass Form', type: :request do
   context 'specs without admin privledges' do
     before(:all) do
       # Clear the way:
-      StackPassForm.delete_all
+      StackRequest.delete_all
+      # StackPassForm.delete_all
 
       # Create some requests:
       StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
@@ -18,8 +19,13 @@ describe 'Stack Pass Form', type: :request do
     end
 
     it 'index page does not include admin link for non admins' do
-      get stack_pass_forms_path
+      get stack_requests_path
       expect(response.body).not_to include('Admin User')
+    end
+
+    it 'stackpass index page redirects to form' do
+      get stack_pass_forms_path
+      expect(response.status).to eq 302
     end
 
     it 'renders forbidden page if user is not a stack pass admin' do
@@ -50,23 +56,24 @@ describe 'Stack Pass Form', type: :request do
   context 'specs with admin privledges' do
     before(:all) do
       # Clear the way:
-      StackPassForm.delete_all
+      StackRequest.delete_all
 
       # Create some requests:
       StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
                            phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
       StackPassForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
                            phone: '925-555-5678', pass_date: Date.today, main_stack: true, local_id: '8675309',
-                           approved: true, approved_by: 'Test Admin')
+                           approvedeny: true, processed_by: 'Test Admin')
     end
 
     before(:each) do |_test|
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
+      allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
     end
 
     it 'index page renders' do
-      get stack_pass_forms_path
+      get stack_requests_path
       expect(response.status).to eq 200
       expect(response.body).to include('Admin User')
     end
@@ -93,6 +100,7 @@ describe 'Stack Pass Form', type: :request do
     before(:each) do |_test|
       admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
+      allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
     end
 
     it 'Admin page renders' do
@@ -115,7 +123,6 @@ describe 'Stack Pass Form', type: :request do
   context 'specs with non-admin user logged in' do
 
     before(:each) do
-
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
       @user = login_as(patron_id)
       @patron = Patron::Record.find(patron_id)

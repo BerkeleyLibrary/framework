@@ -91,7 +91,7 @@ describe :stack_pass_form, type: :system do
       # Fill in the fields:
       choose('stack_pass_deny')
       select('Too many passes requested', from: 'stack_pass_denial_denial_reason', visible: :all)
-      fill_in('approved_by', with: 'ADMIN USER')
+      fill_in('processed_by', with: 'ADMIN USER')
 
       # Submit:
       submit_button = find(:xpath, "//input[@type='submit']")
@@ -104,7 +104,7 @@ describe :stack_pass_form, type: :system do
     it 'allows an admin to approve a request' do
       # Fill in the fields:
       choose('stack_pass_approve')
-      fill_in('approved_by', with: 'ADMIN USER')
+      fill_in('processed_by', with: 'ADMIN USER')
 
       # Submit:
       submit_button = find(:xpath, "//input[@type='submit']")

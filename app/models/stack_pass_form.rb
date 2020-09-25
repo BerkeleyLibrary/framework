@@ -1,11 +1,4 @@
-class StackPassForm < ActiveRecord::Base
-
-  validates :name,
-            presence: true
-
-  validates :email,
-            presence: true,
-            email: true
+class StackPassForm < StackRequest
 
   def submit!
     RequestMailer.stack_pass_email(self).deliver_now
@@ -22,12 +15,13 @@ class StackPassForm < ActiveRecord::Base
   # Need to be able to get counts for a requester - they're capped for a specific number of
   # requests per year (resets on July 1st I believe)
 
+  # Need to move these into sub models (stack_pass and ref_card)
   def approval_count
-    StackPassForm.where(email: email, approved: true).count
+    StackPassForm.where(email: email, approvedeny: true).count
   end
 
   def denial_count
-    StackPassForm.where(email: email, approved: false).count
+    StackPassForm.where(email: email, approvedeny: false).count
   end
 
 end

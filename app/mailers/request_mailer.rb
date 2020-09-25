@@ -168,7 +168,7 @@ class RequestMailer < ApplicationMailer
     pdf.move_down 10
     pdf.text "Name: #{stackpass_form.name}", align: :center
     pdf.text "Date of Stack Pass: #{stackpass_form.pass_date.strftime('%m/%d/%Y')}", align: :center
-    pdf.text "Approved by: #{stackpass_form.approved_by}", align: :center
+    pdf.text "Approved by: #{stackpass_form.processed_by}", align: :center
     pdf.move_down 10
     pdf.text 'University of California, Berkeley Library'
   end

@@ -7,7 +7,7 @@ class StackPassAdminController < AuthenticatedFormController
   def admin; end
 
   def requests
-    @requests = StackPassForm.all.order(sort_column + ' ' + sort_direction)
+    @requests = StackRequest.all.order(sort_column + ' ' + sort_direction)
   end
 
   def users
@@ -55,7 +55,7 @@ class StackPassAdminController < AuthenticatedFormController
 
   def sort_column
     # only allow column names as sorting param
-    StackPassForm.column_names.include?(params[:sort]) ? params[:sort] : 'created_at'
+    StackRequest.column_names.include?(params[:sort]) ? params[:sort] : 'created_at'
   end
 
   def sort_direction

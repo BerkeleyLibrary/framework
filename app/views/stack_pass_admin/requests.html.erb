@@ -17,7 +17,7 @@
       <th scope="col"><%= sortable "name", "Name" %></th>
       <th scope="col"><%= sortable "email", "Email" %></th>
       <th scope="col"><%= sortable "pass_date", "Pass Date" %></th>
-      <th scope="col"><%= sortable "approved", "Status" %></th>
+      <th scope="col"><%= sortable "approvedeny", "Status" %></th>
       <th scope="col"><%= sortable "created_at", "Request Date" %></th>
     </tr>
   </thead>
@@ -31,9 +31,9 @@
         <td><%= r.name %></td>
         <td><%= r.email %></td>
         <td><%= r.pass_date.strftime("%m/%d/%Y") %></td>
-        <% if r.approved.nil? %>
+        <% if r.approvedeny.nil? %>
           <td>Unprocessed</td>
-        <% elsif r.approved == true %>
+        <% elsif r.approvedeny == true %>
           <td>Approved</td>
         <% else %>
           <td>Denied</td>

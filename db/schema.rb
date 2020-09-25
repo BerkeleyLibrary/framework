@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_204329) do
+ActiveRecord::Schema.define(version: 2020_09_23_205333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,20 +55,22 @@ ActiveRecord::Schema.define(version: 2020_09_04_204329) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "stack_pass_forms", force: :cascade do |t|
+  create_table "stack_requests", force: :cascade do |t|
     t.string "email"
     t.string "name"
     t.string "phone"
-    t.datetime "pass_date"
+    t.date "pass_date"
     t.boolean "main_stack"
     t.string "local_id"
-    t.boolean "approved"
-    t.string "approved_by"
-    t.datetime "time_approved"
+    t.boolean "approvedeny"
+    t.string "processed_by"
     t.string "denial_reason"
-    t.boolean "archived"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type"
+    t.string "affiliation"
+    t.text "research_desc"
+    t.date "pass_date_end"
   end
 
   add_foreign_key "assignments", "framework_users", column: "framework_users_id"

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe StackPassForm do
+describe StackRequest do
 
   it 'validates the form' do
     tests = [
@@ -41,7 +41,7 @@ describe StackPassForm do
       }
     ]
     tests.each do |attributes:, errors:, valid:|
-      form = StackPassForm.new(attributes)
+      form = StackRequest.new(attributes)
       expect(form.valid?).to eq valid
       next if valid
 

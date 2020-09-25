@@ -1,8 +1,14 @@
 require 'time'
+# Start here tomorrow.... need to setup separate controllers (I THINK) for
+# the two different sub models (stack_pass and reference_card)
 
 class StackPassFormsController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
   before_action :init_form!
+
+  def index
+    redirect_with_params(action: :new)
+  end
 
   def render_404
     render template: 'errors/error_404', status: 404
@@ -10,52 +16,7 @@ class StackPassFormsController < ApplicationController
 
   def forbidden; end
 
-  def index
-    # redirect_with_params(action: :new)
-    user_role = FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
-    @user_role = if user_role.blank?
-                   nil
-                 else
-                   user_role
-                 end
-  end
-
   def result; end
-
-  # Show an admin the request
-  def show
-    admin?
-    # TODO : If no find....then tell user you couldn't find it!
-    @current_user = current_user
-    @req = StackPassForm.find(params[:id])
-
-    @approvals = @req.approval_count
-    @denials = @req.denial_count
-  end
-
-  # Approve || Deny Request
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-  def update
-    admin?
-
-    @form = StackPassForm.find(params[:id])
-
-    @form.approved = params[:stack_pass_][:approve_deny]
-    @form.approved_by = params[:approved_by]
-
-    if @form.approved == false
-      @form.denial_reason = params[:denial_reason]
-      @form.deny!
-    else
-      @form.approve!
-    end
-
-    @form.save
-
-    flash[:success] = 'Request has been successfully processed'
-    redirect_with_params(action: :show)
-  end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def create
@@ -77,6 +38,39 @@ class StackPassFormsController < ApplicationController
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
+  # Show an admin the request
+  def show
+    admin?
+    @current_user = current_user
+    @req = StackPassForm.find(params[:id])
+
+    @approvals = @req.approval_count
+    @denials = @req.denial_count
+  end
+
+  # Approve || Deny Request
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def update
+    admin?
+
+    @form = StackPassForm.find(params[:id])
+    @form.approvedeny = params[:stack_pass_][:approve_deny]
+    @form.processed_by = params[:processed_by]
+
+    if @form.approvedeny == false
+      @form.denial_reason = params[:denial_reason]
+      @form.deny!
+    else
+      @form.approve!
+    end
+
+    @form.save
+
+    flash[:success] = 'Request has been successfully processed'
+    redirect_with_params(action: :show)
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
   private
 
   def convert_date_param
@@ -90,14 +84,6 @@ class StackPassFormsController < ApplicationController
       Date.strptime(params[:stack_pass_form][:pass_date], '%m/%d/%Y')
     rescue ArgumentError
       # If bad argument set to nil:
-    end
-  end
-
-  def admin?
-    if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
-      @user_role = 'Admin'
-    else
-      render 'forbidden', status: 201
     end
   end
 
@@ -119,4 +105,11 @@ class StackPassFormsController < ApplicationController
     verify_recaptcha!(model: @form)
   end
 
+  def admin?
+    if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
+      @user_role = 'Admin'
+    else
+      render 'forbidden', status: 201
+    end
+  end
 end

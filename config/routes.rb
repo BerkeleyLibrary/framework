@@ -17,7 +17,13 @@ Rails.application.routes.draw do
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'
     resources :galc_request_forms, path: 'galc-agreement'
     resources :proxy_borrower_forms, path: 'proxy-borrower', only: [:index]
+    # TO BE DELETED:
+    resources :stack_requests, path: 'stack-requests', only: [:index]
+    # REPLACING ABOVE:
     resources :stack_pass_forms, path: 'stack-pass'
+
+    # Coming soon!!!
+    # resources :reference_card_forms, path: 'reference-card'
   end
 
   # Proxy Borrower Admin Routes:
