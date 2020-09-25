@@ -61,15 +61,49 @@ function hardReset() {
   }
 }
 
-function handleDenialSelect() {
-  selection = document.getElementById("stack_pass_denial_denial_reason").value;
-  if (selection === 'Other') {
-    document.getElementById("denial_reason").value = '';
+// Stack Pass approve/request page:
+// Control the submit button disable/enable
+function sp_proccess_check() {
+  // Approve/Deny Radio Buttons:
+  radio_approve = document.getElementById("stack_pass_approve").checked;
+  radio_deny = document.getElementById("stack_pass_deny").checked;
+
+  // Denial REason Drop Down/Select:
+  denial_selection = document.getElementById("stack_pass_denial_denial_reason").value;
+
+  // Denial Reason Text Box (for "Other")
+  denial_reason = document.getElementById("denial_reason").value;
+
+  if (radio_approve) {
+    // Approve radio button selected: Enable Submit (hide deny options)
     toggleDisable("process_btn", false);
-    toggleBlock("other_denial", true);
-  } else {
+    toggleBlock("stack_pass_denial_denial_reason", false)
     toggleBlock("other_denial", false);
-    toggleDisable("process_btn", false);
-    document.getElementById("denial_reason").value = selection;
+  } else if (radio_deny) {
+    // Deny radio button selected: Show deny options
+    toggleBlock("stack_pass_denial_denial_reason", true)
+
+    if (denial_selection === '') {
+      // If Denial Reason Selection is blank: disable submit!
+      toggleDisable("process_btn", true);
+    } else if (denial_selection === 'Other') {
+      // If Denial Reason Selection is Other: Show reason text box
+      toggleBlock("other_denial", true);
+      if (denial_reason === '') {
+        // If Reason Text box is empty: disable submit
+        toggleDisable("process_btn", true);
+      } else {
+        // Else: enable submit
+        toggleDisable("process_btn", false);
+      }
+    } else {
+      // If Denial Reason Selection is any other reason: enable submit and hide text box
+      toggleBlock("other_denial", false);
+      toggleDisable("process_btn", false);
+    }
+  } else {
+    // If neither radio is selected: disable submit
+    toggleDisable("process_btn", true);
   }
+
 }
