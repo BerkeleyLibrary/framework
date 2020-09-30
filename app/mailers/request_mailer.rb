@@ -153,6 +153,30 @@ class RequestMailer < ApplicationMailer
     mail(to: stackpass_form.email)
   end
 
+  # Send Reference Card Request Alert to privdesk
+  def reference_card_email(reference_card_form)
+    @reference_card_form = reference_card_form
+    mail(to: privdesk_to)
+  end
+
+  # Send Reference Card Denial to requester
+  def reference_card_denied(reference_card_form)
+    @reference_card_form = reference_card_form
+    mail(to: @reference_card_form.email)
+  end
+
+  # Send Reference Card Approval to requester
+  def reference_card_approved(reference_card_form)
+    # Generate the Approval PDF File:
+    pdf = referencecard_pdf(reference_card_form)
+
+    # To write the pdf to a local file uncomment the following line:
+    # pdf.render_file('approval_pass.pdf')
+
+    attachments[pdf]
+    mail(to: reference_card_form.email)
+  end
+
   private
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
@@ -169,6 +193,26 @@ class RequestMailer < ApplicationMailer
     pdf.text "Name: #{stackpass_form.name}", align: :center
     pdf.text "Date of Stack Pass: #{stackpass_form.pass_date.strftime('%m/%d/%Y')}", align: :center
     pdf.text "Approved by: #{stackpass_form.processed_by}", align: :center
+    pdf.move_down 10
+    pdf.text 'University of California, Berkeley Library'
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def referencecard_pdf(refcard_form)
+    pdf = Prawn::Document.new
+    pdf.move_down 10
+    pdf.font_size 24
+    pdf.text 'Gardner (MAIN) Stack Reference Card Approval', align: :center
+    pdf.move_down 10
+    pdf.font_size 12
+    pdf.text 'Print out or save this approval document to your phone and bring it to the Privileges
+              Desk (Doe Library, Gardner Stacks Level A) along with a government-issued photo ID.', align: :center
+    pdf.move_down 10
+    pdf.text "Name: #{refcard_form.name}", align: :center
+    pdf.text "Start date of Reference card: #{refcard_form.pass_date.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "End date of Reference card: #{refcard_form.pass_date_end.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "Approved by: #{refcard_form.processed_by}", align: :center
     pdf.move_down 10
     pdf.text 'University of California, Berkeley Library'
   end

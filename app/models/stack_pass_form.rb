@@ -1,4 +1,5 @@
 class StackPassForm < StackRequest
+  validate :valid_dates
 
   def submit!
     RequestMailer.stack_pass_email(self).deliver_now
@@ -12,16 +13,22 @@ class StackPassForm < StackRequest
     RequestMailer.stack_pass_denied(self).deliver_now
   end
 
-  # Need to be able to get counts for a requester - they're capped for a specific number of
-  # requests per year (resets on July 1st I believe)
-
-  # Need to move these into sub models (stack_pass and ref_card)
   def approval_count
     StackPassForm.where(email: email, approvedeny: true).count
   end
 
   def denial_count
     StackPassForm.where(email: email, approvedeny: false).count
+  end
+
+  private
+
+  def valid_dates
+    if pass_date.present?
+      errors.add(:pass_date, 'The Pass Date must not be in the past') if pass_date.past?
+    else
+      errors.add(:pass_date, 'The Pass Date must not be blank and must be in the format mm/dd/yyyy')
+    end
   end
 
 end

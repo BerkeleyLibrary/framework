@@ -40,6 +40,12 @@ en:
         main_stack: Is the item in the Main (Gardner) Stacks?
         pass_date: On which day do you need access to the Main (Gardner) Stacks?
         local_id: What is the call number or direct link URL to the OskiCat record of an item of interest?
+      reference_card_form:
+        name: Full Name
+        email: Email address
+        affiliation: Institutional affiliation
+        research_desc: Brief description of research materials in Main (Gardner) Stacks that are of interest
+        local_id: OskiCat record link or call number for an item of interest
       scan_request_form:
         opt_in_true: Opt in. I confirm I qualify for this service.
         opt_in_false: Opt out. I wish to terminate use of this service.
@@ -67,6 +73,7 @@ en:
       scan_request_form: Faculty Alt-Media Scanning
       affiliate_borrow_request_form: UCB Library Resources for Select Affiliate Staff
       stack_pass_form: Stack Pass Request Form
+      reference_card_form: Reference Card Form
 
   doemoff_study_room_use_forms:
     all_checked:
@@ -98,6 +105,8 @@ en:
       galc_request_form:
         create: Submit
       stack_pass_form:
+        create: Submit
+      reference_card_form:
         create: Submit
 
   libstaff_edevices_loan_forms:
@@ -185,7 +194,14 @@ en:
       page_title: Stack Pass Request Form
     create:
       recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
-      success: Request successfully submitted to %{department_head_email}.
+      success: Request successfully submitted.
+
+  reference_card_forms:
+    new:
+      page_title: Reference Card Request Form
+    create:
+      recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
+      success: Request successfully submitted.
 
   stack_pass_admin:
     admin:

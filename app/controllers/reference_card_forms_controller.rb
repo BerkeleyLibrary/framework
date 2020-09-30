@@ -1,6 +1,6 @@
 require 'time'
 
-class StackPassFormsController < ApplicationController
+class ReferenceCardFormsController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
   before_action :init_form!
 
@@ -21,7 +21,8 @@ class StackPassFormsController < ApplicationController
     validate_recaptcha!
 
     # Need to gab and convert the date:
-    @form.pass_date = convert_date_param unless params[:stack_pass_form][:pass_date].blank?
+    @form.pass_date = datestr_to_date(params[:reference_card_form][:pass_date]) unless params[:reference_card_form][:pass_date].blank?
+    @form.pass_date_end = datestr_to_date(params[:reference_card_form][:pass_date_end]) unless params[:reference_card_form][:pass_date_end].blank?
 
     if @form.save
       @form.submit!
@@ -36,14 +37,12 @@ class StackPassFormsController < ApplicationController
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-  # Show an admin the request
+  # Show the request
   def show
     admin?
     @current_user = current_user
-    @req = StackPassForm.find(params[:id])
-
-    @approvals = @req.approval_count
-    @denials = @req.denial_count
+    @req = ReferenceCardForm.find(params[:id])
+    @days_approved = @req.days_approved
   end
 
   # Approve || Deny Request
@@ -51,12 +50,14 @@ class StackPassFormsController < ApplicationController
   def update
     admin?
 
-    @form = StackPassForm.find(params[:id])
+    @form = ReferenceCardForm.find(params[:id])
     @form.approvedeny = params[:stack_pass_][:approve_deny]
     @form.processed_by = params[:processed_by]
 
     if @form.approvedeny == false
-      @form.denial_reason = params[:denial_reason]
+      deny_reason = params[:denial_reason]
+      deny_reason = params[:stack_pass_denial][:denial_reason] if deny_reason.empty?
+      @form.denial_reason = deny_reason
       @form.deny!
     else
       @form.approve!
@@ -71,28 +72,28 @@ class StackPassFormsController < ApplicationController
 
   private
 
-  def convert_date_param
+  def datestr_to_date(str)
     # Try to handle mm/dd/yy:
-    if (date_param = params[:stack_pass_form][:pass_date].match(%r{^(\d+/\d+/)(\d{2})$}))
-      params[:stack_pass_form][:pass_date] = date_param[1] + '20' + date_param[2]
+    if (date_param = str.match(%r{^(\d+/\d+/)(\d{2})$}))
+      str = date_param[1] + '20' + date_param[2]
     end
 
     begin
       # Try to convert the string date to a date obj:
-      Date.strptime(params[:stack_pass_form][:pass_date], '%m/%d/%Y')
+      Date.strptime(str, '%m/%d/%Y')
     rescue ArgumentError
       # If bad argument set to nil:
     end
   end
 
   def form_params
-    params.require(:stack_pass_form).permit(:name, :email, :phone, :local_id, :main_stack, :pass_date)
+    params.require(:reference_card_form).permit(:name, :email, :affiliation, :local_id, :research_desc, :pass_date, :pass_date_end)
   rescue ActionController::ParameterMissing
     {}
   end
 
   def init_form!
-    @form = StackPassForm.new
+    @form = ReferenceCardForm.new
     return if form_params.empty?
 
     @form.attributes = form_params

@@ -108,8 +108,13 @@ describe 'Stack Pass Form', type: :request do
       expect(response.status).to eq 200
     end
 
-    it 'Admin View DB page renders' do
-      get forms_stack_pass_admin_requests_path
+    it 'Stack Pass views page renders' do
+      get forms_stack_pass_admin_stack_passes_path
+      expect(response.status).to eq 200
+    end
+
+    it 'Reference Card views page renders' do
+      get forms_stack_pass_admin_reference_cards_path
       expect(response.status).to eq 200
     end
 

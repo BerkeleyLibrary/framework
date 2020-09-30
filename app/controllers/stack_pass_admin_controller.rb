@@ -6,8 +6,12 @@ class StackPassAdminController < AuthenticatedFormController
 
   def admin; end
 
-  def requests
-    @requests = StackRequest.all.order(sort_column + ' ' + sort_direction)
+  def stackpasses
+    @requests = StackPassForm.all.order(sort_column + ' ' + sort_direction)
+  end
+
+  def refcards
+    @requests = ReferenceCardForm.all.order(sort_column + ' ' + sort_direction)
   end
 
   def users

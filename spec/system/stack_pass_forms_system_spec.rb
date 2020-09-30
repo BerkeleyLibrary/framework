@@ -51,7 +51,7 @@ describe :stack_pass_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page).to have_content('Your request for a Stack Pass has been submitted')
+      expect(page).to have_content('The Pass Date must not be blank and must be in the format mm/dd/yyyy')
     end
 
     it 'fails a request with a bad email address' do
@@ -74,7 +74,7 @@ describe :stack_pass_form, type: :system do
 
     before(:each) do
       # Clear the way:
-      StackPassForm.delete_all
+      StackRequest.delete_all
 
       # Create some requests:
       StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',

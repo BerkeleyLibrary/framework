@@ -17,13 +17,9 @@ Rails.application.routes.draw do
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'
     resources :galc_request_forms, path: 'galc-agreement'
     resources :proxy_borrower_forms, path: 'proxy-borrower', only: [:index]
-    # TO BE DELETED:
     resources :stack_requests, path: 'stack-requests', only: [:index]
-    # REPLACING ABOVE:
     resources :stack_pass_forms, path: 'stack-pass'
-
-    # Coming soon!!!
-    # resources :reference_card_forms, path: 'reference-card'
+    resources :reference_card_forms, path: 'reference-card'
   end
 
   # Proxy Borrower Admin Routes:
@@ -38,7 +34,8 @@ Rails.application.routes.draw do
 
   # Stack Pass Admin Routes:
   get '/forms/stack-pass-admin/', to: 'stack_pass_admin#admin'
-  get '/forms/stack-pass-admin/requests', to: 'stack_pass_admin#requests'
+  get '/forms/stack-pass-admin/stack-passes', to: 'stack_pass_admin#stackpasses'
+  get '/forms/stack-pass-admin/reference-cards', to: 'stack_pass_admin#refcards'
   get '/forms/stack-pass-admin/users', to: 'stack_pass_admin#users'
   post '/forms/stack-pass-admin/add_user', to: 'stack_pass_admin#add_user'
   delete '/forms/stack-pass-admin/delete_user/:id(.:format)', to: 'stack_pass_admin#destroy_user', as: :forms_stack_pass_delete_user

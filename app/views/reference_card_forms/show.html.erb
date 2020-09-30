@@ -1,10 +1,10 @@
 <span class="flex-heading">
-  <h1 class="inline-title">Stack Pass Approval</h1>
-  <%= link_to 'Stack Pass Requests',  forms_stack_pass_admin_requests_path, class: "title-link text-nowrap" %>
+  <h1 class="inline-title">Reference Card Approval</h1>
+  <%= link_to 'Stack Pass Administration',  forms_stack_pass_admin_path, class: "title-link text-nowrap" %>
 </span>
 <% if @req.approvedeny == nil && @req.denial_reason == nil %>
   <%= form_for(@form, :url=> {:action => "update"}, :method => "patch", class: 'needs-validation') do |f| %>
-    <h3>This request needs to be processed.</h3>
+    <h3>This Reference Card request needs to be processed.</h3>
     <div class="frame" style="border: 1px solid black; padding: 1.5rem">
       <h5>Details about the request</h3>
       <table width="100%">
@@ -17,24 +17,28 @@
           <td><%= @req.name %></td>
         </tr>
         <tr>
-          <td>Telephone:</td>
-          <td><%= @req.phone %></td>
+          <td>Affiliation:</td>
+          <td><%= @req.affiliation %></td>
         </tr>
         <tr>
-          <td>Catalog information:</td>
+          <td>LocalID:</td>
           <td><%= @req.local_id %></td>
         </tr>
         <tr>
-          <td>Pass date:</td>
+          <td>Description:</td>
+          <td><%= @req.research_desc %></td>
+        </tr>
+        <tr>
+          <td>Start Date:</td>
           <td><%= @req.pass_date.strftime("%m/%d/%Y") %></td>
         </tr>
         <tr>
-          <td>Passes requested and approved:</td>
-          <td><%= @approvals %></td>
+          <td>End Date:</td>
+          <td><%= @req.pass_date_end.strftime("%m/%d/%Y") %></td>
         </tr>
         <tr>
-          <td>Passes requested and denied:</td>
-          <td><%= @denials %></td>
+          <td>Total days requested and approved:</td>
+          <td><%= @days_approved %></td>
         </tr>
       </table>
     </div>
@@ -42,23 +46,12 @@
     <div class="form-group m-0 required">
       <fieldset class="form-group m-0 p-0">
         <div class="mb-4 form-group">
-          <%= radio_button_tag(:stack_pass_approve_deny, 1, false, id: 'stack_pass_approve', name: 'stack_pass_[approve_deny]', onchange: 'toggleDisable("process_btn", false), toggleBlock("stack_pass_denial_denial_reason", false)') %>
+          <%= radio_button_tag(:stack_pass_approve_deny, 1, false, id: 'stack_pass_approve', name: 'stack_pass_[approve_deny]', onchange: 'sp_proccess_check()') %>
           <%= label_tag(:stack_pass_approve_deny_0, "Approve") %>
           <br />
-          <!---->
-          <!---->
-          <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'toggleBlock("stack_pass_denial_denial_reason", true)') %>
+          <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'sp_proccess_check()') %>
           <%= label_tag(:stack_pass_form_main_stack_1, "Deny") %>
           <!-- DENIAL REASON SELECT -->
-          <!--
-          Needs the folowing logic for process request button:
-           if "approve" selected - enable
-           if deny + [drop down] not selected - disable
-           if deny + [other] + empty denial reason - disable
-           if deny + [any of first 3 items] - enable
-           -->
-          <!-- TODO : Fix dropdown -->
-          <!-- TODO : Fix dropdown -->
           <%= select(:stack_pass_denial, 
             'denial_reason', 
             ['Item listed at another library', 
@@ -67,17 +60,12 @@
              'Other'], 
             {prompt: 'Select reason for denial'},
             {:class => 'custom-select custom-select-sm col-md-4',
-             :onchange => 'handleDenialSelect()',
+             :onchange => 'sp_proccess_check()',
              :style => 'display: none'}) %> <br />
-          <!-- TODO : Fix dropdown -->
-          <!-- TODO : Fix dropdown -->
-          <!-- TODO : Fix dropdown -->
           <div id="other_denial" class="mt-2 mb-4 form-group" style="display: none">
             <%= label_tag(:denial_reason, "Denial Reason:", class: "control-label") %> <br />
-            <%= text_field_tag(:denial_reason, '', placeholder: "Enter the reason for denial...", class: "form-control") %>
+            <%= text_field_tag(:denial_reason, '', placeholder: "Enter the reason for denial...", class: "form-control", onkeyup: 'sp_proccess_check()') %>
           </div>
-          <!---->
-          <!---->
         </div>
       </fieldset>
     </div>
@@ -103,28 +91,32 @@
         <td><%= @req.name %></td>
       </tr>
       <tr>
-        <td>Telephone:</td>
-        <td><%= @req.phone %></td>
+        <td>Affiliation:</td>
+        <td><%= @req.affiliation %></td>
       </tr>
       <tr>
-        <td>Catalog information:</td>
+        <td>LocalID:</td>
         <td><%= @req.local_id %></td>
       </tr>
       <tr>
-        <td>Pass date:</td>
+        <td>Description:</td>
+        <td><%= @req.research_desc %></td>
+      </tr>
+      <tr>
+        <td>Pass Date:</td>
         <td><%= @req.pass_date.strftime("%m/%d/%Y") %></td>
       </tr>
       <tr>
-        <td>Passes requested and approved:</td>
-        <td><%= @approvals %></td>
+        <td>End Date:</td>
+        <td><%= @req.pass_date_end.strftime("%m/%d/%Y") %></td>
       </tr>
       <tr>
-        <td>Passes requested and denied:</td>
-        <td><%= @denials %></td>
+        <td>Total days requested and approved:</td>
+        <td><%= @days_approved %></td>
       </tr>
       <tr>
         <td>Status:</td>
-        <td><%= @req.status ? "Approved" : "Denied" %></td>
+        <td><%= @req.approvedeny ? "Approved" : "Denied" %></td>
       </tr>
       <tr>
         <td>Denied Reason:</td>
