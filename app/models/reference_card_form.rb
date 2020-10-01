@@ -39,19 +39,11 @@ class ReferenceCardForm < StackRequest
   end
 
   def valid_start_date
-    if pass_date.present?
-      errors.add(:pass_date, 'The Start Date must not be in the past') if pass_date.past?
-    else
-      errors.add(:pass_date, 'The Start Date must not be blank and must be in the format mm/dd/yyyy')
-    end
+    errors.add(:pass_date, 'The Start Date must not be blank and must be in the format mm/dd/yyyy') unless pass_date.present?
   end
 
   def valid_end_date
-    if pass_date_end.present?
-      errors.add(:pass_date_end, 'The End Date must not be in the past') if pass_date_end.past?
-    else
-      errors.add(:pass_date_end, 'The End Date must not be blank and must be in the format mm/dd/yyyy')
-    end
+    errors.add(:pass_date_end, 'The End Date must not be blank and must be in the format mm/dd/yyyy') unless pass_date_end.present?
   end
 
 end

@@ -149,7 +149,7 @@ class RequestMailer < ApplicationMailer
     # To write the pdf to a local file uncomment the following line:
     # pdf.render_file('approval_pass.pdf')
 
-    attachments[pdf]
+    attachments['approval.pdf'] = pdf.render
     mail(to: stackpass_form.email)
   end
 
@@ -173,7 +173,7 @@ class RequestMailer < ApplicationMailer
     # To write the pdf to a local file uncomment the following line:
     # pdf.render_file('approval_pass.pdf')
 
-    attachments[pdf]
+    attachments['approval.pdf'] = pdf.render
     mail(to: reference_card_form.email)
   end
 
@@ -195,6 +195,8 @@ class RequestMailer < ApplicationMailer
     pdf.text "Approved by: #{stackpass_form.processed_by}", align: :center
     pdf.move_down 10
     pdf.text 'University of California, Berkeley Library'
+
+    pdf
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
@@ -215,6 +217,8 @@ class RequestMailer < ApplicationMailer
     pdf.text "Approved by: #{refcard_form.processed_by}", align: :center
     pdf.move_down 10
     pdf.text 'University of California, Berkeley Library'
+
+    pdf
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
