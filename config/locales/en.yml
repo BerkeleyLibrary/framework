@@ -31,7 +31,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  activemodel:
+  activerecord:
     attributes:
       stack_pass_form:
         name: Full Name
@@ -42,10 +42,12 @@ en:
         local_id: What is the call number or direct link URL to the OskiCat record of an item of interest?
       reference_card_form:
         name: Full Name
-        email: Email address
-        affiliation: Institutional affiliation
+        email: Email Address
+        affiliation: Institutional Affiliation
         research_desc: Brief description of research materials in Main (Gardner) Stacks that are of interest
         local_id: OskiCat record link or call number for an item of interest
+  activemodel:
+    attributes:
       scan_request_form:
         opt_in_true: Opt in. I confirm I qualify for this service.
         opt_in_false: Opt out. I wish to terminate use of this service.
