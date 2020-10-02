@@ -56,7 +56,9 @@ class StackPassFormsController < ApplicationController
     @form.processed_by = params[:processed_by]
 
     if @form.approvedeny == false
-      @form.denial_reason = params[:denial_reason]
+      deny_reason = params[:denial_reason]
+      deny_reason = params[:stack_pass_denial][:denial_reason] if deny_reason.empty?
+      @form.denial_reason = deny_reason
       @form.deny!
     else
       @form.approve!
