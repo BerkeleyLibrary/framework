@@ -132,13 +132,13 @@ class RequestMailer < ApplicationMailer
   # Send Stack Pass Request Alert to privdesk
   def stack_pass_email(stackpass_form)
     @stackpass_form = stackpass_form
-    mail(to: privdesk_to)
+    mail(to: privdesk_to, subject: 'Stack Pass Request')
   end
 
   # Send Stack Pass Denial to requester
   def stack_pass_denied(stackpass_form)
     @stackpass_form = stackpass_form
-    mail(to: @stackpass_form.email)
+    mail(to: @stackpass_form.email, subject: 'Stack Pass Request - Denied')
   end
 
   # Send Stack Pass Approval to requester
@@ -150,19 +150,19 @@ class RequestMailer < ApplicationMailer
     # pdf.render_file('approval_pass.pdf')
 
     attachments['approval.pdf'] = pdf.render
-    mail(to: stackpass_form.email)
+    mail(to: stackpass_form.email, subject: 'Stack Pass Request - Approved')
   end
 
   # Send Reference Card Request Alert to privdesk
   def reference_card_email(reference_card_form)
     @reference_card_form = reference_card_form
-    mail(to: privdesk_to)
+    mail(to: privdesk_to, subject: 'Reference Card Request')
   end
 
   # Send Reference Card Denial to requester
   def reference_card_denied(reference_card_form)
     @reference_card_form = reference_card_form
-    mail(to: @reference_card_form.email)
+    mail(to: @reference_card_form.email, subject: 'Reference Card Request - Denied')
   end
 
   # Send Reference Card Approval to requester
@@ -174,7 +174,7 @@ class RequestMailer < ApplicationMailer
     # pdf.render_file('approval_pass.pdf')
 
     attachments['approval.pdf'] = pdf.render
-    mail(to: reference_card_form.email)
+    mail(to: reference_card_form.email, subject: 'Reference Card Request - Approved')
   end
 
   private
@@ -184,7 +184,7 @@ class RequestMailer < ApplicationMailer
     pdf = Prawn::Document.new
     pdf.move_down 10
     pdf.font_size 24
-    pdf.text 'Gardner (MAIN) Stack Pass Approval', align: :center
+    pdf.text 'Main (Gardner) Stack Pass Approval', align: :center
     pdf.move_down 10
     pdf.font_size 12
     pdf.text 'Print out this Stack Pass or save it to your phone and bring it to the Doe Library,
@@ -205,7 +205,7 @@ class RequestMailer < ApplicationMailer
     pdf = Prawn::Document.new
     pdf.move_down 10
     pdf.font_size 24
-    pdf.text 'Gardner (MAIN) Stack Reference Card Approval', align: :center
+    pdf.text 'Main (Gardner) Stack Reference Card Approval', align: :center
     pdf.move_down 10
     pdf.font_size 12
     pdf.text 'Print out or save this approval document to your phone and bring it to the Privileges

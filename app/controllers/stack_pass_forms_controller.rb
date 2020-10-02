@@ -107,7 +107,11 @@ class StackPassFormsController < ApplicationController
     if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
       @user_role = 'Admin'
     else
-      render 'forbidden', status: 201
+      # If we want a forbidden page:
+      # render 'forbidden', status: 201
+
+      # Else we can go to the login page:
+      redirect_to login_path(url: request.fullpath)
     end
   end
 end

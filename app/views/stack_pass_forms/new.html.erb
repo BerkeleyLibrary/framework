@@ -1,11 +1,11 @@
 <%= form_for(@form, class: 'needs-validation') do |f| %>
   <h1>Request for Access to Main (Gardner) Stacks</h1>
-  <p>The Stacks are open to those with a current University of California ID, UC Berkeley Library Card or Stanford ID. Scholars and the general public with no such affiliation who have a research need for materials with the location MAIN (Gardner) Stacks in our catalogs must acquire a stacks access pass. Requests for same-day access or for access at a future date, no more than 7 days in the future, can be made using the form below. Requests for longer-term access can be made in person at the Privileges Desk or via the Main Stacks Reference Card Request form [link to form].</p>
+  <p>The Stacks are open to those with a current University of California ID, UC Berkeley Library Card or Stanford ID. Scholars and the general public with no such affiliation who have a research need for materials with the location MAIN (Gardner) Stacks in our catalogs must acquire a stacks access pass. Requests for same-day access or for access at a future date, no more than 7 days in the future, can be made using the form below. Requests for longer-term access can be made in person at the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/using-the-libraries/privileges-desk' %> or via the <%= link_to 'Main Stacks Reference Card Request form', new_reference_card_form_path %>.</p>
   <p>Permission for stack access is not automatic. You do not have permission unless you receive a positive reply from us. Access is not granted for studying, browsing, visiting with friends or family, or using the computers. A current government-issued photo ID is required to access the Stacks; no one under the age of eighteen (18) will be allowed to utilize the collection independently.</p>
   <ul>
-    <li>For same-day access, Monday-Friday, your request must be submitted by 10 AM. To visit the Stacks Saturday or Sunday, your request must be made by 2 PM on the previous Friday.</li>
-    <li>If your request is approved, you will receive your pass as an email attachment. You must print this out before coming to the Library -- our Library computers only provide access to email hosted on a .edu, .gov, or .org domain.</li>
-    <li>You must fill out the form completely.</li>
+    <li>For <strong>same-day</strong> access, Monday-Friday, your request must be submitted by 10 AM. To visit the Stacks Saturday or Sunday, your request must be made by 2 PM on the previous Friday.</li>
+    <li>If your request is approved, you will receive your pass as an email attachment. <strong>You may print out the pass before coming to the Library or you may save the pass to your phone</strong>. Library computers only provide access to email hosted on a .edu, .gov, or .org domain.</li>
+    <li>You must fill out the form <strong>completely</strong>.</li>
   </ul>
   <!-- FORM START -->
   <p style="color: #ee0000">* Required</p>
@@ -30,7 +30,7 @@
   <!---->
   <div id="main_stack_warn" style="display:none;">
     <fieldset style="padding: 1rem; border-radius: 10pt; border: 1pt black solid; background-color: lightgrey;">
-      Passes are only for the Gardner (MAIN) Stacks. Please consult <%= link_to 'reference', 'https://ucberkeley.libanswers.com/' %> staff about your research need.
+      <strong>Passes are only for the Main (Gardner) Stacks. Please consult <%= link_to 'reference', 'https://ucberkeley.libanswers.com/' %> staff about your research need.</strong>
     </fieldset>
     <br />
   </div>

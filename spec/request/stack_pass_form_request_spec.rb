@@ -30,7 +30,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'renders forbidden page if user is not a stack pass admin' do
       get stack_pass_form_path(id: 1)
-      expect(response.body).to include('<h1>Forbidden</h1>')
+      expect(response.body).to include('redirected')
     end
 
     it 'rejects a submission with a captcha verification error' do

@@ -108,7 +108,7 @@ class ReferenceCardFormsController < ApplicationController
     if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
       @user_role = 'Admin'
     else
-      render 'forbidden', status: 201
+      redirect_to login_path(url: request.fullpath)
     end
   end
 end
