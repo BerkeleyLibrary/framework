@@ -14,11 +14,11 @@ class StackPassForm < StackRequest
   end
 
   def approval_count
-    StackPassForm.where(email: email, approvedeny: true).count
+    StackPassForm.where('email = ? AND approvedeny = ? AND pass_date >= ?', email, true, start_school_year).count
   end
 
   def denial_count
-    StackPassForm.where(email: email, approvedeny: false).count
+    StackPassForm.where('email = ? AND approvedeny = ? AND pass_date >= ?', email, false, start_school_year).count
   end
 
   private
