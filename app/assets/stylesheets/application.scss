@@ -52,6 +52,10 @@ a:hover, a:active, a:focus {
   box-shadow: none !important;
 }
 
+.btn-link {
+  color: #1310ff;
+}
+
 .btn-link:hover {
   text-decoration: none;
 }
@@ -95,4 +99,10 @@ th .desc::after {
   content: "▼";
   padding-left: 3px;
   color: gray;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color:  #1310ff;
+  border-color: #0f0cd4 ;
 }
