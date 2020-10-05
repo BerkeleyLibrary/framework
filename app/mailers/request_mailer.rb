@@ -138,7 +138,7 @@ class RequestMailer < ApplicationMailer
   # Send Stack Pass Denial to requester
   def stack_pass_denied(stackpass_form)
     @stackpass_form = stackpass_form
-    mail(to: @stackpass_form.email, from: 'privdesk@library.berkeley.edu',  subject: 'Stack Pass Request - Denied')
+    mail(to: @stackpass_form.email, from: 'privdesk@library.berkeley.edu', subject: 'Stack Pass Request - Denied')
   end
 
   # Send Stack Pass Approval to requester
