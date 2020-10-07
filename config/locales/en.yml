@@ -46,6 +46,8 @@ en:
         affiliation: Institutional Affiliation
         research_desc: Brief description of research materials in Main (Gardner) Stacks that are of interest
         local_id: OskiCat record link or call number for an item of interest
+        pass_date: Requested access start date
+        pass_date_end: Requested access end date
   activemodel:
     attributes:
       scan_request_form:

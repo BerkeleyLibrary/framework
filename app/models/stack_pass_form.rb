@@ -1,5 +1,5 @@
 class StackPassForm < StackRequest
-  validate :valid_dates
+  validate :date_check
 
   def submit!
     RequestMailer.stack_pass_email(self).deliver_now
@@ -23,11 +23,16 @@ class StackPassForm < StackRequest
 
   private
 
-  def valid_dates
-    if pass_date.present?
-      errors.add(:pass_date, 'The Pass Date must not be in the past') if pass_date.past?
+  def date_check
+    date_entered = pass_date || nil
+    max_date = Date.today + 7
+    today = Date.today
+
+    if date_entered
+      errors.add(:pass_date, 'The date must not be in the past') if date_entered < today
+      errors.add(:pass_date, 'The date must be within 7 days of today') if date_entered > max_date
     else
-      errors.add(:pass_date, 'The Pass Date must not be blank and must be in the format mm/dd/yyyy')
+      errors.add(:pass_date, 'The date must not be blank and must be in the format mm/dd/yyyy')
     end
   end
 

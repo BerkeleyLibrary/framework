@@ -16,6 +16,14 @@ class ReferenceCardFormsController < ApplicationController
 
   def result; end
 
+  # Show the request
+  def show
+    admin?
+    @current_user = current_user
+    @req = ReferenceCardForm.find(params[:id])
+    @days_approved = @req.days_approved
+  end
+
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def create
     validate_recaptcha!
@@ -28,25 +36,15 @@ class ReferenceCardFormsController < ApplicationController
       @form.submit!
       render 'result', status: 201
     else
-      flash[:danger] = "Error : #{@form.errors.messages}"
+      flash[:danger] = @form.errors.to_a
       redirect_with_params(action: :new)
     end
   rescue Recaptcha::RecaptchaError
     flash[:danger] = t('.recaptcha')
     redirect_with_params(action: :new)
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-
-  # Show the request
-  def show
-    admin?
-    @current_user = current_user
-    @req = ReferenceCardForm.find(params[:id])
-    @days_approved = @req.days_approved
-  end
 
   # Approve || Deny Request
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def update
     admin?
 
@@ -73,6 +71,8 @@ class ReferenceCardFormsController < ApplicationController
   private
 
   def datestr_to_date(str)
+    return unless str.split('/').length == 3
+
     # Try to handle mm/dd/yy:
     if (date_param = str.match(%r{^(\d+/\d+/)(\d{2})$}))
       str = date_param[1] + '20' + date_param[2]

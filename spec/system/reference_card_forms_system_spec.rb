@@ -53,7 +53,23 @@ describe :reference_card_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page).to have_content('The Start Date must not be blank and must be in the format mm/dd/yyyy')
+      expect(page).to have_content('Requested access start date must not be blank and must be in the format mm/dd/yyyy')
+    end
+
+    it 'fails a request with an bad date' do
+      visit new_reference_card_form_path
+      fill_in('reference_card_form_name', with: 'John Doe')
+      fill_in('reference_card_form_affiliation', with: 'Red Bull')
+      fill_in('reference_card_form_email', with: 'jdoe@library.edu')
+      fill_in('reference_card_form_research_desc', with: 'History of Formula 1')
+      fill_in('reference_card_form_pass_date', with: '00/00/0000')
+      fill_in('reference_card_form_pass_date_end', with: '04/14/20zz')
+      fill_in('reference_card_form_local_id', with: '123456789')
+
+      submit_button = find(:xpath, "//input[@type='submit']")
+      submit_button.click
+
+      expect(page).to have_content('Requested access start date must not be blank and must be in the format mm/dd/yyyy')
     end
 
     it 'fails a request with a bad email address' do
