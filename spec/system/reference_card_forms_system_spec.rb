@@ -109,7 +109,7 @@ describe :reference_card_form, type: :system do
     it 'allows an admin to deny a request' do
       # Fill in the fields:
       choose('stack_pass_deny')
-      select('Too many Reference cards requested', from: 'stack_pass_denial_denial_reason', visible: :all)
+      select('3-month maximum exceeded', from: 'stack_pass_denial_denial_reason', visible: :all)
       fill_in('processed_by', with: 'ADMIN USER')
 
       # Submit:

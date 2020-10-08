@@ -64,7 +64,7 @@ class StackPassAdminController < AuthenticatedFormController
 
   def sort_direction
     # only allow asc||desc for direction param
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : 'desc'
   end
 
   def start_school_year

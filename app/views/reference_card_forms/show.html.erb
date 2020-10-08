@@ -21,7 +21,7 @@
           <td><%= @req.affiliation %></td>
         </tr>
         <tr>
-          <td>LocalID:</td>
+          <td>Catalog Information:</td>
           <td><%= @req.local_id %></td>
         </tr>
         <tr>
@@ -55,7 +55,7 @@
           <%= select(:stack_pass_denial, 
             'denial_reason', 
             ['Item listed at another library', 
-             'Too many Reference cards requested', 
+             '3-month maximum exceeded', 
              'Item at NRLF',
              'Other'], 
             {prompt: 'Select reason for denial'},

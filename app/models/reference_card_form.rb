@@ -31,9 +31,12 @@ class ReferenceCardForm < StackRequest
     date_start = pass_date || nil
     date_end = pass_date_end || nil
 
+    min_date = Date.today
+    min_date = created_at.to_date if created_at
+
     if date_start && date_end
       num_req = + (date_end - date_start).to_i + 1
-      errors.add(:pass_date, 'must not be in the past') if date_start < Date.today
+      errors.add(:pass_date, 'must not be in the past') if date_start < min_date
       errors.add(:pass_date_end, 'must not precede access start date') if date_start > date_end
       errors.add(:pass_date_end, 'cannot be more than 3 months from the start date') if num_req > 91
     else

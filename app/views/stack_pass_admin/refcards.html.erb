@@ -1,7 +1,7 @@
 <!-- Header and Admin Link -->
 <span class="flex-heading">
   <span>
-    <h1 class="inline-title">All Stack Pass Requests:</h1>
+    <h1 class="inline-title">All Reference Card Requests:</h1>
   </span>
   <span>
     <%= link_to 'Admin Home', 
@@ -16,7 +16,9 @@
       <th scope="col" style="text-align: center">Link</th>
       <th scope="col"><%= sortable "name", "Name" %></th>
       <th scope="col"><%= sortable "email", "Email" %></th>
-      <th scope="col"><%= sortable "pass_date", "Pass Date" %></th>
+      <th scope="col"><%= sortable "pass_date", "Start Date" %></th>
+      <th scope="col"><%= sortable "pass_date_end", "End Date" %></th>
+      <th scope="col"># of Days</th>
       <th scope="col"><%= sortable "approvedeny", "Status" %></th>
       <th scope="col"><%= sortable "created_at", "Request Date" %></th>
     </tr>
@@ -31,6 +33,10 @@
         <td><%= r.name %></td>
         <td><%= r.email %></td>
         <td><%= r.pass_date.strftime("%m/%d/%Y") %></td>
+        <td><%= r.pass_date_end.strftime("%m/%d/%Y") %></td>
+        <!-- Calculate the number of days requested -->
+        <td style="text-align: center"><%= (r.pass_date_end - r.pass_date).to_i + 1 %></td>
+        <!-- Convert the status from nil, true, false to unprocessed, approved, denied -->
         <% if r.approvedeny.nil? %>
           <td>Unprocessed</td>
         <% elsif r.approvedeny == true %>
