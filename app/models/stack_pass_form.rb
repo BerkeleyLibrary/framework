@@ -23,17 +23,21 @@ class StackPassForm < StackRequest
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def date_check
     date_entered = pass_date || nil
     max_date = Date.today + 7
-    today = Date.today
+
+    min_date = Date.today
+    min_date = created_at.to_date if created_at
 
     if date_entered
-      errors.add(:pass_date, 'The date must not be in the past') if date_entered < today
+      errors.add(:pass_date, 'The date must not be in the past') if date_entered < min_date
       errors.add(:pass_date, 'The date must be within 7 days of today') if date_entered > max_date
     else
       errors.add(:pass_date, 'The date must not be blank and must be in the format mm/dd/yyyy')
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
 end
