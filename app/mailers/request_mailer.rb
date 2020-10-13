@@ -2,6 +2,8 @@ require 'prawn'
 
 # rubocop:disable Metrics/ClassLength
 class RequestMailer < ApplicationMailer
+  default from: 'privdesk@library.berkeley.edu'
+
   # Sends the AffiliateBorrowRequestForm
   def affiliate_borrow_request_form_email(borrow_request)
     @borrow_request = borrow_request
@@ -138,7 +140,7 @@ class RequestMailer < ApplicationMailer
   # Send Stack Pass Denial to requester
   def stack_pass_denied(stackpass_form)
     @stackpass_form = stackpass_form
-    mail(to: @stackpass_form.email, from: 'privdesk@library.berkeley.edu', subject: 'Stack Pass Request - Denied')
+    mail(to: @stackpass_form.email, subject: 'Stack Pass Request - Denied')
   end
 
   # Send Stack Pass Approval to requester
@@ -150,7 +152,7 @@ class RequestMailer < ApplicationMailer
     # pdf.render_file('approval_pass.pdf')
 
     attachments['approval.pdf'] = pdf.render
-    mail(to: stackpass_form.email, from: 'privdesk@library.berkeley.edu', subject: 'Stack Pass Request - Approved')
+    mail(to: stackpass_form.email, subject: 'Stack Pass Request - Approved')
   end
 
   # Send Reference Card Request Alert to privdesk
@@ -162,7 +164,7 @@ class RequestMailer < ApplicationMailer
   # Send Reference Card Denial to requester
   def reference_card_denied(reference_card_form)
     @reference_card_form = reference_card_form
-    mail(to: @reference_card_form.email, from: 'privdesk@library.berkeley.edu', subject: 'Reference Card Request - Denied')
+    mail(to: @reference_card_form.email, subject: 'Reference Card Request - Denied')
   end
 
   # Send Reference Card Approval to requester
@@ -174,7 +176,7 @@ class RequestMailer < ApplicationMailer
     # pdf.render_file('approval_pass.pdf')
 
     attachments['approval.pdf'] = pdf.render
-    mail(to: reference_card_form.email, from: 'privdesk@library.berkeley.edu', subject: 'Reference Card Request - Approved')
+    mail(to: reference_card_form.email, subject: 'Reference Card Request - Approved')
   end
 
   private
