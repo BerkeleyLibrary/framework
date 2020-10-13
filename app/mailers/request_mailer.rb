@@ -2,7 +2,6 @@ require 'prawn'
 
 # rubocop:disable Metrics/ClassLength
 class RequestMailer < ApplicationMailer
-  default from: 'privdesk@library.berkeley.edu'
 
   # Sends the AffiliateBorrowRequestForm
   def affiliate_borrow_request_form_email(borrow_request)
