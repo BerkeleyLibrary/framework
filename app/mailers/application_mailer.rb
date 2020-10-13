@@ -1,6 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  # default from: 'lib-noreply@berkeley.edu'
-  default from: 'privdesk@library.berkeley.edu'
+  default from: 'lib-noreply@berkeley.edu'
 
   private
 
