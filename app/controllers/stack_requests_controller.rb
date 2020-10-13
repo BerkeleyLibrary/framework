@@ -1,6 +1,4 @@
 require 'time'
-# Start here tomorrow.... need to setup separate controllers (I THINK) for
-# the two different sub models (stack_pass and reference_card)
 
 class StackRequestsController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
