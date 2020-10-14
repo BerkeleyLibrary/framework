@@ -39,16 +39,13 @@
       </fieldset>
     </div>
   <% end %>
-  <!---->
-  <!---->
+  <!-- Only display this note if user selects no above -->
   <div id="main_stack_warn" style="display:none;">
     <fieldset style="padding: 1rem; border-radius: 10pt; border: 1pt black solid; background-color: lightgrey;">
       <strong>Passes are only for the Main (Gardner) Stacks. Please consult <%= link_to 'reference', 'https://ucberkeley.libanswers.com/' %> staff about your research need.</strong>
     </fieldset>
     <br />
   </div>
-  <!---->
-  <!---->
   <!-- pass_date : Stack Pass Access Date -->
   <div class="form-group m-0 required">
     <%= label_tag(:stack_pass_form_pass_date, "On which day do you need access to the Main (Gardner) Stacks?", class: "control-label mb-2") %>
