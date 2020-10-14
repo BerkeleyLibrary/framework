@@ -75,8 +75,6 @@ class StackPassFormsController < ApplicationController
 
   private
 
-  # TODO: MONDAY:
-  # Need some additional date validation here!!!
   def convert_date_param
     # Try to handle mm/dd/yy:
     if (date_param = params[:stack_pass_form][:pass_date].match(%r{^(\d+/\d+/)(\d{2})$}))

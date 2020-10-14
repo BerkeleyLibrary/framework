@@ -28,7 +28,7 @@ class ReferenceCardFormsController < ApplicationController
   def create
     validate_recaptcha!
 
-    # Need to gab and convert the date:
+    # Need to grab and convert the date:
     @form.pass_date = datestr_to_date(params[:reference_card_form][:pass_date]) unless params[:reference_card_form][:pass_date].blank?
     @form.pass_date_end = datestr_to_date(params[:reference_card_form][:pass_date_end]) unless params[:reference_card_form][:pass_date_end].blank?
 
