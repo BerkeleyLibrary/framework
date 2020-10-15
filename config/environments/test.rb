@@ -49,4 +49,8 @@ Rails.application.configure do
   OmniAuth.config.test_mode = true
 
   config.logger = AltmediaLogger::Logger.new(config.root.join('log/test.log'))
+
+  # Configure the default host - this is used by Stack Pass's mailer, to create a link
+  # back to the application (directly to the approval form for an pass request):
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
 end

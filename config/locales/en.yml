@@ -31,6 +31,23 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    attributes:
+      stack_pass_form:
+        name: Full Name
+        email: Email address
+        phone: Telephone
+        main_stack: Is the item in the Main (Gardner) Stacks?
+        pass_date: On which day do you need access to the Main (Gardner) Stacks?
+        local_id: What is the call number or direct link URL to the OskiCat record of an item of interest?
+      reference_card_form:
+        name: Full Name
+        email: Email Address
+        affiliation: Institutional Affiliation
+        research_desc: Brief description of research materials in Main (Gardner) Stacks that are of interest
+        local_id: OskiCat record link or call number for an item of interest
+        pass_date: Requested access start date
+        pass_date_end: Requested access end date
   activemodel:
     attributes:
       scan_request_form:
@@ -59,6 +76,8 @@ en:
     models:
       scan_request_form: Faculty Alt-Media Scanning
       affiliate_borrow_request_form: UCB Library Resources for Select Affiliate Staff
+      stack_pass_form: Stack Pass Request Form
+      reference_card_form: Reference Card Form
 
   doemoff_study_room_use_forms:
     all_checked:
@@ -88,6 +107,10 @@ en:
       student_edevices_loan_form:
         create: Submit
       galc_request_form:
+        create: Submit
+      stack_pass_form:
+        create: Submit
+      reference_card_form:
         create: Submit
 
   libstaff_edevices_loan_forms:
@@ -121,6 +144,8 @@ en:
       subject: Proxy Borrower Card Request
     proxy_borrower_alert_email:
       subject: Proxy Borrower Card alert email
+    stack_pass_email:
+      subject: Stack Pass Request
 
   scan_request_forms:
     new:
@@ -163,3 +188,29 @@ en:
       page_title: Search the Proxy Borrower Card Database
     admin:
       page_title: Proxy Borrower Card - Administration
+
+  stack_pass_forms:
+    index:
+      page_title: Stack Pass/Reference Card
+    show:
+      page_title: Stack Pass Request
+    new:
+      page_title: Stack Pass Request Form
+    create:
+      recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
+      success: Request successfully submitted.
+
+  reference_card_forms:
+    new:
+      page_title: Reference Card Request Form
+    create:
+      recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
+      success: Request successfully submitted.
+
+  stack_pass_admin:
+    admin:
+      page_title: Stack Pass Administration
+    users:
+      page_title: Add/Edit Administrators
+    requests:
+      page_title: Stack Pass Requests

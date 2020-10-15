@@ -14,6 +14,28 @@ function formshowhide(id) {
 }
 
 /**
+ * Display or hide an element
+ */
+function toggleBlock(id, display) {
+  if (display) {
+    document.getElementById(id).style.display = "block";
+  } else {
+    document.getElementById(id).style.display = "none";
+  }
+}
+
+/**
+ * Disable or enable an element - such as a button
+ */
+function toggleDisable(id, disable) {
+  if (disable) {
+    document.getElementById(id).disabled = true;
+  } else {
+    document.getElementById(id).disabled = false;
+  }
+}
+
+/**
  * hardReset
  * Resets the Proxy Borrower Card DSP and Faculty forms
  * Needed in the event someone submits bad data and we
@@ -37,4 +59,78 @@ function hardReset() {
   if (document.getElementById("dsp_rep")) {
     document.getElementById("dsp_rep").value = "";
   }
+}
+
+/**
+ * Custom Form Reset function
+ * To use add to the if/else if block your form
+ * with a list of your elements and how they should be reset
+ */
+function formReset(form) {
+  if (form === 'stack-pass') {
+    document.getElementById("stack_pass_form_name").value = "";
+    document.getElementById("stack_pass_form_email").value = "";
+    document.getElementById("stack_pass_form_phone").value = "";
+    document.getElementById("stack_pass_form_main_stack_no").checked = false;
+    document.getElementById("stack_pass_form_main_stack_yes").checked = false;
+    toggleBlock("main_stack_warn", false);
+    document.getElementById("stack_pass_form_pass_date").value = "";
+    document.getElementById("stack_pass_form_local_id").value = "";
+  } else if (form === 'reference-card') {
+    document.getElementById("reference_card_form_name").value = "";
+    document.getElementById("reference_card_form_email").value = "";
+    document.getElementById("reference_card_form_affiliation").value = "";
+    document.getElementById("reference_card_form_research_desc").value = "";
+    document.getElementById("reference_card_form_local_id").value = "";
+    document.getElementById("reference_card_form_pass_date").value = "";
+    document.getElementById("reference_card_form_pass_date_end").value = "";
+  }
+
+}
+
+// Stack Pass approve/request page:
+// Control the submit button disable/enable
+function sp_proccess_check() {
+  // Approve/Deny Radio Buttons:
+  radio_approve = document.getElementById("stack_pass_approve").checked;
+  radio_deny = document.getElementById("stack_pass_deny").checked;
+
+  // Denial REason Drop Down/Select:
+  denial_selection = document.getElementById("stack_pass_denial_denial_reason").value;
+
+  // Denial Reason Text Box (for "Other")
+  denial_reason = document.getElementById("denial_reason").value;
+
+  if (radio_approve) {
+    // Approve radio button selected: Enable Submit (hide deny options)
+    toggleDisable("process_btn", false);
+    toggleBlock("stack_pass_denial_denial_reason", false)
+    toggleBlock("other_denial", false);
+  } else if (radio_deny) {
+    // Deny radio button selected: Show deny options
+    toggleBlock("stack_pass_denial_denial_reason", true)
+
+    if (denial_selection === '') {
+      // If Denial Reason Selection is blank: disable submit!
+      toggleDisable("process_btn", true);
+    } else if (denial_selection === 'Other') {
+      // If Denial Reason Selection is Other: Show reason text box
+      toggleBlock("other_denial", true);
+      if (denial_reason === '') {
+        // If Reason Text box is empty: disable submit
+        toggleDisable("process_btn", true);
+      } else {
+        // Else: enable submit
+        toggleDisable("process_btn", false);
+      }
+    } else {
+      // If Denial Reason Selection is any other reason: enable submit and hide text box
+      toggleBlock("other_denial", false);
+      toggleDisable("process_btn", false);
+    }
+  } else {
+    // If neither radio is selected: disable submit
+    toggleDisable("process_btn", true);
+  }
+
 }

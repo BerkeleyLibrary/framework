@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe ProxyBorrowerUsers do
-  it 'validates a Proxy Borrower User object' do
+describe FrameworkUsers do
+  it 'validates a Framework User object' do
     tests = [
       {
         valid: false,
@@ -25,7 +25,7 @@ describe ProxyBorrowerUsers do
       }
     ]
     tests.each do |attributes:, errors:, valid:|
-      form = ProxyBorrowerUsers.new(attributes)
+      form = FrameworkUsers.new(attributes)
       expect(form.valid?).to eq(valid)
       next if valid
 

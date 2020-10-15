@@ -1,4 +1,8 @@
+require 'prawn'
+
+# rubocop:disable Metrics/ClassLength
 class RequestMailer < ApplicationMailer
+
   # Sends the AffiliateBorrowRequestForm
   def affiliate_borrow_request_form_email(borrow_request)
     @borrow_request = borrow_request
@@ -125,4 +129,95 @@ class RequestMailer < ApplicationMailer
     @proxy_request = proxy_request
     mail(to: privdesk_to)
   end
+
+  # Send Stack Pass Request Alert to privdesk
+  def stack_pass_email(stackpass_form)
+    @stackpass_form = stackpass_form
+    mail(to: [privdesk_to, 'mmarrow@library.berkeley.edu', 'nancylewis@berkeley.edu'], subject: 'Stack Pass Request')
+  end
+
+  # Send Stack Pass Denial to requester
+  def stack_pass_denied(stackpass_form)
+    @stackpass_form = stackpass_form
+    mail(to: @stackpass_form.email, subject: 'Stack Pass Request - Denied')
+  end
+
+  # Send Stack Pass Approval to requester
+  def stack_pass_approved(stackpass_form)
+    # Generate the Approval PDF File:
+    pdf = stackpass_pdf(stackpass_form)
+
+    attachments['approval.pdf'] = pdf.render
+    mail(to: stackpass_form.email, subject: 'Stack Pass Request - Approved')
+  end
+
+  # Send Reference Card Request Alert to privdesk
+  def reference_card_email(reference_card_form)
+    @reference_card_form = reference_card_form
+    mail(to: [privdesk_to, 'mmarrow@library.berkeley.edu', 'nancylewis@berkeley.edu'], subject: 'Reference Card Request')
+  end
+
+  # Send Reference Card Denial to requester
+  def reference_card_denied(reference_card_form)
+    @reference_card_form = reference_card_form
+    mail(to: @reference_card_form.email, subject: 'Reference Card Request - Denied')
+  end
+
+  # Send Reference Card Approval to requester
+  def reference_card_approved(reference_card_form)
+    # Generate the Approval PDF File:
+    pdf = referencecard_pdf(reference_card_form)
+
+    attachments['approval.pdf'] = pdf.render
+    mail(to: reference_card_form.email, subject: 'Reference Card Request - Approved')
+  end
+
+  private
+
+  # Create the Stack Pass approved PDF file
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def stackpass_pdf(stackpass_form)
+    pdf = Prawn::Document.new
+    pdf.move_down 10
+    pdf.font_size 24
+    pdf.text 'Main (Gardner) Stack Pass Approval', align: :center
+    pdf.move_down 10
+    pdf.font_size 12
+    pdf.text 'Print out this Stack Pass or save it to your phone and bring it to the Doe Library,
+              Gardner Stacks Level A along with a government-issued photo ID.', align: :center
+    pdf.move_down 10
+    pdf.text "Name: #{stackpass_form.name}", align: :center
+    pdf.text "Date of Stack Pass: #{stackpass_form.pass_date.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "Approved by: #{stackpass_form.processed_by}", align: :center
+    pdf.move_down 10
+    pdf.text 'University of California, Berkeley Library'
+
+    pdf
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+  # Create the Reference Card approved PDF file
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def referencecard_pdf(refcard_form)
+    pdf = Prawn::Document.new
+    pdf.move_down 10
+    pdf.font_size 24
+    pdf.text 'Main (Gardner) Stack Reference Card Approval', align: :center
+    pdf.move_down 10
+    pdf.font_size 12
+    pdf.text 'Print out or save this approval document to your phone and bring it to the Privileges
+              Desk (Doe Library, Gardner Stacks Level A) along with a government-issued photo ID.', align: :center
+    pdf.move_down 10
+    pdf.text "Name: #{refcard_form.name}", align: :center
+    pdf.text "Start date of Reference card: #{refcard_form.pass_date.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "End date of Reference card: #{refcard_form.pass_date_end.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "Approved by: #{refcard_form.processed_by}", align: :center
+    pdf.move_down 10
+    pdf.text 'University of California, Berkeley Library'
+
+    pdf
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
 end
+# rubocop:enable Metrics/ClassLength

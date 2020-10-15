@@ -1,6 +1,6 @@
-<span class="proxy-borrower-heading">
-  <h1 class="proxy-borrower-title">Add/Edit Proxy Borrower Card Administrators</h1>
-  <%= link_to 'Admin Home',  forms_proxy_borrower_admin_path, class: "proxy-borrower-admin-link text-nowrap" %>
+<span class="flex-heading">
+  <h1 class="inline-title">Add/Edit Proxy Borrower Card Administrators</h1>
+  <%= link_to 'Admin Home',  forms_proxy_borrower_admin_path, class: "title-link text-nowrap" %>
 </span>
 <%= form_with url: "/forms/proxy-borrower/add_admin", local:true do %>
   <div class="form-group pt-3">
@@ -35,7 +35,7 @@
     <%= form_with url: "/forms/proxy-borrower/update_admin", method: :patch, local:true do %>
       <div class="row pt-3 pb-3 border-top align-middle">
         <!-- USER ID -->
-        <%= hidden_field( :ProxyBorrowerUsers, :id, :value => u.id ) %>
+        <%= hidden_field( :FrameworkUsers, :id, :value => u.id ) %>
         <!-- USER NAME -->
         <div class="col user-col">
           <%= u.name %>

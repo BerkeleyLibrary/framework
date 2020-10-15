@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_28_170052) do
+ActiveRecord::Schema.define(version: 2020_09_23_205333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "assignments", force: :cascade do |t|
+    t.bigint "framework_users_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["framework_users_id"], name: "index_assignments_on_framework_users_id"
+    t.index ["role_id"], name: "index_assignments_on_role_id"
+  end
+
+  create_table "framework_users", force: :cascade do |t|
+    t.integer "lcasid", null: false
+    t.string "name", null: false
+    t.string "role", null: false
+    t.string "email"
+  end
 
   create_table "proxy_borrower_requests", force: :cascade do |t|
     t.string "faculty_name"
@@ -33,11 +49,29 @@ ActiveRecord::Schema.define(version: 2020_07_28_170052) do
     t.string "user_email"
   end
 
-  create_table "proxy_borrower_users", force: :cascade do |t|
-    t.integer "lcasid", null: false
-    t.string "name", null: false
+  create_table "roles", force: :cascade do |t|
     t.string "role", null: false
-    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
+  create_table "stack_requests", force: :cascade do |t|
+    t.string "email"
+    t.string "name"
+    t.string "phone"
+    t.date "pass_date"
+    t.boolean "main_stack"
+    t.string "local_id"
+    t.boolean "approvedeny"
+    t.string "processed_by"
+    t.string "denial_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "type"
+    t.string "affiliation"
+    t.text "research_desc"
+    t.date "pass_date_end"
+  end
+
+  add_foreign_key "assignments", "framework_users", column: "framework_users_id"
 end
