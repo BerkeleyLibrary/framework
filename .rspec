@@ -1,4 +1,4 @@
 --require spec_helper
 --format progress
 --format RspecJunitFormatter
---out tmp/junit/specs.xml
+--out artifacts/rspec/specs.xml
