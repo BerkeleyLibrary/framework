@@ -1,4 +1,8 @@
 class SeedRoles < ActiveRecord::Migration[5.2]
+  class Role < ActiveRecord::Base
+    # stub to ensure migration works even w/o model class
+  end
+
   def up
     say "Seeding roles database..."
 

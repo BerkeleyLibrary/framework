@@ -11,7 +11,7 @@
 :min_confidence: 2
 :output_files:
   - /dev/stdout
-  - tmp/brakeman.json
+  - artifacts/brakeman/index.html
 :print_report: true
 :report_progress: false
 :report_routes: true

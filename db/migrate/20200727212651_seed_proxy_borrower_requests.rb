@@ -1,4 +1,8 @@
 class SeedProxyBorrowerRequests < ActiveRecord::Migration[5.2]
+  class ProxyBorrowerRequests < ActiveRecord::Base
+    # stub to ensure migration works even w/o model class
+  end
+
   def up
     # Clear the way!!!
     ProxyBorrowerRequests.destroy_all
