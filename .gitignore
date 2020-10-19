@@ -7,6 +7,9 @@
 # Additional IDEA/RubyMine ignores
 .idea/.rakeTasks
 
+# Build/test artifacts
+/artifacts/
+
 # From previous revision
 /config/master.key
 /node_modules

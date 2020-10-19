@@ -1,33 +1,28 @@
-# Add your own tasks in files placed in lib/tasks ending in .rake,
-# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+# ------------------------------------------------------------
+# CI
 
-require_relative 'config/application'
+ENV['RAILS_ENV'] = 'test' if ENV['CI']
 
+# ------------------------------------------------------------
+# Rails
+
+require File.expand_path('config/application', __dir__)
 Rails.application.load_tasks
 
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:spec)
-rescue LoadError
-  # don't care, gem only installed in dev/test
-end
+# ------------------------------------------------------------
+# Setup
 
-begin
-  require 'rubocop/rake_task'
-  desc 'Run rubocop with HTML output'
-  RuboCop::RakeTask.new(:rubocop) do |cop|
-    cop.formatters = %w[html]
-    cop.options = %w[--out tmp/rubocop/index.html]
-  end
-rescue LoadError
-  # don't care, gem only installed in dev/test
-end
-
-ENV['RAILS_ENV'] = 'test'
-ENV['COVERAGE'] ||= 'true'
-
+desc 'Set up DB, precompile assets'
 task setup: %w[db:await db:setup assets:precompile]
-multitask specs: %w[brakeman bundle:audit rubocop spec]
 
-task(:default).clear
-task default: %w[setup specs]
+desc 'Set up, check test coverage'
+multitask check: %w[setup coverage]
+
+# ------------------------------------------------------------
+# Defaults
+
+# clear rspec/rails default :spec task
+Rake::Task[:default].clear if Rake::Task.task_defined?(:default)
+
+desc 'Set up, run tests, check code style, check test coverage, check for vulnerabilities'
+task default: %i[check rubocop brakeman bundle:audit]

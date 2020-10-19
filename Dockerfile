@@ -98,3 +98,10 @@ COPY --from=development --chown=altmedia /var/opt/app /var/opt/app
 
 # Ensure the bundle is installed and the Gemfile.lock is synced.
 RUN bundle install --frozen --local
+
+# Run the production stage in production mode.
+ENV RAILS_ENV=production
+ENV RAILS_SERVE_STATIC_FILES=true
+
+# Pre-compile assets so we don't have to do it in production.
+RUN rails assets:precompile
