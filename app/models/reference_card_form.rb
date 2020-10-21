@@ -14,10 +14,10 @@ class ReferenceCardForm < StackRequest
   end
 
   # Add up and return the total number of days this requester
-  # has been approved for (for the current school year)
+  # has been approved for (for the current calendar year)
   def days_approved
     total_approved_days = 0
-    approvals = ReferenceCardForm.where('email = ? AND approvedeny = ? AND pass_date_end >= ?', email, true, start_school_year)
+    approvals = ReferenceCardForm.where('email = ? AND approvedeny = ? AND pass_date_end >= ?', email, true, start_calendar_year)
     approvals.each do |approval|
       total_approved_days = + (approval.pass_date_end - approval.pass_date).to_i + 1
     end

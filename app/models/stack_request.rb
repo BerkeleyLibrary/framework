@@ -12,6 +12,7 @@ class StackRequest < ActiveRecord::Base
 
   private
 
+  # For Stack Pass:
   # I need to figure out the 'current school year' (July - June)
   # for the moment.... So if it's August, then July 1st of the current year
   # but if it's April, then I'd want July 1st of LAST year....
@@ -21,5 +22,14 @@ class StackRequest < ActiveRecord::Base
     yr = today.year
     yr -= 1 if mo < 7
     Date.new(yr, 7, 1)
+  end
+
+  # For Reference Card:
+  # RC does not "reset" on a fiscal year schedule; instead
+  # it resets yearly on January 1st.
+  def start_calendar_year
+    today = Date.today
+    yr = today.year
+    Date.new(yr, 1, 1)
   end
 end
