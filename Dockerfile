@@ -4,7 +4,7 @@
 # The base stage scaffolds elements which are common to building and running
 # the application, such as installing ca-certificates, creating the app user,
 # and installing runtime system dependencies.
-FROM ruby:2.5.4-alpine AS base
+FROM ruby:2.5.5-alpine AS base
 
 # This declares that the container intends to listen on port 3000. It doesn't
 # actually "expose" the port anywhere -- it is just metadata. It advises tools
