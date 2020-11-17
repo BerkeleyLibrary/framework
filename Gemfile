@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.1'
+ruby '2.7.2'
 
 gem 'awesome_print', '>=1.8.0'
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -23,7 +23,7 @@ gem 'pg', '~> 1.2'
 gem 'prawn', '~> 2.3.0'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 5.2.2'
-gem 'recaptcha'
+gem 'recaptcha', '~> 4.13'
 gem 'sass-rails', '~> 5.0'
 gem 'sqlite3', '~> 1.3.6'
 gem 'turbolinks', '~> 5'
@@ -53,7 +53,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '>= 2.15', '< 4.0'
+  gem 'capybara'
   gem 'chromedriver-helper'
   gem 'selenium-webdriver'
   gem 'simplecov', '~> 0.16.1', require: false

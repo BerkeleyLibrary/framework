@@ -23,7 +23,6 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     # wisks us away to Disabled Student Program Form (views/proxy_borrower_forms/dsp_form)
     @request_form = ProxyBorrowerRequests.new
     @current_user = current_user
-    @dspreps = ProxyBorrowerDspreps.all.order(:dsp_rep_name)
   end
 
   def faculty_form
@@ -48,7 +47,6 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
       render 'result', status: 201
     else
       @current_user = current_user
-      @dspreps = ProxyBorrowerDspreps.all
       render 'dsp_form'
     end
   end
@@ -64,7 +62,6 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     else
       # Failed to save - rerender the faculty form:
       @current_user = current_user
-      @dspreps = ProxyBorrowerDspreps.all
       render 'faculty_form'
     end
   end
