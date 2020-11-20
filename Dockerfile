@@ -97,7 +97,8 @@ COPY --from=development --chown=altmedia /usr/local/bundle /usr/local/bundle
 COPY --from=development --chown=altmedia /var/opt/app /var/opt/app
 
 # Ensure the bundle is installed and the Gemfile.lock is synced.
-RUN bundle install --frozen --local
+RUN bundle config set frozen 'true'
+RUN bundle install --local
 
 # Run the production stage in production mode.
 ENV RAILS_ENV=production

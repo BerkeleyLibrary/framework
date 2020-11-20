@@ -10,7 +10,7 @@ require_relative '../app/loggers/altmedia_logger'
 module Framework
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.2
+    config.load_defaults 6.0
 
     # Load our custom config. This is implicitly consumed in a few remaining
     # places (e.g. RequestMailer). A good development improvement would be to

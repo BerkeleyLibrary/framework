@@ -7,7 +7,7 @@ ruby '2.7.2'
 gem 'awesome_print', '>=1.8.0'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'bootstrap'
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 5.0'
 gem 'ipaddress'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
@@ -22,7 +22,7 @@ gem 'ougai', '>=1.8.2'
 gem 'pg', '~> 1.2'
 gem 'prawn', '~> 2.3.0'
 gem 'puma', '~> 3.11'
-gem 'rails', '~> 5.2.2'
+gem 'rails', '~> 6.0.3'
 gem 'recaptcha', '~> 4.13'
 gem 'sass-rails', '~> 5.0'
 gem 'sqlite3', '~> 1.3.6'
@@ -54,7 +54,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'chromedriver-helper'
   gem 'selenium-webdriver'
   gem 'simplecov', '~> 0.16.1', require: false
   gem 'simplecov-rcov', require: false
