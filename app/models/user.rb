@@ -12,6 +12,7 @@ class User
     #
     # @see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema OmniAuth Schema
     # @see https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549 Sample Calnet Response
+    # @see https://calnetweb.berkeley.edu/calnet-technologists/ldap-directory-service/how-ldap-organized/people-ou/people-attribute-schema CalNet LDAP
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def from_omniauth(auth)
       raise Error::InvalidAuthProviderError, auth['provider'] \
@@ -36,6 +37,13 @@ class User
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
   end
 
+  # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
+  # `EMPLOYEE-TYPE-FACULTY`, `STUDENT-TYPE-REGISTERED`).
+  #
+  # Not to be confused with {Patron::Record#affiliation}, which returns
+  # the patron affiliation according to the Millennium patron record
+  # `PCODE1` value.
+  #
   # @return [String]
   attr_accessor :affiliations
 
