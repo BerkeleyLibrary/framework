@@ -31,9 +31,12 @@ module Patron
     )
 
     # The patron's affiliation code (UC Berkeley, Community College, etc.)
+    # according to Millennium.
     #
-    # See Patron::Affiliation for a partial list of affiliate codes.
+    # Not to be confused with {Patron#affiliations}, which returns CalNet
+    # affiliations (`berkeleyEduAffiliations`).
     #
+    # @see Patron::Affiliation for a partial list of affiliate codes.
     # @return [String]
     attr_accessor :affiliation
 

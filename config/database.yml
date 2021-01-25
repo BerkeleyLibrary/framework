@@ -1,10 +1,10 @@
 ---
 
 development:
-  url: postgres://root:root@db/framework-dev?pool=5
+  url: <%= ENV['DATABASE_URL'] || 'postgres://root:root@db/framework-dev?pool=5' %>
 
 test:
-  url: postgres://root:root@db/framework-test?pool=5
+  url: <%= ENV['DATABASE_URL'] ||'postgres://root:root@db/framework-test?pool=5' %>
 
 production:
   url: <%= ENV['DATABASE_URL'] || 'postgres://root:root@db/framework-prod' %>

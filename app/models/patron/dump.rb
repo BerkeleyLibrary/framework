@@ -20,7 +20,9 @@ module Patron
       # rubocop:disable Lint/UriEscapeUnescape
       def escape_patron_id(id)
         # Using obsolete method for Millennium compatibility
-        URI.escape(id.to_s)
+        silence_warnings do
+          URI.escape(id.to_s)
+        end
       end
       # rubocop:enable Lint/UriEscapeUnescape
 

@@ -4,7 +4,7 @@
 # The base stage scaffolds elements which are common to building and running
 # the application, such as installing ca-certificates, creating the app user,
 # and installing runtime system dependencies.
-FROM ruby:2.5.1-alpine AS base
+FROM ruby:2.7-alpine AS base
 
 # This declares that the container intends to listen on port 3000. It doesn't
 # actually "expose" the port anywhere -- it is just metadata. It advises tools
@@ -42,13 +42,16 @@ USER altmedia
 # Add binstubs to the path.
 ENV PATH="/opt/app/bin:$PATH"
 
-# Set the container to run the rails server by default. This can be overridden
-# by passing an argument via `docker run <image> <cmd>` or setting the
-# service's "command" setting in the docker-compose file. Note that at this
-# point, the rails command hasn't actually been installed yet, so if the build
-# fails before then you will need to override the default command when
-# debugging the buggy image.
-CMD ["rails", "server"]
+# If run with no other arguments, the image will start the rails server by
+# default. Note that we must bind to all interfaces (0.0.0.0) because when
+# running in a docker container, the actual public interface is created
+# dynamically at runtime (we don't know its address in advance).
+#
+# Note that at this point, the rails command hasn't actually been installed
+# yet, so if the build fails before the `bundle install` step below, you
+# will need to override the default command when troubleshooting the buggy
+# image.
+CMD ["rails", "server", "-b", "0.0.0.0"]
 
 # =============================================================================
 # Target: development
@@ -97,7 +100,8 @@ COPY --from=development --chown=altmedia /usr/local/bundle /usr/local/bundle
 COPY --from=development --chown=altmedia /var/opt/app /var/opt/app
 
 # Ensure the bundle is installed and the Gemfile.lock is synced.
-RUN bundle install --frozen --local
+RUN bundle config set frozen 'true'
+RUN bundle install --local
 
 # Run the production stage in production mode.
 ENV RAILS_ENV=production
