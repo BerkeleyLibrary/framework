@@ -31,6 +31,7 @@ class User
         surname: auth['extra']['surname'],
         ucpath_id: auth['extra']['berkeleyEduUCPathID'],
         uid: auth['extra']['uid'] || auth['uid'],
+        # TODO: Consider replacing this with a DB-based role, now that we have DB-based roles
         framework_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(FRAMEWORK_ADMIN_GROUP)
       )
     end
