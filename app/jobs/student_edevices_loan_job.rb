@@ -1,28 +1,10 @@
 require 'request_mailer'
 
-class StudentEdevicesLoanJob < ApplicationJob
-  queue_as :default
+class StudentEdevicesLoanJob < PatronNoteJobBase
+  NOTE_TXT = 'Student Electronic Devices eligible'.freeze
+  MAILER_PREFIX = 'student_edevices'.freeze
 
-  def perform(patron_id)
-    patron = Patron::Record.find(patron_id)
-    patron.add_note(note)
-    send_patron_email(patron)
-  rescue StandardError
-    send_failure_email(patron, note)
-    raise
-  end
-
-  def note
-    @note ||= "#{today} Student Electronic Devices eligible [litscript]"
-  end
-
-  private
-
-  def send_patron_email(patron)
-    RequestMailer.student_edevices_confirmation_email(patron.email).deliver_now
-  end
-
-  def send_failure_email(patron, note)
-    RequestMailer.student_edevices_failure_email(patron.id, patron.name, note).deliver_now
+  def initialize(*arguments)
+    super(*arguments, mailer_prefix: MAILER_PREFIX, note_txt: NOTE_TXT)
   end
 end

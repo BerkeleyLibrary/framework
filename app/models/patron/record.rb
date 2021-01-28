@@ -170,7 +170,7 @@ module Patron
     #   rather than relying on the expect script. That would be much more
     #   robust and easier to test/monitor/verify.
     def add_note(note)
-      Rails.logger.debug "Updating patron record: #{id}"
+      Rails.logger.debug "Setting note #{note.inspect} for patron #{id}"
       notes << ssh_add_note(note)
     end
 
@@ -179,8 +179,10 @@ module Patron
     def ssh_add_note(note)
       res = Net::SSH.start(expect_url.host, expect_url.user, non_interactive: true) do |ssh|
         command = [expect_url.path, note, id].shelljoin
+        Rails.logger.debug("Executing SSH command: #{command}")
         ssh.exec!(command)
       end
+
       return note if res.match('Finished Successfully')
 
       raise StandardError, "Failed updating patron record for #{id}: #{res}"
