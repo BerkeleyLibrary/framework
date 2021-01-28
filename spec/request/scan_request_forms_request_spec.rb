@@ -6,6 +6,9 @@ describe :scan_request_forms, type: :request do
     form_class: ScanRequestForm,
     allowed_patron_types: [
       Patron::Type::FACULTY,
+      Patron::Type::STAFF,
+      Patron::Type::LIBRARY_STAFF,
+      Patron::Type::MANAGER,
       Patron::Type::VISITING_SCHOLAR
     ],
     submit_path: '/forms/altmedia',
