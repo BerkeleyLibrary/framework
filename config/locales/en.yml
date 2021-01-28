@@ -71,7 +71,7 @@ en:
             patron_blocks:
               blank: You must clear active blocks to use this service.
             patron_type:
-              inclusion: Only faculty, instructors, and visiting scholars may use this service.
+              inclusion: Only faculty, instructors, visiting scholars, and staff may use this service.
 
     models:
       scan_request_form: Faculty Alt-Media Scanning

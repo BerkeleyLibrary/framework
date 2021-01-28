@@ -8,6 +8,9 @@ class ScanRequestForm < Form
 
   ALLOWED_PATRON_TYPES = [
     Patron::Type::FACULTY,
+    Patron::Type::STAFF,
+    Patron::Type::LIBRARY_STAFF,
+    Patron::Type::MANAGER,
     Patron::Type::VISITING_SCHOLAR
   ].freeze
 

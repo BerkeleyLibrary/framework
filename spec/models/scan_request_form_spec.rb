@@ -8,6 +8,9 @@ describe ScanRequestForm do
   describe 'allowed' do
     allowed_patron_types = [
       Patron::Type::FACULTY,
+      Patron::Type::STAFF,
+      Patron::Type::LIBRARY_STAFF,
+      Patron::Type::MANAGER,
       Patron::Type::VISITING_SCHOLAR
     ]
 
@@ -72,9 +75,6 @@ describe ScanRequestForm do
       Patron::Type::UNDERGRAD,
       Patron::Type::UNDERGRAD_SLE,
       Patron::Type::GRAD_STUDENT,
-      Patron::Type::MANAGER,
-      Patron::Type::LIBRARY_STAFF,
-      Patron::Type::STAFF,
       Patron::Type::POST_DOC
     ]
 
