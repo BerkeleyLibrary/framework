@@ -122,13 +122,13 @@ en:
       forbidden: <strong>Forbidden:</strong> You're not allowed to access the requested page.
 
   request_mailer:
-    confirmation_email:
+    scan_request_opt_in_confirmation_email:
       subject: alt-media scanning service opt-in
-    failure_email:
+    scan_request_opt_in_failure_email:
       subject: alt-media scanning patron opt-in failure
-    opt_out_faculty:
+    scan_request_opt_out_faculty:
       subject: alt-media scanning service opt-out
-    opt_out_staff:
+    scan_request_opt_out_staff:
       subject: alt-media scanning service opt-out
     affiliate_borrow_request_form_email:
       subject: UC Berkeley Borrowing Card Requested

@@ -94,7 +94,7 @@ class RequestMailer < ApplicationMailer
   end
 
   # Send email describing a failure of a ScanRequest job
-  def opt_in_failure_email(empid, displayname, note)
+  def scan_request_opt_in_failure_email(empid, displayname, note)
     @empid = empid
     @displayname = displayname
     @note = note
@@ -103,18 +103,18 @@ class RequestMailer < ApplicationMailer
   end
 
   # Send ScanRequest confirmation email to the opted-in user
-  def opt_in_confirmation_email(email)
+  def scan_request_opt_in_confirmation_email(email)
     mail(to: email)
   end
 
-  def opt_out_staff(empid, displayname)
+  def scan_request_opt_out_staff(empid, displayname)
     @empid = empid
     @displayname = displayname
 
     mail(cc: [admin_to, confirm_to])
   end
 
-  def opt_out_faculty(email)
+  def scan_request_opt_out_faculty(email)
     mail(to: email)
   end
 
