@@ -12,12 +12,8 @@ class PatronNoteJobBase < ApplicationJob
   end
 
   def perform(patron_id)
-    patron = Patron::Record.find(patron_id)
-    patron.add_note(note)
-    send_patron_email(patron)
-  rescue StandardError
-    send_failure_email(patron, note)
-    raise
+    patron = find_patron(patron_id)
+    add_note_and_notify(patron)
   end
 
   def note
@@ -26,12 +22,32 @@ class PatronNoteJobBase < ApplicationJob
 
   private
 
+  def find_patron(patron_id)
+    Patron::Record.find(patron_id)
+  rescue StandardError => e
+    log_error(e)
+    raise
+  end
+
+  def add_note_and_notify(patron)
+    patron.add_note(note)
+    send_patron_email(patron)
+  rescue StandardError => e
+    log_error(e)
+    send_failure_email(patron, note)
+    raise
+  end
+
   def send_patron_email(patron)
     confirmation_email(patron).deliver_now
+  rescue StandardError => e
+    log_error(e)
   end
 
   def send_failure_email(patron, note)
     failure_email(patron, note).deliver_now
+  rescue StandardError => e
+    log_error(e)
   end
 
   def confirmation_email(patron)

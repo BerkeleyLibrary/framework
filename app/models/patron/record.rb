@@ -177,15 +177,18 @@ module Patron
     private
 
     def ssh_add_note(note)
-      res = Net::SSH.start(expect_url.host, expect_url.user, non_interactive: true) do |ssh|
+      res = ssh_invoke_script(note)
+      return note if res.match('Finished Successfully')
+
+      raise StandardError, "Failed updating patron record for #{id}: #{res}"
+    end
+
+    def ssh_invoke_script(note)
+      Net::SSH.start(expect_url.host, expect_url.user, non_interactive: true) do |ssh|
         command = [expect_url.path, note, id].shelljoin
         Rails.logger.debug("Executing SSH command: #{command}")
         ssh.exec!(command)
       end
-
-      return note if res.match('Finished Successfully')
-
-      raise StandardError, "Failed updating patron record for #{id}: #{res}"
     end
   end
 end

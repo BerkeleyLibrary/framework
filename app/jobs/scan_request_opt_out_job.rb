@@ -5,7 +5,7 @@ class ScanRequestOptOutJob < ApplicationJob
 
   def perform(patron_id)
     patron = Patron::Record.find(patron_id)
-    RequestMailer.opt_out_staff(patron.id, patron.name).deliver_now
-    RequestMailer.opt_out_faculty(patron.email).deliver_now
+    RequestMailer.scan_request_opt_out_staff(patron.id, patron.name).deliver_now
+    RequestMailer.scan_request_opt_out_faculty(patron.email).deliver_now
   end
 end

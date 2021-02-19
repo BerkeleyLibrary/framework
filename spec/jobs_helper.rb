@@ -77,4 +77,34 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
     expect(last_email.subject).to eq(email_subject_failure)
     expect(last_email.to).to include(ADMIN_EMAIL)
   end
+
+  it 'logs an error in the event of an SSH error' do
+    allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
+    expect(Rails.logger).to receive(:error) do |msg|
+      expect(msg).to be_a(Hash)
+      expect(msg[:error]).to include(Net::SSH::Exception.to_s)
+    end.ordered
+    expect(Rails.logger).to receive(:error) do |msg, &block|
+      expect(msg).to be_nil
+      msg_actual = block.call
+      expect(msg_actual).to include(job.name)
+      expect(msg_actual).to include(Net::SSH::Exception.to_s)
+    end.ordered
+    expect { job.perform_now(patron.id) }.to raise_error(Net::SSH::Exception)
+  end
+
+  it 'logs an error in the event of a script error' do
+    allow(ssh).to receive(:exec!).and_return('Failed')
+    expect(Rails.logger).to receive(:error) do |msg|
+      expect(msg).to be_a(Hash)
+      expect(msg[:error]).to include('Failed updating patron record')
+    end.ordered
+    expect(Rails.logger).to receive(:error) do |msg, &block|
+      expect(msg).to be_nil
+      msg_actual = block.call
+      expect(msg_actual).to include(job.name)
+      expect(msg_actual).to include('Failed updating patron record')
+    end.ordered
+    expect { job.perform_now(patron.id) }.to raise_error(StandardError)
+  end
 end
