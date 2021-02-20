@@ -117,6 +117,41 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       expect(last_email.to).to include(ADMIN_EMAIL)
     end
 
+    it 'logs an error in the event of an email send failure' do
+      allow(ssh).to receive(:exec!).and_return('Finished Successfully')
+
+      err_class = Net::SMTPUnknownError
+      allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_raise(err_class)
+
+      expect(Rails.logger).to receive(:error) do |msg, &block|
+        msg = msg || block.call
+        expect(msg.to_s).to include("#{err_class}")
+      end.at_least(:once)
+
+      expect { job.perform_now(patron.id) }.to raise_error(err_class)
+    end
+
+    it 'logs an error in the event of a patron lookup failure' do
+      bad_patron_id = '2127365000'
+
+      err_class = Error::PatronApiError
+      allow(Patron::Record).to receive(:find).with(bad_patron_id).and_raise(err_class)
+
+      expect(Rails.logger).to receive(:error) do |msg, &block|
+        msg = msg || block.call
+        expect(msg.to_s).to include("#{err_class}")
+      end.at_least(:once) # TODO: avoid double-logging
+
+      # Can't just use raise_error here; see https://github.com/rspec/rspec-expectations/issues/1293
+      begin
+        job.perform_now(bad_patron_id)
+      rescue => e
+        raise if e.class.name.start_with?('RSpec')
+        ex = e
+      end
+      expect(ex).to be_a(Error::PatronApiError)
+    end
+
     it 'logs an error in the event of an SSH error' do
       allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
       expect(Rails.logger).to receive(:error) do |msg|

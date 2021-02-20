@@ -42,12 +42,14 @@ class PatronNoteJobBase < ApplicationJob
     confirmation_email(patron).deliver_now
   rescue StandardError => e
     log_error(e)
+    raise
   end
 
   def send_failure_email(patron, note)
     failure_email(patron, note).deliver_now
   rescue StandardError => e
     log_error(e)
+    raise
   end
 
   def confirmation_email(patron)

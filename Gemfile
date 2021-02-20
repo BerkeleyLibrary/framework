@@ -34,8 +34,8 @@ group :development, :test do
   gem 'brakeman'
   gem 'bundle-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'dotenv', '~> 2.7'
   gem 'colorize'
+  gem 'dotenv', '~> 2.7'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'rspec-support'
