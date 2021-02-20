@@ -124,8 +124,8 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_raise(err_class)
 
       expect(Rails.logger).to receive(:error) do |msg, &block|
-        msg = msg || block.call
-        expect(msg.to_s).to include("#{err_class}")
+        msg ||= block.call
+        expect(msg.to_s).to include(err_class.to_s)
       end.at_least(:once)
 
       expect { job.perform_now(patron.id) }.to raise_error(err_class)
@@ -138,15 +138,16 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       allow(Patron::Record).to receive(:find).with(bad_patron_id).and_raise(err_class)
 
       expect(Rails.logger).to receive(:error) do |msg, &block|
-        msg = msg || block.call
-        expect(msg.to_s).to include("#{err_class}")
+        msg ||= block.call
+        expect(msg.to_s).to include(err_class.to_s)
       end.at_least(:once) # TODO: avoid double-logging
 
       # Can't just use raise_error here; see https://github.com/rspec/rspec-expectations/issues/1293
       begin
         job.perform_now(bad_patron_id)
-      rescue => e
+      rescue StandardError => e
         raise if e.class.name.start_with?('RSpec')
+
         ex = e
       end
       expect(ex).to be_a(Error::PatronApiError)
