@@ -1,3 +1,5 @@
+require 'dotenv/load'
+
 Rails.application.configure do
   # Setting logger to use outgai
   # Settings specified here will take precedence over those in config/application.rb.
