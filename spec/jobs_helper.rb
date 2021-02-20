@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'concurrent-ruby'
 
 ADMIN_EMAIL = Rails.application.config.altmedia['mail_admin_email']
 
@@ -37,74 +38,113 @@ end
 RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:|
   include_context 'ssh'
   let(:job) { described_class }
+  let(:patron_id) { '013191304' }
 
   attr_reader :patron
 
   before(:each) do
-    patron_id = '013191304'
     stub_patron_dump(patron_id)
     @patron = Patron::Record.find(patron_id)
   end
 
-  it 'adds the expected note' do
-    today = Time.now.strftime('%Y%m%d') # TODO: something less fragile
-    expected_note = "#{today} #{note_text} [litscript]"
-    expected_command = ['/home/altmedia/bin/mkcallnote', expected_note, patron.id].shelljoin
-    expect(ssh).to receive(:exec!).with(expected_command).and_return('Finished Successfully')
-    job.perform_now(patron.id)
+  describe 'success' do
+    let(:today) { Time.now.strftime('%Y%m%d') }
+    let(:expected_note) { "#{today} #{note_text} [litscript]" }
+    let(:expected_command) { ['/home/altmedia/bin/mkcallnote', expected_note, patron.id].shelljoin }
+
+    it 'adds the expected note' do
+      expect(ssh).to receive(:exec!).with(expected_command).and_return('Finished Successfully')
+      job.perform_now(patron.id)
+    end
+
+    it 'logs before setting the note' do
+      allow(ssh).to receive(:exec!).with(expected_command).and_return('Finished Successfully')
+      expected_msg = "Setting note #{expected_note.inspect} for patron #{patron_id}"
+      allow(Rails.logger).to receive(:debug)
+      expect(Rails.logger).to receive(:debug).with(expected_msg)
+      job.perform_now(patron.id)
+    end
+
+    it 'logs to the Rails logger even when running in the background' do
+      allow(ssh).to receive(:exec!).with(expected_command).and_return('Finished Successfully')
+      expected_msg = "Setting note #{expected_note.inspect} for patron #{patron_id}"
+      allow(Rails.logger).to receive(:debug)
+      expect(Rails.logger).to receive(:debug).with(expected_msg)
+
+      latch = Concurrent::CountDownLatch.new(1)
+      original_queue_adapter = job.queue_adapter
+      callback_proc = -> { latch.count_down }
+
+      # Thanks, ActiveSupport, for putting all this stuff on the job class rather
+      # than the instance, so it pollutes all the other tests if we don't
+      # clean it up
+      begin
+        job.queue_adapter = :async
+        job.after_perform(&callback_proc)
+        job.perform_later(patron.id)
+        latch.wait(5)
+      ensure
+        job.queue_adapter = original_queue_adapter
+        callback_chain = job.__callbacks[:perform].instance_variable_get(:@chain)
+        callback = callback_chain.find { |cb| cb.instance_variable_get(:@filter) == callback_proc }
+        callback_chain.delete(callback)
+      end
+    end
   end
 
-  it 'sends a failure email in the event of an SSH error' do
-    allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
-    expect { job.perform_now(patron.id) }.to(
-      raise_error(Net::SSH::Exception).and(
-        (change { ActionMailer::Base.deliveries.count }).by(1)
+  describe 'failure' do
+    it 'sends a failure email in the event of an SSH error' do
+      allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
+      expect { job.perform_now(patron.id) }.to(
+        raise_error(Net::SSH::Exception).and(
+          (change { ActionMailer::Base.deliveries.count }).by(1)
+        )
       )
-    )
-    last_email = ActionMailer::Base.deliveries.last
-    expect(last_email.subject).to eq(email_subject_failure)
-    expect(last_email.to).to include(ADMIN_EMAIL)
-  end
+      last_email = ActionMailer::Base.deliveries.last
+      expect(last_email.subject).to eq(email_subject_failure)
+      expect(last_email.to).to include(ADMIN_EMAIL)
+    end
 
-  it 'sends a failure email in the event of a script error' do
-    allow(ssh).to receive(:exec!).and_return('Failed')
-    expect { job.perform_now(patron.id) }.to(
-      raise_error(StandardError).and(
-        (change { ActionMailer::Base.deliveries.count }).by(1)
+    it 'sends a failure email in the event of a script error' do
+      allow(ssh).to receive(:exec!).and_return('Failed')
+      expect { job.perform_now(patron.id) }.to(
+        raise_error(StandardError).and(
+          (change { ActionMailer::Base.deliveries.count }).by(1)
+        )
       )
-    )
-    last_email = ActionMailer::Base.deliveries.last
-    expect(last_email.subject).to eq(email_subject_failure)
-    expect(last_email.to).to include(ADMIN_EMAIL)
-  end
+      last_email = ActionMailer::Base.deliveries.last
+      expect(last_email.subject).to eq(email_subject_failure)
+      expect(last_email.to).to include(ADMIN_EMAIL)
+    end
 
-  it 'logs an error in the event of an SSH error' do
-    allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
-    expect(Rails.logger).to receive(:error) do |msg|
-      expect(msg).to be_a(Hash)
-      expect(msg[:error]).to include(Net::SSH::Exception.to_s)
-    end.ordered
-    expect(Rails.logger).to receive(:error) do |msg, &block|
-      expect(msg).to be_nil
-      msg_actual = block.call
-      expect(msg_actual).to include(job.name)
-      expect(msg_actual).to include(Net::SSH::Exception.to_s)
-    end.ordered
-    expect { job.perform_now(patron.id) }.to raise_error(Net::SSH::Exception)
-  end
+    it 'logs an error in the event of an SSH error' do
+      allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
+      expect(Rails.logger).to receive(:error) do |msg|
+        expect(msg).to be_a(Hash)
+        expect(msg[:error]).to include(Net::SSH::Exception.to_s)
+      end.ordered
+      expect(Rails.logger).to receive(:error) do |msg, &block|
+        expect(msg).to be_nil
+        msg_actual = block.call
+        expect(msg_actual).to include(job.name)
+        expect(msg_actual).to include(Net::SSH::Exception.to_s)
+      end.ordered
+      expect { job.perform_now(patron.id) }.to raise_error(Net::SSH::Exception)
+    end
 
-  it 'logs an error in the event of a script error' do
-    allow(ssh).to receive(:exec!).and_return('Failed')
-    expect(Rails.logger).to receive(:error) do |msg|
-      expect(msg).to be_a(Hash)
-      expect(msg[:error]).to include('Failed updating patron record')
-    end.ordered
-    expect(Rails.logger).to receive(:error) do |msg, &block|
-      expect(msg).to be_nil
-      msg_actual = block.call
-      expect(msg_actual).to include(job.name)
-      expect(msg_actual).to include('Failed updating patron record')
-    end.ordered
-    expect { job.perform_now(patron.id) }.to raise_error(StandardError)
+    it 'logs an error in the event of a script error' do
+      allow(ssh).to receive(:exec!).and_return('Failed')
+      expect(Rails.logger).to receive(:error) do |msg|
+        expect(msg).to be_a(Hash)
+        expect(msg[:error]).to include('Failed updating patron record')
+      end.ordered
+      expect(Rails.logger).to receive(:error) do |msg, &block|
+        expect(msg).to be_nil
+        msg_actual = block.call
+        expect(msg_actual).to include(job.name)
+        expect(msg_actual).to include('Failed updating patron record')
+      end.ordered
+      expect { job.perform_now(patron.id) }.to raise_error(StandardError)
+    end
   end
 end

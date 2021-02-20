@@ -17,7 +17,8 @@ module Framework
     # inject those configs like we do with the Patron class.
     config.altmedia = config_for(:altmedia)
 
-    # @todo Switch to a persistent backend store like delayed_job
+    # TODO: Switch to a persistent backend store like delayed_job
+    #       (but make sure to update async logging tests in jobs_helper.rb)
     config.active_job.queue_adapter = :async
 
     # @note By default, Rails wraps fields that contain a validation error with

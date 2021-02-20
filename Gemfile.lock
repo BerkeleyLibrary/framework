@@ -332,6 +332,7 @@ DEPENDENCIES
   capybara
   coffee-rails (~> 5.0)
   colorize
+  concurrent-ruby (~> 1.1)
   ipaddress
   jbuilder (~> 2.5)
   jquery-rails

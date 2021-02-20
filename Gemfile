@@ -53,6 +53,7 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'concurrent-ruby', '~> 1.1'
   gem 'selenium-webdriver'
   gem 'simplecov', '~> 0.16.1', require: false
   gem 'simplecov-rcov', require: false
