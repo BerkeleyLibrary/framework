@@ -16,6 +16,8 @@ services:
     build:
       context: .
       target: development
+    environment:
+      DATABASE_URL: "postgres://root:root@db/framework-development?pool=5"
     ports:
       - 3000:3000
     restart: always
