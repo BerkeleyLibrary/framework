@@ -1,0 +1,12 @@
+<h1>TIND Metadata Download</h1>
+
+<p>Select a collection to download:</p>
+
+<%= form_with(url: '/tind-download/download') do |form| %>
+  <% root_collections.each do |root| %>
+    <ul>
+      <%= render(partial: 'collection', locals: { form: form, collection: root }) %>
+    </ul>
+  <% end %>
+  <%= form.submit('Download LibreOffice/OpenOffice Spreadsheet') %>
+<% end %>

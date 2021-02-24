@@ -20,8 +20,11 @@ Rails.application.routes.draw do
     resources :stack_requests, path: 'stack-requests', only: [:index]
     resources :stack_pass_forms, path: 'stack-pass'
     resources :reference_card_forms, path: 'reference-card'
-    resources :tind_downloads, path: 'tind-download'
   end
+
+  # TIND Download Routes
+  get '/tind-download', to: 'tind_download#index'
+  post '/tind-download/download', to: 'tind_download#download'
 
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'

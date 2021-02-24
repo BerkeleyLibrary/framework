@@ -17,11 +17,6 @@ module ExceptionHandling
       render :not_found, status: :not_found, locals: { exception: error }
     end
 
-    rescue_from Error::UnauthorizedError do |error|
-      log_error(error)
-      redirect_to login_path(url: request.fullpath)
-    end
-
     rescue_from Error::PatronApiError do |error|
       log_error(error)
       render :patron_api_error, status: :service_unavailable
@@ -46,6 +41,13 @@ module ExceptionHandling
     rescue_from Error::PatronBlockedError do |error|
       log_error(error)
       render :blocked, status: :forbidden
+    end
+
+    rescue_from Error::UnauthorizedError do |error|
+      # this isn't really an error condition, it just means the user's
+      # not logged in, so we don't need the full stack trace etc.
+      logger.info(error)
+      redirect_to login_path(url: request.fullpath)
     end
   end
   # rubocop:enable Metrics/BlockLength
