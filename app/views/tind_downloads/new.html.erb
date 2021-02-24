@@ -3,7 +3,7 @@
 
   <p>Select a collection to download:</p>
 
-  <% form.root_collections.each do |root| %>
+  <% @form.root_collections.each do |root| %>
     <ul>
       <%= render(partial: 'collection', locals: { f: f, collection: root }) %>
     </ul>

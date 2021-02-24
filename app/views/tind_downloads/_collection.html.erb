@@ -1,7 +1,7 @@
 <li>
   <% button_id = collection.name.parameterize %>
-  <%= f.radio_button(:collection, collection.name, id: button_id) %> <%# TODO: is this correct? %>
-  <%= f.label(button_id, collection.name) %> <%# TODO: is this correct? %>
+  <%= f.radio_button(:collection, collection.name, id: button_id) %>
+  <%= f.label(button_id, collection.name) %>
   <% unless collection.children.empty? %>
   <ul>
     <% collection.children.each do |child| %>
