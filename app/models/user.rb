@@ -106,6 +106,14 @@ class User
     role.assignments.exists?(framework_users_id: uid)
   end
 
+  def ucb_faculty?
+    affiliations&.include?('EMPLOYEE-TYPE-ACADEMIC')
+  end
+
+  def ucb_staff?
+    affiliations&.include?('EMPLOYEE-TYPE-STAFF')
+  end
+
   private
 
   # The user's employee patron record

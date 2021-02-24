@@ -1,0 +1,11 @@
+<%= form_for(@form, class: 'needs-validation') do |f| %>
+  <h1>TIND Metadata Download</h1>
+
+  <p>Select a collection to download:</p>
+
+  <% form.root_collections.each do |root| %>
+    <ul>
+      <%= render(partial: 'collection', locals: { f: f, collection: root }) %>
+    </ul>
+  <% end %>
+<% end %>

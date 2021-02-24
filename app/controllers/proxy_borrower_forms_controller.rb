@@ -18,7 +18,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   def faculty_form
     # wisks us away to Faculty Form
-    if faculty?
+    if current_user.ucb_faculty?
       @request_form = ProxyBorrowerRequests.new
       @current_user = current_user
     else

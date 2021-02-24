@@ -1,0 +1,12 @@
+<li>
+  <% button_id = collection.name.parameterize %>
+  <%= f.radio_button(:collection, collection.name, id: button_id) %> <%# TODO: is this correct? %>
+  <%= f.label(button_id, collection.name) %> <%# TODO: is this correct? %>
+  <% unless collection.children.empty? %>
+  <ul>
+    <% collection.children.each do |child| %>
+      <%= render(partial: 'collection', locals: { f: f, collection: child }) %>
+    <% end %>
+  </ul>
+  <% end %>
+</li>
