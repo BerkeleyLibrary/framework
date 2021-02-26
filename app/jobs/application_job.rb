@@ -7,6 +7,7 @@ class ApplicationJob < ActiveJob::Base
   def log_error(error)
     # TODO: share code w/ApplicationController
     msg = {
+      msg: error.message,
       error: error.inspect.to_s,
       cause: error.cause.inspect.to_s
     }

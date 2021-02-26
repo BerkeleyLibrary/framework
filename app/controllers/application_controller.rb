@@ -50,6 +50,7 @@ class ApplicationController < ActionController::Base
   def log_error(error)
     # TODO: share code w/ApplicationJob
     msg = {
+      msg: error.message,
       error: error.inspect.to_s,
       cause: error.cause.inspect.to_s
     }
