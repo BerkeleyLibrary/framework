@@ -9,6 +9,7 @@ gem 'bootsnap', '~> 1.0', '>= 1.7.3', require: false
 gem 'bootstrap'
 gem 'coffee-rails', '~> 5.0'
 gem 'ipaddress'
+gem 'jaro_winkler', '~> 1.5.4'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'

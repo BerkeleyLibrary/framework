@@ -1,13 +1,20 @@
 <h1>TIND Metadata Download</h1>
 
-<p>Select a collection to download:</p>
-
-<%# TODO: replace this with a simple autocomplete %>
 <%= form_with(url: '/tind-download/download', local: true, target: '_blank') do |form| %>
-  <% root_collections.each do |root| %>
-    <ul>
-      <%= render(partial: 'collection', locals: { form: form, collection: root }) %>
-    </ul>
-  <% end %>
-  <%= form.submit('Download LibreOffice/OpenOffice Spreadsheet') %>
+
+  <p><%= form.label(:collection_name, 'Collection Name')%>: <%= form.text_field(:collection_name) %></p>
+
+  <p>Export format:</p>
+  <ul>
+    <li>
+      <%= form.radio_button(:export_format, 'ods', checked: true) %>
+      <%= form.label(:export_format_ods, 'LibreOffice/OpenOffice Spreadsheet') %>
+    </li>
+    <li>
+      <%= form.radio_button(:export_format, 'csv') %>
+      <%= form.label(:export_format_csv, 'CSV (comma-separated text)') %>
+    </li>
+  </ul>
+
+  <p><%= form.submit('Download Metadata') %></p> <%# TODO: enable/disable etc. %>
 <% end %>
