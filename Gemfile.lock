@@ -1,6 +1,6 @@
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-logging.git
-  revision: 35ffa995c3d3121922a1ce096abe22cd039cd936
+  revision: bbfd5c20f7f14878f3b1aec68399499eb5dc7f77
   specs:
     ucblit-logging (0.0.1)
       activesupport (~> 6.0)
@@ -10,13 +10,13 @@ GIT
 
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-tind.git
-  revision: cddd6272a78dd9baf6b6757afd9fe7ccbd1aeb6e
+  revision: 3e6c74252fe13d9ba1b288f725a113aeca763f66
   branch: main
   specs:
     ucblit-tind (0.0.1)
-      http (~> 4.4)
       marc (~> 1.0)
       rchardet (~> 1.8)
+      rest-client (~> 2.1)
       rodf (~> 1.1)
       typesafe_enum (~> 0.3)
       ucblit-logging
@@ -149,11 +149,7 @@ GEM
       activesupport (>= 4.2.0)
     hashdiff (1.0.1)
     hashie (4.1.0)
-    http (4.4.1)
-      addressable (~> 2.3)
-      http-cookie (~> 1.0)
-      http-form_data (~> 2.2)
-      http-parser (~> 1.2.0)
+    http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
@@ -198,6 +194,8 @@ GEM
     net-ssh (6.1.0)
     netaddr (1.5.1)
     nio4r (2.5.7)
+    netrc (0.11.0)
+    nio4r (2.5.5)
     nokogiri (1.11.3)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
@@ -259,6 +257,11 @@ GEM
     regexp_parser (2.1.1)
     request_store (1.5.0)
       rack (>= 1.4)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.2.5)
     rodf (1.1.1)
       builder (>= 3.0)

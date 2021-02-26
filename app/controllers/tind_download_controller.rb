@@ -7,12 +7,10 @@ class TindDownloadController < ApplicationController
   end
 
   def download
-    collection = params[:collection]
-    out = StringIO.new
-    UCBLIT::TIND::Export.export_libreoffice(collection, out)
+    data = UCBLIT::TIND::Export.export_libreoffice(collection)
     # TODO: figure out why this isn't sending data
     send_data(
-      out.string,
+      data,
       filename: "#{collection.parameterize}.ods",
       type: 'application/vnd.oasis.opendocument.spreadsheet'
     )
@@ -49,6 +47,10 @@ class TindDownloadController < ApplicationController
   end
 
   private
+
+  def collection
+    params[:collection]
+  end
 
   def root_collections
     @root_collections ||= UCBLIT::TIND::API::Collection.all

@@ -2,7 +2,8 @@
 
 <p>Select a collection to download:</p>
 
-<%= form_with(url: '/tind-download/download') do |form| %>
+<%# TODO: replace this with a simple autocomplete %>
+<%= form_with(url: '/tind-download/download', local: true, target: '_blank') do |form| %>
   <% root_collections.each do |root| %>
     <ul>
       <%= render(partial: 'collection', locals: { form: form, collection: root }) %>
