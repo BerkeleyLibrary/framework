@@ -24,7 +24,6 @@ class TindDownloadController < ApplicationController
   # TODO: figure out how to update the page after downloading
   def download
     data = UCBLIT::TIND::Export.export_libreoffice(collection_name)
-    # TODO: figure out why this isn't sending data
     send_data(
       data,
       filename: "#{collection_name.parameterize}.ods",

@@ -2,6 +2,7 @@
 *= require jquery-ui
 */
 @import "bootstrap";
+@import "tind_collection_autocomplete";
 
 .form-group.required .control-label:after {
    content: " *";

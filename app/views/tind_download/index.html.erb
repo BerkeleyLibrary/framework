@@ -1,20 +1,40 @@
 <h1>TIND Metadata Download</h1>
 
 <%= form_with(url: '/tind-download/download', local: true, target: '_blank') do |form| %>
+  <section id="tind-download-form">
 
-  <p><%= form.label(:collection_name, 'Collection Name')%>: <%= form.text_field(:collection_name) %></p>
+      <div class="form-label">
+        <p><%= form.label(:collection_name, 'Collection Name') %>:</p>
+      </div>
+      <div class="form-input">
+        <p>
+          <%= image_tag('spinner.svg', class: :spinner, height: 24) %>
+          <%= form.text_field(:collection_name) %>
+        </p>
+      </div>
 
-  <p>Export format:</p>
-  <ul>
-    <li>
-      <%= form.radio_button(:export_format, 'ods', checked: true) %>
-      <%= form.label(:export_format_ods, 'LibreOffice/OpenOffice Spreadsheet') %>
-    </li>
-    <li>
-      <%= form.radio_button(:export_format, 'csv') %>
-      <%= form.label(:export_format_csv, 'CSV (comma-separated text)') %>
-    </li>
-  </ul>
+      <div class="form-label">
+        <p>Export format:</p>
+      </div>
+      <div class="form-input">
+        <ul>
+          <% radio_button_id = :export_format %>
+          <% UCBLIT::TIND::Export::ExportFormat.each do |fmt| %>
+          <li>
+            <%
+              val = fmt.value.downcase
+              label_id = "#{radio_button_id}_#{val}".to_sym
+            %>
+            <%= form.radio_button(radio_button_id, fmt.value, checked: fmt.default?) %>
+            <%= form.label(label_id, fmt.description) %>
+          </li>
+          <% end  %>
+        </ul>
+      </div>
 
-  <p><%= form.submit('Download Metadata') %></p> <%# TODO: enable/disable etc. %>
+      <div class="form-input">
+        <%# TODO: enable/disable etc. %>
+        <p><%= form.submit('Download Metadata') %></p>
+      </div>
+  </section>
 <% end %>
