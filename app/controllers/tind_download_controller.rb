@@ -22,6 +22,7 @@ class TindDownloadController < ApplicationController
   end
 
   # TODO: require a collection
+  # TODO: validate that collection exists (TIND will just 500 on us)
   # TODO: prompt w/collection name & number of records
   # TODO: figure out how to update the page after downloading
   def download
