@@ -10,10 +10,11 @@ GIT
 
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-tind.git
-  revision: 2f35bea104d43018d3c7d447312f164fcd33d284
+  revision: c5d71e1ad65031eb4e9bf972329bc45346881cb3
   branch: main
   specs:
     ucblit-tind (0.0.1)
+      ice_nine (~> 0.11)
       marc (~> 1.0)
       rchardet (~> 1.8)
       rest-client (~> 2.1)
@@ -157,6 +158,7 @@ GEM
       ffi-compiler (>= 1.0, < 2.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    ice_nine (0.11.2)
     ipaddress (0.8.3)
     jaro_winkler (1.5.4)
     jbuilder (2.11.2)
