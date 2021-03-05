@@ -21,6 +21,8 @@ class TindDownloadController < ApplicationController
     render locals: { root_collections: root_collections }
   end
 
+  # TODO: require a collection
+  # TODO: prompt w/collection name & number of records
   # TODO: figure out how to update the page after downloading
   def download
     data = UCBLIT::TIND::Export.export_libreoffice(collection_name)
