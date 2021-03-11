@@ -26,6 +26,8 @@ class TindDownloadController < ApplicationController
   # TODO: prompt w/collection name & number of records
   # TODO: figure out how to update the page after downloading
   def download
+    # TODO: Is there any way to 'start' the downlod before we actually
+    #       build the data, so the user thinks something's happening?
     data = UCBLIT::TIND::Export.export_libreoffice(collection_name)
     send_data(
       data,
