@@ -39,42 +39,12 @@ class TindDownloadController < ApplicationController
     render json: find_nearest(term)
   end
 
-  # ############################################################
-  # Helper methods
-
-  # TODO: get rid of this
-  def current_user
-    @current_user ||= User.from_omniauth(
-      {
-        'uid' => 'dmoles',
-        'provider' => 'calnet',
-        'extra' => {
-          'berkeleyEduAffiliations' => ['EMPLOYEE-TYPE-STAFF'],
-          'berkeleyEduCSID' => '3035408457',
-          'departmentNumber' => 'KPADM',
-          'displayName' => 'David Moles',
-          'berkeleyEduOfficialEmail' => 'dmoles@berkeley.edu',
-          'employeeNumber' => '10002302',
-          'givenName' => 'David',
-          'surname' => 'Moles',
-          'berkeleyEduUCPathID' => '10002302',
-          'uid' => '1684944',
-          'berkeleyEduIsMemberOf' => [
-            'cn=edu:berkeley:org:libr:libr-developers,ou=campus groups,dc=berkeley,dc=edu',
-            'cn=edu:berkeley:org:libr:libr-managers,ou=campus groups,dc=berkeley,dc=edu',
-            'cn=edu:berkeley:org:libr:ezproxy:ezproxy_access,ou=campus groups,dc=berkeley,dc=edu',
-            'cn=edu:berkeley:org:libr:devops:vsphere_access,ou=campus groups,dc=berkeley,dc=edu',
-            'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu',
-            'cn=edu:berkeley:org:libr:libr-devops,ou=campus groups,dc=berkeley,dc=edu'
-          ]
-        }
-      }
-    )
-  end
-
   private
 
   def authorize!
+    # TODO: is there a cleaner way to do this?
+    return if Rails.env.development?
+
     authenticate!
 
     raise Error::ForbiddenError unless current_user.ucb_staff?
