@@ -15,6 +15,11 @@ class TindDownloadController < ApplicationController
   before_action :authorize!
 
   # ############################################################
+  # Configuration
+
+  self.support_email = 'helpbox@library.berkeley.edu'
+
+  # ############################################################
   # Actions
 
   def index
