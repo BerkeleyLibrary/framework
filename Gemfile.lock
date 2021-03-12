@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-tind.git
-  revision: 2c2f1a034840e9aa571d01491e51fae1ec27b2d5
+  revision: 217d9aa4e772356146a37e30c4191975c8bff438
   branch: main
   specs:
     ucblit-tind (0.0.1)
