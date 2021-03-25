@@ -27,6 +27,7 @@ RUN apk --no-cache --update upgrade \
       nodejs \
       openssl \
       postgresql-libs \
+      shared-mime-info \
       sqlite-libs \
       tzdata \
       xz-libs \
