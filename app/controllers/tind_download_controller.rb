@@ -26,21 +26,26 @@ class TindDownloadController < ApplicationController
     render locals: { root_collections: root_collections }
   end
 
-  # TODO: user-friendly error message for missing parameters
-  # TODO: validate that collection exists (TIND will just 500 on us)
   # TODO: prompt w/collection name & number of records
-  # TODO: figure out how to update the page after downloading
+
+  # rubocop:disable Metrics/MethodLength
   def download
     filename = "#{collection_name.parameterize}.#{export_format}"
     content_type = export_format.mime_type
 
-    # "Start" the download before we actually generate the data, so
-    # it looks like something's happening
-    send_file_headers!(filename: filename, type: content_type)
-
-    data = UCBLIT::TIND::Export.export(collection_name, export_format)
-    render(body: data, content_type: content_type)
+    begin
+      # "Start" the download before we actually generate the data, so
+      # it looks like something's happening
+      send_file_headers!(filename: filename, type: content_type)
+      data = UCBLIT::TIND::Export.export(collection_name, export_format)
+      render(body: data, content_type: content_type)
+    rescue StandardError => e
+      log_error(e)
+      flash[:danger] = "ERROR - Could not find collection '#{collection_name}'"
+      redirect_with_params(action: :index)
+    end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def find_collection
     term = params[:term]
