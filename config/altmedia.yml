@@ -10,7 +10,8 @@ default: &default
   mail_smtp_username: <%= ENV["MAIL_USERNAME"] || "lib-noreply@berkeley.edu" %>
   # $PATRON_API_URL is set in https://git.lib.berkeley.edu/ops/docker-swarm/blob/master/files/production/swarm/stacks/framework.yml
   patron_url: <%= ENV["PATRON_API_URL"] || "https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/" %>
-
+  tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
+  tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
 development:
   <<: *default
 

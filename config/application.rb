@@ -24,6 +24,9 @@ module Framework
     #   a div classed "field_with_errors". This messes up Bootstrap's styling
     #   for feedback messages, so I've disabled the Rails' default.
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
-    end
+
+    # Setup ucblit-tind for TIND Downloader:
+    config.tind_base_uri = URI.parse(config.altmedia['tind_base_uri'])
+    UCBLIT::TIND::API.api_key = config.altmedia['tind_api_key']
   end
 end
