@@ -1,39 +1,54 @@
 <h1>TIND Metadata Download</h1>
-
-<%= form_with(url: '/tind-download/download', local: true, target: '_blank') do |form| %>
-  <section id="tind-download-form">
-
-      <div class="form-label">
-        <p><%= form.label(:collection_name, 'Collection Name') %>:</p>
+<p id="description-text">This form allows you to search for and download a collection from TIND into either a CSV file or Open Office Spreadsheet.</p>
+<!-- RESPONSE DIV (only show after form submitted) -->
+<div id="response-div" class="response-div" style="display:none">
+  <p>Your download should start momentarily.</p>
+  <div class="mt-5">
+    <span>
+      <%= link_to 'TIND Metadata Download ', 
+      tind_download_path, 
+      class: "title-link text-nowrap" %>
+    </span>
+  </div>
+</div>
+<!-- END -->
+<!-- MAIN FORM (hide after form is submitted) -->
+<div id="form-div" style="display:block">
+  <p style="color: #ee0000">* Required</p>
+  <%= form_with(url: '/tind-download/download', id: 'down-form', local: true, target: '_blank') do |form| %>
+    <section id="tind-download-form">
+      <div class="control-label">
+        <%= form.label(:collection_name, 'Collection Name') %>:<span style="color: #ee0000"> *</span>
       </div>
-      <div class="form-input">
-        <p>
-          <%= form.text_field(:collection_name) %>
-        </p>
+      <div class="form-input required mb-4">
+        <%= form.text_field(:collection_name, 
+                  {:class => "form-control add-required", 
+                  :oninput => "checkCollectionValue()", 
+                  :required => true,
+                  :autofocus => true}) %>
       </div>
-
       <div class="form-label">
-        <p>Export format:</p>
+        Export format:
       </div>
       <div class="form-input">
         <ul>
           <% radio_button_id = :export_format %>
           <% UCBLIT::TIND::Export::ExportFormat.each do |fmt| %>
-          <li>
-            <%
-              val = fmt.value.downcase
-              label_id = "#{radio_button_id}_#{val}".to_sym
-            %>
-            <%= form.radio_button(radio_button_id, fmt.value, checked: fmt.default?) %>
-            <%= form.label(label_id, fmt.description) %>
-          </li>
+            <li>
+              <%
+                val = fmt.value.downcase
+                label_id = "#{radio_button_id}_#{val}".to_sym
+              %>
+              <%= form.radio_button(radio_button_id, fmt.value, checked: fmt.default?) %>
+              <%= form.label(label_id, fmt.description) %>
+            </li>
           <% end  %>
         </ul>
       </div>
-
       <div class="form-input">
-        <%# TODO: enable/disable etc. %>
-        <p><%= form.submit('Download Metadata') %></p>
+        <p><input type="button" id='export-btn' class='btn btn-primary' value="Download Metadata" onclick="downloadFile()" disabled></p>
       </div>
-  </section>
-<% end %>
+    </section>
+  <% end %>
+</div>
+<!-- END -->
