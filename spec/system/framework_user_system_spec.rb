@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'capybara_helper'
 
 describe :forms_proxy_borrower_admin, type: :system do
 
@@ -26,7 +26,9 @@ describe :forms_proxy_borrower_admin, type: :system do
     end
 
     it 'removes an admin user' do
-      click_link 'Remove'
+      accept_confirm 'Are you sure you want to delete John Doe?' do
+        click_link 'Remove'
+      end
       expect(page).to have_no_content('<div class="col user-col">John Doe')
       expect(page).to have_content('Removed John Doe from administrator list')
     end
@@ -68,7 +70,9 @@ describe :forms_stack_pass_admin, type: :system do
     end
 
     it 'removes an admin user' do
-      click_link 'Remove'
+      accept_confirm 'Are you sure you want to delete John Doe?' do
+        click_link 'Remove'
+      end
       expect(page).to have_no_content('<div class="col user-col">John Doe')
       expect(page).to have_content('Removed John Doe from administrator list')
     end

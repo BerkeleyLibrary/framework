@@ -1,3 +1,4 @@
+require 'capybara_helper'
 require 'calnet_helper'
 
 describe :galc_request_forms, type: :system do

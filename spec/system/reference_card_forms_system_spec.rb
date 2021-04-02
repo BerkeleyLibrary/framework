@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'capybara_helper'
 require 'time'
 
 describe :reference_card_form, type: :system do
@@ -30,8 +30,8 @@ describe :reference_card_form, type: :system do
       fill_in('reference_card_form_affiliation', with: 'Red Bull')
       fill_in('reference_card_form_email', with: 'jdoe@library.edu')
       fill_in('reference_card_form_research_desc', with: 'History of Formula 1')
-      fill_in('reference_card_form_pass_date', with: '04/13/25')
-      fill_in('reference_card_form_pass_date_end', with: '04/14/25')
+      fill_in('reference_card_form_pass_date', with: "04/13/25\t") # \t to tab off date field
+      fill_in('reference_card_form_pass_date_end', with: "04/14/25\t") # \t to tab off date field
       fill_in('reference_card_form_local_id', with: '123456789')
 
       submit_button = find(:xpath, "//input[@type='submit']")
@@ -46,8 +46,8 @@ describe :reference_card_form, type: :system do
       fill_in('reference_card_form_affiliation', with: 'Red Bull')
       fill_in('reference_card_form_email', with: 'jdoe@library.edu')
       fill_in('reference_card_form_research_desc', with: 'History of Formula 1')
-      fill_in('reference_card_form_pass_date', with: '04---13---1996')
-      fill_in('reference_card_form_pass_date_end', with: '04/14/2025')
+      fill_in('reference_card_form_pass_date', with: "04---13---1996\t") # \t to tab off date field
+      fill_in('reference_card_form_pass_date_end', with: "04/14/2025\t") # \t to tab off date field
       fill_in('reference_card_form_local_id', with: '123456789')
 
       submit_button = find(:xpath, "//input[@type='submit']")
@@ -62,8 +62,8 @@ describe :reference_card_form, type: :system do
       fill_in('reference_card_form_affiliation', with: 'Red Bull')
       fill_in('reference_card_form_email', with: 'jdoe@library.edu')
       fill_in('reference_card_form_research_desc', with: 'History of Formula 1')
-      fill_in('reference_card_form_pass_date', with: '00/00/0000')
-      fill_in('reference_card_form_pass_date_end', with: '04/14/20zz')
+      fill_in('reference_card_form_pass_date', with: "00/00/0000\t") # \t to tab off date field
+      fill_in('reference_card_form_pass_date_end', with: "9999999\t") # \t to tab off date field
       fill_in('reference_card_form_local_id', with: '123456789')
 
       submit_button = find(:xpath, "//input[@type='submit']")
@@ -78,8 +78,8 @@ describe :reference_card_form, type: :system do
       fill_in('reference_card_form_affiliation', with: 'Red Bull')
       fill_in('reference_card_form_email', with: 'NOT-AN-EMAIL-ADDRESS')
       fill_in('reference_card_form_research_desc', with: 'History of Formula 1')
-      fill_in('reference_card_form_pass_date', with: '04/13/1996')
-      fill_in('reference_card_form_pass_date_end', with: '04/14/1996')
+      fill_in('reference_card_form_pass_date', with: "04/13/1996\t") # \t to tab off date field
+      fill_in('reference_card_form_pass_date_end', with: "04/14/1996\t") # \t to tab off date field
       fill_in('reference_card_form_local_id', with: '123456789')
 
       submit_button = find(:xpath, "//input[@type='submit']")

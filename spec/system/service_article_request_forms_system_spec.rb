@@ -1,3 +1,4 @@
+require 'capybara_helper'
 require 'calnet_helper'
 
 describe :service_article_request_forms, type: :system do

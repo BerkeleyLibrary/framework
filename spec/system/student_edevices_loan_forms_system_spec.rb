@@ -1,3 +1,4 @@
+require 'capybara_helper'
 require 'calnet_helper'
 
 describe :student_edevices_loan_forms, type: :system do

@@ -1,3 +1,4 @@
+require 'capybara_helper'
 require 'calnet_helper'
 
 describe :doemoff_study_room_use_forms, type: :system do

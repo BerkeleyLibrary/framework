@@ -24,13 +24,6 @@ RSpec.configure do |config|
   # Required for shared contexts (e.g. in ssh_helper.rb); see
   # https://relishapp.com/rspec/rspec-core/docs/example-groups/shared-context#background
   config.shared_context_metadata_behavior = :apply_to_host_groups
-
-  # System tests
-  # cf. https://medium.com/table-xi/a-quick-guide-to-rails-system-tests-in-rspec-b6e9e8a8b5f6
-  config.before(:each, type: :system) do
-    driven_by :rack_test
-    # driven_by :selenium_chrome_headless
-  end
 end
 
 # Temporarily redirects log output to a StringIO object, runs

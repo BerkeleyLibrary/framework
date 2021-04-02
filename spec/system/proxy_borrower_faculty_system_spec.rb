@@ -1,5 +1,6 @@
+require 'capybara_helper'
 require 'calnet_helper'
-require 'rails_helper'
+require 'capybara_helper'
 require 'time'
 
 describe :forms_proxy_borrower_faculty, type: :system do
@@ -54,9 +55,12 @@ describe :forms_proxy_borrower_faculty, type: :system do
   end
 
   it 'rejects a request with missing required data' do
-    fill_in('research_last', with: nil)
-    fill_in('research_first', with: nil)
-    fill_in('term', with: @max_date_str)
+    # TODO: instead of using spaces to get around the JavaScript empty check,
+    #       test the JavaScript, then disable JavaScript and test the server-side
+    #       validation separately
+    fill_in('research_last', with: ' ')
+    fill_in('research_first', with: ' ')
+    fill_in('term', with: "#{@max_date_str}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -69,7 +73,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
 
-    fill_in('term', with: 'NOT A DATE')
+    fill_in('term', with: "99999999\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -81,7 +85,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
 
-    fill_in('term', with: @invalid_date_str)
+    fill_in('term', with: "#{@invalid_date_str}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -94,7 +98,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     fill_in('department', with: 'LIB')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
-    fill_in('term', with: @max_date_str)
+    fill_in('term', with: "#{@max_date_str}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -118,7 +122,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     fill_in('department', with: 'LIB')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
-    fill_in('term', with: @short_year)
+    fill_in('term', with: "#{@short_year}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click

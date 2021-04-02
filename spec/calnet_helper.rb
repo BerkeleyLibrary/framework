@@ -57,7 +57,7 @@ end
 # Capybara RackTest mock browser is notoriously stupid about external redirects
 # https://github.com/teamcapybara/capybara/issues/1388
 def without_redirects
-  if respond_to?(:page)
+  if respond_to?(:page) && page.driver.respond_to?(:follow_redirects?)
     was_enabled = page.driver.follow_redirects?
     begin
       page.driver.options[:follow_redirects] = false

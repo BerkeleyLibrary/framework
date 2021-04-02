@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'capybara_helper'
 require 'time'
 
 describe :stack_pass_form, type: :system do

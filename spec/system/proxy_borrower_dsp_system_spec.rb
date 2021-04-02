@@ -1,5 +1,6 @@
+require 'capybara_helper'
 require 'calnet_helper'
-require 'rails_helper'
+require 'capybara_helper'
 require 'time'
 
 describe :forms_proxy_borrower_dsp, type: :system do
@@ -37,6 +38,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
       research_last
       research_first
       term
+      dsp_rep
     ]
 
     # Check required text fields:
@@ -48,9 +50,14 @@ describe :forms_proxy_borrower_dsp, type: :system do
   end
 
   it 'rejects a request with missing required data' do
-    fill_in('research_last', with: nil)
-    fill_in('research_first', with: nil)
-    fill_in('term', with: @max_date_str)
+    # TODO: instead of using spaces to get around the JavaScript empty check,
+    #       test the JavaScript, then disable JavaScript and test the server-side
+    #       validation separately
+    fill_in('student_name', with: ' ')
+    fill_in('research_last', with: ' ')
+    fill_in('research_first', with: ' ')
+    fill_in('dsp_rep', with: ' ') # TODO: add server-side validation for this (currently only JS)
+    fill_in('term', with: "#{@max_date_str}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -60,10 +67,12 @@ describe :forms_proxy_borrower_dsp, type: :system do
   end
 
   it 'rejects a request with a non-date term' do
+    fill_in('student_name', with: 'Luke Skywalker')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
+    fill_in('dsp_rep', with: 'Jane Roe')
 
-    fill_in('term', with: '33333333')
+    fill_in('term', with: "33333333\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -72,10 +81,12 @@ describe :forms_proxy_borrower_dsp, type: :system do
   end
 
   it 'rejects a request with an invalid date term' do
+    fill_in('student_name', with: 'Luke Skywalker')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
+    fill_in('dsp_rep', with: 'Jane Roe')
 
-    fill_in('term', with: @invalid_date_str)
+    fill_in('term', with: "#{@invalid_date_str}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -87,7 +98,8 @@ describe :forms_proxy_borrower_dsp, type: :system do
     fill_in('student_name', with: 'Luke Skywalker')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
-    fill_in('term', with: @max_date_str)
+    fill_in('dsp_rep', with: 'Jane Roe')
+    fill_in('term', with: "#{@max_date_str}\t") # \t to tab off date field
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'capybara_helper'
 
 describe :affiliate_borrow_request_forms, type: :system do
   before(:each) do
