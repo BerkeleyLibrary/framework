@@ -18,7 +18,7 @@ describe 'TIND Download Request Form', type: :request do
       @user = login_as(patron_id)
       @patron = Patron::Record.find(patron_id)
 
-      stub_request(:get, "https://digicoll.lib.berkeley.edu/api/v1/collections?depth=100").to_return(
+      stub_request(:get, 'https://digicoll.lib.berkeley.edu/api/v1/collections?depth=100').to_return(
         status: 200,
         body: File.new('spec/data/tindcollections.json')
       )

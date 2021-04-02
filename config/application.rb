@@ -26,7 +26,7 @@ module Framework
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
 
     # Setup ucblit-tind for TIND Downloader:
-    config.tind_base_uri = URI.parse(config.altmedia['tind_base_uri'])
-    UCBLIT::TIND::API.api_key = config.altmedia['tind_api_key']
+    config.tind_base_uri = config.altmedia['tind_base_uri']
+    config.tind_api_key = config.altmedia['tind_api_key']
   end
 end

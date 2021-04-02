@@ -1,8 +1,8 @@
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-logging.git
-  revision: bbfd5c20f7f14878f3b1aec68399499eb5dc7f77
+  revision: d3d40d88c609b711cd40c787957528aaf4fd2c4b
   specs:
-    ucblit-logging (0.0.1)
+    ucblit-logging (0.1.0)
       activesupport (~> 6.0)
       amazing_print (~> 1.1)
       lograge (~> 0.11)
@@ -10,17 +10,17 @@ GIT
 
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-tind.git
-  revision: 217d9aa4e772356146a37e30c4191975c8bff438
+  revision: 00d17d0d3848c9cd3175a71d8ada2802331e2e00
   branch: main
   specs:
-    ucblit-tind (0.0.1)
+    ucblit-tind (0.2.1)
       ice_nine (~> 0.11)
       marc (~> 1.0)
       rchardet (~> 1.8)
       rest-client (~> 2.1)
       rubyzip (~> 2.3)
       typesafe_enum (~> 0.3)
-      ucblit-logging
+      ucblit-logging (~> 0.1)
 
 GIT
   remote: https://github.com/dlindahl/omniauth-cas.git
