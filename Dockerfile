@@ -18,8 +18,8 @@ RUN addgroup -S -g 40035 altmedia \
 &&  chown -R altmedia:altmedia /opt/app /var/opt/app /usr/local/bundle
 
 # Install packages common to dev and prod.
-RUN apk --no-cache --update upgrade \
-&&  apk --no-cache add \
+RUN apk --no-cache --update upgrade && \
+    apk --no-cache add \
       bash \
       ca-certificates \
       git \
@@ -32,7 +32,28 @@ RUN apk --no-cache --update upgrade \
       tzdata \
       xz-libs \
       yarn \
-&&  rm -rf /var/cache/apk/*
+      && \
+    rm -rf /var/cache/apk/*
+
+# ==============================
+# Selenium testing
+
+RUN apk --no-cache add \
+      chromium \
+      chromium-chromedriver \
+      python3 \
+      python3-dev \
+      py3-pip
+
+RUN pip3 install -U selenium
+
+# Workaround for https://github.com/rails/rails/issues/41828
+RUN mkdir -p /opt/app/tmp && \
+    mkdir -p /opt/app/artifacts/screenshots && \
+    ln -s ../artifacts/screenshots /opt/app/tmp/screenshots
+
+# ==============================
+# Run configuration
 
 # All subsequent commands are executed relative to this directory.
 WORKDIR /opt/app

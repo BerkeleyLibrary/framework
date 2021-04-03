@@ -13,6 +13,7 @@ dockerComposePipeline(
       'Code Coverage': 'artifacts/rcov',
       'RuboCop'      : 'artifacts/rubocop',
       'Brakeman'     : 'artifacts/brakeman'
-    ]
+    ],
+    raw     : 'artifacts/screenshots/**/*.png'
   ]
 )
