@@ -22,6 +22,11 @@ Rails.application.routes.draw do
     resources :reference_card_forms, path: 'reference-card'
   end
 
+
+  get '/fines/list', to: 'fines#index'
+  get '/fines/error', to: 'fines#error'
+  get '/fines/list/:id(.:format)', to: 'fines#index'
+
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'
   get '/forms/proxy-borrower/admin_view', to: 'proxy_borrower_admin#admin_view'
