@@ -16,5 +16,6 @@ dockerComposePipeline(
       'Brakeman'     : 'artifacts/brakeman'
     ],
     raw     : 'artifacts/screenshots/**/*.png'
-  ]
+  ],
+  debug: true
 )
