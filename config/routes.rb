@@ -22,7 +22,6 @@ Rails.application.routes.draw do
     resources :reference_card_forms, path: 'reference-card'
   end
 
-
   get '/fines/list', to: 'fines#index'
   get '/fines/error', to: 'fines#error'
   get '/fines/list/:id(.:format)', to: 'fines#index'
