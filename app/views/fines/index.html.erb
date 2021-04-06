@@ -1,5 +1,30 @@
 <!-- TODO: need to set title-->
 <h2>List of Fees</h2>
 <!-- TODO: need descriptive text-->
-<p>Fees go here...</p>
+<p>Cupcake ipsum dolor sit amet wafer donut gingerbread cake. Dessert wafer carrot cake wafer cotton candy oat cake halvah. Cotton candy chocolate bar biscuit liquorice cake danish lemon drops pastry. Chupa chups chocolate pastry gummi bears cupcake.</p>
 <!-- TODO: create table/form for user to select which fines/fees they want to pay-->
+<%= form_with url: "", method: :post, local:true do |form| %>
+  <table class="table table-bordered mt-5">
+    <thead class="thead-light">
+      <th scope="col">ID</th>
+      <th scope="col">Type</th>
+      <th scope="col">Status</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Date</th>
+      <th scope="col">Pay</th>
+    </thead>
+    <% @fines['fee'].each do |fee| %>
+      <tr>
+        <td><%= fee['id'] %></td>
+        <td><%= fee['type']['desc'] %></td>
+        <td><%= fee['status']['desc'] %></td>
+        <td><%= fee['balance'] %></td>
+        <td><%= fee['creation_time'] %></td>
+        <td>checkbox</td>
+      </tr>
+    <% end %>
+  </table>
+  <div class="d-flex justify-content-center">
+    <%= form.submit("Pay with PayPal", {:class => 'btn btn-primary'}) %>
+  </div>
+<% end %>
