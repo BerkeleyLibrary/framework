@@ -1,4 +1,3 @@
-
 class FinesController < ApplicationController
 
   # TODO: setup JWT
@@ -8,34 +7,36 @@ class FinesController < ApplicationController
   def index
     alma_id = params[:id] || nil
 
-    #puts "\n\n\n\n#{alma_id}\n\n\n\n"
+    # puts "\n\n\n\n#{alma_id}\n\n\n\n"
 
     # If no Alma ID redirect to error for now....
-    if alma_id.nil?
-      redirect_to fines_error_path
-    end
+    redirect_to fines_error_path if alma_id.nil?
 
     # TODO: pull user's fines from Alma
 
-    #@fine_list = Fine.fetch_all(alma_id)
+    # @fine_list = Fine.fetch_all(alma_id)
     @fines = Alma::Fines.fetch_all(alma_id)
     status = @fines.status
     puts "-----> #{status} <------"
-    body = JSON.parse(@fines.body)
-    puts "************** START *******************"
-    puts "\n\n#{body['fee'].inspect}\n\n"
-    puts "*************** END *****************\n\n"
 
-    body['fee'].each do |f|
-      puts "ID: #{f['id']}"
-      puts "  TYPE: #{f['type']['desc']}"
-      puts "  STATUS: #{f['status']['desc']}"
-      puts "  BALANCE: #{f['balance']}"
-      puts "  DATE: #{f['creation_time']}"
+    if status == 200
+      @fines = JSON.parse(@fines.body)
+    else
+      redirect_to fines_error_path
     end
+    # puts "************** START *******************"
+    # puts "\n\n#{body['fee'].inspect}\n\n"
+    # puts "*************** END *****************\n\n"
+
+    # @fines['fee'].each do |f|
+    #   puts "ID: #{f['id']}"
+    #   puts "  TYPE: #{f['type']['desc']}"
+    #   puts "  STATUS: #{f['status']['desc']}"
+    #   puts "  BALANCE: #{f['balance']}"
+    #   puts "  DATE: #{f['creation_time']}"
+    # end
   end
 
-  def error
-  end
+  def error; end
 
 end
