@@ -1,15 +1,16 @@
 <!-- TODO: need to set title-->
 <h2>List of Fees</h2>
 <!-- TODO: need descriptive text-->
-<p>Cupcake ipsum dolor sit amet wafer donut gingerbread cake. Dessert wafer carrot cake wafer cotton candy oat cake halvah. Cotton candy chocolate bar biscuit liquorice cake danish lemon drops pastry. Chupa chups chocolate pastry gummi bears cupcake.</p>
+<p>Liquor ipsum dolor sit amet aberfeldy tom and jerry gin pahit aberlour bloodhound flirtini royal widow. B & b glen spey suaza margarita cactus jack; tomintoul bellini polish martini charro negro. White russian pepe lopez laphroaig singapore sling lord calvert pall mall kahlua pegu canadian club ballantine greyhound piscola pepe lopez.</p>
 <!-- TODO: setup route/controller for receiving form -->
 <%= form_with url: "", method: :post, local:true do |form| %>
   <table class="table table-bordered mt-5">
     <thead class="table-header">
-      <th scope="col">ID</th>
-      <th scope="col">Type</th>
+      <th scope="col" class="text-center">ID</th>
+      <th scope="col" class="text-center">Type</th>
+      <th scope="col" class="text-center">Owner</th>
       <th scope="col" class="text-center">Status</th>
-      <th scope="col" class="text-center">Amount</th>
+      <th scope="col" class="text-center">Balance</th>
       <th scope="col" class="text-center">Date</th>
       <th scope="col" class="text-center">Pay</th>
     </thead>
@@ -17,6 +18,7 @@
       <tr scope="row">
         <td><%= fee['id'] %></td>
         <td><%= fee['type']['desc'] %></td>
+        <td><%= fee['owner']['desc'] %></td>
         <td class="text-center"><%= fee['status']['desc'] %></td>
         <td class="text-right">$<%= sprintf('%.2f',fee['balance'].to_f) %></td>
         <td class="text-center"><%= fee['creation_time'].to_datetime.strftime("%m/%d/%Y") %></td>
@@ -26,7 +28,7 @@
       </tr>
     <% end %>
   </table>
-  <div class="d-flex justify-content-center">
+  <div class="d-flex justify-content-center pt-3 pb-5">
     <%= form.submit("Pay with PayPal", {:class => 'btn btn-primary'}) %>
   </div>
 <% end %>
