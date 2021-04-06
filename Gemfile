@@ -8,6 +8,7 @@ gem 'awesome_print', '>=1.8.0'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'bootstrap'
 gem 'coffee-rails', '~> 5.0'
+gem 'faraday'
 gem 'ipaddress'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
