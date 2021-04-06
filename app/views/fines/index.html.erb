@@ -5,22 +5,22 @@
 <!-- TODO: create table/form for user to select which fines/fees they want to pay-->
 <%= form_with url: "", method: :post, local:true do |form| %>
   <table class="table table-bordered mt-5">
-    <thead class="thead-light">
+    <thead class="table-header">
       <th scope="col">ID</th>
       <th scope="col">Type</th>
-      <th scope="col">Status</th>
-      <th scope="col">Amount</th>
-      <th scope="col">Date</th>
-      <th scope="col">Pay</th>
+      <th scope="col" class="text-center">Status</th>
+      <th scope="col" class="text-center">Amount</th>
+      <th scope="col" class="text-center">Date</th>
+      <th scope="col" class="text-center">Pay</th>
     </thead>
     <% @fines['fee'].each do |fee| %>
-      <tr>
+      <tr scope="row">
         <td><%= fee['id'] %></td>
         <td><%= fee['type']['desc'] %></td>
-        <td><%= fee['status']['desc'] %></td>
-        <td><%= fee['balance'] %></td>
-        <td><%= fee['creation_time'] %></td>
-        <td>checkbox</td>
+        <td class="text-center"><%= fee['status']['desc'] %></td>
+        <td class="text-right"><%= fee['balance'] %></td>
+        <td class="text-center"><%= fee['creation_time'].to_datetime.strftime("%m/%d/%Y") %></td>
+        <td class='text-center'>checkbox</td>
       </tr>
     <% end %>
   </table>
