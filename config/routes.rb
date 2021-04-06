@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   get '/fines/list', to: 'fines#index'
   get '/fines/error', to: 'fines#error'
   get '/fines/list/:id(.:format)', to: 'fines#index'
-
+  post '/fines/payment', to: 'fines#payment'
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'
   get '/forms/proxy-borrower/admin_view', to: 'proxy_borrower_admin#admin_view'

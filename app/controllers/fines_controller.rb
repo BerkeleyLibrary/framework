@@ -17,7 +17,7 @@ class FinesController < ApplicationController
     # @fine_list = Fine.fetch_all(alma_id)
     @fines = Alma::Fines.fetch_all(alma_id)
     status = @fines.status
-    puts "-----> #{status} <------"
+    #puts "-----> #{status} <------"
 
     if status == 200
       @fines = JSON.parse(@fines.body)
@@ -27,7 +27,7 @@ class FinesController < ApplicationController
     # puts "************** START *******************"
     # puts "\n\n#{body['fee'].inspect}\n\n"
     # puts "*************** END *****************\n\n"
-
+    
     # @fines['fee'].each do |f|
     #   puts "ID: #{f['id']}"
     #   puts "  TYPE: #{f['type']['desc']}"
@@ -36,7 +36,16 @@ class FinesController < ApplicationController
     #   puts "  DATE: #{f['creation_time']}"
     # end
   end
-
+  
   def error; end
+  
+  def payment
+
+    puts "Initialize payment...."
+    puts "************** START *******************"
+    puts "-->#{params['fees']['ids']}<--"
+    puts "*************** END *****************\n\n"
+    
+  end
 
 end
