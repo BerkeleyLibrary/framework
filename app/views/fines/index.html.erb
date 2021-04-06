@@ -2,7 +2,7 @@
 <h2>List of Fees</h2>
 <!-- TODO: need descriptive text-->
 <p>Cupcake ipsum dolor sit amet wafer donut gingerbread cake. Dessert wafer carrot cake wafer cotton candy oat cake halvah. Cotton candy chocolate bar biscuit liquorice cake danish lemon drops pastry. Chupa chups chocolate pastry gummi bears cupcake.</p>
-<!-- TODO: create table/form for user to select which fines/fees they want to pay-->
+<!-- TODO: setup route/controller for receiving form -->
 <%= form_with url: "", method: :post, local:true do |form| %>
   <table class="table table-bordered mt-5">
     <thead class="table-header">
@@ -18,9 +18,11 @@
         <td><%= fee['id'] %></td>
         <td><%= fee['type']['desc'] %></td>
         <td class="text-center"><%= fee['status']['desc'] %></td>
-        <td class="text-right"><%= fee['balance'] %></td>
+        <td class="text-right">$<%= sprintf('%.2f',fee['balance'].to_f) %></td>
         <td class="text-center"><%= fee['creation_time'].to_datetime.strftime("%m/%d/%Y") %></td>
-        <td class='text-center'>checkbox</td>
+        <td class='text-center'>
+          <%= check_box("fee", "payment", {:multiple => true}, fee['id'], nil ) %>
+        </td>
       </tr>
     <% end %>
   </table>
