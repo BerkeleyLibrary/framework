@@ -1,6 +1,8 @@
 // @see https://git.lib.berkeley.edu/ops/jenkins-workflow-scripts/-/blob/master/vars/dockerComposePipeline.groovy
+@Library("jenkins-workflow-scripts@LIT-2325-selenium-chrome") _
+
 dockerComposePipeline(
-  stack: [template: 'postgres'],
+  stack: [template: 'postgres-selenium'],
   commands: [
     'rake check',
     'rake rubocop',
@@ -15,5 +17,6 @@ dockerComposePipeline(
       'Brakeman'     : 'artifacts/brakeman'
     ],
     raw     : 'artifacts/screenshots/**/*.png'
-  ]
+  ],
+  debug: true
 )

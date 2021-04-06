@@ -54,5 +54,15 @@ Rails.application.configure do
 
   # Configure the default host - this is used by Stack Pass's mailer, to create a link
   # back to the application (directly to the approval form for an pass request):
-  config.action_mailer.default_url_options = { host: 'localhost:3000' }
+  if ENV['CI']
+    default_url_options = { host: 'app.localhost:3000' }
+    config.action_mailer.default_url_options = default_url_options
+
+    config.force_ssl = false
+    routes.default_url_options[:protocol] = 'http'
+    routes.default_url_options[:host] = 'app.localhost'
+    routes.default_url_options[:port] = '3000'
+  else
+    config.action_mailer.default_url_options = { host: 'localhost:3000' }
+  end
 end

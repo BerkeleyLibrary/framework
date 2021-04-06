@@ -76,35 +76,29 @@ bundle install --no-deployment
 
 Tests are written using [RSpec](https://rspec.info/). Rails offers [extensive documentation](https://guides.rubyonrails.org/testing.html) on testing, much more than can be covered here, so take a look at it. (The Rails docs are based on Minitest, the default Rails test framework, but the general advice there still applies.) See the [rspec-rails](https://github.com/rspec/rspec-rails) documentation for additional features that support testing Rails applications with RSpec.
 
-After following the steps above to build your application, the easiest way to test it is to shell into a container running in "test mode":
+### Locally
 
-```sh
-docker-compose run --rm -u root -e RAILS_ENV=test --entrypoint=ash rails
-```
+### In Docker
 
----
+To spin up a Docker stack, run all RSpec tests, and check test coverage:
 
-> **Shortcut:** Use the `bin/docker-shell <env=test> <user=root>` utility script to avoid having to type all that. (But you should still know what it's doing.)
+1. Make sure the Docker stack is not running already (`docker-compose down`)
+2. Spin up a new instance of the `rails` container, along with its declared dependencies
+   (database, Selenium, etc.) and run the tests:
 
----
+   ```sh
+   docker-compose run --rm --use-aliases rails rails check
+   ```
 
-That boots you into a shell inside of the container, where all of your application code and dependencies live in (partial) isolation from your workstation. From there, you can spin up a rails console or run the test suite:
+   (`rails rails` because we want to start the `rails` container and then run the `rails`
+   command in it.)
 
-```sh
-rails c # open a rails console
-rails spec # run the whole test suite
-rails spec:{models,controllers,mailers,…} # run a subset of specs
-rails spec SPEC=spec/path/to/my_spec.rb # run a specific spec
-```
+   Note that when this completes (successfully or not), the `rails` container will
+   be shut down, but not the other containers it depends on.
+3. Shut down those other containers with `docker-compose down`.  
 
-To generate a test coverage report, you can either use the `cal:test:coverage` task, or set the `COVERAGE` environment variable:
-
-```sh
-rails cal:test:coverage
-COVERAGE=true rails spec
-```
-
-Note that when running commands via `rails`, what you're really doing is running something called a rake task. (Get it? "Rake" as in "Make", but for Ruby!) As per usual, the [rails documentation](https://guides.rubyonrails.org/command_line.html#custom-rake-tasks) provides some good info.
+The stack file (`docker-compose.yml`) maps `/opt/app` to your working directory as a volume,
+so any reports written to `/opt/app/artifacts` should now be under `./artifacts`. 
 
 ### Sending and Testing Emails
 

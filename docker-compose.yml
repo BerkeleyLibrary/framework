@@ -12,11 +12,16 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
 
-  app: &services-app
+  rails: &services-rails
     build:
       context: .
       target: development
+    depends_on:
+      - db
+      - selenium
+      - selenium-chrome
     environment:
+      CI: present
       DATABASE_URL: "postgres://root:root@db/framework-development?pool=5"
     ports:
       - 3000:3000
@@ -24,14 +29,36 @@ services:
     volumes:
       - ./:/opt/app
 
+  selenium:
+    environment:
+      JAVA_OPTS: -Dwebdriver.chrome.verboseLogging=true
+      START_XVFB: "false"
+    image: selenium/hub
+    ports:
+      - 4444:4444
+
+  selenium-chrome:
+    depends_on:
+      - selenium
+    environment:
+      HUB_HOST: selenium
+      JAVA_OPTS: -Dwebdriver.chrome.verboseLogging=true
+    image: selenium/node-chrome-debug
+    ports:
+      # @note Use `open vnc://localhost:55900` to view the chrome session.
+      #       Doesn't work if you pass the "headless" option via Capybara.
+      #       Password = "secret"
+      - 55900:5900
+    volumes:
+      - /dev/shm:/dev/shm:rw
+
   updater:
-    <<: *services-app
+    <<: *services-rails
     command: rails setup
     depends_on:
-      - adminer
-      - app
       - db
+      - rails
     ports: []
     restart: "no"
 
-version: "3.5"
+version: '3.8'

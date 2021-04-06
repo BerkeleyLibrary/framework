@@ -38,15 +38,6 @@ RUN apk --no-cache --update upgrade && \
 # ==============================
 # Selenium testing
 
-RUN apk --no-cache add \
-      chromium \
-      chromium-chromedriver \
-      python3 \
-      python3-dev \
-      py3-pip
-
-RUN pip3 install -U selenium
-
 # Workaround for https://github.com/rails/rails/issues/41828
 RUN mkdir -p /opt/app/tmp && \
     mkdir -p /opt/app/artifacts/screenshots && \
