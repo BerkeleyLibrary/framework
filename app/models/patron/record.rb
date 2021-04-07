@@ -16,20 +16,6 @@ module Patron
     # Any two-digit year below this, and Ruby's Date.parse() will wrap ahead to 2068.
     MILLENNIUM_MIN_DATE = Date.new(1969, 1, 1)
 
-    # Base URL for the Patron API.
-    #
-    # @return [URI]
-    class_attribute :api_base_url, default: URI.parse(
-      'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/'
-    )
-
-    # URL of the expect script used to add notes to patron records
-    #
-    # @return [URI]
-    class_attribute :expect_url, default: URI.parse(
-      'ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote'
-    )
-
     # The patron's affiliation code (UC Berkeley, Community College, etc.)
     # according to Millennium.
     #
@@ -73,6 +59,27 @@ module Patron
     attr_accessor :expiration_date
 
     class << self
+
+      # Base URL for the Patron API.
+      #
+      # @return [URI]
+      def api_base_url
+        @api_base_url ||= URI.parse(
+          Rails.application.config.altmedia['patron_url'] ||
+            'https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/'
+        )
+      end
+
+      # URL of the expect script used to add notes to patron records
+      #
+      # @return [URI]
+      def expect_url
+        @expect_url ||= URI.parse(
+          Rails.application.config.altmedia['expect_url'] ||
+            'ssh://altmedia@vm161.lib.berkeley.edu/home/altmedia/bin/mkcallnote'
+        )
+      end
+
       # Returns the patron record for a given ID
       #
       # @return [Patron::Record]

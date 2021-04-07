@@ -39,11 +39,5 @@ module Framework
         { msg: 'Request', request: data }
       end
     end
-    # Configure Patron API lookups. Uses before_initialize hook so that
-    # autoloading finds the Patron::Record class.
-    config.before_initialize do
-      Patron::Record.api_base_url = URI.parse(config.altmedia['patron_url'])
-      Patron::Record.expect_url = URI.parse(config.altmedia['expect_url'])
-    end
   end
 end
