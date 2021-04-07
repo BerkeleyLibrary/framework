@@ -3,20 +3,41 @@ require 'capybara'
 module UCBLIT
   module SeleniumHelper
     class Configurator
+
+      DEFAULT_CHROME_ARGS = [
+        '--window-size=2560,1344'
+      ].freeze
+
       def configure!
         register_driver!
         configure_rspec!
       end
+
+      def chrome_args
+        additional_chrome_args + DEFAULT_CHROME_ARGS
+      end
+
     end
 
     class GridConfigurator < Configurator
+
+      def additional_chrome_args
+        [
+          # Docker containers default to a /dev/shm too small for Chrome's cache
+          '--disable-dev-shm-usage',
+          '--disable-gpu'
+        ]
+      end
+
       def register_driver!
         Capybara.register_driver :jenkins_selenium_grid do |app|
           Capybara::Selenium::Driver.new(
             app,
             browser: :remote,
             url: 'http://selenium:4444/wd/hub',
-            desired_capabilities: :chrome
+            desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
+              chromeOptions: { args: chrome_args }
+            )
           )
         end
       end
@@ -42,18 +63,19 @@ module UCBLIT
     end
 
     class LocalConfigurator < Configurator
+      def additional_chrome_args
+        ['--headless']
+      end
+
       def register_driver!
         require 'selenium-webdriver'
 
         Capybara.register_driver :selenium_chrome_headless do |app|
-          options = ::Selenium::WebDriver::Chrome::Options.new
-
-          options.add_argument('--headless')
-          options.add_argument('--no-sandbox')
-          options.add_argument('--disable-dev-shm-usage')
-          options.add_argument('--window-size=1400,1400')
-
-          Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+          Capybara::Selenium::Driver.new(
+            app,
+            browser: :chrome,
+            options: ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args)
+          )
         end
 
         Capybara.javascript_driver = :selenium_chrome_headless
