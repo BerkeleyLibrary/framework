@@ -1,5 +1,5 @@
 // @see https://git.lib.berkeley.edu/ops/jenkins-workflow-scripts/-/blob/master/vars/dockerComposePipeline.groovy
-@Library("jenkins-workflow-scripts@LIT-2325-alias-app-to-rails") _
+@Library("jenkins-workflow-scripts@LIT-2325-selenium-chrome") _
 
 dockerComposePipeline(
   stack: [template: 'postgres-selenium'],

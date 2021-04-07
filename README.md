@@ -80,25 +80,24 @@ Tests are written using [RSpec](https://rspec.info/). Rails offers [extensive do
 
 ### In Docker
 
-To spin up a Docker stack, run all RSpec tests, and check test coverage:
+To run all RSpec tests, and check test coverage:
 
-1. Make sure the Docker stack is not running already (`docker-compose down`)
-2. Spin up a new instance of the `rails` container, along with its declared dependencies
-   (database, Selenium, etc.) and run the tests:
+1. Make sure the Docker stack is running (`docker-compose up`)
+2. Connect to the `app` container and run the tests:
 
    ```sh
-   docker-compose run --rm --use-aliases rails rails check
+   docker-compose exec app rails coverage
    ```
 
-   (`rails rails` because we want to start the `rails` container and then run the `rails`
-   command in it.)
-
-   Note that when this completes (successfully or not), the `rails` container will
-   be shut down, but not the other containers it depends on.
-3. Shut down those other containers with `docker-compose down`.  
-
 The stack file (`docker-compose.yml`) maps `/opt/app` to your working directory as a volume,
-so any reports written to `/opt/app/artifacts` should now be under `./artifacts`. 
+so you should always be seeing your latest code, and when the contanizerized app or tests write
+to directories it sees as `/opt/app/log` or `/opt/app/artifacts`, it's actually writing to
+`./log` and `./artifacts` in your working directory.
+
+#### Note
+
+You can also run tests without a coverage check with `docker-compose exec app rails spec`, or
+specify a subset of tests, e.g. `spec:system` or `spec:models`.
 
 ### Sending and Testing Emails
 

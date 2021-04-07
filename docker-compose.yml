@@ -12,7 +12,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
 
-  rails: &services-rails
+  app: &services-app
     build:
       context: .
       target: development
@@ -28,6 +28,10 @@ services:
     restart: always
     volumes:
       - ./:/opt/app
+    networks:
+      default:
+        aliases:
+          - app.test
 
   selenium:
     environment:
@@ -55,11 +59,11 @@ services:
       - /dev/shm:/dev/shm:rw
 
   updater:
-    <<: *services-rails
+    <<: *services-app
     command: rails setup
     depends_on:
       - db
-      - rails
+      - app
     ports: []
     restart: "no"
 

@@ -2,8 +2,11 @@ require 'capybara'
 
 module UCBLIT
   module SeleniumHelper
-    class Configurator
 
+    CAPYBARA_APP_HOSTNAME = 'app.test'.freeze
+    SELENIUM_HOSTNAME = 'selenium'.freeze
+
+    class Configurator
       DEFAULT_CHROME_ARGS = [
         '--window-size=2560,1344'
       ].freeze
@@ -34,7 +37,7 @@ module UCBLIT
           Capybara::Selenium::Driver.new(
             app,
             browser: :remote,
-            url: 'http://selenium:4444/wd/hub',
+            url: "http://#{SELENIUM_HOSTNAME}:4444/wd/hub",
             desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
               chromeOptions: { args: chrome_args }
             )
@@ -47,9 +50,9 @@ module UCBLIT
           config.before(:each, type: :system) do
             driven_by(:jenkins_selenium_grid)
 
-            Capybara.app_host = 'http://rails:3000'
+            Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
             Capybara.server_host = '0.0.0.0'
-            Capybara.server_port = 3000
+            Capybara.always_include_port = true
 
             WebMock.disable_net_connect!(
               allow: ['selenium'],
@@ -105,7 +108,7 @@ module UCBLIT
       private
 
       def using_selenium_grid?
-        resolves_to_self?('rails') && host_exists?('selenium')
+        resolves_to_self?(self::CAPYBARA_APP_HOSTNAME) && host_exists?(self::SELENIUM_HOSTNAME)
       end
 
       def host_exists?(hostname)
