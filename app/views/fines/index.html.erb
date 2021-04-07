@@ -4,6 +4,7 @@
 <p>Liquor ipsum dolor sit amet aberfeldy tom and jerry gin pahit aberlour bloodhound flirtini royal widow. B & b glen spey suaza margarita cactus jack; tomintoul bellini polish martini charro negro. White russian pepe lopez laphroaig singapore sling lord calvert pall mall kahlua pegu canadian club ballantine greyhound piscola pepe lopez.</p>
 <!-- TODO: setup route/controller for receiving form -->
 <%= form_with url: "/fines/payment", method: :post, local:true do |form| %>
+  <%= form.hidden_field :user_id, :value => @alma_id %>
   <table class="table table-bordered mt-5">
     <thead class="table-header">
       <th scope="col" class="text-center">ID</th>

@@ -5,5 +5,10 @@ module Alma
       request = "#{BASE_URL}users/#{alma_id}/fees?apikey=#{ENV['ALMA_KEY']}"
       Faraday.get(request, {}, { 'Accept' => 'application/json' })
     end
+
+    def self.fetch_fine(alma_id, fine_id)
+      request = "#{BASE_URL}users/#{alma_id}/fees/#{fine_id}?apikey=#{ENV['ALMA_KEY']}"
+      Faraday.get(request, {}, { 'Accept' => 'application/json' })
+    end
   end
 end

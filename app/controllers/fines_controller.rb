@@ -5,19 +5,19 @@ class FinesController < ApplicationController
   # eventually though this will be a jwt that will need to be
   # decoded to grab the alama ID
   def index
-    alma_id = params[:id] || nil
+    @alma_id = params[:id] || nil
 
     # puts "\n\n\n\n#{alma_id}\n\n\n\n"
 
     # If no Alma ID redirect to error for now....
-    redirect_to fines_error_path if alma_id.nil?
+    redirect_to fines_error_path if @alma_id.nil?
 
     # TODO: pull user's fines from Alma
 
     # @fine_list = Fine.fetch_all(alma_id)
-    @fines = Alma::Fines.fetch_all(alma_id)
+    @fines = Alma::Fines.fetch_all(@alma_id)
     status = @fines.status
-    #puts "-----> #{status} <------"
+    # puts "-----> #{status} <------"
 
     if status == 200
       @fines = JSON.parse(@fines.body)
@@ -27,7 +27,7 @@ class FinesController < ApplicationController
     # puts "************** START *******************"
     # puts "\n\n#{body['fee'].inspect}\n\n"
     # puts "*************** END *****************\n\n"
-    
+
     # @fines['fee'].each do |f|
     #   puts "ID: #{f['id']}"
     #   puts "  TYPE: #{f['type']['desc']}"
@@ -36,16 +36,22 @@ class FinesController < ApplicationController
     #   puts "  DATE: #{f['creation_time']}"
     # end
   end
-  
-  def error; end
-  
-  def payment
 
-    puts "Initialize payment...."
-    puts "************** START *******************"
-    puts "-->#{params['fees']['ids']}<--"
-    puts "*************** END *****************\n\n"
-    
+  def error; end
+
+  def payment
+    # TODO: Get balance for each fee selected and talley up
+
+    alma_id = params['user_id']
+    fees = params['fee']['payment']
+
+    fees.each do |f|
+      fine_res = Alma::Fines.fetch_fine(alma_id, f)
+      fine = JSON.parse(fine_res.body)
+      puts "\n\n--->#{fine['id']}<---\n\n"
+    end
+
+    # TODO: setup a paypal service to hit paypal api
   end
 
 end
