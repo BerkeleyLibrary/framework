@@ -1,7 +1,7 @@
 <!-- TODO: need to set title-->
 <h2>List of Fees</h2>
 <!-- TODO: need descriptive text-->
-<p>Liquor ipsum dolor sit amet aberfeldy tom and jerry gin pahit aberlour bloodhound flirtini royal widow. B & b glen spey suaza margarita cactus jack; tomintoul bellini polish martini charro negro. White russian pepe lopez laphroaig singapore sling lord calvert pall mall kahlua pegu canadian club ballantine greyhound piscola pepe lopez.</p>
+<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio numquam porro dolor labore nostrum ut aspernatur eum eius, dolores eaque, id, veritatis praesentium ipsam exercitationem obcaecati dicta possimus fuga consectetur sint. Itaque voluptates error eos repudiandae fuga, id, doloremque atque magni possimus quisquam dignissimos debitis provident eaque officiis deleniti asperiores!</p>
 <!-- TODO: setup route/controller for receiving form -->
 <%= form_with url: "/fines/payment", method: :post, local:true do |form| %>
   <%= form.hidden_field :user_id, :value => @alma_id %>
@@ -30,6 +30,6 @@
     <% end %>
   </table>
   <div class="d-flex justify-content-center pt-3 pb-5">
-    <%= form.submit("Pay with PayPal", {:class => 'btn btn-primary'}) %>
+    <%= form.submit("Pay Fees", {:class => 'btn btn-primary'}) %>
   </div>
 <% end %>
