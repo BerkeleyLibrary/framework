@@ -1,2 +1,25 @@
-<h2>Payment</h2>
-<p>Cut the check!</p>
+<h2>Confirm Payment</h2>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam tempora asperiores consequatur adipisci sapiente soluta necessitatibus eligendi? Aperiam, nesciunt numquam.</p>
+<table class="table table-bordered mt-5">
+  <thead class="table-header">
+    <th scope="col" class="text-center">ID</th>
+    <th scope="col" class="text-center">Type</th>
+    <th scope="col" class="text-center">Amount</th>
+  </thead>
+  <% @fines.each do |f| %>
+    <tr>
+      <td><%= f['id'] %></td>
+      <td><%= f['type']['desc'] %></td>
+      <td><%= f['balance'] %></td>
+    </tr>
+  <% end %>
+</table>
+<div>
+</div>
+<div>Total Payment: <%= @total %></div>
+<!--
+<div>Trasaction Info: <%= @transaction_info %></div>
+-->
+<div class="d-flex justify-content-center pt-3 pb-5">
+  <button class="btn btn-primary">Pay with PayPal</button>
+</div>

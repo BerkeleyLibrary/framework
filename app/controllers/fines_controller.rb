@@ -40,18 +40,35 @@ class FinesController < ApplicationController
   def error; end
 
   def payment
+
+    # TODO: refactor the living crap out of this!!!
     # TODO: Get balance for each fee selected and talley up
 
+    @transaction_info = ''
     alma_id = params['user_id']
+    
+    @transaction_info += "USER:#{alma_id}"
     fees = params['fee']['payment']
-
-    fees.each do |f|
+    
+    @fines = []
+    @total = 0
+    
+    fees.each_with_index do |f, idx|
       fine_res = Alma::Fines.fetch_fine(alma_id, f)
       fine = JSON.parse(fine_res.body)
-      puts "\n\n--->#{fine['id']}<---\n\n"
+      @fines.push(fine)
+      # puts "\n\n--->#{fine['id']}<---"
+      # puts "--->#{fine['balance']}<---\n\n"
+      @total += fine['balance'] || 0
+      @transaction_info += "|FEE#{idx}:#{fine['id']}"
     end
+    
+    @transaction_info += "|TOTAL:#{@total}"
 
+    #puts "\n\n#{@transaction_info}\n\n"
     # TODO: setup a paypal service to hit paypal api
+
+
   end
 
 end
