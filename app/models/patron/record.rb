@@ -58,6 +58,22 @@ module Patron
     # @return [Date]
     attr_accessor :expiration_date
 
+    # Base URL for the Patron API.
+    #
+    # @return [URI]
+    def api_base_url
+      # TODO: make configuration less convoluted for Alma/Primo
+      Record.api_base_url
+    end
+
+    # URL of the expect script used to add notes to patron records
+    #
+    # @return [URI]
+    def expect_url
+      # TODO: make configuration less convoluted for Alma/Primo
+      Record.expect_url
+    end
+
     class << self
 
       # Base URL for the Patron API.
