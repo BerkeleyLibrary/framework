@@ -4,7 +4,7 @@
 dockerComposePipeline(
   stack: [template: 'postgres-selenium'],
   commands: [
-    'rake check',
+    'rake check RAILS_ENV=test',
     'rake rubocop',
     'rake brakeman',
     'rake bundle:audit'
