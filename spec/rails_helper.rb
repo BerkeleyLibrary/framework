@@ -15,4 +15,6 @@ RSpec.configure do |config|
       ApplicationController.restore_rescue_handler(handler) if handler
     end
   end
+
+  config.use_transactional_fixtures = true
 end
