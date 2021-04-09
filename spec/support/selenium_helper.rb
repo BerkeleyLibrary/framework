@@ -4,7 +4,7 @@ module UCBLIT
   module SeleniumHelper
 
     CAPYBARA_APP_HOSTNAME = 'app.test'.freeze
-    SELENIUM_HOSTNAME = 'selenium'.freeze
+    SELENIUM_HOSTNAME = 'selenium.test'.freeze
 
     class Configurator
       DEFAULT_CHROME_ARGS = [
@@ -55,7 +55,7 @@ module UCBLIT
             Capybara.always_include_port = true
 
             WebMock.disable_net_connect!(
-              allow: ['selenium'],
+              allow: [SELENIUM_HOSTNAME],
               allow_localhost: true,
               # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
               net_http_connect_on_start: true
@@ -101,14 +101,8 @@ module UCBLIT
 
     class << self
       def configure!
-        configurator = using_selenium_grid? ? GridConfigurator.new : LocalConfigurator.new
+        configurator = !ENV['CI'].nil? ? GridConfigurator.new : LocalConfigurator.new
         configurator.configure!
-      end
-
-      private
-
-      def using_selenium_grid?
-        !ENV['CI'].nil?
       end
     end
   end

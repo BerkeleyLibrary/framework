@@ -1,17 +1,4 @@
 services:
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-
-  db:
-    image: postgres:12.2
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-
   app: &services-app
     build:
       context: .
@@ -22,21 +9,34 @@ services:
       - selenium-chrome
     environment:
       CI: present
-    ports:
-      - 3000:3000
-    restart: always
-    volumes:
-      - ./:/opt/app
+    init: true
     networks:
       default:
         aliases:
           - app.test
+    volumes:
+      - ./:/opt/app
+    ports:
+      - 3000:3000
+    restart: always
+
+  db:
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+    image: postgres:12.2
+    networks:
+      default:
+        aliases:
+          - db.test
+    restart: always
 
   selenium:
-    environment:
-      JAVA_OPTS: -Dwebdriver.chrome.verboseLogging=true
-      START_XVFB: "false"
     image: selenium/hub
+    networks:
+      default:
+        aliases:
+          - selenium.test
     ports:
       - 4444:4444
 
@@ -57,13 +57,10 @@ services:
     volumes:
       - /dev/shm:/dev/shm:rw
 
-  updater:
-    <<: *services-app
-    command: rails setup
-    depends_on:
-      - db
-      - app
-    ports: []
-    restart: "no"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
-version: '3.8'
+version: '3.7'
