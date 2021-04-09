@@ -7,20 +7,18 @@
   <%= form.hidden_field :user_id, :value => @alma_id %>
   <table class="table table-bordered mt-5">
     <thead class="table-header">
-      <th scope="col" class="text-center">ID</th>
+      <th scope="col" class="text-center">#</th>
       <th scope="col" class="text-center">Type</th>
       <th scope="col" class="text-center">Owner</th>
-      <th scope="col" class="text-center">Status</th>
-      <th scope="col" class="text-center">Balance</th>
+      <th scope="col" class="text-center">Fees/Fines</th>
       <th scope="col" class="text-center">Date</th>
       <th scope="col" class="text-center">Pay</th>
     </thead>
-    <% @fines['fee'].each do |fee| %>
+    <% @fines['fee'].each_with_index do |fee, idx| %>
       <tr scope="row">
-        <td><%= fee['id'] %></td>
+        <td class="text-center"><%= idx += 1 %></td>
         <td><%= fee['type']['desc'] %></td>
         <td><%= fee['owner']['desc'] %></td>
-        <td class="text-center"><%= fee['status']['desc'] %></td>
         <td class="text-right">$<%= sprintf('%.2f',fee['balance'].to_f) %></td>
         <td class="text-center"><%= fee['creation_time'].to_datetime.strftime("%m/%d/%Y") %></td>
         <td class='text-center'>

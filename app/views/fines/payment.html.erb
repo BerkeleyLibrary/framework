@@ -2,13 +2,13 @@
 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam tempora asperiores consequatur adipisci sapiente soluta necessitatibus eligendi? Aperiam, nesciunt numquam.</p>
 <table class="table table-bordered mt-5">
   <thead class="table-header">
-    <th scope="col" class="text-center">ID</th>
+    <th scope="col" class="text-center">#</th>
     <th scope="col" class="text-center">Type</th>
     <th scope="col" class="text-center">Amount</th>
   </thead>
-  <% @fines.each do |f| %>
+  <% @fines.each_with_index do |f, idx| %>
     <tr>
-      <td><%= f['id'] %></td>
+      <td class="text-center"><%= idx += 1 %></td>
       <td><%= f['type']['desc'] %></td>
       <td class="text-right">$<%= sprintf('%.2f',f['balance'].to_f) %></td>
     </tr>
