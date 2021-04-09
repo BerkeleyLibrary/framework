@@ -1,4 +1,4 @@
-require 'dotenv/load'
+require 'dotenv/load' unless ENV['CI']
 
 Rails.application.configure do
   # Setting logger to use outgai
