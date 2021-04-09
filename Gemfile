@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.2'
 
 gem 'awesome_print', '>=1.8.0'
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '~> 1.0', '>= 1.7.3', require: false
 gem 'bootstrap'
 gem 'coffee-rails', '~> 5.0'
 gem 'ipaddress'
