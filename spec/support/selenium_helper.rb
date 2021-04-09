@@ -108,23 +108,7 @@ module UCBLIT
       private
 
       def using_selenium_grid?
-        resolves_to_self?(self::CAPYBARA_APP_HOSTNAME) && host_exists?(self::SELENIUM_HOSTNAME)
-      end
-
-      def host_exists?(hostname)
-        !address_for(hostname).nil?
-      end
-
-      def address_for(hostname)
-        IPSocket.getaddress(hostname)
-      rescue SocketError
-        nil
-      end
-
-      def resolves_to_self?(hostname)
-        return false unless (host_address = address_for(hostname))
-
-        Socket.ip_address_list.any? { |info| info.ip_address == host_address }
+        !ENV['CI'].nil?
       end
     end
   end
