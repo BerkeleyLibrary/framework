@@ -30,7 +30,6 @@ describe 'Proxy Borrower Forms', type: :request do
   context 'specs with created admin privledges' do
     # First create an Administrator:
     before(:all) do
-
       # Need to create a request for search!!!
       @req = ProxyBorrowerRequests.new
       @req.faculty_name = 'Test Search User'
@@ -46,6 +45,10 @@ describe 'Proxy Borrower Forms', type: :request do
       @req.renewal = 0
       @req.status = nil
       @req.save
+    end
+
+    after(:all) do
+      @req.destroy if @req
     end
 
     before(:each) do |_test|
@@ -84,6 +87,28 @@ describe 'Proxy Borrower Forms', type: :request do
   end
 
   context 'specs with hard-coded admin privledges' do
+    # First create an Administrator:
+    before(:all) do
+      # Need to create a request for search!!!
+      @req = ProxyBorrowerRequests.new
+      @req.faculty_name = 'Test Search User'
+      @req.department = 'ABCD'
+      @req.faculty_id = '12345'
+      @req.student_name = nil
+      @req.student_dsp = nil
+      @req.dsp_rep = nil
+      @req.research_last = 'RLast'
+      @req.research_first = 'RFirst'
+      @req.research_middle = nil
+      @req.date_term = Date.tomorrow
+      @req.renewal = 0
+      @req.status = nil
+      @req.save
+    end
+
+    after(:all) do
+      @req.destroy if @req
+    end
 
     before(:each) do |_test|
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)

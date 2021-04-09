@@ -7,15 +7,17 @@ describe 'Stack Pass Form', type: :request do
 
   context 'specs without admin privledges' do
     before(:all) do
-      # Clear the way:
-      StackRequest.delete_all
-      # StackPassForm.delete_all
-
       # Create some requests:
-      StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                           phone: '925-555-1234', pass_date: Date.today, main_stack: true)
-      StackPassForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                           phone: '925-555-5678', pass_date: Date.today, main_stack: true)
+      @requests = [
+        StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                             phone: '925-555-1234', pass_date: Date.today, main_stack: true),
+        StackPassForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
+                             phone: '925-555-5678', pass_date: Date.today, main_stack: true)
+      ]
+    end
+
+    after(:all) do
+      @requests.each(&:destroy) if @requests
     end
 
     it 'index page does not include admin link for non admins' do

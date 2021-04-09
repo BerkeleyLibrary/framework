@@ -5,15 +5,14 @@ describe :forms_proxy_borrower_admin, type: :system do
   context 'specs with hardcoded admin' do
     # First create a DSP Rep and assignment
     before(:all) do
-      # Clear the way:
-      Assignment.delete_all
-      Role.delete_all
-      FrameworkUsers.delete_all
-
       # Create User, Role and Assignment:
-      FrameworkUsers.create(id: 1, lcasid: 112_233, name: 'John Doe', role: 'Admin')
-      Role.create(id: 1, role: 'proxyborrow_admin')
-      Assignment.create(framework_users_id: 1, role_id: 1)
+      @user = FrameworkUsers.create(id: 1, lcasid: 112_233, name: 'John Doe', role: 'Admin')
+      @role = Role.create(id: 1, role: 'proxyborrow_admin')
+      @assignment = Assignment.create(framework_users_id: 1, role_id: 1)
+    end
+
+    after(:all) do
+      [@assignment, @role, @user].each(&:destroy)
     end
 
     # Go to the Admin Users View Page:

@@ -7,14 +7,17 @@ describe 'Reference Card Form', type: :request do
 
   context 'specs without admin privledges' do
     before(:all) do
-      # Clear the way:
-      StackRequest.delete_all
-
       # Create some requests:
-      ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1)
-      ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1)
+      @requests = [
+        ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                                 pass_date: Date.today, pass_date_end: Date.today + 1),
+        ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
+                                 pass_date: Date.today, pass_date_end: Date.today + 1)
+      ]
+    end
+
+    after(:all) do
+      @requests.each(&:destroy) if @requests
     end
 
     it 'reference card index page redirects to form' do
@@ -50,19 +53,22 @@ describe 'Reference Card Form', type: :request do
 
   context 'specs with admin privledges' do
     before(:all) do
-      # Clear the way:
-      StackRequest.delete_all
-
       # Create some requests:
-      ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1,
-                               research_desc: 'This is research', affiliation: 'Affiliation 1',
-                               local_id: '8675309')
-      ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1,
-                               research_desc: 'This is research', affiliation: 'Affiliation 1',
-                               local_id: '8675309',
-                               approvedeny: true, processed_by: 'Test Admin')
+      @requests = [
+        ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                                 pass_date: Date.today, pass_date_end: Date.today + 1,
+                                 research_desc: 'This is research', affiliation: 'Affiliation 1',
+                                 local_id: '8675309'),
+        ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
+                                 pass_date: Date.today, pass_date_end: Date.today + 1,
+                                 research_desc: 'This is research', affiliation: 'Affiliation 1',
+                                 local_id: '8675309',
+                                 approvedeny: true, processed_by: 'Test Admin')
+      ]
+    end
+
+    after(:all) do
+      @requests.each(&:destroy) if @requests
     end
 
     before(:each) do |_test|
