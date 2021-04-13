@@ -34,6 +34,7 @@ group :development, :test do
   gem 'bundle-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'colorize'
+  gem 'database_cleaner-active_record', '~> 2.0'
   gem 'dotenv', '~> 2.7'
   gem 'rspec'
   gem 'rspec-rails'

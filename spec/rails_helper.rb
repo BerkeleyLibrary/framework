@@ -7,6 +7,11 @@ require 'ssh_helper'
 require 'patron_helper'
 
 RSpec.configure do |config|
+  config.around(:each) do |example|
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.cleaning { example.run }
+  end
+
   config.around(:each, type: :request) do |example|
     handler = ApplicationController.remove_rescue_handler_for(StandardError)
     begin
@@ -15,6 +20,4 @@ RSpec.configure do |config|
       ApplicationController.restore_rescue_handler(handler) if handler
     end
   end
-
-  config.use_transactional_fixtures = true
 end
