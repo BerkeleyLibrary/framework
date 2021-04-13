@@ -114,6 +114,34 @@ it with the command, e.g.:
 | `docker-compose exec app rails console`       | open the running server's Rails console |
 | `docker-compose exec app bundle exec rubocop` | run RuboCop style checks                |
 
+#### Debugging system test failures
+
+The Selenium node running Chrome has a VNC server running on port 55900. To access it,
+open [vnc://localhost:55900](vnc://localhost:55900) in the macOS Screen Sharing app, or
+any other VNC client.
+
+To launch your own instance of Chrome inside the Selenium node:
+
+```sh
+docker-compose exec -u root selenium-chrome \
+  sudo -u seluser google-chrome \
+    --disable-dev-shm-usage \
+    --disable-gpu \
+    --auto-open-devtools-for-tabs
+```
+
+(You'll see a bunch of `Failed to connect to the bus` errors, which can be safely
+ignored.)
+
+To run just the system tests in the app container:
+
+```sh
+docker-compose exec -e RAILS_ENV=test app rake spec:system
+```
+
+It may be convenient to also include `-e CAPYBARA_SERVER_PORT=<some port>` so it's
+easier to navigate to the server Capybara starts.
+
 ## Setting up a standalone development environment
 
 ### Requirements

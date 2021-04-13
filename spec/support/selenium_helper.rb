@@ -84,9 +84,14 @@ module UCBLIT
       def configure!
         super
 
-        Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
-        Capybara.server_host = '0.0.0.0'
-        Capybara.always_include_port = true
+        RSpec.configure do |config|
+          config.before(:each, type: :system) do
+            Capybara.server_port = ENV['CAPYBARA_SERVER_PORT'] if ENV['CAPYBARA_SERVER_PORT']
+            Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
+            Capybara.server_host = '0.0.0.0'
+            Capybara.always_include_port = true
+          end
+        end
       end
     end
 
