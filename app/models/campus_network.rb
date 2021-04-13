@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'netaddr'
 require 'ipaddress'
+require 'open-uri'
 
 class CampusNetwork < IPAddr
   # @return [Symbol] Organization that owns the network (:ucb, :lbl)
