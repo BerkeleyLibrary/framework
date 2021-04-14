@@ -30,17 +30,9 @@ module UCBLIT
       end
 
       def configure!
-        register_driver!
-        configure_rspec!
-      end
-
-      private
-
-      def register_driver!
         Capybara.register_driver(driver_name) { |app| new_driver(app, chrome_args) }
-      end
+        Capybara.javascript_driver = driver_name
 
-      def configure_rspec!
         # these accessors won't be in scope when the config block is executed,
         # so we capture them as local variables
         driver_name = self.driver_name
@@ -53,6 +45,7 @@ module UCBLIT
           end
         end
       end
+
     end
 
     class GridConfigurator < Configurator
