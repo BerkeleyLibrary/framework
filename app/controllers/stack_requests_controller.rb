@@ -1,8 +1,7 @@
 require 'time'
 
 class StackRequestsController < ApplicationController
-  rescue_from ActiveRecord::RecordNotFound, with: :render_404
-
+  # TODO: do we still need this?
   def forbidden; end
 
   def index

@@ -1,17 +1,13 @@
 require 'time'
 
 class StackPassFormsController < ApplicationController
-  rescue_from ActiveRecord::RecordNotFound, with: :render_404
   before_action :init_form!
 
   def index
     redirect_with_params(action: :new)
   end
 
-  def render_404
-    render template: 'errors/error_404', status: 404
-  end
-
+  # TODO: do we still need this?
   def forbidden; end
 
   def result; end

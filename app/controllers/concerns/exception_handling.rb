@@ -12,6 +12,16 @@ module ExceptionHandling
       render :standard_error, status: :internal_server_error
     end
 
+    rescue_from ActiveRecord::RecordNotFound do |error|
+      log_error(error)
+      render :not_found, status: :not_found
+    end
+
+    rescue_from AbstractController::ActionNotFound do |error|
+      log_error(error)
+      render :not_found, status: :not_found
+    end
+
     rescue_from Error::UnauthorizedError do |error|
       log_error(error)
       redirect_to login_path(url: request.fullpath)

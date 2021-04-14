@@ -73,8 +73,9 @@ describe 'Reference Card Form', type: :request do
     end
 
     it 'renders 404 if request does not exist' do
-      get '/forms/reference-card/5000'
-      expect(response.body).to include('<h1>404 - Page not found</h1>')
+      get(path = '/forms/reference-card/5000')
+      expect(response.code).to eq('404')
+      expect(response.body).to include(path)
     end
 
   end

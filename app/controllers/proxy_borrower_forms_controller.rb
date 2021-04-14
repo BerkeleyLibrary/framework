@@ -35,6 +35,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     end
   end
 
+  # TODO: do we still need this?
   def forbidden; end
 
   # Processes a request from DSP form: (eventually dry this up)
