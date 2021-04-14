@@ -49,19 +49,14 @@ describe 'Stack Pass Form', type: :request do
   end
 
   context 'specs with admin privledges' do
-    before(:all) do
-      # Clear the way:
-      StackRequest.delete_all
-
+    before(:each) do
       # Create some requests:
       StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
                            phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
       StackPassForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
                            phone: '925-555-5678', pass_date: Date.today, main_stack: true, local_id: '8675309',
                            approvedeny: true, processed_by: 'Test Admin')
-    end
 
-    before(:each) do |_test|
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
