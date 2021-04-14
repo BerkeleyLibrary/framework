@@ -28,30 +28,23 @@ describe 'Proxy Borrower Forms', type: :request do
   end
 
   context 'specs with created admin privledges' do
-    # First create an Administrator:
-    before(:all) do
+    before(:each) do
       # Need to create a request for search!!!
-      @req = ProxyBorrowerRequests.new
-      @req.faculty_name = 'Test Search User'
-      @req.department = 'ABCD'
-      @req.faculty_id = '12345'
-      @req.student_name = nil
-      @req.student_dsp = nil
-      @req.dsp_rep = nil
-      @req.research_last = 'RLast'
-      @req.research_first = 'RFirst'
-      @req.research_middle = nil
-      @req.date_term = Date.tomorrow
-      @req.renewal = 0
-      @req.status = nil
-      @req.save
-    end
+      @req = ProxyBorrowerRequests.new(
+        faculty_name: 'Test Search User',
+        department: 'ABCD',
+        faculty_id: '12345',
+        student_name: nil,
+        student_dsp: nil,
+        dsp_rep: nil,
+        research_last: 'RLast',
+        research_first: 'RFirst',
+        research_middle: nil,
+        date_term: Date.tomorrow,
+        renewal: 0,
+        status: nil
+      )
 
-    after(:all) do
-      @req.destroy if @req
-    end
-
-    before(:each) do |_test|
       # make sure we have a fresh set of tables:
       Assignment.delete_all
       Role.delete_all
@@ -87,30 +80,23 @@ describe 'Proxy Borrower Forms', type: :request do
   end
 
   context 'specs with hard-coded admin privledges' do
-    # First create an Administrator:
-    before(:all) do
+    before(:each) do
       # Need to create a request for search!!!
-      @req = ProxyBorrowerRequests.new
-      @req.faculty_name = 'Test Search User'
-      @req.department = 'ABCD'
-      @req.faculty_id = '12345'
-      @req.student_name = nil
-      @req.student_dsp = nil
-      @req.dsp_rep = nil
-      @req.research_last = 'RLast'
-      @req.research_first = 'RFirst'
-      @req.research_middle = nil
-      @req.date_term = Date.tomorrow
-      @req.renewal = 0
-      @req.status = nil
-      @req.save
-    end
+      @req = ProxyBorrowerRequests.create(
+        faculty_name: 'Test Search User',
+        department: 'ABCD',
+        faculty_id: '12345',
+        student_name: nil,
+        student_dsp: nil,
+        dsp_rep: nil,
+        research_last: 'RLast',
+        research_first: 'RFirst',
+        research_middle: nil,
+        date_term: Date.tomorrow,
+        renewal: 0,
+        status: nil
+      )
 
-    after(:all) do
-      @req.destroy if @req
-    end
-
-    before(:each) do |_test|
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
       @user = login_as(patron_id)
       @patron = Patron::Record.find(patron_id)
@@ -152,8 +138,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin Search indicates if there are no search results found' do
       get(forms_proxy_borrower_admin_search_path, params: {
-            search_term: 'SEARCHVALUE'
-          })
+        search_term: 'SEARCHVALUE'
+      })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/we could not find any results/)
@@ -161,8 +147,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin Search finds a record' do
       get(forms_proxy_borrower_admin_search_path, params: {
-            search_term: 'RLast'
-          })
+        search_term: 'RLast'
+      })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/Test Search User/)
@@ -170,8 +156,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin Search handles date searches' do
       get(forms_proxy_borrower_admin_search_path, params: {
-            search_term: '4/13/1996'
-          })
+        search_term: '4/13/1996'
+      })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/we could not find any results/)
@@ -189,12 +175,12 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Faculty Form rejects a submission with missing fields' do
       post(forms_proxy_borrower_request_faculty_path, params: {
-             faculty_name: 'John Doe',
-             research_last: '',
-             research_first: '',
-             term: '',
-             renewal: ''
-           })
+        faculty_name: 'John Doe',
+        research_last: '',
+        research_first: '',
+        term: '',
+        renewal: ''
+      })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/Please correct them before submitting the form again/)

@@ -6,18 +6,12 @@ describe 'Reference Card Form', type: :request do
   attr_reader :user
 
   context 'specs without admin privledges' do
-    before(:all) do
+    before(:each) do
       # Create some requests:
-      @requests = [
-        ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                                 pass_date: Date.today, pass_date_end: Date.today + 1),
-        ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                                 pass_date: Date.today, pass_date_end: Date.today + 1)
-      ]
-    end
-
-    after(:all) do
-      @requests.each(&:destroy) if @requests
+      ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                               pass_date: Date.today, pass_date_end: Date.today + 1)
+      ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
+                               pass_date: Date.today, pass_date_end: Date.today + 1)
     end
 
     it 'reference card index page redirects to form' do
@@ -34,16 +28,16 @@ describe 'Reference Card Form', type: :request do
       expect_any_instance_of(Recaptcha::Verify).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError)
 
       post('/forms/reference-card', params: {
-             reference_card_form: {
-               email: 'jrdoe@affiliate.test',
-               name: 'Jane R. Doe',
-               affiliation: 'nowhere',
-               research_desc: 'research goes here....',
-               pass_date: '04/13/1996',
-               pass_date_end: '04/15/1996',
-               local_id: '123456789'
-             }
-           })
+        reference_card_form: {
+          email: 'jrdoe@affiliate.test',
+          name: 'Jane R. Doe',
+          affiliation: 'nowhere',
+          research_desc: 'research goes here....',
+          pass_date: '04/13/1996',
+          pass_date_end: '04/15/1996',
+          local_id: '123456789'
+        }
+      })
       expect(response).to redirect_to(%r{/forms/reference-card/new})
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
@@ -52,26 +46,17 @@ describe 'Reference Card Form', type: :request do
   end
 
   context 'specs with admin privledges' do
-    before(:all) do
-      # Create some requests:
-      @requests = [
-        ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                                 pass_date: Date.today, pass_date_end: Date.today + 1,
-                                 research_desc: 'This is research', affiliation: 'Affiliation 1',
-                                 local_id: '8675309'),
-        ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                                 pass_date: Date.today, pass_date_end: Date.today + 1,
-                                 research_desc: 'This is research', affiliation: 'Affiliation 1',
-                                 local_id: '8675309',
-                                 approvedeny: true, processed_by: 'Test Admin')
-      ]
-    end
+    before(:each) do
+      ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                               pass_date: Date.today, pass_date_end: Date.today + 1,
+                               research_desc: 'This is research', affiliation: 'Affiliation 1',
+                               local_id: '8675309')
+      ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
+                               pass_date: Date.today, pass_date_end: Date.today + 1,
+                               research_desc: 'This is research', affiliation: 'Affiliation 1',
+                               local_id: '8675309',
+                               approvedeny: true, processed_by: 'Test Admin')
 
-    after(:all) do
-      @requests.each(&:destroy) if @requests
-    end
-
-    before(:each) do |_test|
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ReferenceCardFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)

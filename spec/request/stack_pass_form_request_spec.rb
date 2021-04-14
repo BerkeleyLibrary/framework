@@ -6,18 +6,11 @@ describe 'Stack Pass Form', type: :request do
   attr_reader :user
 
   context 'specs without admin privledges' do
-    before(:all) do
-      # Create some requests:
-      @requests = [
-        StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                             phone: '925-555-1234', pass_date: Date.today, main_stack: true),
-        StackPassForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                             phone: '925-555-5678', pass_date: Date.today, main_stack: true)
-      ]
-    end
-
-    after(:all) do
-      @requests.each(&:destroy) if @requests
+    before(:each) do
+      StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                           phone: '925-555-1234', pass_date: Date.today, main_stack: true)
+      StackPassForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
+                           phone: '925-555-5678', pass_date: Date.today, main_stack: true)
     end
 
     it 'index page does not include admin link for non admins' do
@@ -39,15 +32,15 @@ describe 'Stack Pass Form', type: :request do
       expect_any_instance_of(Recaptcha::Verify).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError)
 
       post('/forms/stack-pass', params: {
-             stack_pass_form: {
-               email: 'jrdoe@affiliate.test',
-               name: 'Jane R. Doe',
-               phone: '925-555-1212',
-               stack_pass_form_main_stack: true,
-               pass_date: '04/13/1996',
-               local_id: '123456789'
-             }
-           })
+        stack_pass_form: {
+          email: 'jrdoe@affiliate.test',
+          name: 'Jane R. Doe',
+          phone: '925-555-1212',
+          stack_pass_form_main_stack: true,
+          pass_date: '04/13/1996',
+          local_id: '123456789'
+        }
+      })
       expect(response).to redirect_to(%r{/forms/stack-pass/new})
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
