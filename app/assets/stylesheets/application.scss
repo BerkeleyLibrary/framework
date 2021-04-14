@@ -106,3 +106,20 @@ th .desc::after {
   background-color:  #1310ff;
   border-color: #0f0cd4 ;
 }
+
+section.exception-details {
+  h2 {
+    font-size: 18px;
+    line-height: 21px;
+  }
+
+  section.backtrace {
+    code.trace {
+      display: block;
+      font-size: 14px;
+      line-height: 16px;
+      padding-left: 14px;
+      text-indent: -14px;
+    }
+  }
+}

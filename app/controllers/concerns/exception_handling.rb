@@ -9,17 +9,12 @@ module ExceptionHandling
 
     rescue_from StandardError do |error|
       log_error(error)
-      render :standard_error, status: :internal_server_error
+      render :standard_error, status: :internal_server_error, locals: { exception: error }
     end
 
     rescue_from ActiveRecord::RecordNotFound do |error|
       log_error(error)
-      render :not_found, status: :not_found
-    end
-
-    rescue_from AbstractController::ActionNotFound do |error|
-      log_error(error)
-      render :not_found, status: :not_found
+      render :not_found, status: :not_found, locals: { exception: error }
     end
 
     rescue_from Error::UnauthorizedError do |error|
