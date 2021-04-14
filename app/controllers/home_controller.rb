@@ -6,6 +6,8 @@ class HomeController < ApplicationController
 
   self.support_email = 'helpbox@library.berkeley.edu'
 
+  # TODO: Move this to a HealthController that extends ActionController::API
+  #       - note: may involve extracting some of ApplicationController into a mixin
   def health
     check = Health::Check.new
     render json: check, status: check.http_status_code
