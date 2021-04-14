@@ -138,8 +138,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin Search indicates if there are no search results found' do
       get(forms_proxy_borrower_admin_search_path, params: {
-        search_term: 'SEARCHVALUE'
-      })
+            search_term: 'SEARCHVALUE'
+          })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/we could not find any results/)
@@ -147,8 +147,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin Search finds a record' do
       get(forms_proxy_borrower_admin_search_path, params: {
-        search_term: 'RLast'
-      })
+            search_term: 'RLast'
+          })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/Test Search User/)
@@ -156,8 +156,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin Search handles date searches' do
       get(forms_proxy_borrower_admin_search_path, params: {
-        search_term: '4/13/1996'
-      })
+            search_term: '4/13/1996'
+          })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/we could not find any results/)
@@ -175,12 +175,12 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Faculty Form rejects a submission with missing fields' do
       post(forms_proxy_borrower_request_faculty_path, params: {
-        faculty_name: 'John Doe',
-        research_last: '',
-        research_first: '',
-        term: '',
-        renewal: ''
-      })
+             faculty_name: 'John Doe',
+             research_last: '',
+             research_first: '',
+             term: '',
+             renewal: ''
+           })
 
       expect(response.status).to eq 200
       expect(response.body).to match(/Please correct them before submitting the form again/)

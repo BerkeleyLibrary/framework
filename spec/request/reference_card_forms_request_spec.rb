@@ -26,8 +26,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'rejects a submission with a captcha verification error' do
       expect_any_instance_of(Recaptcha::Verify).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError)
-
-      post('/forms/reference-card', params: {
+      params = {
         reference_card_form: {
           email: 'jrdoe@affiliate.test',
           name: 'Jane R. Doe',
@@ -37,7 +36,8 @@ describe 'Reference Card Form', type: :request do
           pass_date_end: '04/15/1996',
           local_id: '123456789'
         }
-      })
+      }
+      post('/forms/reference-card', params: params)
       expect(response).to redirect_to(%r{/forms/reference-card/new})
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')

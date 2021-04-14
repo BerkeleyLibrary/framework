@@ -31,12 +31,7 @@ ensure
   logout!
 end
 
-# Mocks a calnet login as the specified patron
-def mock_calnet_login(patron_id)
-  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(patron_id)}.yml"
-  raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
-
-  auth_hash = YAML.load_file(calnet_yml_file)
+def mock_omniauth_login(auth_hash)
   OmniAuth.config.mock_auth[:calnet] = auth_hash
   do_get login_path
 
@@ -44,6 +39,15 @@ def mock_calnet_login(patron_id)
   do_get omniauth_callback_path(:calnet)
 
   User.from_omniauth(auth_hash)
+end
+
+# Mocks a calnet login as the specified patron
+def mock_calnet_login(patron_id)
+  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(patron_id)}.yml"
+  raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
+
+  auth_hash = YAML.load_file(calnet_yml_file)
+  mock_omniauth_login(auth_hash)
 end
 
 # Gets the specified URL, either via the driven browser (in a system spec)

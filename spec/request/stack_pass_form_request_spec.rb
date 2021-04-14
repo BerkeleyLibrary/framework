@@ -31,7 +31,7 @@ describe 'Stack Pass Form', type: :request do
     it 'rejects a submission with a captcha verification error' do
       expect_any_instance_of(Recaptcha::Verify).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError)
 
-      post('/forms/stack-pass', params: {
+      params = {
         stack_pass_form: {
           email: 'jrdoe@affiliate.test',
           name: 'Jane R. Doe',
@@ -40,7 +40,8 @@ describe 'Stack Pass Form', type: :request do
           pass_date: '04/13/1996',
           local_id: '123456789'
         }
-      })
+      }
+      post('/forms/stack-pass', params: params)
       expect(response).to redirect_to(%r{/forms/stack-pass/new})
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')

@@ -18,13 +18,13 @@ RSpec.configure do |config|
   config.color = true
   config.tty = true
   config.formatter = :documentation
-  config.before(:each) {
+  config.before(:each) do
     WebMock.disable_net_connect!(
       allow_localhost: true,
       # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
       net_http_connect_on_start: true
     )
-  }
+  end
   config.after(:each) { WebMock.allow_net_connect! }
 
   # Required for shared contexts (e.g. in ssh_helper.rb); see

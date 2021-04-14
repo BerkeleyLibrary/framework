@@ -3,5 +3,5 @@
 <p>An internal error occurred.</p>
 
 <% if exception && Rails.env.test? %>
-  <%= render(partial: 'exception_backtrace', locals: { exception: exception }) %>
+  <%= render(partial: 'exception_details', locals: { exception: exception }) %>
 <% end %>

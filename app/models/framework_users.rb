@@ -20,19 +20,27 @@ class FrameworkUsers < ActiveRecord::Base
   validates :role,
             presence: true
 
-  # Hardcoded admins - so if for some reason all of the
-  # admins in the DB are deleted, we still have a way of
-  # getting in and managing things!
-  @hardcoded_admins = [
-    '7165',    # Lisa Weber
-    '1684944', # David Moles
-    '1707532'  # Steve Sullivan
-  ]
+  class << self
+    # Hardcoded admins - so if for some reason all of the
+    # admins in the DB are deleted, we still have a way of
+    # getting in and managing things!
+    def hardcoded_admin_uids
+      [
+        '7165',    # Lisa Weber
+        '1684944', # David Moles
+        '1707532'  # Steve Sullivan
+      ]
+    end
+  end
+
+  def hardcoded_admin_uids
+    FrameworkUsers.hardcoded_admin_uids
+  end
 
   # check if a user exists and has a role
   def self.role?(user_id, role)
     # Check if user is hardcoded (global) admin:
-    return true if @hardcoded_admins.include?(user_id)
+    return true if hardcoded_admin_uids.include?(user_id)
 
     # If not, check if a user exists:
     user = FrameworkUsers.find_by(lcasid: user_id)
