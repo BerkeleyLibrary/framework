@@ -9,7 +9,7 @@ describe :service_article_request_forms, type: :system do
 
     before(:each) do
       @patron_id = Patron::Type.sample_id_for(Patron::Type::POST_DOC)
-      @user = login_as(patron_id)
+      @user = login_as_patron(patron_id)
 
       @patron = Patron::Record.find(patron_id)
       eligible = patron.notes.any? { |n| n =~ /book scan eligible/ }
@@ -58,7 +58,7 @@ describe :service_article_request_forms, type: :system do
   describe 'with an invalid patron type' do
     it 'throws patron not eligible error' do
       patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD)
-      login_as(patron_id)
+      login_as_patron(patron_id)
       patron = Patron::Record.find(patron_id)
       patron.notes = nil
 

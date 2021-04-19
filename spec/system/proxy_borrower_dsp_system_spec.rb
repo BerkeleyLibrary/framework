@@ -23,7 +23,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
 
   before(:each) do
     @patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD_SLE)
-    @user = login_as(patron_id)
+    @user = login_as_patron(patron_id)
     @patron = Patron::Record.find(patron_id)
 
     visit forms_proxy_borrower_dsp_path

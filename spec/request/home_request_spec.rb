@@ -37,7 +37,7 @@ describe HomeController, type: :request do
 
   describe :admin do
     it 'allows a framework admin' do
-      with_login(Patron::FRAMEWORK_ADMIN_ID) do
+      with_patron_login(Patron::FRAMEWORK_ADMIN_ID) do
         get admin_path
         expect(response).to have_http_status(:ok)
       end
@@ -45,7 +45,7 @@ describe HomeController, type: :request do
 
     it 'disallows a non-framework admin' do
       patron_id = Patron::Type.sample_id_for(Patron::Type::VISITING_SCHOLAR)
-      with_login(patron_id) do |user|
+      with_patron_login(patron_id) do |user|
         expect(user.framework_admin).to be_falsey # just to be sure
 
         get admin_path

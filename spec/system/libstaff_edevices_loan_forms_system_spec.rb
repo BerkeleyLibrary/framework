@@ -9,7 +9,7 @@ describe :libstaff_edevices_loan_forms, type: :system do
 
     before(:each) do
       @patron_id = Patron::Type.sample_id_for(Patron::Type::LIBRARY_STAFF)
-      @user = login_as(patron_id)
+      @user = login_as_patron(patron_id)
 
       @patron = Patron::Record.find(patron_id)
       visit new_libstaff_edevices_loan_form_path

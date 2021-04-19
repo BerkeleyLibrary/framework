@@ -9,6 +9,7 @@
 
 # Model for any framework form that requires priviledged admin users
 
+# TODO: rename to FrameworkUser (singular)
 class FrameworkUsers < ActiveRecord::Base
   has_many :assignments
   has_many :roles, through: :assignments
@@ -67,9 +68,4 @@ class FrameworkUsers < ActiveRecord::Base
 
     users
   end
-
-  def self.check_db(user_id)
-    where(lcasid: user_id).first
-  end
-
 end

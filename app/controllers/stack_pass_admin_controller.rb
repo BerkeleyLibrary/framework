@@ -21,10 +21,13 @@ class StackPassAdminController < AuthenticatedFormController
 
   def add_user
     # First check if the user exists in framework user - or create the user
-    framework_user = FrameworkUsers.check_db(params['lcasid']) || FrameworkUsers.create(name: params['name'], lcasid: params['lcasid'], role: 'Admin')
+    framework_user = FrameworkUsers.find_or_create_by(lcasid: params['lcasid']) do |new_user|
+      new_user.name = params['name']
+      new_user.role = 'Admin'
+    end
 
     # Now that we have the user, create the assignment:
-    Assignment.create(framework_users_id: framework_user.id, role_id: 2)
+    Assignment.create(framework_users: framework_user, role: Role.stackpass_admin)
 
     # And redirect back to the admin users page:
     flash[:success] = "Added #{framework_user.name} as an administrator"

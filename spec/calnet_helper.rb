@@ -6,9 +6,9 @@ require 'patron_helper'
 #
 # @return [User] A user object created from the specified mock data (not the
 #                actual object from the session)
-def login_as(patron_id)
+def login_as_patron(patron_id)
   stub_patron_dump(patron_id)
-  mock_calnet_login(patron_id)
+  mock_patron_calnet_login(patron_id)
 end
 
 # Logs out. Suitable for calling in an after() block.
@@ -21,14 +21,23 @@ end
 # Wraps the provided block in login_as() / logout!() calls. Useful when it's
 # not possible to know the patron ID in a before() block.
 # @@yield [User] A user object created from the specified mock data
-def with_login(patron_id)
-  user = login_as(patron_id)
+def with_patron_login(patron_id)
+  user = login_as_patron(patron_id)
   yield user
 rescue StandardError => e
   puts "#{e}\n\t#{e.backtrace.join("\n\t")}"
   raise
 ensure
   logout!
+end
+
+# Mocks a calnet login as the specified patron
+def mock_patron_calnet_login(patron_id)
+  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(patron_id)}.yml"
+  raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
+
+  auth_hash = YAML.load_file(calnet_yml_file)
+  mock_omniauth_login(auth_hash)
 end
 
 def mock_omniauth_login(auth_hash)
@@ -41,15 +50,6 @@ def mock_omniauth_login(auth_hash)
   User.from_omniauth(auth_hash)
 end
 
-# Mocks a calnet login as the specified patron
-def mock_calnet_login(patron_id)
-  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(patron_id)}.yml"
-  raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
-
-  auth_hash = YAML.load_file(calnet_yml_file)
-  mock_omniauth_login(auth_hash)
-end
-
 # Gets the specified URL, either via the driven browser (in a system spec)
 # or directly (in a request spec)
 def do_get(path)
@@ -58,7 +58,7 @@ def do_get(path)
   get(path)
 end
 
-# Capybara RackTest mock browser is notoriously stupid about external redirects
+# Capybara Rack::Test mock browser is notoriously stupid about external redirects
 # https://github.com/teamcapybara/capybara/issues/1388
 def without_redirects
   if respond_to?(:page) && page.driver.respond_to?(:follow_redirects?)

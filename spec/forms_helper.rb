@@ -32,7 +32,7 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
   allowed_patron_types.each do |type|
     it "allows #{Patron::Type.name_of(type)}" do
       patron_id = Patron::Type.sample_id_for(type)
-      with_login(patron_id) do
+      with_patron_login(patron_id) do
         get new_form_path
         expect(response).to have_http_status(:ok)
       end
@@ -42,7 +42,7 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
   forbidden_patron_types.each do |type|
     it "forbids #{Patron::Type.name_of(type)}" do
       patron_id = Patron::Type.sample_id_for(type)
-      with_login(patron_id) do
+      with_patron_login(patron_id) do
         get new_form_path
         expect(response).to have_http_status(:forbidden)
       end
@@ -51,7 +51,7 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
 
   it 'forbids users without patron records' do
     patron_id = 'does not exist'
-    with_login(patron_id) do
+    with_patron_login(patron_id) do
       get new_form_path
       expect(response).to have_http_status(:forbidden)
       expected_msg = /Your patron record cannot be found/
@@ -66,7 +66,7 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
 
     before(:each) do
       @patron_id = Patron::Type.sample_id_for(allowed_patron_types.first)
-      @user = login_as(patron_id)
+      @user = login_as_patron(patron_id)
 
       @patron = Patron::Record.find(patron_id)
     end

@@ -8,7 +8,7 @@ describe 'Proxy Borrower Forms', type: :request do
   context 'specs without admin privledges' do
     before(:each) do
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
-      @user = login_as(patron_id)
+      @user = login_as_patron(patron_id)
       @patron = Patron::Record.find(patron_id)
     end
 
@@ -60,7 +60,7 @@ describe 'Proxy Borrower Forms', type: :request do
       Assignment.create(framework_users_id: framework_user.id, role_id: 1)
 
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
-      @user = login_as(patron_id)
+      @user = login_as_patron(patron_id)
       @patron = Patron::Record.find(patron_id)
 
       admin_user = User.new(uid: '333333', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
@@ -98,7 +98,7 @@ describe 'Proxy Borrower Forms', type: :request do
       )
 
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
-      @user = login_as(patron_id)
+      @user = login_as_patron(patron_id)
       @patron = Patron::Record.find(patron_id)
 
       admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])

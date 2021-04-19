@@ -23,7 +23,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
 
   before(:each) do
     @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
-    @user = login_as(patron_id)
+    @user = login_as_patron(patron_id)
 
     # Need to add the faculty affiliation and email for user:
     @user.affiliations = 'EMPLOYEE-TYPE-ACADEMIC'
