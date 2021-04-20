@@ -40,8 +40,7 @@ class StackPassAdminController < AuthenticatedFormController
     admin_name = admin.name
 
     # Now lets find the assignment
-    # role id 2 == stackpass_admin
-    user_assignment = Assignment.where(framework_users_id: admin.id, role_id: 2).first
+    user_assignment = Assignment.where(framework_users_id: admin.id, role_id: Role.stackpass_admin_id).first
     user_assignment.destroy
     flash[:success] = "Removed #{admin_name} from administrator list"
     redirect_to forms_stack_pass_admin_users_path

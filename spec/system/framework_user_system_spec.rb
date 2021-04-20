@@ -41,7 +41,7 @@ describe :forms_stack_pass_admin, type: :system do
     before(:each) do
       # First create an admin and assignment
       user = FrameworkUsers.create(lcasid: 112_233, name: 'John Doe', role: 'Admin')
-      Assignment.create(framework_users_id: user.id, role_id: Role.stackpass_admin)
+      Assignment.create(framework_users_id: user.id, role_id: Role.stackpass_admin.id)
 
       # These functions require admin privledges:
       admin_user = User.new(uid: '1707532')

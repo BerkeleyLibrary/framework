@@ -98,8 +98,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
     admin_name = admin.name
 
     # Now lets find the assignment
-    # role id 1 == proxyborrower_admin
-    user_assignment = Assignment.where(framework_users_id: admin.id, role_id: 1).first
+    user_assignment = Assignment.where(framework_users_id: admin.id, role_id: Role.proxyborrow_admin_id).first
     user_assignment.destroy
     flash[:success] = "Removed #{admin_name} from administrator list"
     redirect_to forms_proxy_borrower_admin_users_path
