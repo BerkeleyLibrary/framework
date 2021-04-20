@@ -83,6 +83,23 @@ describe 'Stack Pass Form', type: :request do
       expect(response.body).to include(path)
     end
 
+    it 'allows an admin to deny a request' do
+      form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
+                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+
+      params = {
+        'stack_pass_[approve_deny]' => false,
+        'processed_by' => 'ADMIN USER',
+        'denial_reason' => 'Item listed at another library'
+      }
+      patch("/forms/stack-pass/#{form.id}", params: params)
+      expect(response).to redirect_to(action: :show, id: 1)
+
+      get(response.headers['Location'])
+      expect(response.body).to include(params['denial_reason'])
+      expect(response.body).to include('This request has been processed')
+    end
+
   end
 
   context 'specs with hard-coded admin privledges' do
