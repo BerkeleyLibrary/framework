@@ -2,7 +2,7 @@ require 'time'
 
 class StackPassAdminController < AuthenticatedFormController
   helper_method :sort_column, :sort_direction
-  before_action :admin?
+  before_action :require_admin!
 
   def admin; end
 
@@ -52,7 +52,7 @@ class StackPassAdminController < AuthenticatedFormController
   def init_form!; end
 
   # You shall not pass....unless you're an admin
-  def admin?
+  def require_admin!
     if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
       @user_role = 'Admin'
     else

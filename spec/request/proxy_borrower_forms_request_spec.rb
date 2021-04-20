@@ -50,14 +50,11 @@ describe 'Proxy Borrower Forms', type: :request do
       Role.delete_all
       FrameworkUsers.delete_all
 
-      # Create your role:
-      Role.create(id: 1, role: 'proxyborrow_admin')
-
       # Create a user:
       framework_user = FrameworkUsers.create(lcasid: '333333', name: 'John Doe', role: 'Admin')
 
       # Create an assignment:
-      Assignment.create(framework_users_id: framework_user.id, role_id: 1)
+      Assignment.create(framework_users_id: framework_user.id, role_id: Role.proxyborrow_admin_id)
 
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
       @user = login_as_patron(patron_id)

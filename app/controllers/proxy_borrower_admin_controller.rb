@@ -3,7 +3,7 @@ require 'time'
 # class ProxyBorrowerAdminController < ApplicationController
 class ProxyBorrowerAdminController < AuthenticatedFormController
   helper_method :sort_column, :sort_direction
-  before_action :admin?
+  before_action :require_admin!
 
   def admin
     # wisks us over to the admin page...yay, we're going to the admin page!
@@ -110,7 +110,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   def init_form!; end
 
   # You shall not pass....unless you're an admin
-  def admin?
+  def require_admin!
     if FrameworkUsers.role?(current_user.uid, 'proxyborrow_admin')
       # User is PBC admin.... PASS!
       @user_role = 'Admin'

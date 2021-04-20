@@ -2,12 +2,6 @@ require 'capybara_helper'
 require 'time'
 
 describe :stack_pass_form, type: :system do
-
-  before(:each) do
-    # Clear the way:
-    StackPassForm.delete_all
-  end
-
   context 'request specs' do
     it 'marks all required fields as required' do
       visit new_stack_pass_form_path
@@ -89,18 +83,15 @@ describe :stack_pass_form, type: :system do
   context 'approve/deny specs' do
 
     before(:each) do
-      # Clear the way:
-      StackRequest.delete_all
-
       # Create some requests:
-      StackPassForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                           phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+      form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
+                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
 
       # These functions require admin privledges:
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
 
-      visit '/forms/stack-pass/1'
+      visit "/forms/stack-pass/#{form.id}"
     end
 
     it 'allows an admin to deny a request' do
@@ -113,6 +104,7 @@ describe :stack_pass_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
+      # TODO: figure out why we're seeing an unprocessed form
       # Verify Results:
       expect(page).to have_content('This request has been processed')
     end
@@ -126,6 +118,7 @@ describe :stack_pass_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
+      # TODO: figure out why we're seeing an unprocessed form
       # Verify Results:
       expect(page).to have_content('This request has been processed')
     end

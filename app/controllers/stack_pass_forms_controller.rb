@@ -36,7 +36,7 @@ class StackPassFormsController < ApplicationController
 
   # Show an admin the request
   def show
-    admin?
+    require_admin!
     @current_user = current_user
     @req = StackPassForm.find(params[:id])
 
@@ -47,7 +47,7 @@ class StackPassFormsController < ApplicationController
   # Approve || Deny Request
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def update
-    admin?
+    require_admin!
 
     @form = StackPassForm.find(params[:id])
     @form.approvedeny = params[:stack_pass_][:approve_deny]
@@ -62,10 +62,9 @@ class StackPassFormsController < ApplicationController
       @form.approve!
     end
 
-    @form.save
-
+    @form.save!
     flash[:success] = 'Request has been successfully processed'
-    redirect_with_params(action: :show)
+    redirect_to(action: :show, id: params[:id])
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
@@ -103,7 +102,7 @@ class StackPassFormsController < ApplicationController
     verify_recaptcha!(model: @form)
   end
 
-  def admin?
+  def require_admin!
     if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
       @user_role = 'Admin'
     else

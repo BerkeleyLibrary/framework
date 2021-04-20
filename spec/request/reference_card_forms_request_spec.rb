@@ -7,21 +7,20 @@ describe 'Reference Card Form', type: :request do
 
   context 'specs without admin privledges' do
     before(:each) do
-      # Create some requests:
-      ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1)
-      ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1)
+      login_as_patron(5_551_212)
     end
 
     it 'reference card index page redirects to form' do
       get reference_card_forms_path
       expect(response.status).to eq 302
+      expect(response).to redirect_to(action: :new)
     end
 
-    it 'renders forbidden page if user is not a stack pass admin' do
-      get reference_card_form_path(id: 1)
-      expect(response.body).to include('redirected')
+    it 'redirects to login if if user is not a stack pass admin' do
+      form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                                      pass_date: Date.today, pass_date_end: Date.today + 1)
+      get reference_card_form_path(id: form.id)
+      expect(response).to redirect_to(login_path)
     end
 
     it 'rejects a submission with a captcha verification error' do
@@ -38,7 +37,7 @@ describe 'Reference Card Form', type: :request do
         }
       }
       post('/forms/reference-card', params: params)
-      expect(response).to redirect_to(%r{/forms/reference-card/new})
+      expect(response).to redirect_to(action: :new, params: params)
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
     end
@@ -47,34 +46,36 @@ describe 'Reference Card Form', type: :request do
 
   context 'specs with admin privledges' do
     before(:each) do
-      ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1,
-                               research_desc: 'This is research', affiliation: 'Affiliation 1',
-                               local_id: '8675309')
-      ReferenceCardForm.create(id: 2, email: 'closedreq@test.com', name: 'Jane Doe',
-                               pass_date: Date.today, pass_date_end: Date.today + 1,
-                               research_desc: 'This is research', affiliation: 'Affiliation 1',
-                               local_id: '8675309',
-                               approvedeny: true, processed_by: 'Test Admin')
-
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ReferenceCardFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
     end
 
     it 'renders process form for unprocessed request' do
-      get '/forms/reference-card/1'
+      form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+                                      pass_date: Date.today, pass_date_end: Date.today + 1,
+                                      research_desc: 'This is research', affiliation: 'Affiliation 1',
+                                      local_id: '8675309')
+      get "/forms/reference-card/#{form.id}"
       expect(response.body).to include('<h3>This Reference Card request needs to be processed.</h3>')
     end
 
     it 'renders processed page for processed request' do
-      get '/forms/reference-card/2'
+      form = ReferenceCardForm.create(
+        email: 'closedreq@test.com', name: 'Jane Doe',
+        pass_date: Date.today, pass_date_end: Date.today + 1,
+        research_desc: 'This is research', affiliation: 'Affiliation 1',
+        local_id: '8675309',
+        approvedeny: true, processed_by: 'Test Admin'
+      )
+      get "/forms/reference-card/#{form.id}"
       expect(response.body).to include('<h2>This request has been processed</h2>')
     end
 
     it 'renders 404 if request does not exist' do
-      get(path = '/forms/reference-card/5000')
-      expect(response.code).to eq('404')
+      max_id = ReferenceCardForm.maximum('id') || 0
+      get(path = "/forms/reference-card/#{5000 + max_id}")
+      expect(response.status).to eq(404)
       expect(response.body).to include(path)
     end
 

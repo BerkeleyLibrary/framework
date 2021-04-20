@@ -14,7 +14,7 @@ class ReferenceCardFormsController < ApplicationController
 
   # Show the request
   def show
-    admin?
+    require_admin!
     @current_user = current_user
     @req = ReferenceCardForm.find(params[:id])
     @days_approved = @req.days_approved
@@ -42,7 +42,7 @@ class ReferenceCardFormsController < ApplicationController
 
   # Approve || Deny Request
   def update
-    admin?
+    require_admin!
 
     @form = ReferenceCardForm.find(params[:id])
     @form.approvedeny = params[:stack_pass_][:approve_deny]
@@ -100,7 +100,7 @@ class ReferenceCardFormsController < ApplicationController
     verify_recaptcha!(model: @form)
   end
 
-  def admin?
+  def require_admin!
     if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
       @user_role = 'Admin'
     else

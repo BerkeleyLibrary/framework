@@ -7,12 +7,18 @@ require 'ssh_helper'
 require 'patron_helper'
 
 RSpec.configure do |config|
+  config.use_transactional_fixtures = false
+
   config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
   end
+
   config.around(:each) do |example|
-    DatabaseCleaner.strategy = :truncation
-    DatabaseCleaner.cleaning { example.run }
+    DatabaseCleaner.cleaning do
+      example.run
+      puts 'hello'
+    end
   end
 
   config.around(:each, type: :request) do |example|
