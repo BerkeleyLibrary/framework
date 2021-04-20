@@ -33,12 +33,6 @@ describe HomeController, type: :request do
       }
       expect(JSON.parse(response.body)).to eq(expected_body)
     end
-
-    it 'does something sensible for a general error' do
-      expect(Health::Check).to receive(:new).and_raise('Something went wrong')
-      get health_path
-      expect(response).to have_http_status(:internal_server_error)
-    end
   end
 
   describe :admin do
