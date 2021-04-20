@@ -30,7 +30,16 @@ describe :campus_networks, type: :request do
     attr_reader :body
     attr_reader :ranges
 
-    before(:each) do
+    before(:all) do
+      stub_request(:get, CampusNetwork.ucb_url).to_return(
+        status: 200,
+        body: File.new('spec/data/campusnetworks.html')
+      )
+      stub_request(:get, CampusNetwork.lbl_url).to_return(
+        status: 200,
+        body: File.new('spec/data/lblnetworks.html')
+      )
+
       @ranges = %w[
         128.3.*.*
         128.32.*.*
@@ -88,40 +97,52 @@ describe :campus_networks, type: :request do
       expect(body).to include(expected)
     end
 
-    it 'can filter for LBL only' do
-      lbl_ranges = %w[
-        128.3.*.*
-        131.243.*.*
-        192.12.173.*
-        192.58.231.*
-        198.125.132.*
-        198.125.133.*
-        198.128.16.*-198.128.19.*
-        198.128.192.*-198.128.207.*
-        198.128.208.*-198.128.223.*
-        198.128.24.*-198.128.31.*
-        198.128.52.*
-        204.62.155.*
-      ]
-      get campus_networks_path(organization: 'lbl')
+    describe 'filtering' do
+      before(:each) do
+        # TODO: NetAddr performance: find something faster
 
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to match(/LBL-only IP Addresses/m)
-      expect(response.body).to include(lbl_ranges.join(', '))
-    end
+        # NetAddr.merge wastes a lot of time sorting lists we happen to know
+        # are already sorted (b/c we're generating them from a range).
+        # That's not all the time it wastes, but it's enough to at least speed
+        # up this test *somewhat*.
+        allow(NetAddr).to receive(:cidr_sort) { |list| list }
+      end
 
-    it 'can filter for UCB only' do
+      it 'can filter for LBL only' do
+        lbl_ranges = %w[
+          128.3.*.*
+          131.243.*.*
+          192.12.173.*
+          192.58.231.*
+          198.125.132.*
+          198.125.133.*
+          198.128.16.*-198.128.19.*
+          198.128.192.*-198.128.207.*
+          198.128.208.*-198.128.223.*
+          198.128.24.*-198.128.31.*
+          198.128.52.*
+          204.62.155.*
+        ]
+        get campus_networks_path(organization: 'lbl')
 
-      ucb_ranges = %w[
-        128.32.*.*
-        136.152.*.*
-        169.229.*.*
-      ]
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to match(/LBL-only IP Addresses/m)
+        expect(response.body).to include(lbl_ranges.join(', '))
+      end
 
-      get campus_networks_path(organization: 'ucb')
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to match(/UCB-only IP Addresses/m)
-      expect(response.body).to include(ucb_ranges.join(', '))
+      it 'can filter for UCB only' do
+
+        ucb_ranges = %w[
+          128.32.*.*
+          136.152.*.*
+          169.229.*.*
+        ]
+
+        get campus_networks_path(organization: 'ucb')
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to match(/UCB-only IP Addresses/m)
+        expect(response.body).to include(ucb_ranges.join(', '))
+      end
     end
   end
 end

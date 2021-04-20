@@ -39,6 +39,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec-support'
   gem 'rspec_junit_formatter'
+  gem 'ruby-prof', '~> 0.17.0'
   gem 'vcr'
   gem 'webmock'
 end

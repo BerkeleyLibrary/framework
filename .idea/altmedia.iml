@@ -84,7 +84,7 @@
     <orderEntry type="library" scope="PROVIDED" name="mail (v2.7.1, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="marcel (v0.3.3, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="method_source (v1.0.0, RVM: ruby-2.7.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="mimemagic (v0.3.5, RVM: ruby-2.7.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="mimemagic (v0.3.8, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mini_mime (v1.0.2, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mini_portile2 (v2.5.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="minitest (v5.14.3, RVM: ruby-2.7.2) [gem]" level="application" />
@@ -128,12 +128,10 @@
     <orderEntry type="library" scope="PROVIDED" name="rspec-support (v3.10.2, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec_junit_formatter (v0.4.1, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubocop (v0.74.0, RVM: ruby-2.7.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby-prof (v0.17.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.11.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby_dep (v1.5.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v2.3.0, RVM: ruby-2.7.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="sass (v3.7.4, RVM: ruby-2.7.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="sass-listen (v4.0.0, RVM: ruby-2.7.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="sass-rails (v5.1.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sassc (v2.4.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sassc-rails (v2.1.2, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="selenium-webdriver (v3.142.7, RVM: ruby-2.7.2) [gem]" level="application" />

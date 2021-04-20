@@ -105,6 +105,7 @@ class CampusNetwork < IPAddr
     end
 
     def convert_to_cidrs(range)
+      # TODO: NetAddr performance: find something faster
       ip_net_range = NetAddr.range(range[0], range[1], Inclusive: true, Objectify: true)
       cidrs = NetAddr.merge(ip_net_range, Objectify: true)
       cidrs[0].to_s
