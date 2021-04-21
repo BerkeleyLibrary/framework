@@ -32,40 +32,13 @@ class FrameworkUsers < ActiveRecord::Base
         '1707532'  # Steve Sullivan
       ]
     end
-  end
 
-  def hardcoded_admin_uids
-    FrameworkUsers.hardcoded_admin_uids
-  end
+    # check if a user exists and has a role
+    def role?(user_id, role)
+      return true if hardcoded_admin_uids.include?(user_id)
 
-  # check if a user exists and has a role
-  def self.role?(user_id, role)
-    # Check if user is hardcoded (global) admin:
-    return true if hardcoded_admin_uids.include?(user_id)
-
-    # If not, check if a user exists:
-    user = FrameworkUsers.find_by(lcasid: user_id)
-    return nil if user.blank?
-
-    # She/he does....let's check if they have the proper assignment:
-    assignments = user.assignments.map { |a| a.role.role } || []
-    assignments.include?(role)
-  end
-
-  # check if the current user is assigned a role
-  def assigned?(role)
-    assignments = self.assignments.map { |a| a.role.role } || []
-    assignments.include?(role)
-  end
-
-  # Return the list of all users with a specific role:
-  def self.users_with_role(role)
-    users = []
-
-    FrameworkUsers.all.each do |user|
-      users.push(user) if user.assigned?(role)
+      role.assignments.exists?(framework_users_id: user_id)
     end
-
-    users
   end
+
 end

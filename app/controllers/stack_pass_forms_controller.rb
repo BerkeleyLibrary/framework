@@ -103,7 +103,7 @@ class StackPassFormsController < ApplicationController
   end
 
   def require_admin!
-    if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
+    if FrameworkUsers.role?(current_user.uid, Role.stackpass_admin)
       @user_role = 'Admin'
     else
       # If we want a forbidden page:

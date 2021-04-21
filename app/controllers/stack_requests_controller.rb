@@ -6,7 +6,7 @@ class StackRequestsController < ApplicationController
 
   def index
     # redirect_with_params(action: :new)
-    user_role = FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
+    user_role = FrameworkUsers.role?(current_user.uid, Role.stackpass_admin)
     @user_role = if user_role.blank?
                    nil
                  else

@@ -73,8 +73,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def admin_users
-    @users = FrameworkUsers.users_with_role('proxyborrow_admin')
-    @users.sort! { |a, b| a.name <=> b.name }
+    @users = Role.proxyborrow_admin.framework_users.order(:name)
   end
 
   def add_admin
@@ -110,7 +109,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
 
   # You shall not pass....unless you're an admin
   def require_admin!
-    if FrameworkUsers.role?(current_user.uid, 'proxyborrow_admin')
+    if FrameworkUsers.role?(current_user.uid, Role.proxyborrow_admin)
       # User is PBC admin.... PASS!
       @user_role = 'Admin'
     else

@@ -2,21 +2,12 @@ require 'time'
 
 # class ProxyBorrowerFormsController < ApplicationController
 class ProxyBorrowerFormsController < AuthenticatedFormController
+  # Simple page where you can select which form you wish to access
   def index
-    # Simple page where you can select which form you wish to access
-
     # I think I want to get the users role now... if they're in the DB
     # then I'll want to pass that info so they have the
     # admin link...otherwise, NO admin link!
-    user_role = FrameworkUsers.role?(current_user.uid, 'proxyborrow_admin')
-
-    faculty?
-
-    @user_role = if user_role.blank?
-                   nil
-                 else
-                   user_role
-                 end
+    @user_is_admin = FrameworkUsers.role?(current_user.uid, Role.proxyborrow_admin)
   end
 
   def dsp_form
@@ -75,9 +66,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   # Not sure if I need additional affiliations here or not...
   def faculty?
-    return false if current_user.affiliations.nil?
-
-    @faculty = current_user.affiliations.include?('EMPLOYEE-TYPE-ACADEMIC')
+    @faculty ||= current_user.affiliations&.include?('EMPLOYEE-TYPE-ACADEMIC')
   end
 
   def init_form!; end

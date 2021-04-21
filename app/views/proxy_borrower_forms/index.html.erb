@@ -8,7 +8,7 @@
 <%= link_to "Request Disabled Student", forms_proxy_borrower_dsp_path %>
 <br />
 <!-- Admin page only visible for administrators -->
-<% if @user_role %>
+<% if @user_is_admin %>
   <%= link_to "Admin User", forms_proxy_borrower_admin_path %>
   <br />
 <% end %>

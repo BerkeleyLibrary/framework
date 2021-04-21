@@ -15,8 +15,7 @@ class StackPassAdminController < AuthenticatedFormController
   end
 
   def users
-    @users = FrameworkUsers.users_with_role('stackpass_admin')
-    @users.sort! { |a, b| a.name <=> b.name }
+    @users = Role.stackpass_admin.framework_users.order(:name)
   end
 
   def add_user
@@ -52,7 +51,7 @@ class StackPassAdminController < AuthenticatedFormController
 
   # You shall not pass....unless you're an admin
   def require_admin!
-    if FrameworkUsers.role?(current_user.uid, 'stackpass_admin')
+    if FrameworkUsers.role?(current_user.uid, Role.stackpass_admin)
       @user_role = 'Admin'
     else
       redirect_to stack_pass_forms_path
