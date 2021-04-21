@@ -19,8 +19,8 @@ describe 'Reference Card Form', type: :request do
     it 'redirects to login if if user is not a stack pass admin' do
       form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
                                       pass_date: Date.today, pass_date_end: Date.today + 1)
-      get reference_card_form_path(id: form.id)
-      expect(response).to redirect_to(login_path)
+      get(form_path = reference_card_form_path(id: form.id))
+      expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
     end
 
     it 'rejects a submission with a captcha verification error' do

@@ -23,8 +23,9 @@ describe 'Stack Pass Form', type: :request do
     it 'redirects to login if if user is not a stack pass admin' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
                                   phone: '925-555-1234', pass_date: Date.today, main_stack: true)
-      get stack_pass_form_path(id: form.id)
-      expect(response).to redirect_to(login_path)
+
+      get((form_path = stack_pass_form_path(id: form.id)))
+      expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
     end
 
     it 'rejects a submission with a captcha verification error' do

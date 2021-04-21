@@ -60,7 +60,7 @@ class ReferenceCardFormsController < ApplicationController
     @form.save
 
     flash[:success] = 'Request has been successfully processed'
-    redirect_with_params(action: :show, id: params[:id])
+    redirect_to(action: :show, id: params[:id])
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
