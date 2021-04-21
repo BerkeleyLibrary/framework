@@ -1,22 +1,25 @@
 <h2>Confirm Payment</h2>
 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam tempora asperiores consequatur adipisci sapiente soluta necessitatibus eligendi? Aperiam, nesciunt numquam.</p>
-<table class="table table-bordered mt-5">
-  <thead class="table-header">
-    <th scope="col" class="text-center">#</th>
-    <th scope="col" class="text-center">Type</th>
-    <th scope="col" class="text-center">Amount</th>
-  </thead>
-  <% @fines.each_with_index do |f, idx| %>
-    <tr>
-      <td class="text-center"><%= idx += 1 %></td>
-      <td><%= f['type']['desc'] %></td>
-      <td class="text-right">$<%= sprintf('%.2f',f['balance'].to_f) %></td>
-    </tr>
+<!-- rts : responsive table scss -->
+<div class="rts-table">
+  <div class="rts-header">
+    <div class="rts-row">
+      <div class="rts-cell rts-w100 rts-c">#</div>
+      <div class="rts-cell rts-w400">Type</div>
+      <div class="rts-cell rts-w150">Fee / Fine</div>
+    </div>
+  </div>
+  <% @fines.each_with_index do |fee, idx| %>
+    <div class="rts-rowgrp">
+      <div class="rts-row">
+        <div class="rts-cell rts-w100 rts-c"><%= idx += 1 %></div>
+        <div class="rts-cell rts-w400"><%= fee['type']['desc'] %></div>
+        <div class="rts-cell rts-w150">$<%= sprintf('%.2f',fee['balance'].to_f) %></div>
+      </div>
+    </div>
   <% end %>
-</table>
-<div>
 </div>
-<div>Total Payment: $<%= sprintf('%.2f',@total.to_f) %></div>
+<div class="pt-3">Total Payment: $<%= sprintf('%.2f',@total.to_f) %></div>
 <!--
 <div>Trasaction Info: <%= @transaction_info %></div>
 -->

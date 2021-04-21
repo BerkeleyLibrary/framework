@@ -2,31 +2,33 @@
 <h2>List of Fees</h2>
 <!-- TODO: need descriptive text-->
 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio numquam porro dolor labore nostrum ut aspernatur eum eius, dolores eaque, id, veritatis praesentium ipsam exercitationem obcaecati dicta possimus fuga consectetur sint. Itaque voluptates error eos repudiandae fuga, id, doloremque atque magni possimus quisquam dignissimos debitis provident eaque officiis deleniti asperiores!</p>
-<!-- TODO: setup route/controller for receiving form -->
 <%= form_with url: "/fines/payment", method: :post, local:true do |form| %>
   <%= form.hidden_field :user_id, :value => @alma_id %>
-  <table class="table table-bordered mt-5">
-    <thead class="table-header">
-      <th scope="col" class="text-center">#</th>
-      <th scope="col" class="text-center">Type</th>
-      <th scope="col" class="text-center">Owner</th>
-      <th scope="col" class="text-center">Fees/Fines</th>
-      <th scope="col" class="text-center">Date</th>
-      <th scope="col" class="text-center">Pay</th>
-    </thead>
+  <!-- rts : responsive table scss -->
+  <div class="rts-table">
+    <div class="rts-header">
+      <div class="rts-row">
+        <div class="rts-cell rts-w100 rts-c">#</div>
+        <div class="rts-cell rts-w400">Type</div>
+        <div class="rts-cell rts-w400">Owner Title</div>
+        <div class="rts-cell rts-w150">Fee / Fine</div>
+        <div class="rts-cell rts-w400">Date</div>
+        <div class="rts-cell rts-c">Pay</div>
+      </div>
+    </div>
     <% @fines['fee'].each_with_index do |fee, idx| %>
-      <tr scope="row">
-        <td class="text-center"><%= idx += 1 %></td>
-        <td><%= fee['type']['desc'] %></td>
-        <td><%= fee['owner']['desc'] %></td>
-        <td class="text-right">$<%= sprintf('%.2f',fee['balance'].to_f) %></td>
-        <td class="text-center"><%= fee['creation_time'].to_datetime.strftime("%m/%d/%Y") %></td>
-        <td class='text-center'>
-          <%= check_box("fee", "payment", {:multiple => true}, fee['id'], nil ) %>
-        </td>
-      </tr>
+      <div class="rts-rowgrp">
+        <div class="rts-row">
+          <div class="rts-cell rts-w100 rts-c"><%= idx += 1 %></div>
+          <div class="rts-cell rts-w400"><%= fee['type']['desc'] %></div>
+          <div class="rts-cell rts-w400"><%= fee['owner']['desc'] %></div>
+          <div class="rts-cell rts-w150">$<%= sprintf('%.2f',fee['balance'].to_f) %></div>
+          <div class="rts-cell rts-w400"><%= fee['creation_time'].to_datetime.strftime("%m/%d/%Y") %></div>
+          <div class="rts-cell rts-c"><%= check_box("fee", "payment", {:multiple => true}, fee['id'], nil ) %></div>
+        </div>
+      </div>
     <% end %>
-  </table>
+  </div>
   <div class="d-flex justify-content-center pt-3 pb-5">
     <%= form.submit("Pay Fees", {:class => 'btn btn-primary'}) %>
   </div>
