@@ -50,9 +50,8 @@ describe :forms_proxy_borrower_dsp, type: :system do
   end
 
   it 'rejects a request with missing required data' do
-    # TODO: instead of using spaces to get around the JavaScript empty check,
-    #       test the JavaScript, then disable JavaScript and test the server-side
-    #       validation separately
+    # TODO: instead of using spaces to get around the JavaScript empty check, test
+    #       the JavaScript, then test the server-side validation in a request spec
     fill_in('student_name', with: ' ')
     fill_in('research_last', with: ' ')
     fill_in('research_first', with: ' ')
