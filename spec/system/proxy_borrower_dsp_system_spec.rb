@@ -91,7 +91,11 @@ describe :forms_proxy_borrower_dsp, type: :system do
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
 
-    expect(page).to have_content('The term of the Proxy Card must not be greater than')
+    today = Date.today
+    year = today.month >= 4 ? today.year + 1 : today.year
+    expected_max = Date.new(year, 6, 30).strftime('%B %e, %Y')
+
+    expect(page).to have_content("The term of the Proxy Card must not be greater than #{expected_max}")
   end
 
   it 'accepts a valid request' do

@@ -48,6 +48,19 @@ en:
         local_id: OskiCat record link or call number for an item of interest
         pass_date: Requested access start date
         pass_date_end: Requested access end date
+    errors:
+      models:
+        proxy_borrower_requests:
+          attributes:
+            research_last:
+              missing: 'Last name of proxy must not be blank'
+            research_first:
+              missing: 'First name of proxy must not be blank'
+            date_term:
+              missing: 'Term of proxy card must not be blank and must be in the format mm/dd/yyyy'
+              expired: 'The Proxy Term must not be in the past'
+              too_long: 'The term of the Proxy Card must not be greater than %{max_term}'
+
   activemodel:
     attributes:
       scan_request_form:

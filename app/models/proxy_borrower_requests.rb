@@ -22,11 +22,9 @@ require 'csv'
 #
 
 class ProxyBorrowerRequests < ActiveRecord::Base
-  validates :research_last, presence: { message: 'Last name of proxy must not be blank' }
-  validates :research_first, presence: { message: 'First name of proxy must not be blank' }
-  validates :date_term, presence: { message: 'Term of proxy card must not be blank and must be in the format mm/dd/yyyy' }
-  validate :term_not_expired
-  validate :term_not_too_long
+  validates :research_last, presence: { message: :missing }
+  validates :research_first, presence: { message: :missing }
+  validate :date_limit
 
   def submit!
     RequestMailer.proxy_borrower_request_email(self).deliver_now
@@ -63,32 +61,20 @@ class ProxyBorrowerRequests < ActiveRecord::Base
     proxy_name.gsub(/\s+/, ' ')
   end
 
-  def term_not_expired
-    errors.add(:date_term, err_term_expired) if date_term.present? && date_term < Date.today
-  end
-
-  def term_not_too_long
-    errors.add(:date_term, err_term_too_long) if date_term.present? && date_term > max_term
-  end
-
-  def err_term_expired
-    'The Proxy Term must not be in the past'
-  end
-
-  def err_term_too_long
-    "The term of the Proxy Card must not be greater than #{max_term.strftime('%B %e, %Y')}"
+  def date_limit
+    return errors.add(:date_term, :missing) unless date_term.present?
+    return errors.add(:date_term, :expired) if date_term < Date.today
+    return errors.add(:date_term, :too_long, max_term: max_term.strftime('%B %e, %Y')) if date_term > max_term
   end
 
   def max_term
     today = Date.today
-    mo = today.month
-    yr = today.year
 
     # If month is Jan - March, then max date is June 30th of the current year
     # else, if month is April - December, max date is June 30th of the following year
-    yr += 1 if mo >= 4
+    yr = today.year
+    yr += 1 if today.month >= 4
 
     Date.new(yr, 6, 30)
   end
-
 end
