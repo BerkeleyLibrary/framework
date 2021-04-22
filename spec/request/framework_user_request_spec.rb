@@ -3,16 +3,7 @@ require 'forms_helper'
 describe :forms_proxy_borrower_admin, type: :request do
   context 'specs with hardcoded admin' do
     before(:each) do
-      # TODO: make this work
-      calnet_yml_file = 'spec/data/calnet/5551212.yml'
-      hardcoded_admin_id = FrameworkUsers.hardcoded_admin_uids[0]
-      auth_hash = YAML.load_file(calnet_yml_file).merge('uid' => hardcoded_admin_id)
-      auth_hash['extra'].merge!('uid' => hardcoded_admin_id)
-      mock_omniauth_login(auth_hash)
-
-      # # These functions require admin privledges:
-      # admin_user = User.new(uid: '1707532')
-      # allow_any_instance_of(ProxyBorrowerAdminController).to receive(:current_user).and_return(admin_user)
+      mock_calnet_login(CalNet::STACK_REQUEST_ADMIN_UID)
     end
 
     it 'removes an admin user' do

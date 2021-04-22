@@ -1,17 +1,16 @@
 require 'capybara_helper'
+require 'calnet_helper'
 
 describe :forms_proxy_borrower_admin, type: :system do
 
   context 'specs with hardcoded admin' do
     before(:each) do
       # First create a DSP Rep and assignment
-      @user = FrameworkUsers.create(lcasid: 112_233, name: 'John Doe', role: 'Admin')
-      @role = Role.proxyborrow_admin
-      @assignment = Assignment.create(framework_users_id: @user.id, role_id: @role.id)
+      user = FrameworkUsers.create(lcasid: 112_233, name: 'John Doe', role: 'Admin')
+      @assignment = Assignment.create(framework_users_id: user.id, role_id: Role.proxyborrow_admin.id)
 
       # These functions require admin privledges:
-      admin_user = User.new(uid: '1707532')
-      allow_any_instance_of(ProxyBorrowerAdminController).to receive(:current_user).and_return(admin_user)
+      mock_calnet_login(CalNet::STACK_REQUEST_ADMIN_UID)
 
       # Go to the Admin Users View Page:
       visit forms_proxy_borrower_admin_users_path
@@ -44,8 +43,7 @@ describe :forms_stack_pass_admin, type: :system do
       Assignment.create(framework_users_id: user.id, role_id: Role.stackpass_admin.id)
 
       # These functions require admin privledges:
-      admin_user = User.new(uid: '1707532')
-      allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
+      mock_calnet_login(CalNet::STACK_REQUEST_ADMIN_UID)
 
       # Go to the Admin Users View Page:
       visit forms_stack_pass_admin_users_path

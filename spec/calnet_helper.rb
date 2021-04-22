@@ -1,6 +1,11 @@
 require 'rails_helper'
 require 'patron_helper'
 
+module CalNet
+  # Lisa Weber's UID, hard-coded in FrameworkUsers
+  STACK_REQUEST_ADMIN_UID = '7165'.freeze
+end
+
 # Mocks a calnet login as the specified patron, and stubs the corresponding
 # Millennium patron dump file. Suitable for calling from a before() block.
 #
@@ -8,7 +13,7 @@ require 'patron_helper'
 #                actual object from the session)
 def login_as_patron(patron_id)
   stub_patron_dump(patron_id)
-  mock_patron_calnet_login(patron_id)
+  mock_calnet_login(patron_id)
 end
 
 # Logs out. Suitable for calling in an after() block.
@@ -32,8 +37,8 @@ ensure
 end
 
 # Mocks a calnet login as the specified patron
-def mock_patron_calnet_login(patron_id)
-  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(patron_id)}.yml"
+def mock_calnet_login(uid_or_patron_number)
+  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(uid_or_patron_number)}.yml"
   raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
 
   auth_hash = YAML.load_file(calnet_yml_file)
