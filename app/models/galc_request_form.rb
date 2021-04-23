@@ -41,7 +41,7 @@ class GalcRequestForm < Form
             inclusion: { in: %w[checked] }
 
   def support_email
-    @support_email ||= 'webman@library.berkeley.edu'
+    @support_email ||= 'eref@library.berkeley.edu'
   end
 
   # Cannot use the delegate method because that is for read-only attributes

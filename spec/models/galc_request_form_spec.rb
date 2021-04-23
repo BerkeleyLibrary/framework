@@ -30,7 +30,7 @@ describe GalcRequestForm do
     it 'has a default value' do
       patron = Patron::Record.new(affiliation: Patron::Affiliation::UC_BERKELEY, type: Patron::Type::LIBRARY_STAFF)
       form = GalcRequestForm.new(patron: patron)
-      expect(form.support_email).to eq('webman@library.berkeley.edu')
+      expect(form.support_email).to eq('eref@library.berkeley.edu')
     end
   end
 

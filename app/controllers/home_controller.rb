@@ -4,7 +4,7 @@
 # to have in development.
 class HomeController < ApplicationController
 
-  self.support_email = 'webman@library.berkeley.edu'
+  self.support_email = 'helpbox@library.berkeley.edu'
 
   def health
     check = Health::Check.new
