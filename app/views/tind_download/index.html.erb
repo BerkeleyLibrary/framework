@@ -2,10 +2,13 @@
 <p id="description-text">This form allows you to search for and download a collection from TIND into either a CSV file or Open Office Spreadsheet.</p>
 <!-- RESPONSE DIV (only show after form submitted) -->
 <div id="response-div" class="response-div" style="display:none">
-  <p>Your download should start momentarily.</p>
+  <p>
+    Your download should start momentarily.
+    If the download does not begin in a few seconds, click <a id="fallback-download-link">here</a>.
+  </p>
   <div class="mt-5">
     <span>
-      <%= link_to 'TIND Metadata Download ', 
+      <%= link_to 'Return to Metadata Download Form',
       tind_download_path, 
       class: "title-link text-nowrap" %>
     </span>
@@ -15,7 +18,7 @@
 <!-- MAIN FORM (hide after form is submitted) -->
 <div id="form-div" style="display:block">
   <p style="color: #ee0000">* Required</p>
-  <%= form_with(url: '/tind-download/download', id: 'down-form', local: true, target: '_blank') do |form| %>
+  <%= form_with(url: '/tind-download/download', id: 'download-form', local: true, target: '_blank') do |form| %>
     <section id="tind-download-form">
       <div class="control-label">
         <%= form.label(:collection_name, 'Collection Name') %>:<span style="color: #ee0000"> *</span>

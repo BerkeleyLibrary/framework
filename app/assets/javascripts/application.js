@@ -15,6 +15,7 @@
 //= require turbolinks
 //= require jquery3
 //= require jquery-ui
+//= require jquery-validation
 //= require popper
 //= require bootstrap
 //= require framework

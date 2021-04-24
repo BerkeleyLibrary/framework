@@ -25,5 +25,9 @@
       <option name="processLiterals" value="true" />
       <option name="processComments" value="true" />
     </inspection_tool>
+    <inspection_tool class="UnnecessaryLocalVariableJS" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
+      <option name="m_ignoreAnnotatedVariables" value="false" />
+    </inspection_tool>
   </profile>
 </component>
