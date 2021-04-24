@@ -1,3 +1,4 @@
+require 'active_support/inflector'
 require 'jaro_winkler'
 
 class TindDownloadController < ApplicationController
@@ -48,7 +49,7 @@ class TindDownloadController < ApplicationController
   # rubocop:enable Metrics/MethodLength
 
   def find_collection
-    term = params[:term]
+    term = find_params[:term]
     render json: find_nearest(term)
   end
 
@@ -97,9 +98,18 @@ class TindDownloadController < ApplicationController
     distances[0...NAME_MATCH_COUNT].map { |_, v| v }
   end
 
-  def export_params
-    @export_params ||= begin
-      logger.debug(params: params)
+  def find_params
+    @find_params ||= begin
+      required_params = %i[term]
+      params.tap do |pp|
+        pp.permit(required_params + %i[format])
+        required_params.each { |p| pp.require(p) }
+      end
+    end
+  end
+
+  def download_params
+    @download_params ||= begin
       required_params = %i[collection_name export_format]
       params.tap do |pp|
         # :format is a default parameter added from routes.rb
@@ -111,13 +121,13 @@ class TindDownloadController < ApplicationController
   end
 
   def collection_name
-    export_params[:collection_name]
+    download_params[:collection_name]
   end
 
   # @return [UCBLIT::TIND::Export::ExportFormat] the selected format
   def export_format
     # noinspection RubyYardParamTypeMatch
-    fmt_param = export_params[:export_format]
+    fmt_param = download_params[:export_format]
     logger.debug("format: #{fmt_param.inspect} (as string: #{fmt_param.to_s.inspect})")
     UCBLIT::TIND::Export::ExportFormat.ensure_format(fmt_param)
   end

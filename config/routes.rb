@@ -24,8 +24,9 @@ Rails.application.routes.draw do
 
   # TIND Download Routes
   get '/tind-download', to: 'tind_download#index'
-  post '/tind-download/download', to: 'tind_download#download'
   get '/tind-download/find_collection', to: 'tind_download#find_collection'
+  get '/tind-download/download', to: 'tind_download#download'
+  post '/tind-download/download', to: 'tind_download#download'
 
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'

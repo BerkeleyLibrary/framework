@@ -11,13 +11,18 @@ $(function () {
 
 // Used to enable/disable the submit button - no collection name, no submit!
 function checkCollectionValue() {
-    let col_name = document.getElementById('collection_name').value || null;
+    let coll_name = document.getElementById('collection_name').value || null;
 
-    if (col_name) {
+    if (coll_name) {
         toggleDisable('export-btn', false);
     } else {
         toggleDisable('export-btn', true);
     }
+}
+
+function collectionExists(coll_name) {
+    all_coll_names = $.getJSON("/tind-download/find_collection")
+    return all_coll_names.includes(coll_name)
 }
 
 // Submit the form, after a few odds and ends that are easier to do on the front end
