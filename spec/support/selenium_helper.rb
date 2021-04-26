@@ -1,11 +1,12 @@
 require 'capybara/rspec'
 require 'selenium-webdriver'
+require 'docker'
 
 module UCBLIT
   module SeleniumHelper
     class << self
       def configure!
-        configurator = ENV['CI'] ? GridConfigurator.new : LocalConfigurator.new
+        configurator = Docker.running_in_container? ? GridConfigurator.new : LocalConfigurator.new
         configurator.configure!
       end
     end

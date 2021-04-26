@@ -1,4 +1,4 @@
-require 'dotenv/load' unless ENV['CI']
+require 'dotenv/load' unless Docker.running_in_container?
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.

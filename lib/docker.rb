@@ -10,4 +10,10 @@ module Docker
       end
     end
   end
+
+  class << self
+    def running_in_container?
+      File.exist? '/.dockerenv'
+    end
+  end
 end
