@@ -39,7 +39,7 @@ class StackPassAdminController < AuthenticatedFormController
     admin_name = admin.name
 
     # Now lets find the assignment
-    user_assignment = Assignment.where(framework_users_id: admin.id, role_id: Role.stackpass_admin_id).first
+    user_assignment = Assignment.where(framework_users: admin, role: Role.stackpass_admin).first
     user_assignment.destroy
     flash[:success] = "Removed #{admin_name} from administrator list"
     redirect_to forms_stack_pass_admin_users_path
@@ -51,11 +51,8 @@ class StackPassAdminController < AuthenticatedFormController
 
   # You shall not pass....unless you're an admin
   def require_admin!
-    if FrameworkUsers.role?(current_user.uid, Role.stackpass_admin)
-      @user_role = 'Admin'
-    else
-      redirect_to stack_pass_forms_path
-    end
+    @user_is_admin = current_user.role?(Role.stackpass_admin)
+    redirect_to stack_pass_forms_path unless @user_is_admin
   end
 
   def sort_column

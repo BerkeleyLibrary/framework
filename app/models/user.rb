@@ -100,6 +100,12 @@ class User
     @primary_patron_record ||= find_primary_record
   end
 
+  def role?(role)
+    return true if FrameworkUsers.hardcoded_admin?(uid)
+
+    role.assignments.exists?(framework_users_id: uid)
+  end
+
   private
 
   # The user's employee patron record

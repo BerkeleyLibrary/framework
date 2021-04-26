@@ -54,7 +54,7 @@ describe 'Proxy Borrower Forms', type: :request do
       framework_user = FrameworkUsers.create(lcasid: '333333', name: 'John Doe', role: 'Admin')
 
       # Create an assignment:
-      Assignment.create(framework_users_id: framework_user.id, role_id: Role.proxyborrow_admin_id)
+      Assignment.create(framework_users: framework_user, role: Role.proxyborrow_admin)
 
       @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
       @user = login_as_patron(patron_id)

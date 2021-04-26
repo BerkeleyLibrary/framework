@@ -101,10 +101,7 @@ class ReferenceCardFormsController < ApplicationController
   end
 
   def require_admin!
-    if FrameworkUsers.role?(current_user.uid, Role.stackpass_admin)
-      @user_role = 'Admin'
-    else
-      redirect_to login_path(url: request.fullpath)
-    end
+    @user_is_admin = current_user.role?(Role.stackpass_admin)
+    redirect_to login_path(url: request.fullpath) unless @user_is_admin
   end
 end

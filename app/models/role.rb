@@ -7,16 +7,8 @@ class Role < ActiveRecord::Base
       Role.find_or_create_by(role: 'proxyborrow_admin')
     end
 
-    def proxyborrow_admin_id
-      proxyborrow_admin.id
-    end
-
     def stackpass_admin
       Role.find_or_create_by(role: 'stackpass_admin')
-    end
-
-    def stackpass_admin_id
-      stackpass_admin.id
     end
   end
 end

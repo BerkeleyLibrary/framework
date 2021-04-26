@@ -6,7 +6,7 @@
 <br>
 <br>
 <%# ONLY FOR ADMIN ROLE %>
-<% if @user_role == 'Admin' %>
+<% if @user_is_admin %>
   <%= link_to 'Edit/Add Administrators', forms_proxy_borrower_admin_users_path %>
   <br>
   <br>
