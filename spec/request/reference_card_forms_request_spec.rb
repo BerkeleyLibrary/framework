@@ -73,8 +73,7 @@ describe 'Reference Card Form', type: :request do
     end
 
     it 'renders 404 if request does not exist' do
-      max_id = ReferenceCardForm.maximum('id') || 0
-      get(path = "/forms/reference-card/#{5000 + max_id}")
+      get(path = '/forms/reference-card/does-not-exist')
       expect(response.status).to eq(404)
       expect(response.body).to include(path)
     end
