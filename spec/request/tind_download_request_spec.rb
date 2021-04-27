@@ -38,8 +38,9 @@ describe TindDownloadController, type: :request do
       it 'GET redirects to login' do
         params = { collection_name: collection_name, export_format: 'csv' }
         get tind_download_download_path, params: params
-        callback_params = params.merge(url: tind_download_download_path)
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(callback_params)}"
+
+        callback_url = "#{tind_download_download_path}?#{URI.encode_www_form(params)}"
+        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: callback_url)}"
         expect(response).to redirect_to(login_with_callback_url)
       end
     end
@@ -105,7 +106,7 @@ describe TindDownloadController, type: :request do
       end
 
       it 'returns the matching collection name list' do
-        get tind_download_find_collection_path, params: {term: 'Abraham'}
+        get tind_download_find_collection_path, params: {collection_name: 'Abraham'}
         expect(response.status).to eq 200
         result = JSON.parse(response.body)
         expect(result).to be_a(Array)
@@ -113,7 +114,7 @@ describe TindDownloadController, type: :request do
       end
 
       it 'returns an empty list for an unmatched name' do
-        get tind_download_find_collection_path, params: {term: 'axolotl'}
+        get tind_download_find_collection_path, params: {collection_name: 'axolotl'}
         expect(response.status).to eq 200
         result = JSON.parse(response.body)
         expect(result).to be_a(Array)
