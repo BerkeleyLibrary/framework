@@ -1,7 +1,5 @@
 {
   "name": "altscan",
   "private": true,
-  "dependencies": {
-    "jquery-validation": "^1.19.3"
-  }
+  "dependencies": {}
 }

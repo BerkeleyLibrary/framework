@@ -24,11 +24,14 @@
         <%= form.label(:collection_name, 'Collection Name') %>:<span style="color: #ee0000"> *</span>
       </div>
       <div class="form-input required mb-4">
-        <%= form.text_field(:collection_name, 
-                  {:class => "form-control add-required", 
-                  :oninput => "checkCollectionValue()", 
-                  :required => true,
-                  :autofocus => true}) %>
+        <%= form.text_field(
+              :collection_name,
+                  {
+                    class: "form-control add-required",
+                    required: true,
+                    autofocus: true
+                  }
+            ) %>
       </div>
       <div class="form-label">
         Export format:
@@ -49,7 +52,7 @@
         </ul>
       </div>
       <div class="form-input">
-        <p><input type="button" id='export-btn' class='btn btn-primary' value="Download Metadata" onclick="downloadFile()" disabled></p>
+        <p><input type="button" id='export-btn' class='btn btn-primary' value="Download Metadata" onclick="downloadFile()"></p>
       </div>
     </section>
   <% end %>

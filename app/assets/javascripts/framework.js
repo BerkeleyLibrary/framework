@@ -4,7 +4,7 @@
  * proxy borrower forms.
  */
 function formshowhide(id) {
-  if (id == "not_renewal") {
+  if (id === "not_renewal") {
     document.getElementById('not_renewalf').style.display = "block";
     document.getElementById('renewalf').style.display = "none";
   } else {
@@ -35,16 +35,16 @@ function setDisabled(id, disable) {
  * Disable an element - such as a button
  */
 function disableElement(id) {
-    let element = document.getElementById(id);
-    element && (element.disabled = true);
+    let elem = document.getElementById(id);
+    elem && (elem.disabled = true);
 }
 
 /**
  * Enable an element - such as a button
  */
 function enableElement(id) {
-    let element = document.getElementById(id);
-    element && (element.disabled = false);
+    let elem = document.getElementById(id);
+    elem && (elem.disabled = false);
 }
 
 /**

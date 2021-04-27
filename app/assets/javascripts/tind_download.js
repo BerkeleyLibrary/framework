@@ -1,40 +1,90 @@
-let findCollectionUrl = "/tind-download/find_collection";
-let findCollectionParams = ['collection_name', 'authenticity_token']
+const findCollectionUrl = '/tind-download/find_collection';
+
+class TindDownload {
+    autocompleteCollection(request, response) {
+        $.getJSON(
+            findCollectionUrl,
+            {collection_name: request.term},
+            response
+        );
+    }
+
+    collectionValue() {
+        let collectionNameField = document.querySelector('#collection_name');
+        if (collectionNameField) {
+            return collectionNameField.value;
+        }
+    }
+
+    collectionExists() {
+        let collectionName = this.collectionValue();
+        var exists = false;
+        $.ajax({
+            type: 'GET',
+            url: findCollectionUrl,
+            data: {
+                collection_name: collectionName,
+                authenticity_token: $('input[name="authenticity_token"]').val(),
+            },
+            success: function (data) {
+                exists = data.includes(collectionName);
+            },
+            async: false // TODO: find a way to avoid this
+        });
+        return exists;
+    }
+
+    validateCollectionName(collectionName, onSuccess, onFailure) {
+        $.ajax({
+            type: 'GET',
+            url: findCollectionUrl,
+            data: {
+                collection_name: collectionName,
+                authenticity_token: $('input[name="authenticity_token"]').val(),
+            },
+            success: function (data) {
+                if (data.includes(collectionName)) {
+                    onSuccess();
+                } else {
+                    onFailure();
+                }
+            },
+            error: function() {
+                onFailure();
+            }
+        });
+    }
+
+    handleSubmit() {
+        let collectionName = this.collectionValue();
+        flashAlerts.clear()
+        this.validateCollectionName(
+            collectionName,
+            this.doSubmit,
+            function() {
+                let msg = `The collection "${collectionName}" does not exist.`;
+                flashAlerts.addAlert(msg)
+            }
+        )
+    }
+    
+    doSubmit() {
+        // TODO: submit the form
+    }
+}
+
+const tindDownload = new TindDownload();
+
 
 // TODO: add some sort of spinner to show we're working
 $(function () {
     // TODO: highlight *unmatched* text
     //   cf. https://stackoverflow.com/questions/9887032/how-to-highlight-input-words-in-autocomplete-jquery-ui
     // https://baymard.com/blog/autocomplete-design
-    $("#collection_name").autocomplete({
-        source: findCollectionUrl
-    })
-})
-
-// Used to enable/disable the submit button - no collection name, no submit!
-function checkCollectionValue() {
-    let collectionNameField = document.querySelector('#collection_name')
-    if (collectionNameField && collectionNameField.value) {
-        enableElement('export-btn')
-    }
-    disableElement('export-btn')
-}
-
-function collectionExists(collectionName) {
-    let authenticityToken = $('input[name="authenticity_token"]').val()
-    let queryParams = [
-        { name: 'authenticity_token', value: authenticityToken },
-        { name: 'term', value: collectionName }
-    ]
-    let queryUrl = findCollectionUrl + '?' + $.param(queryParams);
-
-    // TODO: get this closure working
-    var exists = false
-    $.getJSON(queryUrl, function(data) {
-        exists = data.includes(collectionName)
-    })
-    return exists;
-}
+    $('#collection_name').autocomplete({
+        source: tindDownload.autocompleteCollection
+    });
+});
 
 function setFallbackHref() {
     let form = downloadForm();
@@ -46,30 +96,9 @@ function downloadForm() {
     return $('#download-form');
 }
 
-$(document).ready(function() {
-    $.validator.addMethod('collectionExists', function(val, element) {
-        return collectionExists(val)
-    }, function(params, element) {
-        return 'The collection "' + element.value + '" does not exist.';
-    })
-
-    downloadForm().validate({
-        rules: {
-            collection_name: {
-                required: true,
-                collectionExists: true
-            }
-        }
-    })
-})
-
 // Submit the form, after a few odds and ends that are easier to do on the front end
 function downloadFile() {
-    // Clear out any flash alerts that user may have gotten before submitting the file:
-    let alerts = document.querySelector('.alerts')
-    if (alerts) {
-        alerts.remove()
-    }
+    flashAlerts.clear();
 
     // Before downloading, change the page to show the 'your download should start soon'
     // message since rails doesn't allow you to download and then render the page:
@@ -80,3 +109,4 @@ function downloadFile() {
     // NOW submit the form which should kick off the download:
     downloadForm().submit();
 }
+

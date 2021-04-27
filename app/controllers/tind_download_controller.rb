@@ -49,8 +49,8 @@ class TindDownloadController < ApplicationController
   # rubocop:enable Metrics/MethodLength
 
   def find_collection
-    term = find_params[:term]
-    render json: find_nearest(term)
+    collection_name = find_collection_params[:collection_name]
+    render json: find_nearest(collection_name)
   end
 
   private
@@ -85,22 +85,22 @@ class TindDownloadController < ApplicationController
     Rails.cache.fetch(:tind_collection_names, expires_in: CACHE_EXPIRY) { collections_by_name.keys.sort }
   end
 
-  def find_nearest(term)
-    normalized_term = term.parameterize
+  def find_nearest(partial_name)
+    normalized_partial_name = partial_name.parameterize
     distances = [].tap do |d|
       collection_names.each do |name|
         normalized_name = name.parameterize
-        distance = JaroWinkler.distance(normalized_term, normalized_name)
-        d << [distance, name] if normalized_name.include?(normalized_term)
+        distance = JaroWinkler.distance(normalized_partial_name, normalized_name)
+        d << [distance, name] if normalized_name.include?(normalized_partial_name)
       end
     end
     distances = distances.sort_by { |k, v| [-k, v] }
     distances[0...NAME_MATCH_COUNT].map { |_, v| v }
   end
 
-  def find_params
-    @find_params ||= begin
-      required_params = %i[term]
+  def find_collection_params
+    @find_collection_params ||= begin
+      required_params = %i[collection_name]
       params.tap do |pp|
         pp.permit(required_params + %i[format])
         required_params.each { |p| pp.require(p) }
@@ -126,9 +126,9 @@ class TindDownloadController < ApplicationController
 
   # @return [UCBLIT::TIND::Export::ExportFormat] the selected format
   def export_format
-    # noinspection RubyYardParamTypeMatch
-    fmt_param = download_params[:export_format]
-    logger.debug("format: #{fmt_param.inspect} (as string: #{fmt_param.to_s.inspect})")
+    # TODO: use proper content negotiation
+    return UCBLIT::TIND::Export::ExportFormat::DEFAULT unless (fmt_param = download_params[:export_format])
+
     UCBLIT::TIND::Export::ExportFormat.ensure_format(fmt_param)
   end
 
