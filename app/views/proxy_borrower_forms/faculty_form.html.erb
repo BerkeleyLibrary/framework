@@ -77,27 +77,23 @@
   </fieldset>
   <div id="not_renewalf"></div>
   <%# Similar to above issue - if user selected 'yes' display the renewal instructions %>
-  <% if @request_form.renewal == 1 %>
-    <div id="renewalf">
-    <% else %>
-      <div id="renewalf" style="display:none;">
-      <% end %>
-      <fieldset>
-        <p>If you <b>are in possession</b> of the old proxy card, bring it to the Privileges Desk in 1-2 
-          business days. If you are <b>not in possession</b> of the old proxy card, please click 
-          <b>No</b> above to reinitiate.</p>
-      </fieldset>
-    </div>
-    <p>By submitting this form I acknowledge that I am responsible for all materials borrowed under this privilege; that 
-      all recall notices will be sent to me; and that I am responsible for the return of all materials or the payment of 
-      replacement bills for materials that are lost or damaged.</p>
-    <p>
-      <input type="submit" class="btn btn-primary" value="Submit">
-      <input type="button" name="reset" class="btn btn-link" value="Reset" onclick="hardReset();">
-    </p>
-  <% end %>
-  <script>
-    $(function() {
-      $( "#term" ).datepicker();
+  <div id="renewalf" <%= 'style="display:none;' if @request_form.renewal == 1 %>>
+    <fieldset>
+      <p>If you <b>are in possession</b> of the old proxy card, bring it to the Privileges Desk in 1-2
+        business days. If you are <b>not in possession</b> of the old proxy card, please click
+        <b>No</b> above to reinitiate.</p>
+    </fieldset>
+  </div>
+  <p>By submitting this form I acknowledge that I am responsible for all materials borrowed under this privilege; that
+    all recall notices will be sent to me; and that I am responsible for the return of all materials or the payment of
+    replacement bills for materials that are lost or damaged.</p>
+  <p>
+    <input type="submit" class="btn btn-primary" value="Submit">
+    <input type="button" name="reset" class="btn btn-link" value="Reset" onclick="hardReset();">
+  </p>
+<% end %>
+<script>
+    $(function () {
+        $('#term').datepicker();
     });
-  </script>
+</script>
