@@ -25,13 +25,6 @@ function toggleBlock(id, display) {
 }
 
 /**
- * Disable or enable an element - such as a button
- */
-function setDisabled(id, disable) {
-  document.getElementById(id).disabled = !!disable;
-}
-
-/**
  * Disable an element - such as a button
  */
 function disableElement(id) {

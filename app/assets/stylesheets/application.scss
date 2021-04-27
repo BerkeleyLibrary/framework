@@ -2,11 +2,25 @@
 *= require jquery-ui
 */
 @import "bootstrap";
-@import "tind_collection_autocomplete";
+@import "tind_download";
+
+$required-color: #ee0000;
+$required-indicator: "*";
 
 .form-group.required .control-label:after {
-   content: " *";
-   color: #ee0000;
+  content: $required-indicator;
+  color: $required-color;
+  margin-left: 0.25em;
+}
+
+p.required-note {
+  color: $required-color;
+
+  &::before {
+    content: $required-indicator;
+    color: $required-color;
+    margin-right: 0.25em;
+  }
 }
 
 a, a:link, a:visited {

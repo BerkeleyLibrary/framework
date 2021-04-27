@@ -1,60 +1,39 @@
-<h1>TIND Metadata Download</h1>
-<p id="description-text">This form allows you to search for and download a collection from TIND into either a CSV file or Open Office Spreadsheet.</p>
-<!-- RESPONSE DIV (only show after form submitted) -->
-<div id="response-div" class="response-div" style="display:none">
-  <p>
-    Your download should start momentarily.
-    If the download does not begin in a few seconds, click <a id="fallback-download-link">here</a>.
+<%= form_with(url: '/tind-download/download', id: 'download-form', local: true, target: '_blank') do |f| %>
+  <h1>TIND Metadata Download</h1>
+
+  <p id="description-text">
+    This form allows you to search for and download a collection from TIND into either a CSV file
+    or Open Office Spreadsheet.
   </p>
-  <div class="mt-5">
-    <span>
-      <%= link_to 'Return to Metadata Download Form',
-      tind_download_path, 
-      class: "title-link text-nowrap" %>
-    </span>
-  </div>
-</div>
-<!-- END -->
-<!-- MAIN FORM (hide after form is submitted) -->
-<div id="form-div" style="display:block">
-  <p style="color: #ee0000">* Required</p>
-  <%= form_with(url: '/tind-download/download', id: 'download-form', local: true, target: '_blank') do |form| %>
-    <section id="tind-download-form">
-      <div class="control-label">
-        <%= form.label(:collection_name, 'Collection Name') %>:<span style="color: #ee0000"> *</span>
-      </div>
-      <div class="form-input required mb-4">
-        <%= form.text_field(
-              :collection_name,
-                  {
-                    class: "form-control add-required",
-                    required: true,
-                    autofocus: true
-                  }
-            ) %>
-      </div>
-      <div class="form-label">
-        Export format:
-      </div>
-      <div class="form-input">
-        <ul>
-          <% radio_button_id = :export_format %>
-          <% UCBLIT::TIND::Export::ExportFormat.each do |fmt| %>
-            <li>
-              <%
-                val = fmt.value.downcase
-                label_id = "#{radio_button_id}_#{val}".to_sym
-              %>
-              <%= form.radio_button(radio_button_id, fmt.value, checked: fmt.default?) %>
-              <%= form.label(label_id, fmt.description) %>
-            </li>
-          <% end  %>
-        </ul>
-      </div>
-      <div class="form-input">
-        <p><input type="button" id='export-btn' class='btn btn-primary' value="Download Metadata" onclick="downloadFile()"></p>
-      </div>
-    </section>
-  <% end %>
-</div>
-<!-- END -->
+
+  <section id="tind-download-form">
+    <p class="required-note">Required</p>
+
+    <div class="form-label form-group required">
+      <%= label_tag(:collection_name, 'Collection Name', class: 'control-label') %>
+    </div>
+    <div class="form-input required mb-4">
+      <%= f.text_field(:collection_name, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    </div>
+
+    <div class="form-label">
+      <%= f.label(:export_format, 'Export Format') %>:
+    </div>
+    <div class="form-input">
+      <ul>
+        <% radio_button_id = :export_format %>
+        <% UCBLIT::TIND::Export::ExportFormat.each do |fmt| %>
+          <% val = fmt.value.downcase %>
+          <li>
+            <%= f.radio_button(radio_button_id, fmt.value, checked: fmt.default?) %>
+            <%= f.label("#{radio_button_id}_#{val}".to_sym, fmt.description) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="form-input">
+      <p><input type="submit" id='export-btn' class='btn btn-primary' value="Download Metadata"></p>
+    </div>
+  </section>
+<% end %>
