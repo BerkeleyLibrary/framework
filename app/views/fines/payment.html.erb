@@ -21,8 +21,32 @@
 </div>
 <div class="pt-3">Total Payment: $<%= sprintf('%.2f',@total.to_f) %></div>
 <!--
-<div>Trasaction Info: <%= @transaction_info %></div>
+TODO: 
+This is the info that *should* be sent to and returned from Paypal
+We then want to send it to the credit route to credit the users 
+account... at least I think that's how it works.
 -->
+<div class="pt-5 pb-5">Trasaction Info: <%= @transaction_info %></div>
 <div class="d-flex justify-content-center pt-3 pb-5">
   <button class="btn btn-primary">Pay with PayPal</button>
 </div>
+<!-- TEMPORARY - for now let's use a link to develop the credit route -->
+<div class="d-flex justify-content-center pt-3 pb-5">
+  <%= form_with url: "/fines/credit", method: :post, local:true do |form| %>
+    <%= form.hidden_field :transaction_info, :value => @transaction_info %>
+    <%= form.submit("Test Credit Account", {:class => 'btn btn-primary'}) %>
+  <% end %>
+</div>
+<!--
+<div class="d-flex justify-content-center pt-3 pb-5">
+  <iframe src="https://payflowlink.paypal.com?MODE=TEST" name="test_iframe" scrolling="no" width="570px" height="540px" frameborder="0"></iframe>
+</div>
+-->
+<form method="POST" action="https://payflowlink.paypal.com">
+  <input type="hidden" name="LOGIN" value="ucblibrary">
+  <input type="hidden" name="MODE" value="TEST">
+  <input type="hidden" name="PARTNER" value="PayPal">
+  <input type="hidden" name="AMOUNT" value="2.50">
+  <input type="hidden" name="TYPE" value="S">
+  <input type="submit" value="Test Pay">
+</form>
