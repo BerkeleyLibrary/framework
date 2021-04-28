@@ -3,6 +3,7 @@ dockerComposePipeline(
   commands: [
     [
         [exec: 'rake check RAILS_ENV=test'],
+        'rake js:eslint',
         'rake rubocop',
         'rake brakeman',
         'rake bundle:audit'
@@ -14,6 +15,7 @@ dockerComposePipeline(
       'Code Coverage': 'artifacts/rcov',
       'RuboCop'      : 'artifacts/rubocop',
       'Brakeman'     : 'artifacts/brakeman'
+      'JSLint'       : 'artifacts/jslint'
     ],
     raw     : 'artifacts/screenshots/**/*.png'
   ]
