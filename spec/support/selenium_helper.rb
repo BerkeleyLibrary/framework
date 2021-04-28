@@ -3,7 +3,7 @@ require 'selenium-webdriver'
 require 'docker'
 
 module UCBLIT
-  module SeleniumHelper
+  module CapybaraHelper
     class << self
       def configure!
         configurator = Docker.running_in_container? ? GridConfigurator.new : LocalConfigurator.new
@@ -31,7 +31,11 @@ module UCBLIT
       end
 
       def configure!
-        Capybara.register_driver(driver_name) { |app| new_driver(app, chrome_args) }
+        Capybara.register_driver(driver_name) do |app|
+          new_driver(app, chrome_args).tap do |driver|
+            driver.browser.download_path = download_path
+          end
+        end
         Capybara.javascript_driver = driver_name
 
         # these accessors won't be in scope when the config block is executed,
@@ -44,6 +48,14 @@ module UCBLIT
             driven_by(driver_name)
             WebMock.disable_net_connect!(**webmock_options)
           end
+        end
+      end
+
+      private
+
+      def download_path
+        'artifacts/capybara/downloads'.tap do |path|
+          FileUtils.mkdir_p(path)
         end
       end
 
