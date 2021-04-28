@@ -39,6 +39,7 @@ group :development, :test do
   gem 'colorize'
   gem 'database_cleaner-active_record', '~> 2.0'
   gem 'dotenv', '~> 2.7'
+  gem 'roo', '~> 2.8'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'rspec-support'
