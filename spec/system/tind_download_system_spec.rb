@@ -53,9 +53,10 @@ describe TindDownloadController, type: :system do
 
       describe 'downloads' do
         before(:each) do
+          search_id = 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY_zFklPYzRCNVRpUW9XTUxlLVV5TjhwLXcAAAAAAEuVxhY3YXhvOTVQblIzSzh1bTVEQXZ3OG9BAAAAAAP1GGgWd0pBX2NuQWhSM2FSTDhpQ1p4cWxyZwAAAAAEI7E5Fm5OeWNPSFNTUWsyLVBKQ3BVQS1kclEAAAAAAdZneBY5NXEyR0NQaVQ5MnRkQ29NcS15S1FB'
           search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
-          search_params = { c: 'Abraham Lincoln Papers', format: "xml" }
-          search_params_with_search_id = search_params.merge(search_id: "DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY_zFklPYzRCNVRpUW9XTUxlLVV5TjhwLXcAAAAAAEuVxhY3YXhvOTVQblIzSzh1bTVEQXZ3OG9BAAAAAAP1GGgWd0pBX2NuQWhSM2FSTDhpQ1p4cWxyZwAAAAAEI7E5Fm5OeWNPSFNTUWsyLVBKQ3BVQS1kclEAAAAAAdZneBY5NXEyR0NQaVQ5MnRkQ29NcS15S1FB")
+          search_params = { c: 'Abraham Lincoln Papers', format: 'xml' }
+          search_params_with_search_id = search_params.merge(search_id: search_id)
           result_1 = File.read('spec/data/tind_download/tind-abraham-lincoln-1.xml')
           result_2 = File.read('spec/data/tind_download/tind-abraham-lincoln-2.xml')
           stub_request(:get, search_url).with(query: search_params).to_return(status: 200, body: result_1)
@@ -64,19 +65,27 @@ describe TindDownloadController, type: :system do
           fill_in('collection_name', with: 'Abraham Lincoln Papers')
         end
 
-        it 'downloads a CSV' do
-          page.choose('export_format_csv')
-          page.click_button('Download Metadata')
+        UCBLIT::TIND::Export::ExportFormat.each do |fmt|
+          it "downloads #{fmt}" do
+            format = fmt.value.downcase
 
-          expected_filename = 'abraham-lincoln-papers.csv'
-          downloaded_file_path = File.join(CapybaraHelper.download_path, expected_filename)
+            page.choose("export_format_#{format}")
+            page.click_button('Download Metadata')
 
-          # TODO: get this working
-          expect(File.exist?(downloaded_file_path)).to eq(true)
+            # Wait for "Your download should start" to appear
+            expected_msg = 'Your download should start momentarily'
+            expect(page).to have_selector('p', text: expected_msg, visible: true)
 
-          actual = File.read(downloaded_file_path)
-          expected = File.read(File.join('spec/data/tind_download', expected_filename))
-          expect(actual).to eq(expected)
+            # Wait for download
+            expected_filename = "abraham-lincoln-papers.#{format}"
+            downloaded_file_path = CapybaraHelper.wait_for_download(expected_filename, 3)
+
+            # Check file contents
+            actual = File.binread(downloaded_file_path)
+            expected_file_path = File.join('spec/data/tind_download', expected_filename)
+            expected = File.binread(expected_file_path)
+            expect(actual).to eq(expected)
+          end
         end
       end
     end

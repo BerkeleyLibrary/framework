@@ -44,6 +44,17 @@ module CapybaraHelper
       end
     end
 
+    def wait_for_download(expected_filename, timeout_secs)
+      start = Time.now
+      File.join(download_path, expected_filename).tap do |downloaded_file_path|
+        loop do
+          break if File.exist?(downloaded_file_path)
+          current = Time.now
+          expect(current - start).to be < timeout_secs, "Download #{downloaded_file_path} not present after #{timeout_secs} seconds"
+        end
+      end
+    end
+
     private
 
     def download_path_for(example)
