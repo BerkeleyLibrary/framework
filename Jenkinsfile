@@ -14,8 +14,8 @@ dockerComposePipeline(
     html    : [
       'Code Coverage': 'artifacts/rcov',
       'RuboCop'      : 'artifacts/rubocop',
-      'Brakeman'     : 'artifacts/brakeman'
-      'JSLint'       : 'artifacts/jslint'
+      'Brakeman'     : 'artifacts/brakeman',
+      'ESLint'       : 'artifacts/eslint'
     ],
     raw     : 'artifacts/screenshots/**/*.png'
   ]
