@@ -54,7 +54,7 @@ describe TindDownloadController, type: :system do
 
       describe 'downloads' do
         before(:each) do
-          search_id = 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY_zFklPYzRCNVRpUW9XTUxlLVV5TjhwLXcAAAAAAEuVxhY3YXhvOTVQblIzSzh1bTVEQXZ3OG9BAAAAAAP1GGgWd0pBX2NuQWhSM2FSTDhpQ1p4cWxyZwAAAAAEI7E5Fm5OeWNPSFNTUWsyLVBKQ3BVQS1kclEAAAAAAdZneBY5NXEyR0NQaVQ5MnRkQ29NcS15S1FB'
+          search_id = 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY'
           search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
           search_params = { c: 'Abraham Lincoln Papers', format: 'xml' }
           search_params_with_search_id = search_params.merge(search_id: search_id)
@@ -67,19 +67,16 @@ describe TindDownloadController, type: :system do
         end
 
         def verify_download(expected_path, actual_path, format:)
-          if format == UCBLIT::TIND::Export::ExportFormat::CSV
-            return verify_csv(expected_path, actual_path)
-          end
-          if format == UCBLIT::TIND::Export::ExportFormat::ODS
-            verify_ods(expected_path, actual_path)
-          end
+          return verify_csv(expected_path, actual_path) if format == UCBLIT::TIND::Export::ExportFormat::CSV
+
+          verify_ods(expected_path, actual_path) if format == UCBLIT::TIND::Export::ExportFormat::ODS
         end
 
         def verify_ods(expected_path, actual_path)
           ss_expected = Roo::Spreadsheet.open(expected_path, file_warning: :warning)
           ss_actual = Roo::Spreadsheet.open(actual_path, file_warning: :warning)
 
-          row_and_col_attrs = [:first_row, :first_column, :last_row, :last_column]
+          row_and_col_attrs = %i[first_row first_column last_row last_column]
 
           row_and_col_attrs.each do |attr|
             expected = ss_expected.send(attr)
@@ -103,7 +100,7 @@ describe TindDownloadController, type: :system do
         def verify_csv(expected_path, actual_path)
           actual = File.binread(actual_path)
           expected = File.binread(expected_path)
-          return expect(actual).to eq(expected)
+          expect(actual).to eq(expected)
         end
 
         UCBLIT::TIND::Export::ExportFormat.each do |fmt|

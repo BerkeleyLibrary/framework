@@ -106,7 +106,7 @@ describe TindDownloadController, type: :request do
       end
 
       it 'returns the matching collection name list' do
-        get tind_download_find_collection_path, params: {collection_name: 'Abraham'}
+        get tind_download_find_collection_path, params: { collection_name: 'Abraham' }
         expect(response.status).to eq 200
         result = JSON.parse(response.body)
         expect(result).to be_a(Array)
@@ -114,7 +114,7 @@ describe TindDownloadController, type: :request do
       end
 
       it 'returns an empty list for an unmatched name' do
-        get tind_download_find_collection_path, params: {collection_name: 'axolotl'}
+        get tind_download_find_collection_path, params: { collection_name: 'axolotl' }
         expect(response.status).to eq 200
         result = JSON.parse(response.body)
         expect(result).to be_a(Array)
@@ -128,7 +128,7 @@ describe TindDownloadController, type: :request do
       before(:each) do
         search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
         search_params = { c: collection_name, format: 'xml' }
-        search_params_with_search_id = search_params.merge(search_id: "DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY_zFklPYzRCNVRpUW9XTUxlLVV5TjhwLXcAAAAAAEuVxhY3YXhvOTVQblIzSzh1bTVEQXZ3OG9BAAAAAAP1GGgWd0pBX2NuQWhSM2FSTDhpQ1p4cWxyZwAAAAAEI7E5Fm5OeWNPSFNTUWsyLVBKQ3BVQS1kclEAAAAAAdZneBY5NXEyR0NQaVQ5MnRkQ29NcS15S1FB")
+        search_params_with_search_id = search_params.merge(search_id: 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY')
         result_1 = File.read('spec/data/tind_download/tind-abraham-lincoln-1.xml')
         result_2 = File.read('spec/data/tind_download/tind-abraham-lincoln-2.xml')
         stub_request(:get, search_url).with(query: search_params).to_return(status: 200, body: result_1)
