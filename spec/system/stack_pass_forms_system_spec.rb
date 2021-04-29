@@ -2,7 +2,7 @@ require 'capybara_helper'
 require 'time'
 
 describe :stack_pass_form, type: :system do
-  context 'request specs' do
+  context 'system specs' do
     it 'marks all required fields as required' do
       visit new_stack_pass_form_path
 
