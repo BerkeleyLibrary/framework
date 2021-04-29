@@ -1,4 +1,4 @@
-import './flash_alerts'
+/* global flashAlerts */
 
 const findCollectionUrl = '/tind-download/find_collection'
 

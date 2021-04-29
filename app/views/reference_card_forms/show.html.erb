@@ -46,10 +46,10 @@
     <div class="form-group m-0 required">
       <fieldset class="form-group m-0 p-0">
         <div class="mb-4 form-group">
-          <%= radio_button_tag(:stack_pass_approve_deny, 1, false, id: 'stack_pass_approve', name: 'stack_pass_[approve_deny]', onchange: 'sp_proccess_check()') %>
+          <%= radio_button_tag(:stack_pass_approve_deny, 1, false, id: 'stack_pass_approve', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
           <%= label_tag(:stack_pass_approve_deny_0, "Approve") %>
           <br />
-          <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'sp_proccess_check()') %>
+          <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
           <%= label_tag(:stack_pass_form_main_stack_1, "Deny") %>
           <!-- DENIAL REASON SELECT -->
           <%= select(:stack_pass_denial, 
@@ -60,11 +60,11 @@
              'Other'], 
             {prompt: 'Select reason for denial'},
             {:class => 'custom-select custom-select-sm col-md-4',
-             :onchange => 'sp_proccess_check()',
+             :onchange => 'checkStackPassInputs()',
              :style => 'display: none'}) %> <br />
           <div id="other_denial" class="mt-2 mb-4 form-group" style="display: none">
             <%= label_tag(:denial_reason, "Denial Reason:", class: "control-label") %> <br />
-            <%= text_field_tag(:denial_reason, '', placeholder: "Enter the reason for denial...", class: "form-control", onkeyup: 'sp_proccess_check()') %>
+            <%= text_field_tag(:denial_reason, '', placeholder: "Enter the reason for denial...", class: "form-control", onkeyup: 'checkStackPassInputs()') %>
           </div>
         </div>
       </fieldset>

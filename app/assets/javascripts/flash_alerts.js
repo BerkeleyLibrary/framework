@@ -1,5 +1,9 @@
-// Hacking Rails flash alerts -- see ApplicationHelper#alerts
-// for where/how server-side alerts are rendered
+/* exported flashAlerts */
+
+/**
+ * Hacking Rails flash alerts -- see ApplicationHelper#alerts
+ * for where/how server-side alerts are rendered
+ */
 class FlashAlerts {
   clear () {
     const alerts = this._alerts()
@@ -56,5 +60,5 @@ class FlashAlerts {
   }
 }
 
-/* exported flashAlerts */ // TODO: why doesn't this work?
+// noinspection JSUnusedGlobalSymbols
 const flashAlerts = new FlashAlerts()

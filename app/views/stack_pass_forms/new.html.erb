@@ -19,9 +19,9 @@
       <fieldset class="form-group m-0 p-0">
         <legend class="required" style="font-size: 1rem">Is the item in the Main (Gardner) Stacks? <span style="color: red">*</span></legend >
         <div class="mb-4 form-group">
-          <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "toggleBlock('main_stack_warn', true), toggleDisable('submit_btn', true)", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
+          <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "showBlock('main_stack_warn'), disableElement('submit_btn')", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
           <%= label_tag(:stack_pass_form_main_stack_no, "No") %>
-          <%= radio_button_tag(:stack_pass_form_main_stack, 1, true, onClick: "toggleBlock('main_stack_warn', false), toggleDisable('submit_btn', false)", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>
+          <%= radio_button_tag(:stack_pass_form_main_stack, 1, true, onClick: "hideBlock('main_stack_warn'), enableElement('submit_btn')", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>
           <%= label_tag(:stack_pass_form_main_stack_yes, "Yes") %>
         </div>
       </fieldset>
@@ -31,9 +31,9 @@
       <fieldset class="form-group m-0 p-0">
         <legend class="required" style="font-size: 1rem">Is the item in the Main (Gardner) Stacks? <span style="color: red">*</span></legend >
         <div class="mb-4 form-group">
-          <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "toggleBlock('main_stack_warn', true), toggleDisable('submit_btn', true)", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
+          <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "showBlock('main_stack_warn'), disableElement('submit_btn')", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
           <%= label_tag(:stack_pass_form_main_stack_no, "No") %>
-          <%= radio_button_tag(:stack_pass_form_main_stack, 1, false, onClick: "toggleBlock('main_stack_warn', false), toggleDisable('submit_btn', false)", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>
+          <%= radio_button_tag(:stack_pass_form_main_stack, 1, false, onClick: "hideBlock('main_stack_warn'), enableElement('submit_btn')", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>
           <%= label_tag(:stack_pass_form_main_stack_yes, "Yes") %>
         </div>
       </fieldset>
@@ -73,7 +73,7 @@
     <% if f.object.main_stack %>
       <input id="submit_btn" type="submit" class="btn btn-primary" value="Submit">
     <% else %>
-      <input id="submit_btn" type="submit" class="btn btn-primary" value="Submit" disabled=true>
+      <input id="submit_btn" type="submit" class="btn btn-primary" value="Submit" disabled>
     <% end %>
     <input type="button" name="reset" class="btn btn-link" value="Reset" onclick="formReset('stack-pass');">
   </p>

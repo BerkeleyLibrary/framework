@@ -64,16 +64,16 @@
     <legend style="font-size: 1rem">Is this a renewal of an existing card in the proxy's possession?</legend >
     <% if @request_form.renewal == 1 %>
       <div class="mb-4 form-group">
-        <%= radio_button_tag(:renewal, 0, false, onClick: "formshowhide('not_renewal')") %>
+        <%= radio_button_tag(:renewal, 0, false, onClick: "setProxyBorrowerRenewal('not_renewal')") %>
         <%= label_tag(:renewal_0, "No") %>
-        <%= radio_button_tag(:renewal, 1, true, onClick: "formshowhide('renewal')") %>
+        <%= radio_button_tag(:renewal, 1, true, onClick: "setProxyBorrowerRenewal('renewal')") %>
         <%= label_tag(:renewal_1, "Yes") %>
       </div>
     <% else %>
       <div class="mb-4 form-group">
-        <%= radio_button_tag(:renewal, 0, true, onClick: "formshowhide('not_renewal')") %>
+        <%= radio_button_tag(:renewal, 0, true, onClick: "setProxyBorrowerRenewal('not_renewal')") %>
         <%= label_tag(:renewal_0, "No") %>
-        <%= radio_button_tag(:renewal, 1, false, onClick: "formshowhide('renewal')") %>
+        <%= radio_button_tag(:renewal, 1, false, onClick: "setProxyBorrowerRenewal('renewal')") %>
         <%= label_tag(:renewal_1, "Yes") %>
       </div>
     <% end %>
