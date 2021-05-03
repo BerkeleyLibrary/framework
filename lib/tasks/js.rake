@@ -13,21 +13,30 @@ module UCBLIT
     # @return [Array<String>] the JavaScript directories to inspect
     attr_reader :js_dirs
 
+    # @return [IO] target for ESLint stderr output
+    attr_reader :err_stream
+
     # Initializes a new {ESLintRunner}.
     #
     # @param report_format [String] the report format
     # @param report_path [String] the report path
     # @param js_dirs [String, Array<String>] the JavaScript directory or directories to inspect
-    def initialize(report_format: 'html', report_path: 'artifacts/eslint/index.html', js_dirs: 'app/assets/javascripts')
+    # @param err_stream [IO, nil] target for ESLint stderr output (`nil` redirects to `File::NULL`)
+    def initialize(report_format: 'html', report_path: 'artifacts/eslint/index.html', js_dirs: 'app/assets/javascripts', err_stream: nil)
       @report_format = report_format
       @report_path = report_path
       @js_dirs = Array(js_dirs)
+      @err_stream = err_stream || File::NULL
     end
 
     class << self
       # @return [ESLintRunner] the default runner.
       def default_runner
-        @default_runner ||= ESLintRunner.new
+        @default_runner ||= ESLintRunner.new(err_stream: default_err_stream)
+      end
+
+      def default_err_stream
+        ENV['CI'] ? $stderr : nil
       end
     end
 
@@ -78,10 +87,10 @@ module UCBLIT
     end
 
     # TODO: figure out how to silence "npm ERR!" but still get $stderr output
-    def run_cmd(cmd, out: $stdout, err: File::NULL, silence_errors: false)
+    def run_cmd(cmd, out: $stdout, err: err_stream, silence_errors: false)
       sh(*cmd, out: out, err: err) do |ok, ps|
         ps.exitstatus.tap do |exit_status|
-          warn("`#{cmd.shelljoin}` returned exit status #{exit_status}") unless ok || silence_errors
+          puts("`#{cmd.shelljoin}` returned exit status #{exit_status}") unless ok || silence_errors
           yield exit_status if block_given?
         end
       end
@@ -111,7 +120,7 @@ namespace :js do
       runner.fix do |exit_status|
         next if exit_status == 0
 
-        warn 'Not all problems could be fixed; see above for details'
+        puts 'Not all problems could be fixed; see above for details'
         exit(exit_status)
       end
 
