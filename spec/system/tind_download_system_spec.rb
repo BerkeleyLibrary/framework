@@ -2,6 +2,25 @@ require 'capybara_helper'
 require 'calnet_helper'
 require 'roo'
 
+def verify_row_geometry(ss_actual, ss_expected)
+  row_and_col_attrs = %i[first_row first_column last_row last_column]
+
+  row_and_col_attrs.each do |attr|
+    expected = ss_expected.send(attr)
+    actual = ss_actual.send(attr)
+    expect(actual).to eq(expected), "Expected #{attr} to be #{expected}, but was #{actual}"
+  end
+
+  first_row, first_column, last_row, last_column = row_and_col_attrs.map { |attr| ss_expected.send(attr) }
+  [first_column, first_row, last_column, last_row]
+end
+
+def verify_value(ss_actual, row, col, ss_expected)
+  expected_value = ss_expected.cell(row, col)
+  actual_value = ss_actual.cell(row, col)
+  msg = -> { "Expected value at (#{[row, col].join(', ')}) to be #{expected_value.inspect}, but was #{actual_value.inspect}" }
+  expect(actual_value).to eq(expected_value), msg
+end
 describe TindDownloadController, type: :system do
   describe 'unauthenticated user' do
     it 'redirects to login' do
@@ -76,22 +95,12 @@ describe TindDownloadController, type: :system do
           ss_expected = Roo::Spreadsheet.open(expected_path, file_warning: :warning)
           ss_actual = Roo::Spreadsheet.open(actual_path, file_warning: :warning)
 
-          row_and_col_attrs = %i[first_row first_column last_row last_column]
-
-          row_and_col_attrs.each do |attr|
-            expected = ss_expected.send(attr)
-            actual = ss_actual.send(attr)
-            expect(actual).to eq(expected), "Expected #{attr} to be #{expected}, but was #{actual}"
-          end
-
-          first_row, first_column, last_row, last_column = row_and_col_attrs.map { |attr| ss_expected.send(attr) }
+          first_column, first_row, last_column, last_row = verify_row_geometry(ss_actual, ss_expected)
 
           aggregate_failures(:values) do
             (first_row..last_row).each do |row|
               (first_column..last_column).each do |col|
-                expected_value = ss_expected.cell(row, col)
-                actual_value = ss_actual.cell(row, col)
-                expect(actual_value).to eq(expected_value), "Expected value at (#{[row, col].join(', ')}) to be #{expected_value.inspect}, but was #{actual_value.inspect}"
+                verify_value(ss_actual, row, col, ss_expected)
               end
             end
           end
