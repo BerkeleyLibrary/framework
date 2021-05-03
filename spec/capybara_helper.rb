@@ -7,7 +7,7 @@ require 'docker'
 
 module CapybaraHelper
   # Parent directory for files downloaded by the browser
-  DOWNLOAD_PATH = 'artifacts/capybara/downloads'.freeze
+  DOWNLOAD_PATH_RELATIVE = 'artifacts/capybara/downloads'.freeze
 
   # Capybara artifact path
   # (see https://www.rubydoc.info/github/jnicklas/capybara/Capybara.configure)
@@ -25,28 +25,40 @@ module CapybaraHelper
       configurator.configure!
     end
 
-    def download_path=(value)
-      browser.download_path = value
-      @download_path = value # TODO: something more reliable
+    # def download_path=(value)
+    #   browser.download_path = value
+    #   @download_path = value # TODO: something more reliable
+    # end
+    #
+    # attr_reader :download_path
+
+    attr_reader :relative_download_path
+
+    def relative_download_path=(value)
+      browser.download_path = File.join(browser_project_root, value)
+      @relative_download_path = value
     end
 
-    attr_reader :download_path
-
     def run_with_download_path(example)
-      download_path = download_path_for(example)
+      relative_download_path = relative_download_path_for(example)
       begin
-        self.download_path = ensure_directory(download_path)
+        self.relative_download_path = relative_download_path
+        ensure_directory(local_download_path)
         example.run
       ensure
-        remove_if_empty(download_path)
+        remove_if_empty(local_download_path)
       end
     end
 
     def wait_for_download(expected_filename, timeout_secs)
       start = Time.now
-      File.join(download_path, expected_filename).tap do |downloaded_file_path|
+      File.join(local_download_path, expected_filename).tap do |downloaded_file_path|
         loop do
-          break if File.exist?(downloaded_file_path)
+          if File.exist?(downloaded_file_path)
+            yield downloaded_file_path if block_given?
+
+            break
+          end
 
           current = Time.now
           expect(current - start).to be < timeout_secs, "Download #{downloaded_file_path} not present after #{timeout_secs} seconds"
@@ -54,8 +66,23 @@ module CapybaraHelper
       end
     end
 
+    # def wait_for_download(expected_filename, timeout_secs)
+    # end
+
     def print_javascript_log(msg = nil, out = $stderr)
       out.write("#{msg}: #{formatted_javascript_log}\n")
+    end
+
+    def local_project_root
+      File.expand_path('..', __dir__)
+    end
+
+    def browser_project_root
+      Docker.running_in_container? ? '/build' : local_project_root
+    end
+
+    def local_download_path
+      File.join(local_project_root, relative_download_path)
     end
 
     private
@@ -74,10 +101,10 @@ module CapybaraHelper
       end.string
     end
 
-    def download_path_for(example)
+    def relative_download_path_for(example)
       full_description = example.metadata[:full_description]
       dirname = full_description.parameterize
-      File.join(DOWNLOAD_PATH, dirname)
+      File.join(DOWNLOAD_PATH_RELATIVE, dirname)
     end
 
     def remove_if_empty(path)
@@ -163,7 +190,7 @@ module CapybaraHelper
     # noinspection RubyLiteralArrayInspection
     GRID_CHROME_ARGS = [
       # Docker containers default to a /dev/shm too small for Chrome's cache
-      '--disable-dev-shm-usage',
+      '--disable-dev-shm-usage', # TODO: do we still need this?
       '--disable-gpu'
     ].freeze
 

@@ -30,6 +30,8 @@ services:
         aliases:
           - db.test
     restart: always
+    volumes:
+      - ./:/build:rw
 
   selenium:
     image: selenium/hub
@@ -39,6 +41,8 @@ services:
           - selenium.test
     ports:
       - 4444:4444
+    volumes:
+      - ./:/build:rw
 
   selenium-chrome:
     depends_on:
@@ -55,6 +59,7 @@ services:
       - 55900:5900
     volumes:
       - /dev/shm:/dev/shm:rw
+      - ./:/build:rw
 
   adminer:
     image: adminer
