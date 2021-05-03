@@ -1,4 +1,5 @@
 require 'rspec/core/rake_task'
+require 'docker'
 
 module UCBLIT
   class ESLintRunner
@@ -36,7 +37,7 @@ module UCBLIT
       end
 
       def default_err_stream
-        ENV['CI'] ? $stderr : nil
+        Docker.running_in_container? ? $stdout : nil
       end
     end
 
