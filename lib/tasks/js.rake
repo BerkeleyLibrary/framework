@@ -81,7 +81,7 @@ module UCBLIT
     end
 
     def eslint_cmd(*args)
-      %w[npx eslint].tap do |cmd|
+      %w[yarn eslint].tap do |cmd|
         cmd.concat(args)
         cmd.concat(js_dirs)
       end
