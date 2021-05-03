@@ -1,4 +1,7 @@
 class FinesController < ApplicationController
+  # Because the silent post coming from paypal doesn't come from a form
+  # it this the "result" controller function below needs to do a null_session
+  protect_from_forgery with: :null_session
 
   # TODO: setup JWT
   # For now I'm just going to pass in the ID as the parameter...
@@ -40,21 +43,30 @@ class FinesController < ApplicationController
   def error; end
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  # bit of a misnomer.... really is "confirm payment"
   def payment
     # TODO: refactor the living crap out of this!!!
     # TODO: Get balance for each fee selected and talley up
 
-    @transaction_info = ''
-    alma_id = params['user_id']
+    @transaction_details = create_transaction(params)
 
-    @transaction_info += "USER:#{alma_id}"
+    puts "\n\n*************************"
+    # puts "TRANSACTION: \n#{@transaction_details.inspect}\n\n"
+    # fee_list = @transaction_details['fines'].map{|fine| fine['id']}.join(':')
+    # puts fee_list
+    puts "*************************\n\n"
+
+    @transaction_info = ''
+    @alma_id = params['user_id']
+
+    @transaction_info += "USER:#{@alma_id}"
     fees = params['fee']['payment']
 
     @fines = []
     @total = 0
 
     fees.each_with_index do |f, idx|
-      fine_res = Alma::Fines.fetch_fine(alma_id, f)
+      fine_res = Alma::Fines.fetch_fine(@alma_id, f)
       fine = JSON.parse(fine_res.body)
       @fines.push(fine)
       # puts "\n\n--->#{fine['id']}<---"
@@ -71,42 +83,54 @@ class FinesController < ApplicationController
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def credit
-    alma_id, fees, total = parse_transaction(params['transaction_info'])
-    
+    # NOT sure just yet how the params/transaction details are going to come to this credit function....
+    # Might need to do a bit of an overhaul here...
+    alma_id, fees = parse_transaction(params['transaction_info'])
+
+    # I'll need to grab the amount of the fee. If there's some sort of PayPal transaction info, it may be worth throwing
+    # it into the comment within Alma.
     fees.each do |f|
-      puts "CREDITING FEE: USER --> #{alma_id} | FEE --> #{f}"
-      fine_res = Alma::Fines.credit_fine(alma_id, f)
-      
-      # TODO: re-implement once I work out the amount....
-      # fine = JSON.parse(fine_res.body)
-      
-      # !!! If ERROR
-      # {"errorsExist"=>true, "errorList"=>{"error"=>[{"errorCode"=>"401666", "errorMessage"=>"op parameter is not valid.", "trackingId"=>"E02-2204190346-LWZGI-AWAE101735523"}]}, "result"=>nil}
-      # {"errorsExist"=>true, "errorList"=>{"error"=>[{"errorCode"=>"401666", "errorMessage"=>"amount parameter is not valid.", "trackingId"=>"E02-2204195419-WSC4F-AWAE954966549"}]}, "result"=>nil}
-      # If success:
-      # {"id"=>"3260530530006532", "type"=>{"value"=>"DAMAGEDITEMFINE", "desc"=>"Damaged item fine"}, "status"=>{"value"=>"ACTIVE", "desc"=>"Active"}, "user_primary_id"=>{"value"=>"10335026", "link"=>"https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026"}, "balance"=>9.0, "remaining_vat_amount"=>0.0, "original_amount"=>10.0, "original_vat_amount"=>0.0, "creation_time"=>"2021-04-03T19:59:36.257Z", "status_time"=>"2021-04-22T19:56:52.717Z", "comment"=>nil, "owner"=>{"value"=>"MAIN", "desc"=>"Doe Library"}, "title"=>nil, "barcode"=>nil, "transaction"=>[{"type"=>{"value"=>"PAYMENT", "desc"=>"Payment"}, "amount"=>1.0, "vat_amount"=>0.0, "comment"=>"Test1", "created_by"=>"Ex Libris", "external_transaction_id"=>"10006532", "transaction_time"=>"2021-04-22T19:56:52.595Z", "received_by"=>{"value"=>"Not At Desk", "desc"=>"Doe Library"}, "payment_method"=>{"value"=>"ONLINE", "desc"=>"Online"}}], "link"=>"https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees/3260530530006532"}
-      # {"id"=>"3260530530006532", "type"=>{"value"=>"DAMAGEDITEMFINE", "desc"=>"Damaged item fine"}, "status"=>{"value"=>"ACTIVE", "desc"=>"Active"}, "user_primary_id"=>{"value"=>"10335026", "link"=>"https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026"}, "balance"=>8.0, "remaining_vat_amount"=>0.0, "original_amount"=>10.0, "original_vat_amount"=>0.0, "creation_time"=>"2021-04-03T19:59:36.257Z", "status_time"=>"2021-04-22T21:46:30.344Z", "comment"=>nil, "owner"=>{"value"=>"MAIN", "desc"=>"Doe Library"}, "title"=>nil, "barcode"=>nil, "transaction"=>[{"type"=>{"value"=>"PAYMENT", "desc"=>"Payment"}, "amount"=>1.0, "vat_amount"=>0.0, "comment"=>"Test1", "created_by"=>"Ex Libris", "external_transaction_id"=>"10006532", "transaction_time"=>"2021-04-22T19:56:52.595Z", "received_by"=>{"value"=>"Not At Desk", "desc"=>"Doe Library"}, "payment_method"=>{"value"=>"ONLINE", "desc"=>"Online"}}, {"type"=>{"value"=>"PAYMENT", "desc"=>"Payment"}, "amount"=>1.0, "vat_amount"=>0.0, "comment"=>"Test2", "created_by"=>"Ex Libris", "external_transaction_id"=>"NA", "transaction_time"=>"2021-04-22T21:46:30.344Z", "received_by"=>{"value"=>"Not At Desk", "desc"=>"Doe Library"}, "payment_method"=>{"value"=>"ONLINE", "desc"=>"Online"}}], "link"=>"https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees/3260530530006532"}
-      # When payed in full:
-      # {"id"=>"3260530530006532", "type"=>{"value"=>"DAMAGEDITEMFINE", "desc"=>"Damaged item fine"}, "status"=>{"value"=>"CLOSED", "desc"=>"Closed"}, "user_primary_id"=>{"value"=>"10335026", "link"=>"https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026"}, "balance"=>0.0, "remaining_vat_amount"=>0.0, "original_amount"=>10.0, "original_vat_amount"=>0.0, "creation_time"=>"2021-04-03T19:59:36.257Z", "status_time"=>"2021-04-22T23:33:39.671Z", "comment"=>nil, "owner"=>{"value"=>"MAIN", "desc"=>"Doe Library"}, "title"=>nil, "barcode"=>nil, "transaction"=>[{"type"=>{"value"=>"PAYMENT", "desc"=>"Payment"}, "amount"=>1.0, "vat_amount"=>0.0, "comment"=>"Test1", "created_by"=>"Ex Libris", "external_transaction_id"=>"10006532", "transaction_time"=>"2021-04-22T19:56:52.595Z", "received_by"=>{"value"=>"Not At Desk", "desc"=>"Doe Library"}, "payment_method"=>{"value"=>"ONLINE", "desc"=>"Online"}}, {"type"=>{"value"=>"PAYMENT", "desc"=>"Payment"}, "amount"=>1.0, "vat_amount"=>0.0, "comment"=>"Test2", "created_by"=>"Ex Libris", "external_transaction_id"=>"NA", "transaction_time"=>"2021-04-22T21:46:30.344Z", "received_by"=>{"value"=>"Not At Desk", "desc"=>"Doe Library"}, "payment_method"=>{"value"=>"ONLINE", "desc"=>"Online"}}, {"type"=>{"value"=>"PAYMENT", "desc"=>"Payment"}, "amount"=>8.0, "vat_amount"=>0.0, "comment"=>"Test2", "created_by"=>"Ex Libris", "external_transaction_id"=>"NA", "transaction_time"=>"2021-04-22T23:33:39.671Z", "received_by"=>{"value"=>"Not At Desk", "desc"=>"Doe Library"}, "payment_method"=>{"value"=>"ONLINE", "desc"=>"Online"}}], "link"=>"https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees/3260530530006532"}
-
-
-      #puts "\n\nFINE:\n#{fine.inspect}\n\n"
-      # puts "\nFINE:\n#{fine['status']['desc']}"
-      # puts "\nCOMMENT:\n#{fine['comment'] || 'N/A '}"
+      # puts "CREDITING FEE: USER --> #{alma_id} | FEE --> #{f}"
+      Alma::Fines.credit_fine(alma_id, f)
     end
-    puts "\n\n"
+  end
 
+  # Might want to move this to a separate 'API' only controller
+  def result
+    # This should be hit by the silent post from PayPal
+    # 1. Parse the post and grab the User's Alma ID and each Fee ID that was paid
+    #    I think I can put that data in fields 'USER1' and 'USER2'
+    # 2. Credit each fee in Alma
+    # 3. Confirm silent post received w/PayPal
+    render json: { testing: 'return from result' }
   end
 
   private
 
-  def create_transaction()
+  # The transaction details include:
+  #   Patron's alma_id
+  #   Total (easy to add up now rather than the view)
+  #   Array of fines (note - alma calls them fees)
+  def create_transaction(params)
+    transaction_details = {}
+
+    transaction_details['alma_id'] = params['user_id']
+    transaction_details['total'] = 0
+    transaction_details['fines'] = []
+
+    params['fee']['payment'].each_with_index do |f, _idx|
+      fine = JSON.parse(Alma::Fines.fetch_fine(transaction_details['alma_id'], f).body)
+      transaction_details['total'] += fine['balance']
+      transaction_details['fines'].push(fine)
+    end
+
+    transaction_details
   end
 
   # Parse the transaction info and return data:
   # Here's what it looks like right now coming in:
   # USER:10335026|FEE0:3260561070006532|FEE1:3260575710006532|FEE2:3260530530006532|FEE3:3260656920006532|TOTAL:235.0
-  
+
   # NOTE....This MIGHT be wrapped up in a JWT in the future and require some decoding.
   def parse_transaction(t)
     alma_id = ''
@@ -118,11 +142,8 @@ class FinesController < ApplicationController
       total = val if key == 'TOTAL'
       fees.push(val) if key.match(/FEE\d+/)
     end
-    return alma_id, fees, total
+    [alma_id, fees, total]
   end
-
-
 end
-
 
 # USER:10335026|FEE0:3260561070006532|FEE1:3260575710006532|FEE2:3260530530006532|FEE3:3260656920006532|TOTAL:235.0
