@@ -6,9 +6,6 @@ require 'selenium-webdriver'
 require 'docker'
 
 module CapybaraHelper
-  # Parent directory for files downloaded by the browser
-  DOWNLOAD_PATH_RELATIVE = 'artifacts/capybara/downloads'.freeze
-
   # Capybara artifact path
   # (see https://www.rubydoc.info/github/jnicklas/capybara/Capybara.configure)
   #
@@ -25,50 +22,6 @@ module CapybaraHelper
       configurator.configure!
     end
 
-    # def download_path=(value)
-    #   browser.download_path = value
-    #   @download_path = value # TODO: something more reliable
-    # end
-    #
-    # attr_reader :download_path
-
-    attr_reader :relative_download_path
-
-    def relative_download_path=(value)
-      browser.download_path = File.join(browser_project_root, value)
-      @relative_download_path = value
-    end
-
-    def run_with_download_path(example)
-      relative_download_path = relative_download_path_for(example)
-      begin
-        self.relative_download_path = relative_download_path
-        ensure_directory(local_download_path)
-        example.run
-      ensure
-        remove_if_empty(local_download_path)
-      end
-    end
-
-    def wait_for_download(expected_filename, timeout_secs)
-      start = Time.now
-      File.join(local_download_path, expected_filename).tap do |downloaded_file_path|
-        loop do
-          if File.exist?(downloaded_file_path)
-            yield downloaded_file_path if block_given?
-
-            break
-          end
-
-          current = Time.now
-          expect(current - start).to be < timeout_secs, "Download #{downloaded_file_path} not present after #{timeout_secs} seconds"
-        end
-      end
-    end
-
-    # def wait_for_download(expected_filename, timeout_secs)
-    # end
-
     def print_javascript_log(msg = nil, out = $stderr)
       out.write("#{msg}: #{formatted_javascript_log}\n")
     end
@@ -79,10 +32,6 @@ module CapybaraHelper
 
     def browser_project_root
       Docker.running_in_container? ? '/build' : local_project_root
-    end
-
-    def local_download_path
-      File.join(local_project_root, relative_download_path)
     end
 
     private
@@ -99,12 +48,6 @@ module CapybaraHelper
         out.write("#{logs.size} entries logged to JavaScript console:\n")
         logs.each_with_index { |entry, i| out.write("#{indent}#{i}\t#{entry}\n") }
       end.string
-    end
-
-    def relative_download_path_for(example)
-      full_description = example.metadata[:full_description]
-      dirname = full_description.parameterize
-      File.join(DOWNLOAD_PATH_RELATIVE, dirname)
     end
 
     def remove_if_empty(path)
@@ -152,9 +95,6 @@ module CapybaraHelper
       Capybara.save_path = CapybaraHelper::SAVE_PATH
       Capybara.register_driver(driver_name) do |app|
         new_driver(app, chrome_args)
-        # new_driver(app, chrome_args).tap do |driver|
-        #   driver.browser.download_path = CapybaraHelper::DOWNLOAD_PATH
-        # end
       end
       Capybara.javascript_driver = driver_name
     end
@@ -169,10 +109,9 @@ module CapybaraHelper
         config.around(:each, type: :system) do |example|
           driven_by(driver_name)
           WebMock.disable_net_connect!(**webmock_options)
-          CapybaraHelper.run_with_download_path(example)
-        end
 
-        config.after(:each, type: :system) do |example|
+          example.run
+        ensure
           if example.exception
             test_name = example.metadata[:full_description]
             test_source_location = example.metadata[:location]

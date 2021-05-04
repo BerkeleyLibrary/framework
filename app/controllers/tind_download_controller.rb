@@ -31,16 +31,21 @@ class TindDownloadController < ApplicationController
 
   # rubocop:disable Metrics/MethodLength
   def download
+    # TODO: clean this up
+    raise ActiveRecord::RecordNotFound, "No such collection: #{collection_name}" unless collection_names.include(collection_name)
+
     filename = "#{collection_name.parameterize}.#{export_format}"
     content_type = export_format.mime_type
 
     begin
+      # TODO: this won't work right if export fails, how do we handle that?
       # "Start" the download before we actually generate the data, so
       # it looks like something's happening
       send_file_headers!(filename: filename, type: content_type)
       data = UCBLIT::TIND::Export.export(collection_name, export_format)
       render(body: data, content_type: content_type)
     rescue StandardError => e
+      # TODO: better error handling
       log_error(e)
       flash[:danger] = "ERROR - Could not find collection '#{collection_name}'"
       redirect_with_params(action: :index)

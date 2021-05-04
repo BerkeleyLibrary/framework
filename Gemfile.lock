@@ -1,8 +1,9 @@
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-logging.git
-  revision: d3d40d88c609b711cd40c787957528aaf4fd2c4b
+  revision: 7e52bbe2f36c1ae6fcb7378b1538b0c46c8ec7e8
+  branch: main
   specs:
-    ucblit-logging (0.1.0)
+    ucblit-logging (0.1.1)
       activesupport (~> 6.0)
       amazing_print (~> 1.1)
       lograge (~> 0.11)
@@ -10,17 +11,17 @@ GIT
 
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-tind.git
-  revision: 00d17d0d3848c9cd3175a71d8ada2802331e2e00
+  revision: 502e717e86dcd12a83ad17d92dd858c233edfed3
   branch: main
   specs:
-    ucblit-tind (0.2.1)
+    ucblit-tind (0.2.2)
       ice_nine (~> 0.11)
       marc (~> 1.0)
       rchardet (~> 1.8)
       rest-client (~> 2.1)
       rubyzip (~> 2.3)
       typesafe_enum (~> 0.3)
-      ucblit-logging (~> 0.1)
+      ucblit-logging (~> 0.1, >= 0.1.1)
 
 GIT
   remote: https://github.com/dlindahl/omniauth-cas.git
@@ -189,7 +190,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
     mini_mime (1.1.0)
-    mini_portile2 (2.5.0)
+    mini_portile2 (2.5.1)
     minitest (5.14.4)
     msgpack (1.4.2)
     net-ssh (6.1.0)

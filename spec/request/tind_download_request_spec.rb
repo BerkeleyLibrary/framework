@@ -123,30 +123,114 @@ describe TindDownloadController, type: :request do
     end
 
     describe 'download' do
-      let(:expected_body) { File.read('spec/data/tind_download/tind-abraham-lincoln.csv') }
+      describe 'valid collection' do
 
-      before(:each) do
-        search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
-        search_params = { c: collection_name, format: 'xml' }
-        search_params_with_search_id = search_params.merge(search_id: 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY')
-        result_1 = File.read('spec/data/tind_download/tind-abraham-lincoln-1.xml')
-        result_2 = File.read('spec/data/tind_download/tind-abraham-lincoln-2.xml')
-        stub_request(:get, search_url).with(query: search_params).to_return(status: 200, body: result_1)
-        stub_request(:get, search_url).with(query: search_params_with_search_id).to_return(status: 200, body: result_2)
+        before(:each) do
+          search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
+          search_params = { c: collection_name, format: 'xml' }
+          search_params_with_search_id = search_params.merge(search_id: 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY')
+          result_1 = File.read('spec/data/tind_download/tind-abraham-lincoln-1.xml')
+          result_2 = File.read('spec/data/tind_download/tind-abraham-lincoln-2.xml')
+          stub_request(:get, search_url).with(query: search_params).to_return(status: 200, body: result_1)
+          stub_request(:get, search_url).with(query: search_params_with_search_id).to_return(status: 200, body: result_2)
+        end
+
+        def verify_ods(expected_path, body)
+          Dir.mktmpdir(File.basename(__FILE__, 'rb')) do |dir|
+            actual_path = File.join(dir, File.basename(expected_path)).tap { |p| File.binwrite(p, body) }
+
+            ss_expected = Roo::Spreadsheet.open(expected_path, file_warning: :warning)
+            ss_actual = Roo::Spreadsheet.open(actual_path, file_warning: :warning)
+
+            first_column, first_row, last_column, last_row = verify_row_geometry(ss_actual, ss_expected)
+
+            aggregate_failures(:values) do
+              (first_row..last_row).each do |row|
+                (first_column..last_column).each do |col|
+                  verify_value(ss_actual, row, col, ss_expected)
+                end
+              end
+            end
+          end
+        end
+
+        def verify_csv(expected_path, body)
+          expected = File.read(expected_path, encoding: 'UTF-8')
+          expect(body).to eq(expected)
+        end
+
+        def verify_row_geometry(ss_actual, ss_expected)
+          row_and_col_attrs = %i[first_row first_column last_row last_column]
+
+          row_and_col_attrs.each do |attr|
+            expected = ss_expected.send(attr)
+            actual = ss_actual.send(attr)
+            expect(actual).to eq(expected), "Expected #{attr} to be #{expected}, but was #{actual}"
+          end
+
+          first_row, first_column, last_row, last_column = row_and_col_attrs.map { |attr| ss_expected.send(attr) }
+          [first_column, first_row, last_column, last_row]
+        end
+
+        def verify_value(ss_actual, row, col, ss_expected)
+          expected_value = ss_expected.cell(row, col)
+          actual_value = ss_actual.cell(row, col)
+          msg = -> { "Expected value at (#{[row, col].join(', ')}) to be #{expected_value.inspect}, but was #{actual_value.inspect}" }
+          expect(actual_value).to eq(expected_value), msg
+        end
+
+        UCBLIT::TIND::Export::ExportFormat.each do |fmt|
+          describe fmt do
+            let(:ext) { fmt.value.downcase }
+            let(:expected_filename) { "abraham-lincoln-papers.#{ext}" }
+            let(:expected_path) { File.join('spec/data/tind_download', expected_filename) }
+            let(:verify_method) { "verify_#{ext}".to_sym }
+
+            it 'supports POST' do
+              post tind_download_download_path, params: { collection_name: collection_name, export_format: ext }
+              expect(response.status).to eq(200)
+
+              send(verify_method, expected_path, body)
+            end
+
+            it 'supports GET' do
+              get tind_download_download_path, params: { collection_name: collection_name, export_format: ext }
+              expect(response.status).to eq(200)
+
+              send(verify_method, expected_path, body)
+            end
+
+          end
+        end
       end
 
-      it 'supports POST' do
-        post tind_download_download_path, params: { collection_name: collection_name, export_format: 'csv' }
-        expect(response.status).to eq(200)
-        expect(response.body).to eq(expected_body)
+      describe 'invalid collection' do
+        let(:invalid_collection) { 'Not a collection' }
+
+        before(:each) do
+          search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
+          search_params = { c: invalid_collection, format: 'xml' }
+          File.read('spec/data/tind_download/tind-not-a-collection.json')
+          stub_request(:get, search_url).with(query: search_params).to_return(status: 500, body: 'spec/data/tind_download/tind-not-a-collection.json') # TODO: content-type
+        end
+
+        UCBLIT::TIND::Export::ExportFormat.each do |fmt|
+          let(:ext) { fmt.value.downcase }
+
+          describe fmt do
+            it 'GET returns 404' do
+              get tind_download_download_path, params: { collection_name: invalid_collection, export_format: ext }
+              expect(response.status).to eq(404)
+            end
+
+            it 'POST returns 404' do
+              post tind_download_download_path, params: { collection_name: invalid_collection, export_format: ext }
+              expect(response.status).to eq(404)
+            end
+          end
+        end
       end
 
-      it 'supports GET' do
-        get tind_download_download_path, params: { collection_name: collection_name, export_format: 'csv' }
-        expect(response.status).to eq(200)
-        expect(response.body).to eq(expected_body)
-      end
     end
-
   end
 end

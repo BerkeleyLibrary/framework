@@ -28,7 +28,7 @@ gem 'recaptcha', '~> 4.13'
 gem 'turbolinks', '~> 5'
 gem 'typesafe_enum', '~> 0.3'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-gem 'ucblit-logging', git: 'https://git.lib.berkeley.edu/lap/ucblit-logging.git'
+gem 'ucblit-logging', git: 'https://git.lib.berkeley.edu/lap/ucblit-logging.git', branch: 'main'
 gem 'ucblit-tind', git: 'https://git.lib.berkeley.edu/lap/ucblit-tind.git', branch: 'main'
 gem 'uglifier', '>= 1.3.0'
 
