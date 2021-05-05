@@ -3,7 +3,7 @@ dockerComposePipeline(
   commands: [
     [
         [exec: 'rake check RAILS_ENV=test'],
-        'rake js:eslint',
+        'rake js:eslint NODE_ENV=development',
         'rake rubocop',
         'rake brakeman',
         'rake bundle:audit'
