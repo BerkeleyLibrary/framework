@@ -99,7 +99,7 @@ GEM
       execjs
     awesome_print (1.9.2)
     bindex (0.8.1)
-    bootsnap (1.7.3)
+    bootsnap (1.7.5)
       msgpack (~> 1.0)
     bootstrap (4.6.0)
       autoprefixer-rails (>= 9.1.0)
@@ -369,7 +369,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print (>= 1.8.0)
-  bootsnap (~> 1.0, >= 1.7.3)
+  bootsnap (~> 1.7, >= 1.7.4)
   bootstrap
   brakeman
   bundle-audit
