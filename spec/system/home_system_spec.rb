@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'capybara_helper'
 
 describe :home, type: :system do
   it 'does something sensible for a general error' do
