@@ -11,10 +11,10 @@ GIT
 
 GIT
   remote: https://git.lib.berkeley.edu/lap/ucblit-tind.git
-  revision: 502e717e86dcd12a83ad17d92dd858c233edfed3
+  revision: 84ea23b920ee818809e88e85649423d63b11cc08
   branch: main
   specs:
-    ucblit-tind (0.2.2)
+    ucblit-tind (0.2.3)
       ice_nine (~> 0.11)
       marc (~> 1.0)
       rchardet (~> 1.8)

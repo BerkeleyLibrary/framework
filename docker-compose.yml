@@ -8,7 +8,8 @@ services:
       - selenium
       - selenium-chrome
     environment:
-      CI: present
+      LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
+      LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
     init: true
     networks:
       default:

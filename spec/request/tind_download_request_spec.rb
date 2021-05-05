@@ -137,7 +137,8 @@ describe TindDownloadController, type: :request do
 
         def verify_ods(expected_path, body)
           Dir.mktmpdir(File.basename(__FILE__, 'rb')) do |dir|
-            actual_path = File.join(dir, File.basename(expected_path)).tap { |p| File.binwrite(p, body) }
+            actual_path = File.join(dir, File.basename(expected_path))
+            File.binwrite(actual_path, body)
 
             ss_expected = Roo::Spreadsheet.open(expected_path, file_warning: :warning)
             ss_actual = Roo::Spreadsheet.open(actual_path, file_warning: :warning)
@@ -210,12 +211,14 @@ describe TindDownloadController, type: :request do
         before(:each) do
           search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
           search_params = { c: invalid_collection, format: 'xml' }
-          File.read('spec/data/tind_download/tind-not-a-collection.json')
-          stub_request(:get, search_url).with(query: search_params).to_return(status: 500, body: 'spec/data/tind_download/tind-not-a-collection.json') # TODO: content-type
+          body = File.read('spec/data/tind_download/tind-not-a-collection.json')
+          stub_request(:get, search_url).with(query: search_params)
+            .to_return(status: 500, body: body, headers: { 'Content-Type' => 'applicaton/json' })
         end
 
         UCBLIT::TIND::Export::ExportFormat.each do |fmt|
           let(:ext) { fmt.value.downcase }
+          let(:params) { { collection_name: invalid_collection, export_format: ext } }
 
           describe fmt do
             it 'GET returns 404' do
