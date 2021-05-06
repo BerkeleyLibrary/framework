@@ -1,9 +1,10 @@
 require 'active_support/inflector'
 require 'capybara/rspec'
-require 'rails_helper'
 require 'selenium-webdriver'
-
+require 'ucblit/logging'
 require 'docker'
+
+require 'rails_helper'
 
 module CapybaraHelper
   # Capybara artifact path
@@ -26,12 +27,16 @@ module CapybaraHelper
       out.write("#{msg}: #{formatted_javascript_log}\n")
     end
 
-    def local_project_root
-      File.expand_path('..', __dir__)
+    def browser_project_root
+      Docker.running_in_container? ? '/build' : Rails.root
     end
 
-    def browser_project_root
-      Docker.running_in_container? ? '/build' : local_project_root
+    def local_save_path
+      File.join(Rails.root, SAVE_PATH)
+    end
+
+    def browser_save_path
+      File.join(browser_project_root, SAVE_PATH)
     end
 
     private
@@ -49,23 +54,11 @@ module CapybaraHelper
         logs.each_with_index { |entry, i| out.write("#{indent}#{i}\t#{entry}\n") }
       end.string
     end
-
-    def remove_if_empty(path)
-      return unless File.directory?(path)
-      return unless Dir.entries(path).empty?
-
-      FileUtils.rm_rf(path)
-    end
-
-    def ensure_directory(path)
-      path.tap do |p|
-        FileUtils.rm_rf(p)
-        FileUtils.mkdir_p(p)
-      end
-    end
   end
 
   class Configurator
+    include UCBLIT::Logging
+
     DEFAULT_CHROME_ARGS = ['--window-size=2560,1344'].freeze
 
     DEFAULT_WEBMOCK_OPTIONS = {
@@ -76,26 +69,42 @@ module CapybaraHelper
 
     attr_reader :driver_name
     attr_reader :chrome_args
+    attr_reader :chrome_prefs
     attr_reader :webmock_options
 
-    def initialize(driver_name, chrome_args: [], webmock_options: {})
+    def initialize(driver_name, chrome_args: [], chrome_prefs: {}, webmock_options: {})
       @driver_name = driver_name
       @chrome_args = DEFAULT_CHROME_ARGS + chrome_args
+      @chrome_prefs = Configurator.default_chrome_prefs.merge(chrome_prefs)
       @webmock_options = DEFAULT_WEBMOCK_OPTIONS.merge(webmock_options)
     end
 
     def configure!
+      logger.debug("#{self.class}: configuring Capybara")
       configure_capybara!
       configure_rspec!
+    end
+
+    class << self
+      def default_chrome_prefs
+        {
+          'download.prompt_for_download' => false,
+          'download.default_directory' => CapybaraHelper.browser_save_path
+        }
+      end
     end
 
     private
 
     def configure_capybara!
-      Capybara.save_path = CapybaraHelper::SAVE_PATH
+      Capybara.save_path = CapybaraHelper.local_save_path.tap do |p|
+        FileUtils.mkdir_p(p)
+      end
+
       Capybara.register_driver(driver_name) do |app|
         new_driver(app, chrome_args)
       end
+
       Capybara.javascript_driver = driver_name
     end
 
@@ -105,18 +114,20 @@ module CapybaraHelper
       driver_name = self.driver_name
       webmock_options = self.webmock_options
 
+      # TODO: replace with around(:each) once we're on Rails 6.1
+      #       (see CapybaraHelper::GridConfigurator#configure!)
       RSpec.configure do |config|
-        config.around(:each, type: :system) do |example|
+        config.before(:each, type: :system) do
           driven_by(driver_name)
           WebMock.disable_net_connect!(**webmock_options)
+        end
 
-          example.run
-        ensure
-          if example.exception
-            test_name = example.metadata[:full_description]
-            test_source_location = example.metadata[:location]
-            CapybaraHelper.print_javascript_log("#{test_name} (#{test_source_location}) failed")
-          end
+        config.after(:each, type: :system) do |example|
+          next unless example.exception
+
+          test_name = example.metadata[:full_description]
+          test_source_location = example.metadata[:location]
+          CapybaraHelper.print_javascript_log("#{test_name} (#{test_source_location}) failed")
         end
       end
     end
@@ -143,7 +154,10 @@ module CapybaraHelper
         browser: :remote,
         url: "http://#{SELENIUM_HOSTNAME}:4444/wd/hub",
         desired_capabilities: ::Selenium::WebDriver::Remote::Capabilities.chrome(
-          chromeOptions: { args: chrome_args },
+          chromeOptions: {
+            args: chrome_args,
+            prefs: chrome_prefs
+          },
           'goog:loggingPrefs' => {
             browser: 'ALL', client: 'ALL', driver: 'ALL', server: 'ALL'
           }
@@ -155,6 +169,10 @@ module CapybaraHelper
       super
 
       RSpec.configure do |config|
+        # Note: this *has* to be done in a before(:each) hook, or it'll get clobbered
+        # by ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown#before_setup
+        #
+        # TODO: this is fixed in Rails 6.1
         config.before(:each, type: :system) do
           Capybara.server_port = ENV['CAPYBARA_SERVER_PORT'] if ENV['CAPYBARA_SERVER_PORT']
           Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
@@ -174,7 +192,7 @@ module CapybaraHelper
       Capybara::Selenium::Driver.new(
         app,
         browser: :chrome,
-        options: ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args),
+        options: ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args, prefs: chrome_prefs),
         desired_capabilities: {
           'goog:loggingPrefs' => {
             browser: 'ALL', client: 'ALL', driver: 'ALL', server: 'ALL'

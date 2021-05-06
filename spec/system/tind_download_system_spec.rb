@@ -12,10 +12,10 @@ describe TindDownloadController, type: :system do
   end
 
   describe 'authenticated non-staff user' do
-    around(:each) do |example|
-      patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
-      with_patron_login(patron_id) { example.run }
-    end
+    # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
+    #       (see CapybaraHelper::GridConfigurator#configure!)
+    before(:each) { login_as_patron(Patron::Type.sample_id_for(Patron::Type::FACULTY)) }
+    after(:each) { logout! }
 
     it 'returns 403 unauthorized' do
       visit tind_download_path
@@ -24,10 +24,10 @@ describe TindDownloadController, type: :system do
   end
 
   describe 'authenticated staff user' do
-    around(:each) do |example|
-      patron_id = Patron::Type.sample_id_for(Patron::Type::STAFF)
-      with_patron_login(patron_id) { example.run }
-    end
+    # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
+    #       (see CapybaraHelper::GridConfigurator#configure!)
+    before(:each) { login_as_patron(Patron::Type.sample_id_for(Patron::Type::STAFF)) }
+    after(:each) { logout! }
 
     before(:each) do
       stub_request(:get, 'https://digicoll.lib.berkeley.edu/api/v1/collections?depth=100').to_return(
