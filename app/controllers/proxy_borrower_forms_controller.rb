@@ -64,11 +64,6 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   private
 
-  # Not sure if I need additional affiliations here or not...
-  def faculty?
-    @faculty ||= current_user.affiliations&.include?('EMPLOYEE-TYPE-ACADEMIC')
-  end
-
   def init_form!; end
 
   # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
