@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :lending_items
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'

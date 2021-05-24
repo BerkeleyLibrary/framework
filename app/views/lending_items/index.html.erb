@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Lending Items</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Barcode</th>
+      <th>Filename</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Millennium</th>
+      <th>Alma</th>
+      <th>String</th>
+      <th>Copies</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @lending_items.each do |lending_item| %>
+      <tr>
+        <td><%= lending_item.barcode %></td>
+        <td><%= lending_item.filename %></td>
+        <td><%= lending_item.title %></td>
+        <td><%= lending_item.author %></td>
+        <td><%= lending_item.millennium_id %></td>
+        <td><%= lending_item.alma_id %></td>
+        <td><%= lending_item.string %></td>
+        <td><%= lending_item.copies %></td>
+        <td><%= link_to 'Show', lending_item %></td>
+        <td><%= link_to 'Edit', edit_lending_item_path(lending_item) %></td>
+        <td><%= link_to 'Destroy', lending_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Lending Item', new_lending_item_path %>

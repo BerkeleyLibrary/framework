@@ -1,0 +1,2 @@
+class LendingItem < ApplicationRecord
+end
