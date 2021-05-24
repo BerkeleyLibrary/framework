@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Barcode:</strong>
+  <%= @lending_item.barcode %>
+</p>
+
+<p>
+  <strong>Filename:</strong>
+  <%= @lending_item.filename %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @lending_item.title %>
+</p>
+
+<p>
+  <strong>Author:</strong>
+  <%= @lending_item.author %>
+</p>
+
+<p>
+  <strong>Millennium:</strong>
+  <%= @lending_item.millennium_id %>
+</p>
+
+<p>
+  <strong>Alma:</strong>
+  <%= @lending_item.alma_id %>
+</p>
+
+<p>
+  <strong>String:</strong>
+  <%= @lending_item.string %>
+</p>
+
+<p>
+  <strong>Copies:</strong>
+  <%= @lending_item.copies %>
+</p>
+
+<%= link_to 'Edit', edit_lending_item_path(@lending_item) %> |
+<%= link_to 'Back', lending_items_path %>
