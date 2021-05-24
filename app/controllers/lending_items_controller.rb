@@ -1,5 +1,5 @@
 class LendingItemsController < ApplicationController
-  before_action :set_lending_item, only: %i[ show edit update destroy ]
+  before_action :set_lending_item, only: %i[show edit update destroy]
 
   # GET /lending_items or /lending_items.json
   def index
@@ -7,8 +7,7 @@ class LendingItemsController < ApplicationController
   end
 
   # GET /lending_items/1 or /lending_items/1.json
-  def show
-  end
+  def show; end
 
   # GET /lending_items/new
   def new
@@ -16,8 +15,7 @@ class LendingItemsController < ApplicationController
   end
 
   # GET /lending_items/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /lending_items or /lending_items.json
   def create
@@ -25,7 +23,7 @@ class LendingItemsController < ApplicationController
 
     respond_to do |format|
       if @lending_item.save
-        format.html { redirect_to @lending_item, notice: "Lending item was successfully created." }
+        format.html { redirect_to @lending_item, notice: 'Lending item was successfully created.' }
         format.json { render :show, status: :created, location: @lending_item }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +36,7 @@ class LendingItemsController < ApplicationController
   def update
     respond_to do |format|
       if @lending_item.update(lending_item_params)
-        format.html { redirect_to @lending_item, notice: "Lending item was successfully updated." }
+        format.html { redirect_to @lending_item, notice: 'Lending item was successfully updated.' }
         format.json { render :show, status: :ok, location: @lending_item }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -51,19 +49,20 @@ class LendingItemsController < ApplicationController
   def destroy
     @lending_item.destroy
     respond_to do |format|
-      format.html { redirect_to lending_items_url, notice: "Lending item was successfully destroyed." }
+      format.html { redirect_to lending_items_url, notice: 'Lending item was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_lending_item
-      @lending_item = LendingItem.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def lending_item_params
-      params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_id, :alma_id, :string, :copies)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_lending_item
+    @lending_item = LendingItem.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def lending_item_params
+    params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_id, :alma_id, :string, :copies)
+  end
 end
