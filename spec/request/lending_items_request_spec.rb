@@ -17,7 +17,15 @@ RSpec.describe '/lending_items', type: :request do
   # LendingItem. As you add validations to LendingItem, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      barcode: 'C08675309',
+      filename: 'villette.pdf',
+      title: 'Villette',
+      author: 'Brontë, Charlotte',
+      millennium_record: 'b9551212',
+      alma_record: nil,
+      copies: 1
+    }
   end
 
   let(:invalid_attributes) do
