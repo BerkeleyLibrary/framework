@@ -5,10 +5,9 @@ class CreateLendingItems < ActiveRecord::Migration[6.0]
       t.string :filename
       t.string :title
       t.string :author
-      t.string :millennium_id
-      t.string :alma_id
-      t.string :string
-      t.int :copies
+      t.string :millennium_record
+      t.string :alma_record
+      t.integer :copies
 
       t.timestamps
     end

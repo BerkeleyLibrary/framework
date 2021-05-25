@@ -1,2 +1,2 @@
-class LendingItem < ApplicationRecord
+class LendingItem < ActiveRecord::Base
 end

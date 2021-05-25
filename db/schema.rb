@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_18_174707) do
+ActiveRecord::Schema.define(version: 2021_05_24_191719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,19 @@ ActiveRecord::Schema.define(version: 2020_11_18_174707) do
     t.string "name", null: false
     t.string "role", null: false
     t.string "email"
+  end
+
+  create_table "lending_items", force: :cascade do |t|
+    t.string "barcode"
+    t.string "filename"
+    t.string "title"
+    t.string "author"
+    t.string "millennium_id"
+    t.string "alma_id"
+    t.string "string"
+    t.integer "copies"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "proxy_borrower_requests", force: :cascade do |t|
