@@ -9,9 +9,8 @@
       <th>Filename</th>
       <th>Title</th>
       <th>Author</th>
-      <th>Millennium</th>
-      <th>Alma</th>
-      <th>String</th>
+      <th>Millennium Record</th>
+      <th>Alma Record</th>
       <th>Copies</th>
       <th colspan="3"></th>
     </tr>
@@ -24,9 +23,8 @@
         <td><%= lending_item.filename %></td>
         <td><%= lending_item.title %></td>
         <td><%= lending_item.author %></td>
-        <td><%= lending_item.millennium_id %></td>
-        <td><%= lending_item.alma_id %></td>
-        <td><%= lending_item.string %></td>
+        <td><%= lending_item.millennium_record %></td>
+        <td><%= lending_item.alma_record %></td>
         <td><%= lending_item.copies %></td>
         <td><%= link_to 'Show', lending_item %></td>
         <td><%= link_to 'Edit', edit_lending_item_path(lending_item) %></td>

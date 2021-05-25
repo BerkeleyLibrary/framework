@@ -63,6 +63,6 @@ class LendingItemsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def lending_item_params
-    params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_id, :alma_id, :string, :copies)
+    params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_record, :alma_record, :copies)
   end
 end
