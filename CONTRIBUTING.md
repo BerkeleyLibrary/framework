@@ -161,6 +161,9 @@ easier to navigate to the server Capybara starts.
 - [node.js](https://nodejs.org/en/)
   - recommended: a Node version manager such as [nvm](https://github.com/nvm-sh/nvm)
 - [PostgreSQL](https://www.postgresql.org/)
+  - **Note:** In some cases it may be more convenient to keep the database in
+    Docker even while running the app locally, as it avoids having to switch
+    the database URL between test and development environments.
 - For system tests: [ChromeDriver](https://chromedriver.chromium.org/)
   and [Google Chrome](https://www.google.com/chrome)
 
@@ -186,6 +189,29 @@ Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/).
 
 **Note:** Placing `DATABASE_URL` and other environment variables in a 
 [`.env` file](https://github.com/bkeepers/dotenv) can simplify development.
+However, you may run into issues using the same database for development and
+testing. You can work around this using Docker for just the database -- see 
+below.
+
+##### Using a Dockerized database for local development
+
+For local development against a Docker database, you can start just the
+database service from the `docker-compose.yml` stack:
+
+1. ensure Postgres is not running, or at any rate not running on its default
+   port of 5432.
+2. run `docker compose up -d db` to start the Postgres service, and only
+   the Postgres service, in detached (background) mode.
+3. Edit `/etc.hosts` and add the line:
+
+   ```none
+   127.0.0.1 db
+   ```
+
+   so that `db` now resolves to your local machine.
+
+You should now be able to run `rails db:setup` from the project root to
+create dev and test databases in the Dockerized Postgres.
 
 #### Accessing the server
 
