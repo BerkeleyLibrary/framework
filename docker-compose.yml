@@ -34,7 +34,7 @@ services:
           - db.test
     restart: always
     ports:
-      - 15432:5432
+      - 5432:5432
     volumes:
       - ./:/build:rw
 
