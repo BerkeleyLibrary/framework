@@ -36,9 +36,8 @@ ActiveRecord::Schema.define(version: 2021_05_24_191719) do
     t.string "filename"
     t.string "title"
     t.string "author"
-    t.string "millennium_id"
-    t.string "alma_id"
-    t.string "string"
+    t.string "millennium_record"
+    t.string "alma_record"
     t.integer "copies"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
