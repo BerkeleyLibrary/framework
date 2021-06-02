@@ -1,6 +1,7 @@
 class LendingItem < ActiveRecord::Base
+
   # ------------------------------------------------------------
-  # Validation methods
+  # Validations
 
   validates :barcode, presence: true
   validates :filename, presence: true
