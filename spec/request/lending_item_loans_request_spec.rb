@@ -95,14 +95,20 @@ RSpec.describe '/lending_item_loans', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        # Database loses subsecond precision, so let's lose it first
+        # to simplify comparison
+        loan_date = Time.now.utc.change(usec: 0)
+
+        { loan_status: 'active', loan_date: loan_date }
       end
 
       it 'updates the requested lending_item_loan' do
         lending_item_loan = LendingItemLoan.create! valid_attributes
         patch lending_item_loan_url(lending_item_loan), params: { lending_item_loan: new_attributes }
         lending_item_loan.reload
-        skip('Add assertions for updated state')
+        new_attributes.each do |attr, val|
+          expect(lending_item_loan.send(attr)).to eq(val)
+        end
       end
 
       it 'redirects to the lending_item_loan' do

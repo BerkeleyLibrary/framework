@@ -56,10 +56,10 @@ class LendingItemLoansController < ApplicationController
 
   private
 
-  def current_patron_identifier
-    # TODO: something more secure
-    current_user.uid
-  end
+  # def current_patron_identifier
+  #   # TODO: something more secure
+  #   current_user.uid
+  # end
 
   def set_lending_item_loan
     @lending_item_loan = LendingItemLoan.find(params[:id])
