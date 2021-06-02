@@ -4,12 +4,18 @@
 class User
   include ActiveModel::Model
 
+  # ------------------------------------------------------------
+  # Constants
+
   FRAMEWORK_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
   LENDING_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-lending-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
 
   # if we capture all the CalGroups, we'll blow out the session cookie store, so we just
   # keep the ones we care about
   KNOWN_CAL_GROUPS = [User::FRAMEWORK_ADMIN_GROUP, User::LENDING_ADMIN_GROUP].freeze
+
+  # ------------------------------------------------------------
+  # Class methods
 
   class << self
 
@@ -50,6 +56,9 @@ class User
       raise Error::InvalidAuthProviderError, provider if provider.to_sym != :calnet
     end
   end
+
+  # ------------------------------------------------------------
+  # Accessors
 
   # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
   # `EMPLOYEE-TYPE-FACULTY`, `STUDENT-TYPE-REGISTERED`).
@@ -98,6 +107,9 @@ class User
   # @return [Array]
   attr_accessor :cal_groups
 
+  # ------------------------------------------------------------
+  # Instance methods
+
   # Whether the user was authenticated
   #
   # The user object is PORO, and we always want to be able to return it even in
@@ -138,6 +150,9 @@ class User
   def lending_admin?
     cal_groups.include?(LENDING_ADMIN_GROUP)
   end
+
+  # ------------------------------------------------------------
+  # Private methods
 
   private
 
