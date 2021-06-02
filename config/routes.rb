@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :lending_items
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'
@@ -8,6 +7,9 @@ Rails.application.routes.draw do
 
   resources :campus_networks, path: 'campus-networks'
   resources :lbl_networks, path: 'lbl-networks'
+
+  resources :lending_items
+  resources :lending_item_loans # TODO: is this what we want?
 
   scope(:forms) do
     resources :doemoff_study_room_use_forms, path: 'doemoff-study-room-use'

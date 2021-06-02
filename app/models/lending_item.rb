@@ -1,6 +1,11 @@
 class LendingItem < ActiveRecord::Base
 
   # ------------------------------------------------------------
+  # Relations
+
+  has_many :lending_item_loans
+
+  # ------------------------------------------------------------
   # Validations
 
   validates :barcode, presence: true
