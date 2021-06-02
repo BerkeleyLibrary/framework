@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
   #   authenticated
   def authenticate!
     raise Error::UnauthorizedError, "Endpoint #{controller_name}/#{action_name} requires authentication" unless authenticated?
+
+    yield current_user if block_given?
   end
 
   # Return whether the current user is authenticated

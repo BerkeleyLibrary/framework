@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'calnet_helper'
 
 describe User do
   attr_reader :student_id
@@ -37,7 +37,6 @@ describe User do
     end
 
     it 'populates a User object' do
-      framework_admin_ldap = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'
       auth = {
         'provider' => 'calnet',
         'extra' => {
@@ -50,25 +49,66 @@ describe User do
           'berkeleyEduStuID' => 'expected student ID',
           'surname' => 'expected surname',
           'berkeleyEduUCPathID' => 'expected UC Path ID',
-          'uid' => 'expected UID',
-          'berkeleyEduIsMemberOf' => framework_admin_ldap
+          'uid' => 'expected UID'
         }
       }
 
-      [true, false].each do |is_framework_admin|
-        auth['extra']['berkeleyEduIsMemberOf'] = is_framework_admin ? framework_admin_ldap : ''
-        user = User.from_omniauth(auth)
-        expect(user.affiliations).to eq('expected affiliation')
-        expect(user.department_number).to eq('expected dept. number')
-        expect(user.display_name).to eq('expected display name')
-        expect(user.email).to eq('expected email')
-        expect(user.employee_id).to eq('expected employee ID')
-        expect(user.given_name).to eq('expected given name')
-        expect(user.student_id).to eq('expected student ID')
-        expect(user.surname).to eq('expected surname')
-        expect(user.ucpath_id).to eq('expected UC Path ID')
-        expect(user.uid).to eq('expected UID')
-        expect(user.framework_admin).to eq(is_framework_admin)
+      user = User.from_omniauth(auth)
+      expect(user.affiliations).to eq('expected affiliation')
+      expect(user.department_number).to eq('expected dept. number')
+      expect(user.display_name).to eq('expected display name')
+      expect(user.email).to eq('expected email')
+      expect(user.employee_id).to eq('expected employee ID')
+      expect(user.given_name).to eq('expected given name')
+      expect(user.student_id).to eq('expected student ID')
+      expect(user.surname).to eq('expected surname')
+      expect(user.ucpath_id).to eq('expected UC Path ID')
+      expect(user.uid).to eq('expected UID')
+    end
+  end
+
+  describe :cal_groups do
+    attr_reader :auth_hash
+
+    before(:each) do
+      patron_id = Patron::SAMPLE_IDS[Patron::Type::UNDERGRAD_SLE]
+      @auth_hash = auth_hash_for(patron_id)
+    end
+
+    it "ignores CalGroups we don't care about" do
+      user = User.from_omniauth(auth_hash)
+      expect(user.cal_groups).to be_empty
+    end
+
+    it 'captures known groups' do
+      User::KNOWN_CAL_GROUPS.each { |g| auth_hash['extra']['berkeleyEduIsMemberOf'] << g }
+      user = User.from_omniauth(auth_hash)
+      expect(user.cal_groups).to contain_exactly(*User::KNOWN_CAL_GROUPS)
+    end
+
+    describe :framework_admin? do
+      let(:user) { User.from_omniauth(auth_hash) }
+
+      it 'is false when FRAMEWORK_ADMIN_GROUP is not present' do
+        expect(user.framework_admin?).to eq(false)
+      end
+
+      it 'is true when FRAMEWORK_ADMIN_GROUP is present' do
+        user.cal_groups << User::FRAMEWORK_ADMIN_GROUP
+        expect(user.framework_admin?).to eq(true)
+      end
+    end
+
+    describe :lending_admin? do
+      let(:user) { User.from_omniauth(auth_hash) }
+
+      it 'is false when LENDING_ADMIN_GROUP is not present' do
+        expect(user.lending_admin?).to eq(false)
+      end
+
+      it 'is true when LENDING_ADMIN_GROUP is present' do
+        user.cal_groups << User::LENDING_ADMIN_GROUP
+        expect(user.lending_admin?).to eq(true)
       end
     end
   end

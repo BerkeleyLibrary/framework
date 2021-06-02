@@ -1,5 +1,12 @@
 class LendingItemsController < ApplicationController
+  # ------------------------------------------------------------
+  # Hooks
+
+  before_action :require_lending_admin!
   before_action :set_lending_item, only: %i[show edit update destroy]
+
+  # ------------------------------------------------------------
+  # Controller actions
 
   # GET /lending_items or /lending_items.json
   def index
@@ -54,9 +61,17 @@ class LendingItemsController < ApplicationController
     end
   end
 
+  # ------------------------------------------------------------
+  # Private methods
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
+  def require_lending_admin!
+    authenticate! { |user| return if user.lending_admin? }
+
+    raise Error::ForbiddenError, "Endpoint #{controller_name}/#{action_name} requires Framework lending admin CalGroup"
+  end
+
   def set_lending_item
     @lending_item = LendingItem.find(params[:id])
   end

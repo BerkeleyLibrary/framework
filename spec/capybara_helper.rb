@@ -39,6 +39,15 @@ module CapybaraHelper
       File.join(browser_project_root, SAVE_PATH)
     end
 
+    def delete_all_cookies
+      browser.tap do |b|
+        next unless b.respond_to?(:manage)
+        next unless (manager = b.manage).respond_to?(:delete_all_cookies)
+
+        manager.delete_all_cookies
+      end
+    end
+
     private
 
     def browser

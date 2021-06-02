@@ -5,37 +5,50 @@ class User
   include ActiveModel::Model
 
   FRAMEWORK_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
+  LENDING_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-lending-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
+
+  # if we capture all the CalGroups, we'll blow out the session cookie store, so we just
+  # keep the ones we care about
+  KNOWN_CAL_GROUPS = [User::FRAMEWORK_ADMIN_GROUP, User::LENDING_ADMIN_GROUP].freeze
 
   class << self
+
+    AUTH_EXTRA_KEYS = {
+      affiliations: 'berkeleyEduAffiliations',
+      cs_id: 'berkeleyEduCSID',
+      department_number: 'departmentNumber',
+      display_name: 'displayName',
+      email: 'berkeleyEduOfficialEmail',
+      employee_id: 'employeeNumber',
+      given_name: 'givenName',
+      student_id: 'berkeleyEduStuID',
+      surname: 'surname',
+      ucpath_id: 'berkeleyEduUCPathID',
+      uid: 'uid'
+    }.freeze
+
     # Returns a new user object from the given "omniauth.auth" hash. That's a
     # hash of all data returned by the auth provider (in our case, calnet).
     #
     # @see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema OmniAuth Schema
     # @see https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549 Sample Calnet Response
     # @see https://calnetweb.berkeley.edu/calnet-technologists/ldap-directory-service/how-ldap-organized/people-ou/people-attribute-schema CalNet LDAP
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def from_omniauth(auth)
-      raise Error::InvalidAuthProviderError, auth['provider'] \
-        if auth['provider'].to_sym != :calnet
+      ensure_valid_provider(auth['provider'])
 
-      # Note: berkeleyEduCSID should be same as berkeleyEduStuID for students
-      new(
-        affiliations: auth['extra']['berkeleyEduAffiliations'],
-        cs_id: auth['extra']['berkeleyEduCSID'],
-        department_number: auth['extra']['departmentNumber'],
-        display_name: auth['extra']['displayName'],
-        email: auth['extra']['berkeleyEduOfficialEmail'],
-        employee_id: auth['extra']['employeeNumber'],
-        given_name: auth['extra']['givenName'],
-        student_id: auth['extra']['berkeleyEduStuID'],
-        surname: auth['extra']['surname'],
-        ucpath_id: auth['extra']['berkeleyEduUCPathID'],
-        uid: auth['extra']['uid'] || auth['uid'],
-        # TODO: Consider replacing this with a DB-based role, now that we have DB-based roles
-        framework_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(FRAMEWORK_ADMIN_GROUP)
-      )
+      auth_extra = auth['extra']
+      params = AUTH_EXTRA_KEYS.each_with_object({}) { |(p, k), pp| pp[p] = auth_extra[k] }
+      params[:uid] ||= auth['uid']
+      params[:cal_groups] = (auth_extra['berkeleyEduIsMemberOf'] || []) & User::KNOWN_CAL_GROUPS
+
+      new(**params)
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+    private
+
+    def ensure_valid_provider(provider)
+      raise Error::InvalidAuthProviderError, provider if provider.to_sym != :calnet
+    end
   end
 
   # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
@@ -82,8 +95,8 @@ class User
   # @return [String]
   attr_accessor :uid
 
-  # @return [Boolean]
-  attr_accessor :framework_admin
+  # @return [Array]
+  attr_accessor :cal_groups
 
   # Whether the user was authenticated
   #
@@ -112,6 +125,18 @@ class User
 
   def ucb_staff?
     affiliations&.include?('EMPLOYEE-TYPE-STAFF')
+  end
+
+  # Whether the user is a member of the Framework admin CalGroup
+  # @return [Boolean]
+  def framework_admin?
+    cal_groups.include?(FRAMEWORK_ADMIN_GROUP)
+  end
+
+  # Whether the user is a member of the Framework lending admin CalGroup
+  # @return [Boolean]
+  def lending_admin?
+    cal_groups.include?(LENDING_ADMIN_GROUP)
   end
 
   private

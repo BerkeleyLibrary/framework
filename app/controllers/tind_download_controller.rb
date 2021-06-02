@@ -57,9 +57,9 @@ class TindDownloadController < ApplicationController
     # TODO: is there a cleaner way to do this?
     return if Rails.env.development?
 
-    authenticate!
+    authenticate! { |u| return if u.ucb_staff? }
 
-    raise Error::ForbiddenError unless current_user.ucb_staff?
+    raise Error::ForbiddenError, "Endpoint #{controller_name}/#{action_name} is restricted to UC Berkeley staff"
   end
 
   # @return [Array<UCBLIT::TIND::API::Collection>] the root collections
