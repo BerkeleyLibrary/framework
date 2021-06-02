@@ -1,4 +1,7 @@
 class LendingItem < ActiveRecord::Base
+  # ------------------------------------------------------------
+  # Validation methods
+
   validates :barcode, presence: true
   validates :filename, presence: true
   validates :title, presence: true
@@ -7,11 +10,16 @@ class LendingItem < ActiveRecord::Base
   validate :ils_record_present
 
   # ------------------------------------------------------------
+  # Constants
+
+  ILS_RECORD_FIELDS = %i[millennium_record alma_record].freeze
+
+  # ------------------------------------------------------------
   # Custom validation methods
 
   def ils_record_present
-    ils_record_fields = [:millennium_record, :alma_record]
-    return if ils_record_fields.any? { |f| send(f).present? }
-    errors.add(:base, "At least one ILS record ID (#{ils_record_fields.join(', ')} must be present")
+    return if ILS_RECORD_FIELDS.any? { |f| send(f).present? }
+
+    errors.add(:base, "At least one ILS record ID (#{ILS_RECORD_FIELDS.join(', ')} must be present")
   end
 end
