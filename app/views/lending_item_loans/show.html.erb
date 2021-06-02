@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Lending item:</strong>
+  <%= @lending_item_loan.lending_item_id %>
+</p>
+
+<p>
+  <strong>Patron identifier:</strong>
+  <%= @lending_item_loan.patron_identifier %>
+</p>
+
+<p>
+  <strong>Loan status:</strong>
+  <%= @lending_item_loan.loan_status %>
+</p>
+
+<p>
+  <strong>Loan date:</strong>
+  <%= @lending_item_loan.loan_date %>
+</p>
+
+<p>
+  <strong>Due date:</strong>
+  <%= @lending_item_loan.due_date %>
+</p>
+
+<p>
+  <strong>Return date:</strong>
+  <%= @lending_item_loan.return_date %>
+</p>
+
+<%= link_to 'Edit', edit_lending_item_loan_path(@lending_item_loan) %> |
+<%= link_to 'Back', lending_item_loans_path %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_24_191719) do
+ActiveRecord::Schema.define(version: 2021_06_02_194657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,19 @@ ActiveRecord::Schema.define(version: 2021_05_24_191719) do
     t.string "name", null: false
     t.string "role", null: false
     t.string "email"
+  end
+
+  create_table "lending_item_loans", force: :cascade do |t|
+    t.bigint "lending_item_id", null: false
+    t.string "patron_identifier"
+    t.string "loan_status", default: "pending"
+    t.datetime "loan_date"
+    t.datetime "due_date"
+    t.datetime "return_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["lending_item_id"], name: "index_lending_item_loans_on_lending_item_id"
+    t.index ["patron_identifier"], name: "index_lending_item_loans_on_patron_identifier"
   end
 
   create_table "lending_items", force: :cascade do |t|
@@ -86,4 +99,5 @@ ActiveRecord::Schema.define(version: 2021_05_24_191719) do
   end
 
   add_foreign_key "assignments", "framework_users", column: "framework_users_id"
+  add_foreign_key "lending_item_loans", "lending_items"
 end
