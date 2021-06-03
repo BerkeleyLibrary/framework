@@ -36,7 +36,23 @@ RSpec.describe '/lending_item_loans', type: :request do
       expect(response.status).to eq(404)
     end
 
-    xit 'pre-returns the loan if already expired'
+    it 'pre-returns the loan if already expired' do
+      loan_date = Time.now.utc - 3.weeks
+      due_date = loan_date + LendingItemLoan::LOAN_DURATION_HOURS.hours
+      loan = LendingItemLoan.create(
+        lending_item_id: lending_item.id,
+        patron_identifier: user.lending_id,
+        loan_status: :active,
+        loan_date: loan_date,
+        due_date: due_date
+      )
+      get lending_item_loans_path(lending_item_id: lending_item.id)
+      expect(response).to be_successful
+
+      loan.reload
+      expect(loan.complete?).to eq(true)
+      expect(loan.return_date).to be_within(1.minute).of Time.now
+    end
   end
 
   describe :new do
@@ -67,8 +83,36 @@ RSpec.describe '/lending_item_loans', type: :request do
       expect(response).to redirect_to(expected_path)
     end
 
-    xit 'fails if the item is already checked out'
-    xit 'fails if there are no copies available'
+    it 'fails if this user has already checked out the item' do
+      loan = LendingItemLoan.check_out(
+        lending_item_id: lending_item.id,
+        patron_identifier: user.lending_id
+      )
+      expect(loan).to be_persisted # just to be sure
+
+      expect do
+        post lending_item_loans_checkout_path(lending_item_id: lending_item.id)
+      end.not_to change(LendingItemLoan, :count)
+
+      expect(response.status).to eq(422) # unprocessable entity
+    end
+
+    it 'fails if there are no copies available' do
+      lending_item.copies.times do |copy|
+        LendingItemLoan.check_out(
+          lending_item_id: lending_item.id,
+          patron_identifier: "patron-#{copy}"
+        )
+      end
+      expect(lending_item).not_to be_available # just to be sure
+
+      expect do
+        post lending_item_loans_checkout_path(lending_item_id: lending_item.id)
+      end.not_to change(LendingItemLoan, :count)
+
+      expect(response.status).to eq(422) # unprocessable entity
+    end
+
   end
 
   describe :return do

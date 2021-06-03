@@ -1,52 +1,41 @@
 <%= form_with(model: lending_item, local: true) do |form| %>
-  <% if lending_item.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(lending_item.errors.count, "error") %> prohibited this lending_item from being saved:</h2>
 
-      <ul>
-        <% lending_item.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
+  <tr>
     <%= form.label :barcode %>
     <%= form.text_field :barcode %>
-  </div>
+  </tr>
 
-  <div class="field">
+  <tr>
     <%= form.label :filename %>
     <%= form.text_field :filename %>
-  </div>
+  </tr>
 
-  <div class="field">
+  <tr>
     <%= form.label :title %>
     <%= form.text_field :title %>
-  </div>
+  </tr>
 
-  <div class="field">
+  <tr>
     <%= form.label :author %>
     <%= form.text_field :author %>
-  </div>
+  </tr>
 
-  <div class="field">
+  <tr>
     <%= form.label :millennium_record %>
     <%= form.text_field :millennium_record %>
-  </div>
+  </tr>
 
-  <div class="field">
+  <tr>
     <%= form.label :alma_record %>
     <%= form.text_field :alma_record %>
-  </div>
+  </tr>
 
-  <div class="field">
+  <tr>
     <%= form.label :copies %>
     <%= form.text_field :copies %>
-  </div>
+  </tr>
 
-  <div class="actions">
+  <tr>
     <%= form.submit %>
-  </div>
+  </tr>
 <% end %>

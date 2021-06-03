@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   scope :constraints, { format: 'html' } do
     get '/lending_item_loans/:lending_item_id', to: 'lending_item_loans#show', as: 'lending_item_loans'
     get '/lending_item_loans/:lending_item_id/new', to: 'lending_item_loans#new', as: 'lending_item_loans_new'
-    post '/lending_item_loans/:lending_item_id', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
+    post '/lending_item_loans/:lending_item_id/checkout', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
     # TODO: something more RESTful
     post '/lending_item_loans/:lending_item_id/return', to: 'lending_item_loans#return', as: 'lending_item_loans_return'
   end
