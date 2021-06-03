@@ -1,5 +1,16 @@
-<h1>New Lending Item Loan</h1>
+<h1>Controlled Digital Lending</h1>
 
-<%= render 'form', lending_item_loan: @lending_item_loan %>
+<% @lending_item ||= @lending_item_loan.lending_item %>
 
-<%= link_to 'Back', lending_item_loans_path %>
+<%= render partial: 'lending_items/metadata' %>
+
+<%= form_with(url: lending_item_loans_checkout_path, id: 'checkout-form') do |f| %>
+  <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
+
+  <div class="form-input">
+    <% available = @lending_item.available? %>
+    <p>
+      <%= f.submit('Check out', disabled: !available, disable_with: 'No copies available')  %>
+    </p>
+  </div>
+<% end %>

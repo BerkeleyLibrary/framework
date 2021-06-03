@@ -1,4 +1,8 @@
-<p id="notice"><%= notice %></p>
+<h1>Controlled Digital Lending</h1>
+
+<% @lending_item = @lending_item_loan.lending_item %>
+
+<%= render partial: 'lending_items/metadata' %>
 
 <p>
   <strong>Lending item:</strong>
@@ -29,3 +33,15 @@
   <strong>Return date:</strong>
   <%= @lending_item_loan.return_date %>
 </p>
+
+<% if @lending_item_loan.active? %>
+  <%= form_with(url: lending_item_loans_return_path, id: 'return-form') do |f| %>
+    <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
+
+    <div class="form-input">
+      <p>
+        <%= f.submit('Return now')  %>
+      </p>
+    </div>
+  <% end %>
+<% end %>

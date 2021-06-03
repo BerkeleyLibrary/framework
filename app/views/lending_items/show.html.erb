@@ -1,39 +1,11 @@
-<p id="notice"><%= notice %></p>
+<h1>Controlled Digital Lending</h1>
 
-<p>
-  <strong>Barcode:</strong>
-  <%= @lending_item.barcode %>
-</p>
+<%= render(partial: 'metadata') %>
 
-<p>
-  <strong>Filename:</strong>
-  <%= @lending_item.filename %>
-</p>
-
-<p>
-  <strong>Title:</strong>
-  <%= @lending_item.title %>
-</p>
-
-<p>
-  <strong>Author:</strong>
-  <%= @lending_item.author %>
-</p>
-
-<p>
-  <strong>Millennium Record:</strong>
-  <%= @lending_item.millennium_record %>
-</p>
-
-<p>
-  <strong>Alma Record:</strong>
-  <%= @lending_item.alma_record %>
-</p>
-
-<p>
-  <strong>Copies:</strong>
-  <%= @lending_item.copies %>
-</p>
 
 <%= link_to 'Edit', edit_lending_item_path(@lending_item) %> |
 <%= link_to 'Back', lending_items_path %>
+
+<p>
+  <%= link_to 'Patron view', lending_item_loans_new_path(lending_item_id: @lending_item.id) %>
+</p>

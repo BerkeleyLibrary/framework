@@ -27,37 +27,26 @@ class LendingItemsController < ApplicationController
   # POST /lending_items or /lending_items.json
   def create
     @lending_item = LendingItem.new(lending_item_params)
+    render_with_errors(:new, errors) && return unless @lending_item.save
 
-    respond_to do |format|
-      if @lending_item.save
-        format.html { redirect_to @lending_item, notice: 'Lending item was successfully created.' }
-        format.json { render :show, status: :created, location: @lending_item }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @lending_item.errors, status: :unprocessable_entity }
-      end
-    end
+    flash[:success] = 'Item created.'
+    redirect_to @lending_item
   end
 
   # PATCH/PUT /lending_items/1 or /lending_items/1.json
   def update
-    respond_to do |format|
-      if @lending_item.update(lending_item_params)
-        format.html { redirect_to @lending_item, notice: 'Lending item was successfully updated.' }
-        format.json { render :show, status: :ok, location: @lending_item }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @lending_item.errors, status: :unprocessable_entity }
-      end
-    end
+    render_with_errors(:edit, errors) && return unless @lending_item.update(lending_item_params)
+
+    flash[:success] = 'Item updated.'
+    redirect_to @lending_item
   end
 
   # DELETE /lending_items/1 or /lending_items/1.json
   def destroy
     @lending_item.destroy
     respond_to do |format|
-      format.html { redirect_to lending_items_url, notice: 'Lending item was successfully destroyed.' }
-      format.json { head :no_content }
+      flash[:success] = 'Item deleted.'
+      format.html { redirect_to lending_items_url }
     end
   end
 
@@ -65,6 +54,10 @@ class LendingItemsController < ApplicationController
   # Private methods
 
   private
+
+  def errors
+    @lending_item.errors
+  end
 
   def require_lending_admin!
     authenticate! { |user| return if user.lending_admin? }

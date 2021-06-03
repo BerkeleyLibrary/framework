@@ -24,7 +24,11 @@ class LendingItem < ActiveRecord::Base
   # Instance methods
 
   def available?
-    lending_item_loans.where(loan_status: :active).count < copies
+    copies_available > 0
+  end
+
+  def copies_available
+    (copies - lending_item_loans.where(loan_status: :active).count)
   end
 
   # ------------------------------------------------------------

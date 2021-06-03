@@ -63,6 +63,8 @@ class LendingItemLoan < ActiveRecord::Base
   # Custom validation methods
 
   def item_available
-    lending_item.available?
+    return if lending_item.available?
+
+    errors.add(:base, 'No copies available')
   end
 end
