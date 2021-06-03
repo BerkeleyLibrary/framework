@@ -2,15 +2,22 @@
 
 <% @lending_item ||= @lending_item_loan.lending_item %>
 
-<%= render partial: 'lending_items/metadata' %>
+<section class="record">
+  <table class="table table-bordered table-striped" style="width: auto;">
+    <tbody>
+    <%= render partial: 'lending_items/metadata' %>
+    </tbody>
 
-<%= form_with(url: lending_item_loans_checkout_path, id: 'checkout-form') do |f| %>
-  <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
-
-  <div class="form-input">
-    <% available = @lending_item.available? %>
-    <p>
-      <%= f.submit('Check out', disabled: !available, disable_with: 'No copies available')  %>
-    </p>
-  </div>
-<% end %>
+    <tfoot>
+    <tr>
+      <td></td>
+      <td>
+        <%= form_with(url: lending_item_loans_checkout_path, id: 'checkout-form', local: true) do |f| %>
+          <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
+          <%= f.submit('Check out', style: 'width: 100%;', disabled: !@lending_item.available?, disable_with: 'No copies available') %>
+        <% end %>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+</section>

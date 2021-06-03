@@ -1,41 +1,51 @@
 <%= form_with(model: lending_item, local: true) do |form| %>
+  <table class="table table-bordered table-striped" style="width: auto;">
 
-  <tr>
-    <%= form.label :barcode %>
-    <%= form.text_field :barcode %>
-  </tr>
+    <tbody>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:barcode, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:barcode, class: 'form-control add-required') %></td>
+    </tr>
 
-  <tr>
-    <%= form.label :filename %>
-    <%= form.text_field :filename %>
-  </tr>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:filename, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:filename, class: 'form-control add-required') %></td>
+    </tr>
 
-  <tr>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
-  </tr>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:title, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:title, class: 'form-control add-required') %></td>
+    </tr>
 
-  <tr>
-    <%= form.label :author %>
-    <%= form.text_field :author %>
-  </tr>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:author, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:author, class: 'form-control add-required') %></td>
+    </tr>
 
-  <tr>
-    <%= form.label :millennium_record %>
-    <%= form.text_field :millennium_record %>
-  </tr>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:millennium_record, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:millennium_record, class: 'form-control add-required') %></td>
+    </tr>
 
-  <tr>
-    <%= form.label :alma_record %>
-    <%= form.text_field :alma_record %>
-  </tr>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:alma_record, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:alma_record, class: 'form-control add-required') %></td>
+    </tr>
 
-  <tr>
-    <%= form.label :copies %>
-    <%= form.text_field :copies %>
-  </tr>
+    <tr class="form-group required">
+      <th class="form-label"><%= form.label(:copies, class: 'control-label') %></th>
+      <td class="form-input"><%= form.text_field(:copies, class: 'form-control add-required') %></td>
+    </tr>
+    </tbody>
 
-  <tr>
-    <%= form.submit %>
-  </tr>
+    <tfoot>
+    <tr>
+      <td></td>
+      <td>
+        <%= form.submit(style: "width: 100%") %>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+
 <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_02_232842) do
+ActiveRecord::Schema.define(version: 2021_06_03_222213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2021_06_02_232842) do
     t.datetime "return_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["lending_item_id", "patron_identifier", "loan_status"], name: "lending_item_loan_uniqueness", unique: true
+    t.index ["lending_item_id", "patron_identifier"], name: "lending_item_loan_uniqueness", unique: true, where: "((loan_status)::text = 'active'::text)"
     t.index ["lending_item_id"], name: "index_lending_item_loans_on_lending_item_id"
     t.index ["patron_identifier"], name: "index_lending_item_loans_on_patron_identifier"
   end

@@ -1,11 +1,16 @@
 <h1>Controlled Digital Lending</h1>
 
-<%= render(partial: 'metadata') %>
-
+<section class="record">
+  <table class="table table-bordered table-striped" style="width: auto;">
+    <tbody>
+    <%= render(partial: 'metadata') %>
+    <tr>
+      <th>Checkout link:</th>
+      <td><%= link_to lending_item_loans_new_url(lending_item_id: @lending_item.id), lending_item_loans_new_path(lending_item_id: @lending_item.id) %></td>
+    </tr>
+    </tbody>
+  </table>
+</section>
 
 <%= link_to 'Edit', edit_lending_item_path(@lending_item) %> |
 <%= link_to 'Back', lending_items_path %>
-
-<p>
-  <%= link_to 'Patron view', lending_item_loans_new_path(lending_item_id: @lending_item.id) %>
-</p>
