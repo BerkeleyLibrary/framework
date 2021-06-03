@@ -13,6 +13,7 @@ class LendingItem < ActiveRecord::Base
   validates :title, presence: true
   validates :author, presence: true
   validates :copies, numericality: { greater_than_or_equal_to: 0 }
+  validates_uniqueness_of :filename, scope: :barcode
   validate :ils_record_present
 
   # ------------------------------------------------------------

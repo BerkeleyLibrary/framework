@@ -1,5 +1,10 @@
 class LendingItemsController < ApplicationController
   # ------------------------------------------------------------
+  # Helpers
+
+  helper_method :sort_column, :sort_direction
+
+  # ------------------------------------------------------------
   # Hooks
 
   before_action :require_lending_admin!
@@ -48,6 +53,17 @@ class LendingItemsController < ApplicationController
       flash[:success] = 'Item deleted.'
       format.html { redirect_to lending_items_url }
     end
+  end
+
+  # ------------------------------------------------------------
+  # Helper methods
+
+  def sort_column
+    params[:sort].tap { |col| return 'created_at' unless LendingItem.column_names.include?(col) }
+  end
+
+  def sort_direction
+    params[:direction].tap { |dir| return 'desc' unless %w[asc desc].include?(dir) }
   end
 
   # ------------------------------------------------------------

@@ -1,5 +1,4 @@
 class LendingItemLoansController < ApplicationController
-
   before_action :authenticate!
 
   # TODO: add list view
@@ -45,14 +44,14 @@ class LendingItemLoansController < ApplicationController
     params.require(:lending_item_id)
   end
 
+  private
+
   def loan_args
     {
       lending_item_id: lending_item_id,
       patron_identifier: current_user.lending_id
     }
   end
-
-  private
 
   def active_loan
     @active_loan ||= LendingItemLoan.active.find_by(**loan_args)
