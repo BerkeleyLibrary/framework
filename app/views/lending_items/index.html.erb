@@ -2,37 +2,38 @@
 
 <h1>Controlled Digital Lending</h1>
 
+<%# TODO: figure out why this isn't sorting %>
 <table class="table table-bordered mt-5">
   <thead class="thead-light">
-    <tr>
-      <th scope="col">Barcode</th>
-      <th scope="col">Filename</th>
-      <th scope="col">Title</th>
-      <th scope="col">Author</th>
-      <th scope="col">Millennium Record</th>
-      <th scope="col">Alma Record</th>
-      <th scope="col">Copies</th>
-      <th scope="col">Available</th>
-      <th colspan="3"></th>
-    </tr>
+  <tr>
+    <th scope="col"><%= sortable(:barcode, 'Barcode') %></th>
+    <th scope="col"><%= sortable(:filename, 'Filename') %></th>
+    <th scope="col"><%= sortable(:title, 'Title') %></th>
+    <th scope="col"><%= sortable(:author, 'Author') %></th>
+    <th scope="col"><%= sortable(:millennium_record, 'Millennium Record') %></th>
+    <th scope="col"><%= sortable(:alma_record, 'Alma Record') %></th>
+    <th scope="col"><%= sortable(:copies, 'Copies') %></th>
+    <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
+    <th colspan="3"></th>
+  </tr>
   </thead>
 
   <tbody>
-    <% @lending_items.each do |lending_item| %>
-      <tr>
-        <td><%= lending_item.barcode %></td>
-        <td><%= lending_item.filename %></td>
-        <td><%= lending_item.title %></td>
-        <td><%= lending_item.author %></td>
-        <td><%= lending_item.millennium_record %></td>
-        <td><%= lending_item.alma_record %></td>
-        <td><%= lending_item.copies %></td>
-        <td><%= lending_item.copies_available %></td>
-        <td><%= link_to 'Show', lending_item %></td>
-        <td><%= link_to 'Edit', edit_lending_item_path(lending_item) %></td>
-        <td><%= link_to 'Destroy', lending_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
+  <% @lending_items.each do |lending_item| %>
+    <tr>
+      <td><%= lending_item.barcode %></td>
+      <td><%= lending_item.filename %></td>
+      <td><%= lending_item.title %></td>
+      <td><%= lending_item.author %></td>
+      <td><%= lending_item.millennium_record %></td>
+      <td><%= lending_item.alma_record %></td>
+      <td><%= lending_item.copies %></td>
+      <td><%= lending_item.copies_available %></td>
+      <td><%= link_to 'Show', lending_item %></td>
+      <td><%= link_to 'Edit', edit_lending_item_path(lending_item) %></td>
+      <td><%= link_to 'Destroy', lending_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    </tr>
+  <% end %>
   </tbody>
 </table>
 
