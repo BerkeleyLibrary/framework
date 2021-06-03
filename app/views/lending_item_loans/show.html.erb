@@ -2,46 +2,53 @@
 
 <% @lending_item = @lending_item_loan.lending_item %>
 
-<%= render partial: 'lending_items/metadata' %>
+<section class="record">
+  <table class="table table-bordered table-striped" style="width: auto;">
+    <tbody>
+    <%= render partial: 'lending_items/metadata' %>
 
-<p>
-  <strong>Lending item:</strong>
-  <%= @lending_item_loan.lending_item_id %>
-</p>
+    <tr>
+      <th>Loan status:</th>
+      <td><%= @lending_item_loan.loan_status %></td>
+    </tr>
 
-<p>
-  <strong>Patron identifier:</strong>
-  <%= @lending_item_loan.patron_identifier %>
-</p>
+    <tr>
+      <th>Checked out:</th>
+      <td><%= @lending_item_loan.loan_date %></td>
+    </tr>
 
-<p>
-  <strong>Loan status:</strong>
-  <%= @lending_item_loan.loan_status %>
-</p>
+    <tr>
+      <th>Due:</th>
+      <td><%= @lending_item_loan.due_date %></td>
+    </tr>
 
-<p>
-  <strong>Loan date:</strong>
-  <%= @lending_item_loan.loan_date %>
-</p>
+    <% if @lending_item_loan.complete? %>
+      <tr>
+        <th>Returned:</th>
+        <td><%= @lending_item_loan.return_date %></td>
+      </tr>
+    <% end %>
 
-<p>
-  <strong>Due date:</strong>
-  <%= @lending_item_loan.due_date %>
-</p>
+    </tbody>
 
-<p>
-  <strong>Return date:</strong>
-  <%= @lending_item_loan.return_date %>
-</p>
-
-<% if @lending_item_loan.active? %>
-  <%= form_with(url: lending_item_loans_return_path, id: 'return-form') do |f| %>
-    <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
-
-    <div class="form-input">
-      <p>
-        <%= f.submit('Return now')  %>
-      </p>
-    </div>
-  <% end %>
-<% end %>
+    <tfoot>
+    <tr>
+      <td></td>
+      <td>
+        <%# TODO: make these partials? %>
+        <% if @lending_item_loan.active? %>
+          <%= form_with(url: lending_item_loans_return_path, id: 'return-form', local: true) do |f| %>
+            <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
+            <%= f.submit('Return now', style: 'width: 100%;') %>
+          <% end %>
+        <% else %>
+          <%= form_with(url: lending_item_loans_checkout_path, id: 'checkout-form', local: true) do |f| %>
+            <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
+            <%= f.submit('Check out', style: 'width: 100%;', disabled: !@lending_item.available?, disable_with: 'No copies available') %>
+          <% end %>
+        <% end %>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+</section>

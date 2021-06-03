@@ -2,11 +2,22 @@ class LendingItemLoansController < ApplicationController
 
   before_action :authenticate!
 
+  # TODO: add list view
+
+  # TODO: can we get away with just one action & view for new/show?
   def show
-    @lending_item_loan = LendingItemLoan.find_by!(**loan_args)
+    @lending_item_loan = active_loan || LendingItemLoan.order(:updated_at).last
+    redirect_to lending_item_loans_new_path(lending_item_id: lending_item_id) unless @lending_item_loan
   end
 
+  # TODO: can we get away with just one action & view for new/show?
   def new
+    if active_loan
+      flash[:danger] = 'You have already checked out this item.'
+      redirect_to lending_item_loans_path(lending_item_id: lending_item_id)
+
+      return
+    end
     @lending_item_loan = LendingItemLoan.new(**loan_args)
   end
 
@@ -19,13 +30,14 @@ class LendingItemLoansController < ApplicationController
   end
 
   def return
-    @lending_item_loan = LendingItemLoan.find_by!(
-      lending_item_id: lending_item_id,
-      patron_identifier: current_user.lending_id
-    )
-    @lending_item_loan.return!
+    if active_loan
+      active_loan.return!
+      flash[:success] = 'Item returned.'
+      redirect_to lending_item_loans_new_path(lending_item_id: lending_item_id)
+      return
+    end
 
-    flash[:success] = 'Item returned.'
+    flash[:danger] = 'You have not checked out this item.'
     redirect_to lending_item_loans_path(lending_item_id: lending_item_id)
   end
 
@@ -41,6 +53,10 @@ class LendingItemLoansController < ApplicationController
   end
 
   private
+
+  def active_loan
+    @active_loan ||= LendingItemLoan.active.find_by(**loan_args)
+  end
 
   def errors
     @lending_item_loan.errors

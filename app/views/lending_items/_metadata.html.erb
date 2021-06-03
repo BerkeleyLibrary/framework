@@ -1,42 +1,33 @@
 <%# TODO: use MARC, share code w/AV player? %>
-<section class="record">
-
-  <h2><%= @lending_item.title %></h2>
-
-  <table>
-    <tbody>
-    <tr>
-      <th>Title:</th>
-      <td><%= @lending_item.title %></td>
-    </tr>
-    <tr>
-      <th>Author:</th>
-      <td><%= @lending_item.author %></td>
-    </tr>
-    <tr>
-      <th>Barcode:</th>
-      <td><%= @lending_item.barcode %></td>
-    </tr>
-    <tr>
-      <th>Filename:</th>
-      <td><%= @lending_item.filename %></td>
-    </tr>
-    <tr>
-      <th>Millennium record:</th>
-      <td><%= @lending_item.millennium_record %></td>
-    </tr>
-    <tr>
-      <th>Alma record:</th>
-      <td><%= @lending_item.alma_record %></td>
-    </tr>
-    <tr>
-      <th>Copies:</th>
-      <td><%= @lending_item.copies %></td>
-    </tr>
-    <tr>
-      <th>Copies available:</th>
-      <td><%= @lending_item.copies_available %></td>
-    </tr>
-    </tbody>
-  </table>
-</section>
+<tr>
+  <th>Title:</th>
+  <td><%= @lending_item.title %></td>
+</tr>
+<tr>
+  <th>Author:</th>
+  <td><%= @lending_item.author %></td>
+</tr>
+<tr>
+  <th>Barcode:</th>
+  <td><%= @lending_item.barcode %></td>
+</tr>
+<tr>
+  <th>Filename:</th>
+  <td><%= @lending_item.filename %></td>
+</tr>
+<tr>
+  <th>Millennium record:</th>
+  <td><%= @lending_item.millennium_record %></td>
+</tr>
+<tr>
+  <th>Alma record:</th>
+  <td><%= @lending_item.alma_record %></td>
+</tr>
+<tr>
+  <th>Copies:</th>
+  <td><%= @lending_item.copies %></td>
+</tr>
+<tr>
+  <th>Copies available:</th>
+  <td><%= @lending_item.copies_available %></td>
+</tr>
