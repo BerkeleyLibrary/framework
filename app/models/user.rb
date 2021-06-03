@@ -156,6 +156,11 @@ class User
     cal_groups.include?(LENDING_ADMIN_GROUP)
   end
 
+  def lending_id
+    # TODO: something more secure
+    uid
+  end
+
   # ------------------------------------------------------------
   # Private methods
 

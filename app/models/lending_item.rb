@@ -21,6 +21,13 @@ class LendingItem < ActiveRecord::Base
   ILS_RECORD_FIELDS = %i[millennium_record alma_record].freeze
 
   # ------------------------------------------------------------
+  # Instance methods
+
+  def available?
+    lending_item_loans.where(loan_status: :active).count < copies
+  end
+
+  # ------------------------------------------------------------
   # Custom validation methods
 
   def ils_record_present

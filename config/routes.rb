@@ -8,9 +8,6 @@ Rails.application.routes.draw do
   resources :campus_networks, path: 'campus-networks'
   resources :lbl_networks, path: 'lbl-networks'
 
-  resources :lending_items
-  resources :lending_item_loans # TODO: is this what we want?
-
   scope(:forms) do
     resources :doemoff_study_room_use_forms, path: 'doemoff-study-room-use'
     resources :scan_request_forms, path: 'altmedia'
@@ -32,6 +29,17 @@ Rails.application.routes.draw do
   get '/fines/transaction_cancel', to: 'fines#transaction_cancel'
   post '/fines/payment', to: 'fines#payment'
   post '/fines/transaction_complete', to: 'fines#transaction_complete'
+
+  # Controlled Digital Lending Routes:
+  # - LendingItem (admin view) is simple, LendingItemLoan (patron view) is complex
+  resources :lending_items
+  scope :constraints, { format: 'html' } do
+    get '/lending_item_loans/:lending_item_id', to: 'lending_item_loans#show', as: 'lending_item_loans'
+    get '/lending_item_loans/:lending_item_id/new', to: 'lending_item_loans#new', as: 'lending_item_loans_new'
+    post '/lending_item_loans/:lending_item_id', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
+    # TODO: something more RESTful
+    post '/lending_item_loans/:lending_item_id/return', to: 'lending_item_loans#return', as: 'lending_item_loans_return'
+  end
 
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'

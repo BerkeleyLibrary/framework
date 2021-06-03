@@ -3,12 +3,11 @@ require 'calnet_helper'
 
 RSpec.describe '/lending_item_loans', type: :request do
 
-  attr_reader :patron_id, :auth_hash, :user, :lending_item, :valid_attributes, :invalid_attributes
+  attr_reader :patron_id, :auth_hash, :user, :lending_item
 
   before(:each) do
-    @patron_id = Patron::SAMPLE_IDS[Patron::Type::UNDERGRAD_SLE]
-    @auth_hash = auth_hash_for(patron_id)
-    @user = User.from_omniauth(auth_hash)
+    @patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD_SLE)
+    @user = login_as_patron(patron_id)
 
     @lending_item = LendingItem.create!(
       barcode: 'C08675309',
@@ -17,129 +16,76 @@ RSpec.describe '/lending_item_loans', type: :request do
       author: 'Brontë, Charlotte',
       millennium_record: 'b9551212',
       alma_record: nil,
-      copies: 1
+      copies: 3
     )
-
-    @valid_attributes = {
-      lending_item_id: lending_item.id,
-      patron_identifier: user.uid
-    }
   end
 
-  let(:invalid_attributes) do
-    {
-      lending_item: nil,
-      patron_identifier: nil
-    }
-  end
-
-  describe 'GET /index' do
-    it 'renders a successful response' do
-      LendingItemLoan.create! valid_attributes
-      get lending_item_loans_url
+  describe :show do
+    it 'shows a loan' do
+      loan = LendingItemLoan.check_out(
+        lending_item_id: lending_item.id,
+        patron_identifier: user.lending_id
+      )
+      expect(loan).to be_persisted # just to be sure
+      get lending_item_loans_path(lending_item_id: lending_item.id)
       expect(response).to be_successful
     end
+
+    it 'returns 404 if no loan exists' do
+      get lending_item_loans_path(lending_item_id: lending_item.id)
+      expect(response.status).to eq(404)
+    end
+
+    xit 'pre-returns the loan if already expired'
   end
 
-  describe 'GET /show' do
-    it 'renders a successful response' do
-      lending_item_loan = LendingItemLoan.create! valid_attributes
-      get lending_item_loan_url(lending_item_loan)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /new' do
-    it 'renders a successful response' do
-      get new_lending_item_loan_url
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /edit' do
-    it 'render a successful response' do
-      lending_item_loan = LendingItemLoan.create! valid_attributes
-      get edit_lending_item_loan_url(lending_item_loan)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'POST /create' do
-    context 'with valid parameters' do
-      it 'creates a new LendingItemLoan' do
-        expect do
-          post lending_item_loans_url, params: { lending_item_loan: valid_attributes }
-        end.to change(LendingItemLoan, :count).by(1)
-      end
-
-      it 'redirects to the created lending_item_loan' do
-        post lending_item_loans_url, params: { lending_item_loan: valid_attributes }
-        expect(response).to redirect_to(lending_item_loan_url(LendingItemLoan.last))
-      end
-    end
-
-    context 'with invalid parameters' do
-      it 'does not create a new LendingItemLoan' do
-        expect do
-          post lending_item_loans_url, params: { lending_item_loan: invalid_attributes }
-        end.to change(LendingItemLoan, :count).by(0)
-      end
-
-      it 'fails with 422 Unprocessable Entity' do
-        post lending_item_loans_url, params: { lending_item_loan: invalid_attributes }
-        expect(response.status).to eq(422) # unprocessable entity
-      end
-    end
-  end
-
-  describe 'PATCH /update' do
-    context 'with valid parameters' do
-      let(:new_attributes) do
-        # Database loses subsecond precision, so let's lose it first
-        # to simplify comparison
-        loan_date = Time.now.utc.change(usec: 0)
-
-        { loan_status: 'active', loan_date: loan_date }
-      end
-
-      it 'updates the requested lending_item_loan' do
-        lending_item_loan = LendingItemLoan.create! valid_attributes
-        patch lending_item_loan_url(lending_item_loan), params: { lending_item_loan: new_attributes }
-        lending_item_loan.reload
-        new_attributes.each do |attr, val|
-          expect(lending_item_loan.send(attr)).to eq(val)
-        end
-      end
-
-      it 'redirects to the lending_item_loan' do
-        lending_item_loan = LendingItemLoan.create! valid_attributes
-        patch lending_item_loan_url(lending_item_loan), params: { lending_item_loan: new_attributes }
-        lending_item_loan.reload
-        expect(response).to redirect_to(lending_item_loan_url(lending_item_loan))
-      end
-    end
-
-    context 'with invalid parameters' do
-      it 'fails with 422 Unprocessable Entity' do
-        lending_item_loan = LendingItemLoan.create! valid_attributes
-        patch lending_item_loan_url(lending_item_loan), params: { lending_item_loan: invalid_attributes }
-        expect(response.status).to eq(422) # unprocessable entity
-      end
-    end
-  end
-
-  describe 'DELETE /destroy' do
-    it 'destroys the requested lending_item_loan' do
-      lending_item_loan = LendingItemLoan.create! valid_attributes
+  describe :new do
+    it 'creates a new, unsaved loan' do
       expect do
-        delete lending_item_loan_url(lending_item_loan)
-      end.to change(LendingItemLoan, :count).by(-1)
+        get lending_item_loans_new_path(lending_item_id: lending_item.id)
+      end.not_to change(LendingItemLoan, :count)
+      expect(response).to be_successful
+    end
+  end
+
+  describe :check_out do
+    it 'checks out an item' do
+      expect do
+        post lending_item_loans_checkout_path(lending_item_id: lending_item.id)
+      end.to change(LendingItemLoan, :count).by(1)
+
+      loan = LendingItemLoan.find_by(
+        lending_item_id: lending_item.id,
+        patron_identifier: user.lending_id
+      )
+      expect(loan).to be_active
+      expect(loan.loan_date).to be <= Time.now.utc
+      expect(loan.due_date).to be > Time.now.utc
+      expect(loan.due_date - loan.loan_date).to eq(LendingItemLoan::LOAN_DURATION_HOURS.hours)
+
+      expected_path = lending_item_loans_path(lending_item_id: lending_item.id)
+      expect(response).to redirect_to(expected_path)
     end
 
-    it 'redirects to the lending_item_loans list' do
-      lending_item_loan = LendingItemLoan.create! valid_attributes
-      delete lending_item_loan_url(lending_item_loan)
-      expect(response).to redirect_to(lending_item_loans_url)
+    xit 'fails if the item is already checked out'
+    xit 'fails if there are no copies available'
+  end
+
+  describe :return do
+    it 'returns an item' do
+      loan = LendingItemLoan.check_out(
+        lending_item_id: lending_item.id,
+        patron_identifier: user.lending_id
+      )
+      post lending_item_loans_return_path(lending_item_id: lending_item.id)
+
+      loan.reload
+      expect(loan).to be_complete
+
+      expected_path = lending_item_loans_path(lending_item_id: lending_item.id)
+      expect(response).to redirect_to(expected_path)
     end
+
+    xit 'does something sensible for duplicate returns'
   end
 end
