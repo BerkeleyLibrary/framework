@@ -1,6 +1,6 @@
 require 'calnet_helper'
 
-RSpec.describe '/lending_items', type: :request do
+RSpec.describe LendingItem, type: :request do
 
   # LendingItem. As you add validations to LendingItem, be sure to
   # adjust the attributes here as well.
@@ -158,7 +158,7 @@ RSpec.describe '/lending_items', type: :request do
       login_as_patron(patron_id)
     end
 
-    describe 'GET /index' do
+    describe :index do
       it 'returns 403' do
         lending_item = LendingItem.create! valid_attributes
         get lending_item_url(lending_item)
@@ -166,14 +166,14 @@ RSpec.describe '/lending_items', type: :request do
       end
     end
 
-    describe 'GET /new' do
+    describe :new do
       it 'returns 403' do
         get new_lending_item_url
         expect(response.status).to eq(403)
       end
     end
 
-    describe 'GET /edit' do
+    describe :edit do
       it 'returns 403' do
         lending_item = LendingItem.create! valid_attributes
         get edit_lending_item_url(lending_item)
@@ -181,7 +181,7 @@ RSpec.describe '/lending_items', type: :request do
       end
     end
 
-    describe 'POST /create' do
+    describe :create do
       it 'returns 403' do
         post lending_items_url, params: { lending_item: valid_attributes }
         expect(response.status).to eq(403)
@@ -193,7 +193,7 @@ RSpec.describe '/lending_items', type: :request do
       end
     end
 
-    describe 'PATCH /update' do
+    describe :update do
       let(:new_attributes) do
         {
           alma_record: '8675309-5551212',
@@ -215,7 +215,7 @@ RSpec.describe '/lending_items', type: :request do
       end
     end
 
-    describe 'DELETE /destroy' do
+    describe :destroy do
       it 'returns 403' do
         lending_item = LendingItem.create! valid_attributes
         delete lending_item_url(lending_item)

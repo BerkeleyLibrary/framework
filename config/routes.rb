@@ -33,12 +33,18 @@ Rails.application.routes.draw do
   # Controlled Digital Lending Routes:
   # - LendingItem (admin view) is simple, LendingItemLoan (patron view) is complex
   scope :lending, { format: 'html' } do
-    resources :lending_items
-    get '/lending_item_loans/:lending_item_id', to: 'lending_item_loans#show', as: 'lending_item_loans'
-    get '/lending_item_loans/:lending_item_id/new', to: 'lending_item_loans#new', as: 'lending_item_loans_new'
-    post '/lending_item_loans/:lending_item_id/checkout', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
+    get '/items', to: 'lending_items#index', as: 'lending_items'
+    post '/items', to: 'lending_items#create'
+    get '/items/new', to: 'lending_items#new', as: 'new_lending_item'
+    get '/items/:id/edit', to: 'lending_items#edit', as: 'edit_lending_item'
+    get '/items/:id', to: 'lending_items#show', as: 'lending_item'
+    patch '/items/:id', to: 'lending_items#update'
+    delete '/items/:id', to: 'lending_items#destroy'
+
+    get '/items/:lending_item_id/loans', to: 'lending_item_loans#show', as: 'lending_item_loans'
+    post '/items/:lending_item_id/loans/checkout', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
     # TODO: something more RESTful
-    post '/lending_item_loans/:lending_item_id/return', to: 'lending_item_loans#return', as: 'lending_item_loans_return'
+    post '/items/:lending_item_id/loans/return', to: 'lending_item_loans#return', as: 'lending_item_loans_return'
   end
 
   # Proxy Borrower Admin Routes:

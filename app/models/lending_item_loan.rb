@@ -32,10 +32,12 @@ class LendingItemLoan < ActiveRecord::Base
   # Instance methods
 
   def return!
-    reload
     self.loan_status = :complete
     self.return_date = Time.now.utc
-    save!
+
+    # no_duplicate_checkouts validation can cause a SystemStackError
+    # when return! is triggered from after_find
+    save(validate: false)
   end
 
   def expired?
