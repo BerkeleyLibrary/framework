@@ -3,7 +3,7 @@ class LendingItemLoan < ActiveRecord::Base
   # ------------------------------------------------------------
   # Constants
 
-  LOAN_DURATION_HOURS = 24 # TODO: make this configurable
+  LOAN_DURATION_HOURS = 2 # TODO: make this configurable
 
   # ------------------------------------------------------------
   # Relations
