@@ -40,7 +40,7 @@ class LendingItemLoansController < ApplicationController
 
   # TODO: format all dates
   def msg_unavailable(lending_item)
-    MSG_UNAVAILABLE.tap do |msg|
+    MSG_UNAVAILABLE.dup.tap do |msg|
       next unless (due_date = lending_item.next_due_date)
 
       msg << " It will be returned on #{due_date}"
