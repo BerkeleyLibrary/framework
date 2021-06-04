@@ -56,6 +56,24 @@ RSpec.describe LendingItemLoansController, type: :request do
         expect(loan.complete?).to eq(true)
         expect(loan.return_date).to be_within(1.minute).of Time.now
       end
+
+      it 'displays an item with no available copies' do
+        lending_item.copies.times do |copy|
+          LendingItemLoan.check_out(
+            lending_item_id: lending_item.id,
+            patron_identifier: "patron-#{copy}"
+          )
+        end
+        expect(lending_item).not_to be_available # just to be sure
+
+        get lending_item_loans_path(lending_item_id: lending_item.id)
+        expect(response).to be_successful
+        expect(response.body).to include(LendingItemLoansController::MSG_UNAVAILABLE)
+
+        # TODO: format all dates
+        due_date_str = lending_item.next_due_date.to_s
+        expect(response.body).to include(due_date_str)
+      end
     end
 
     describe :check_out do
