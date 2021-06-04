@@ -32,6 +32,16 @@ class LendingItem < ActiveRecord::Base
     (copies - lending_item_loans.where(loan_status: :active).count)
   end
 
+  def due_dates
+    active_loans.pluck(:due_date)
+  end
+
+  def next_due_date
+    return unless (next_loan_due = active_loans.first)
+
+    next_loan_due.due_date
+  end
+
   # ------------------------------------------------------------
   # Custom validation methods
 
@@ -39,5 +49,11 @@ class LendingItem < ActiveRecord::Base
     return if ILS_RECORD_FIELDS.any? { |f| send(f).present? }
 
     errors.add(:base, "At least one ILS record ID (#{ILS_RECORD_FIELDS.join(', ')} must be present")
+  end
+
+  private
+
+  def active_loans
+    lending_item_loans.active.order(:due_date)
   end
 end

@@ -7,28 +7,29 @@
     <tbody>
     <%= render partial: 'lending_items/metadata' %>
 
-    <tr>
-      <th>Loan status:</th>
-      <td><%= @lending_item_loan.loan_status %></td>
-    </tr>
-
-    <tr>
-      <th>Checked out:</th>
-      <td><%= @lending_item_loan.loan_date %></td>
-    </tr>
-
-    <tr>
-      <th>Due:</th>
-      <td><%= @lending_item_loan.due_date %></td>
-    </tr>
-
-    <% if @lending_item_loan.complete? %>
+    <% if @lending_item_loan.persisted? %>
       <tr>
-        <th>Returned:</th>
-        <td><%= @lending_item_loan.return_date %></td>
+        <th>Loan status:</th>
+        <td><%= @lending_item_loan.loan_status %></td>
       </tr>
-    <% end %>
 
+      <tr>
+        <th>Checked out:</th>
+        <td><%= @lending_item_loan.loan_date %></td>
+      </tr>
+
+      <tr>
+        <th>Due:</th>
+        <td><%= @lending_item_loan.due_date %></td>
+      </tr>
+
+      <% if @lending_item_loan.complete? %>
+        <tr>
+          <th>Returned:</th>
+          <td><%= @lending_item_loan.return_date %></td>
+        </tr>
+      <% end %>
+    <% end %>
     </tbody>
 
     <tfoot>
