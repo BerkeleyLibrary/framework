@@ -14,6 +14,7 @@
     <th scope="col"><%= sortable(:alma_record, 'Alma Record') %></th>
     <th scope="col"><%= sortable(:copies, 'Copies') %></th>
     <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
+    <th scope="col">Due</th>
     <th colspan="3"></th>
   </tr>
   </thead>
@@ -29,6 +30,15 @@
       <td><%= lending_item.alma_record %></td>
       <td><%= lending_item.copies %></td>
       <td><%= lending_item.copies_available %></td>
+      <td>
+        <% unless lending_item.lending_item_loans.empty? %>
+          <ul>
+            <% lending_item.lending_item_loans.order(:due_date).each do |loan| %>
+            <li><%= loan.due_date %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </td>
       <td><%= link_to 'Show', lending_item %></td>
       <td><%= link_to 'Edit', edit_lending_item_path(lending_item) %></td>
       <td><%= link_to 'Destroy', lending_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>

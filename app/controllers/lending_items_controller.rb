@@ -15,7 +15,7 @@ class LendingItemsController < ApplicationController
 
   # GET /lending_items or /lending_items.json
   def index
-    @lending_items = LendingItem.all
+    @lending_items = LendingItem.order(sort_column + ' ' + sort_direction)
   end
 
   # GET /lending_items/1 or /lending_items/1.json

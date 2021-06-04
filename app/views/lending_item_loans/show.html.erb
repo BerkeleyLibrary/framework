@@ -35,7 +35,6 @@
     <tr>
       <td></td>
       <td>
-        <%# TODO: make these partials? %>
         <% if @lending_item_loan.active? %>
           <%= form_with(url: lending_item_loans_return_path, id: 'return-form', local: true) do |f| %>
             <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
