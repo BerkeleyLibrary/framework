@@ -4,13 +4,13 @@
   <table class="table table-bordered table-striped" style="width: auto;">
     <tbody>
     <%= render(partial: 'metadata') %>
-    <% unless @lending_item.lending_item_loans.empty? %>
+    <% unless (due_dates = @lending_item.due_dates.to_a).empty? %>
       <tr>
         <th>Due dates for current checkouts:</th>
         <td>
           <ul>
-            <% @lending_item.lending_item_loans.order(:due_date).each do |loan| %>
-              <li><%= loan.due_date %></li>
+            <% due_dates.each do |d| %>
+              <li><%= d %></li>
             <% end %>
           </ul>
         </td>

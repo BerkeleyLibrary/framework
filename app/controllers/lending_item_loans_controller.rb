@@ -3,6 +3,12 @@ class LendingItemLoansController < ApplicationController
 
   def show
     @lending_item_loan = existing_loan || LendingItemLoan.new(**loan_args)
+    return if @lending_item_loan.active?
+
+    lending_item = @lending_item_loan.lending_item
+    return if lending_item.available?
+
+    flash[:danger] = msg_unavailable(lending_item)
   end
 
   def check_out
@@ -29,6 +35,15 @@ class LendingItemLoansController < ApplicationController
   end
 
   private
+
+  # TODO: format all dates
+  def msg_unavailable(lending_item)
+    'This item is not available.'.tap do |msg|
+      next unless (due_date = lending_item.next_due_date)
+
+      msg << " It will be returned on #{due_date}"
+    end
+  end
 
   def existing_loan
     @existing_loan ||= active_loan || most_recent_loan

@@ -31,10 +31,10 @@
       <td><%= lending_item.copies %></td>
       <td><%= lending_item.copies_available %></td>
       <td>
-        <% unless lending_item.lending_item_loans.empty? %>
+        <% unless (due_dates = lending_item.due_dates.to_a).empty? %>
           <ul>
-            <% lending_item.lending_item_loans.order(:due_date).each do |loan| %>
-            <li><%= loan.due_date %></li>
+            <% due_dates.each do |d| %>
+              <li><%= d %></li>
             <% end %>
           </ul>
         <% end %>
