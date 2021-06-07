@@ -81,6 +81,7 @@ This will build or pull images for the following services:
 | `adminer`         | 8080  | http         | a web-based database administration tool (used for debugging)                                |
 | `db`              | 5432  | native (api) | a PostgreSQL database                                                                        |
 | `app`             | 3000  | http         | the Rails application (built from the [Dockerfile](Dockerfile) in this repository            |
+| `iipsrv`          | 8180  | http         | IIPImage server (used for controlled digital lending)
 | `selenium`        | 4444  | http (api)   | [Selenium Grid](https://www.selenium.dev/documentation/en/grid/) hub (used for system tests) |
 | `selenium-chrome` | 55900 | vnc          | Selenium Grid node running Chrome (used for system tests)                                    |
 | `updater`         |       |              | temporary Rails application instance used to run `rails setup`                               |
@@ -166,6 +167,8 @@ easier to navigate to the server Capybara starts.
     the database URL between test and development environments.
 - For system tests: [ChromeDriver](https://chromedriver.chromium.org/)
   and [Google Chrome](https://www.google.com/chrome)
+- For controlled digital lending: [IIPImage](https://github.com/ruven/iipsrv)
+  or another IIIF-compatible image server
 
 MacOS developers should consider installing [Homebrew](https://brew.sh),
 which makes downloading and installing these other tools much simpler.
@@ -174,6 +177,7 @@ Windows developers should considering installing the [Windows
 Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/).
 
 ### Instructions
+
 
 1. Set up the development database:
 
@@ -192,6 +196,8 @@ Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/).
 However, you may run into issues using the same database for development and
 testing. You can work around this using Docker for just the database -- see 
 below.
+
+> #### TODO: Document IIIF_BASE_URL config, incl. hybrid w/Dockerized image server
 
 ##### Using a Dockerized database for local development
 

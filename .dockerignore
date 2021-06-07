@@ -1,3 +1,6 @@
+# Ignore monster test files (see .gitattributes)
+spec/data/lending/*
+
 # Ignore .env
 .env
 
