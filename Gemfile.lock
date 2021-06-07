@@ -299,6 +299,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-prof (0.17.0)
     ruby-progressbar (1.11.0)
+    ruby-vips (2.1.2)
+      ffi (~> 1.12)
     ruby2_keywords (0.0.4)
     ruby_dep (1.5.0)
     rubyzip (2.3.0)
@@ -405,6 +407,7 @@ DEPENDENCIES
   rspec_junit_formatter
   rubocop (~> 0.74.0)
   ruby-prof (~> 0.17.0)
+  ruby-vips (~> 2.0)
   selenium-webdriver
   simplecov (~> 0.16.1)
   simplecov-rcov

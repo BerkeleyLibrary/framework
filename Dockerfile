@@ -31,6 +31,7 @@ RUN apk --no-cache --update upgrade && \
       sqlite-libs \
       tzdata \
       xz-libs \
+      vips \
       yarn \
       && \
     rm -rf /var/cache/apk/*

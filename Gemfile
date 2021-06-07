@@ -26,6 +26,7 @@ gem 'prawn', '~> 2.3.0'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 6.0.3'
 gem 'recaptcha', '~> 4.13'
+gem 'ruby-vips', '~> 2.0'
 gem 'turbolinks', '~> 5'
 gem 'typesafe_enum', '~> 0.3'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
