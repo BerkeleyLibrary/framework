@@ -12,6 +12,7 @@ services:
       FRAMEWORK_ALMA_API_KEY: ${FRAMEWORK_ALMA_API_KEY}
       LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
+      IIIF_BASE_URL: http://iiif.test/
     init: true
     networks:
       default:
@@ -37,6 +38,23 @@ services:
       - 5432:5432
     volumes:
       - ./:/build:rw
+
+  iipsrv:
+    image: containers.lib.berkeley.edu/lap/iiip-nginx-single/master:latest
+    init: true
+    environment:
+      - VERBOSITY=6
+      - LOGFILE=/dev/stdout
+      - FILESYSTEM_PREFIX=/data/
+    volumes:
+      - ./spec/data/lending/final:/data
+    ports:
+      - 8180:80
+    networks:
+      default:
+        aliases:
+          - iiif.test
+    entrypoint: ["/iipsrv-entrypoint.sh"]
 
   selenium:
     image: selenium/hub

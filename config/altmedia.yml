@@ -17,6 +17,7 @@ default: &default
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
   tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
 
+  iiif_base_uri: <%= ENV["IIIF_BASE_URL"] %>
 development:
   <<: *default
 
