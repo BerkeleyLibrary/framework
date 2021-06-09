@@ -5,6 +5,9 @@ require 'ucblit/logging'
 module Lending
   class Tileizer
 
+    ENV_INFILE = 'INFILE'.freeze
+    ENV_OUTFILE = 'OUTFILE'.freeze
+
     # vips tiffsave <infile> <outfile> --tile --pyramid --compression jpeg --tile-width 256 --tile-height 256
     VIPS_OPTIONS = {
       tile: true,
@@ -38,6 +41,9 @@ module Lending
     class << self
       include UCBLIT::Logging
 
+      # ENV_INFILE = Tileizer::ENV_INFILE
+      # ENV_OUTFILE = Tileizer::ENV_OUTFILE
+
       def tileize_all(indir, outdir)
         indir_path, outdir_path = [indir, outdir].map { |d| ensure_dirpath(d) }
         raise ArgumentError, "Can't write tileized files to same directory as input files" if indir_path == outdir_path
@@ -49,12 +55,26 @@ module Lending
         end
       end
 
-      def tileize(infile_path, outfile_path)
+      def tileize(infile_path, outfile_path, fail_fast: false)
         Tileizer.new(infile_path, outfile_path).tap do |tileizer|
           logger.info("Tileizing #{infile_path} to #{outfile_path}")
           tileizer.tileize!
         rescue TileizeFailed => e
           logger.error(e)
+          raise if fail_fast
+        end
+      end
+
+      # Invokes either #tileize or #tileize_all based on environment
+      # variables $INFILE and $OUTFILE.
+      def tileize_env
+        raise ArgumentError, "$#{ENV_INFILE} not set" if (infile = ENV[ENV_INFILE]).blank?
+        raise ArgumentError, "$#{ENV_OUTFILE} not set" if (outfile = ENV[ENV_OUTFILE]).blank?
+
+        if File.directory?(infile)
+          tileize_all(infile, outfile)
+        else
+          tileize(infile, outfile, fail_fast: true)
         end
       end
 
