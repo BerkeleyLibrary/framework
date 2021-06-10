@@ -22,7 +22,7 @@ module Lending
     attr_reader :outfile_path
 
     def initialize(infile, outfile)
-      @infile_path = ensure_filepath(infile)
+      @infile_path = Tileizer.ensure_filepath(infile)
       @outfile_path = ensure_file_or_missing(outfile)
     end
 
@@ -78,8 +78,14 @@ module Lending
         end
       end
 
-      private
+      # TODO: move this to UCBLIT::Util::Files or something
+      def ensure_filepath(f)
+        raise ArgumentError, "Not a file path: #{f}" unless f && File.file?(f.to_s)
 
+        Pathname.new(f.to_s)
+      end
+
+      # TODO: move this to UCBLIT::Util::Files or something
       def ensure_dirpath(dir)
         raise ArgumentError, "Not a directory: #{dir.inspect}" unless dir && File.directory?(dir.to_s)
 
@@ -93,14 +99,8 @@ module Lending
 
     private
 
-    def ensure_filepath(f)
-      raise ArgumentError, "Not a file path: #{f}" unless f && File.file?(f.to_s)
-
-      Pathname.new(f.to_s)
-    end
-
     def ensure_file_or_missing(f)
-      return ensure_filepath(f) if File.exist?(f.to_s)
+      return Tileizer.ensure_filepath(f) if File.exist?(f.to_s)
 
       Pathname.new(f.to_s)
     end

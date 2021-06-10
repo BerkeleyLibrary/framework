@@ -9,6 +9,7 @@ class LendingItem < ActiveRecord::Base
   # Validations
 
   validates :barcode, presence: true
+  # TODO: rename :filename to :directory or something
   validates :filename, presence: true
   validates :title, presence: true
   validates :author, presence: true
