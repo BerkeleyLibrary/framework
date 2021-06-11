@@ -17,6 +17,11 @@ default: &default
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
   tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
 
+  # Source directory for unprocessed page scans
+  iiif_incoming_dir: <%= ENV["IIIF_INCOMING_DIR"] %>
+  # Image server root directory (shared volume)
+  iiif_final_dir: <%= ENV["IIIF_FINAL_DIR"] %>
+  # Base URL for image server
   iiif_base_uri: <%= ENV["IIIF_BASE_URL"] %>
 development:
   <<: *default

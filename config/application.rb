@@ -36,5 +36,10 @@ module Framework
     # Setup ucblit-tind for TIND Downloader:
     config.tind_base_uri = config.altmedia['tind_base_uri']
     config.tind_api_key = config.altmedia['tind_api_key']
+
+    # Lending
+    config.iiif_base_uri = config.altmedia['iiif_base_uri']
+    config.iiif_final_dir = config.altmedia['iiif_final_dir']
+    config.iiif_incoming_dir = config.altmedia['iiif_incoming_dir']
   end
 end

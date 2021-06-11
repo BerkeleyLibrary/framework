@@ -12,6 +12,8 @@ services:
       FRAMEWORK_ALMA_API_KEY: ${FRAMEWORK_ALMA_API_KEY}
       LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
+      IIIF_INCOMING_DIR: spec/data/lending/incoming
+      IIIF_FINAL_DIR: spec/data/lending/final
       IIIF_BASE_URL: http://iiif.test/
     init: true
     networks:
