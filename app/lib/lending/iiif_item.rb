@@ -4,6 +4,7 @@ require 'ucblit/util/uris'
 module Lending
   class IIIFItem
 
+    MANIFEST_NAME = 'manifest.json'.freeze
     DIRNAME_RE = /(?<record_id>b?[0-9]{8,}+)_(?<barcode>.+)/.freeze
     MSG_BAD_DIRNAME = 'Item directory %s should be in the form <record_id>_<barcode>'.freeze
 
@@ -71,6 +72,14 @@ module Lending
       end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+    def write_manifest!(manifest_root_uri, image_root_uri)
+      manifest = to_manifest(manifest_root_uri, image_root_uri)
+      manifest_json = manifest.to_json
+      dir_path.join(MANIFEST_NAME).tap do |manifest_path|
+        manifest_path.open('w') { |f| f.write(manifest_json) }
+      end
+    end
 
     private
 
