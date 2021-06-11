@@ -75,6 +75,7 @@
     <orderEntry type="library" scope="PROVIDED" name="http-cookie (v1.0.4, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="i18n (v1.8.10, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ice_nine (v0.11.2, RVM: ruby-2.7.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="iiif-presentation (v1.0.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ipaddress (v0.8.3, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jaro_winkler (v1.5.4, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.11.2, RVM: ruby-2.7.2) [gem]" level="application" />
@@ -488,6 +489,11 @@
                   <RakeTaskImpl description="Automatically fix problems detected by ESLint" fullCommand="js:eslint:fix" id="fix" />
                 </subtasks>
               </RakeTaskImpl>
+            </subtasks>
+          </RakeTaskImpl>
+          <RakeTaskImpl id="lending">
+            <subtasks>
+              <RakeTaskImpl description="Creates tiled TIFFs from an image or list of images" fullCommand="lending:tileize" id="tileize" />
             </subtasks>
           </RakeTaskImpl>
           <RakeTaskImpl id="log">

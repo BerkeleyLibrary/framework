@@ -164,6 +164,10 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    iiif-presentation (1.0.0)
+      activesupport (>= 3.2.18)
+      faraday (>= 0.9)
+      json
     ipaddress (0.8.3)
     jaro_winkler (1.5.4)
     jbuilder (2.11.2)
@@ -395,6 +399,7 @@ DEPENDENCIES
   database_cleaner-active_record (~> 2.0)
   dotenv (~> 2.7)
   faraday
+  iiif-presentation (~> 1.0)
   ipaddress
   jaro_winkler (~> 1.5.4)
   jbuilder (~> 2.5)
