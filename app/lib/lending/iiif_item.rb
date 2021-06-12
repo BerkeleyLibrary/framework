@@ -15,12 +15,12 @@ module Lending
     attr_reader :record_id
     attr_reader :barcode
 
-    def initialize(title:, author:, dir_path:, pages:)
+    def initialize(title:, author:, dir_path:)
       @title = title
       @author = author
       @dir_path = Tileizer.ensure_dirpath(dir_path)
       @record_id, @barcode = decompose_dirname(@dir_path)
-      @pages = pages.to_a
+      @pages = Page.all_from_directory(dir_path)
     end
 
     def dir_basename
@@ -28,30 +28,40 @@ module Lending
     end
 
     class << self
+      include UCBLIT::Util::Logging
+
       def create_from(source_dir, output_dir, title:, author:)
+        logger.info("Creating IIIF directory #{output_dir} from #{source_dir}")
+
         # TODO: use a temp directory
         source_dir_path = Tileizer.ensure_dirpath(source_dir)
         output_dir_path = Tileizer.ensure_dirpath(output_dir)
-        IIIFItem.new(
-          title: title,
-          author: author,
-          dir_path: output_dir_path,
-          pages: lazy_create_pages(source_dir_path, output_dir_path)
-        )
+        tileize_pages(source_dir_path, output_dir_path)
+        copy_page_texts(source_dir_path, output_dir_path)
+
+        IIIFItem.new(title: title, author: author, dir_path: output_dir_path)
       end
 
       private
 
-      # @return Enumerator::Lazy<Page> a lazy enumerator of pages
-      def lazy_create_pages(source_dir_path, output_dir_path)
-        source_dir_path.children.lazy.filter_map do |f|
-          next unless Tileizer.tiff?(f) && Page.page_number?(f)
-
-          # TODO: should Page really be doing the tileization or just reading files?
-          Page.create_from(tiff_path, output_dir_path)
+      def tileize_pages(source_dir_path, output_dir_path)
+        source_dir_path.children.each do |f|
+          Tileizer.tileize(f, output_dir_path) if page_tiff?(f)
         end
       end
 
+      def copy_page_texts(source_dir_path, output_dir_path)
+        source_dir_path.children.each do |f|
+          next unless page_tiff?(f) && (txt_path = Page.txt_path_from(f))
+
+          output_txt_path = output_dir_path.join(txt_path.basename)
+          FileUtils.cp(txt_path, output_txt_path)
+        end
+      end
+
+      def page_tiff?(f)
+        Tileizer.tiff?(f) && Page.page_number?(f)
+      end
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

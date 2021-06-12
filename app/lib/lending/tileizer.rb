@@ -55,14 +55,15 @@ module Lending
         end
       end
 
+      # @param infile_path [Pathname] the input file path
+      # @param outfile_path [Pathname] the output file or directory path. If a directory,
+      #   the actual file will be created based on the input filename.
       def tileize(infile_path, outfile_path, fail_fast: false)
-        Tileizer.new(infile_path, outfile_path).tap do |tileizer|
-          logger.info("Tileizing #{infile_path} to #{outfile_path}")
-          tileizer.tileize!
-        rescue TileizeFailed => e
-          logger.error(e)
-          raise if fail_fast
+        if outfile_path.directory?
+          stem = infile_path.basename(infile_path.extname)
+          outfile_path = outfile_path.join("#{stem}.tif")
         end
+        outfile_path.tap { |op| tileize!(infile_path, op, fail_fast) }
       end
 
       # Invokes either #tileize or #tileize_all based on environment
@@ -94,6 +95,18 @@ module Lending
 
       def tiff?(pathname)
         pathname.file? && pathname.extname =~ /\.tiff?/
+      end
+
+      private
+
+      def tileize!(infile_path, outfile_path, fail_fast)
+        Tileizer.new(infile_path, outfile_path).tap do |tileizer|
+          logger.info("Tileizing #{infile_path} to #{outfile_path}")
+          tileizer.tileize!
+        rescue TileizeFailed => e
+          logger.error(e)
+          raise if fail_fast
+        end
       end
     end
 

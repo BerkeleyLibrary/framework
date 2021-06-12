@@ -25,22 +25,6 @@ module Lending
     class << self
       DIGITS_RE = /^\d+$/.freeze
 
-      def create_from(tiff_path, output_dir)
-        input_tiff_path = ensure_page_tiff_path(tiff_path)
-        stem = input_tiff_path.basename(input_tiff_path.extname)
-
-        output_dir_path = Tileizer.ensure_dirpath(output_dir)
-        output_tiff_path = output_dir_path.join("#{stem}.tif")
-        Tileizer.tileize(input_tiff_path, output_tiff_path)
-
-        if (txt_path = txt_path_from(input_tiff_path))
-          output_txt_path = output_dir_path.join("#{stem}.txt")
-          FileUtils.cp(txt_path, output_txt_path)
-        end
-
-        Page.new(output_tiff_path)
-      end
-
       def page_number?(path)
         path.basename(path.extname) =~ DIGITS_RE
       end
@@ -48,6 +32,15 @@ module Lending
       def txt_path_from(tiff_path)
         txt_path = tiff_path.parent.join("#{stem}.txt")
         txt_path if txt_path.file?
+      end
+
+      def all_from_directory(dir)
+        dirpath = Tileizer.ensure_dirpath(dir)
+        dirpath.children.filter_map do |f|
+          next unless Tileizer.tiff?(f) && Page.page_number?(f)
+
+          Page.new(f)
+        end
       end
 
       private
