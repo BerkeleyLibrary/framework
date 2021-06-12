@@ -47,22 +47,25 @@ class LendingItem < ActiveRecord::Base
     next_loan_due.due_date
   end
 
+  def iiif_item
+    return unless iiif_dir
+
+    IIIFItem.new(title: title, author: author, dir_path: File.join(iiif_final_dir, iiif_dir))
+  end
+
+  def create_iiif_item!
+    raise ActiveRecord::RecordNotFound, "Source directory not found (tried: #{source_dirs.join(', ')})" unless source_dir
+
+    iiif_dir = File.basename(source_dir)
+    output_dir = File.join(iiif_final_dir, iiif_dir)
+    IIIFItem.create_from(source_dir, output_dir, title: title, author: author).tap do
+      self.iiif_dir = iiif_dir
+      save(validate: false)
+    end
+  end
+
   def source_dir
-    possible_iiif_source_dirs.select { |f| File.directory?(f) }.first
-  end
-
-  def processed?
-    !manifest_path.nil?
-  end
-
-  def manifest_path
-    possible_iiif_final_dirs.map { |dir| File.join(dir, IIIFItem::MANIFEST_NAME) }.select { |p| File.file?(p) }.first
-  end
-
-  def process!
-    # TODO: avoid double-processing
-    iiif_item = create_iiif_item
-    iiif_item.write_manifest!(manifest_root_url, iiif_base_url)
+    source_dirs.each { |dir| return dir if File.directory?(dir) }
   end
 
   # ------------------------------------------------------------
@@ -74,7 +77,20 @@ class LendingItem < ActiveRecord::Base
     errors.add(:base, "At least one ILS record ID (#{ILS_RECORD_FIELDS.join(', ')} must be present")
   end
 
+  def record_ids
+    ILS_RECORD_FIELDS.lazy.map { |f| send(f) }.reject(&:nil?)
+  end
+
+  def citation
+    record_id_str = ILS_RECORD_FIELDS.filter_map { |f| "#{f}: #{send(f)}" if send(f) }.join(', ')
+    "#{author}, #{title} (barcode: #{barcode}, #{record_id_str})"
+  end
+
   private
+
+  def source_dirs
+    record_ids.map { |record_id| File.join(iiif_source_dir, "#{record_id}_#{barcode}") }
+  end
 
   def iiif_source_dir
     Rails.config.iiif_source_dir.tap do |dir|
@@ -88,37 +104,6 @@ class LendingItem < ActiveRecord::Base
       raise ArgumentError, 'iiif_final_dir not set' if dir.blank?
       raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
     end
-  end
-
-  def iiif_base_url
-    Rails.config.iiif_base_uri.tap do |url|
-      raise ArgumentError, 'iiif_base_uri not set' if url.blank?
-    end
-  end
-
-  def create_iiif_item
-    raise ArgumentError, "No source directory found for item (tried: #{possible_iiif_source_dirs.join(', ')})" unless source_dir
-
-    final_dir = possible_iiif_source_dirs.select { |d| d.basename == source_dir.basename }.first
-    Lending::IIIFItem.create_from(source_dir, final_dir, title: title, author: author)
-  end
-
-  # TODO: Just put relative paths in the DB
-  # @return Lazy::Enumerator<String> Possible IIIF source directories based on record ID
-  def possible_iiif_source_dirs
-    record_ids.map { |record_id| File.join(iiif_source_dir, "#{record_id}_#{barcode}") }
-  end
-
-  # TODO: Just put relative paths in the DB
-  # @return Lazy::Enumerator<String> Possible IIIF source directories based on record ID
-  def possible_iiif_final_dirs
-    raise ArgumentError, 'iiif_final_dir not set' if (iiif_final_dir = Rails.config.iiif_final_dir).blank?
-
-    record_ids.map { |record_id| File.join(iiif_final_dir, "#{record_id}_#{barcode}") }
-  end
-
-  def record_ids
-    ILS_RECORD_FIELDS.lazy.map { |f| send(f) }.reject(&:nil?)
   end
 
   def active_loans

@@ -29,6 +29,17 @@ class LendingItemsController < ApplicationController
   # GET /lending_items/1/edit
   def edit; end
 
+  # TODO: better URL
+  # GET /lending_items/1/manifest
+  def manifest
+    # TODO: allow non-admin when checked out?
+    raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{item.citation}" unless (iiif_item = @lending_item.iiif_item)
+
+    # TODO: cache this
+    manifest = iiif_item.to_manifest(lending_items_manifest_url, iiif_base_uri)
+    render(json: manifest)
+  end
+
   # POST /lending_items or /lending_items.json
   def create
     @lending_item = LendingItem.new(lending_item_params)
@@ -88,5 +99,11 @@ class LendingItemsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def lending_item_params
     params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_record, :alma_record, :copies)
+  end
+
+  def iiif_base_uri
+    UCBLIT::Util::URIs.uri_or_nil(Rails.config.iiif_base_uri).tap do |uri|
+      raise ArgumentError, 'iiif_base_uri not set' unless uri
+    end
   end
 end
