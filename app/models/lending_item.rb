@@ -64,7 +64,7 @@ class LendingItem < ActiveRecord::Base
   def iiif_item
     return unless iiif_dir
 
-    IIIFItem.new(title: title, author: author, dir_path: File.join(iiif_final_dir, iiif_dir))
+    Lending::IIIFItem.new(title: title, author: author, dir_path: File.join(iiif_final_dir, iiif_dir))
   end
 
   def create_iiif_item!
@@ -72,7 +72,7 @@ class LendingItem < ActiveRecord::Base
 
     iiif_dir = File.basename(source_dir)
     output_dir = File.join(iiif_final_dir, iiif_dir)
-    IIIFItem.create_from(source_dir, output_dir, title: title, author: author).tap do
+    Lending::IIIFItem.create_from(source_dir, output_dir, title: title, author: author).tap do
       self.iiif_dir = iiif_dir
       save(validate: false)
     end
@@ -106,15 +106,17 @@ class LendingItem < ActiveRecord::Base
     record_ids.map { |record_id| File.join(iiif_source_dir, "#{record_id}_#{barcode}") }
   end
 
+  # TODO: move this to a utility class
   def iiif_source_dir
-    Rails.config.iiif_source_dir.tap do |dir|
+    Rails.application.config.iiif_source_dir.tap do |dir|
       raise ArgumentError, 'iiif_source_dir not set' if dir.blank?
       raise ArgumentError, "iiif_source_dir #{dir} is not a directory" unless File.directory?(dir)
     end
   end
 
+  # TODO: move this to a utility class
   def iiif_final_dir
-    Rails.config.iiif_final_dir.tap do |dir|
+    Rails.application.config.iiif_final_dir.tap do |dir|
       raise ArgumentError, 'iiif_final_dir not set' if dir.blank?
       raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
     end

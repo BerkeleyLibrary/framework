@@ -51,4 +51,7 @@ Rails.application.configure do
   # Configure the default host - this is used by Stack Pass's mailer, to create a link
   # back to the application (directly to the approval form for an pass request):
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
+
+  config.iiif_base_uri = 'http://iiif.test/'
+  config.iiif_final_dir = 'spec/data/lending/final'
 end

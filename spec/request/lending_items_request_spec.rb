@@ -152,7 +152,30 @@ RSpec.describe LendingItem, type: :request do
     end
 
     describe :manifest do
-      context 'with valid record ID and barcode'
+      context 'with valid record ID and barcode' do
+        context 'with processed images' do
+          attr_reader :item
+
+          before(:each) do
+            @item = LendingItem.create!(
+              author: 'Clavin, Patricia',
+              title: 'The Great Depression in Europe, 1929-1939',
+              barcode: 'C068087930',
+              millennium_record: 'b135297126',
+              filename: 'b135297126_C068087930',
+              copies: 2,
+              iiif_dir: 'b135297126_C068087930'
+            )
+            allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/final')
+          end
+
+          it 'returns a manifest' do
+            get lending_manifests_url(record_id: item.millennium_record, barcode: item.barcode)
+            expect(response).to be_successful
+            File.write('spec/data/lending/samples/b135297126_C068087930/manifest.json', response.body)
+          end
+        end
+      end
       context 'with bad record ID'
       context 'with bad barcode'
     end

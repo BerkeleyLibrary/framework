@@ -29,8 +29,7 @@ class LendingItemsController < ApplicationController
   # GET /lending_items/1/edit
   def edit; end
 
-  # TODO: better URL
-  # GET /lending_items/1/manifest
+  # GET /manifests/:record_id/:barcode'
   def manifest
     record_id, barcode = params.require(%i[record_id barcode])
     @lending_item = LendingItem.having_record_id(record_id).find_by!(barcode: barcode)
@@ -39,7 +38,7 @@ class LendingItemsController < ApplicationController
     raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{item.citation}" unless (iiif_item = @lending_item.iiif_item)
 
     # TODO: cache this, or generate ERB, or something
-    manifest = iiif_item.to_manifest(lending_manifests_url, iiif_base_uri)
+    manifest = iiif_item.to_manifest(lending_manifests_url(record_id: nil, barcode: nil), iiif_base_uri)
     render(json: manifest)
   end
 
@@ -104,8 +103,9 @@ class LendingItemsController < ApplicationController
     params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_record, :alma_record, :copies)
   end
 
+  # TODO: move this to a utility class
   def iiif_base_uri
-    UCBLIT::Util::URIs.uri_or_nil(Rails.config.iiif_base_uri).tap do |uri|
+    UCBLIT::Util::URIs.uri_or_nil(Rails.application.config.iiif_base_uri).tap do |uri|
       raise ArgumentError, 'iiif_base_uri not set' unless uri
     end
   end

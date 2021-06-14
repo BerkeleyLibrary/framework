@@ -18,7 +18,7 @@ module Lending
 
       @basename = @tiff_path.basename.to_s
       @stem = @tiff_path.basename(tiff_path.extname)
-      @number = Integer(stem, 10)
+      @number = Integer(stem.to_s, 10)
       @txt_path = Page.txt_path_from(@tiff_path)
     end
 
@@ -26,10 +26,11 @@ module Lending
       DIGITS_RE = /^\d+$/.freeze
 
       def page_number?(path)
-        path.basename(path.extname) =~ DIGITS_RE
+        path.basename(path.extname).to_s =~ DIGITS_RE
       end
 
       def txt_path_from(tiff_path)
+        stem = tiff_path.basename(tiff_path.extname)
         txt_path = tiff_path.parent.join("#{stem}.txt")
         txt_path if txt_path.file?
       end
@@ -54,7 +55,7 @@ module Lending
     end
 
     def image
-      @image ||= Vips::Image.new_from_file(tiff_path)
+      @image ||= Vips::Image.new_from_file(tiff_path.to_s)
     end
 
     def width
@@ -80,14 +81,14 @@ module Lending
       canvas_uri = UCBLIT::Util::URIs.append(manifest_uri, "canvas/p#{number}")
       tiff_uri = UCBLIT::Util::URIs.append(image_dir_uri, basename)
       IIIF::Presentation::Canvas.new.tap do |canvas|
-        canvas[@id] = canvas_uri
+        canvas['@id'] = canvas_uri
         canvas.label = "Page #{number}"
         canvas.height = height
         canvas.width = width
         canvas.images << IIIF::Presentation::Annotation.new.tap do |a8n|
-          a8n.on = canvas_uri
+          a8n['on'] = canvas_uri
           a8n.resource = IIIF::Presentation::ImageResource.new.tap do |rsrc|
-            rsrc[@id] = tiff_uri
+            rsrc['@id'] = tiff_uri
             rsrc.format = 'image/tiff'
             # TODO: rsrc.service?
             rsrc.height = height
@@ -95,19 +96,10 @@ module Lending
           end
         end
         # TODO: does this work?
-        canvas.metadata << md(Transcript: File.read(txt_path)) if txt_path
+        canvas.metadata << { Transcript: File.read(txt_path) } if txt_path
       end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
-    private
-
-    # TODO: share code w/iiif_item
-    def md(**kvp)
-      return kvp.map { |k, v| { label: k, value: v } } if kvp.size == 1
-
-      raise ArgumentError("Metadata entry #{kvp.inspect} should be of the form {label: value}")
-    end
 
   end
 end
