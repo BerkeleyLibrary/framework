@@ -8,6 +8,8 @@ services:
       - selenium
       - selenium-chrome
     environment:
+      FRAMEWORK_ALMA_API_URL: ${FRAMEWORK_ALMA_API_URL}
+      FRAMEWORK_ALMA_API_KEY: ${FRAMEWORK_ALMA_API_KEY}
       LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
     init: true
@@ -50,8 +52,6 @@ services:
       - selenium
     environment:
       HUB_HOST: selenium
-      SCREEN_WIDTH: 2560
-      SCREEN_HEIGHT: 1440
     image: selenium/node-chrome-debug
     ports:
       # @note Use `open vnc://localhost:55900` to view the chrome session.

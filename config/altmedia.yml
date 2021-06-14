@@ -10,8 +10,13 @@ default: &default
   mail_smtp_username: <%= ENV["MAIL_USERNAME"] || "lib-noreply@berkeley.edu" %>
   # $PATRON_API_URL is set in https://git.lib.berkeley.edu/ops/docker-swarm/blob/master/files/production/swarm/stacks/framework.yml
   patron_url: <%= ENV["PATRON_API_URL"] || "https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/" %>
+  alma_api_url: <%= ENV["FRAMEWORK_ALMA_API_URL"] || 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/' %>
+  alma_api_key: <%= ENV["FRAMEWORK_ALMA_API_KEY"] %>
+  paypal_payflow_url: <%= ENV["PAYPAL_PAYFLOW_URL"] || 'https://pilot-payflowlink.paypal.com' %>
+  paypal_payflow_login: <%= ENV["PAYPAL_PAYFLOW_LOGIN"] || 'sullivanLib' %>
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
   tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
+
 development:
   <<: *default
 

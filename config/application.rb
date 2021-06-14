@@ -25,6 +25,14 @@ module Framework
     #   for feedback messages, so I've disabled the Rails' default.
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
 
+    # Alma API for handling Fees/Fines:
+    config.alma_api_url = config.altmedia['alma_api_url']
+    config.alma_api_key = config.altmedia['alma_api_key']
+
+    # Setup paypal payflow link:
+    config.paypal_payflow_url = config.altmedia['paypal_payflow_url']
+    config.paypal_payflow_login = config.altmedia['paypal_payflow_login']
+
     # Setup ucblit-tind for TIND Downloader:
     config.tind_base_uri = config.altmedia['tind_base_uri']
     config.tind_api_key = config.altmedia['tind_api_key']

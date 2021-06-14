@@ -22,11 +22,13 @@ Rails.application.routes.draw do
     resources :reference_card_forms, path: 'reference-card'
   end
 
-  # TIND Download Routes
-  get '/tind-download', to: 'tind_download#index'
-  get '/tind-download/find_collection', to: 'tind_download#find_collection'
-  get '/tind-download/download', to: 'tind_download#download'
-  post '/tind-download/download', to: 'tind_download#download'
+  # Fines/Fees Routes:
+  get '/fines', to: 'fines#index'
+  get '/fines/transaction_fail', to: 'fines#transaction_fail'
+  get '/fines/transaction_error', to: 'fines#transaction_error'
+  get '/fines/transaction_cancel', to: 'fines#transaction_cancel'
+  post '/fines/payment', to: 'fines#payment'
+  post '/fines/transaction_complete', to: 'fines#transaction_complete'
 
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'
@@ -60,4 +62,10 @@ Rails.application.routes.draw do
   get '/logout', to: 'sessions#destroy', as: :logout
   get '/auth/:provider/callback', to: 'sessions#callback', as: :omniauth_callback
   get '/auth/failure', to: 'sessions#failure'
+
+  # TIND Download Routes
+  get '/tind-download', to: 'tind_download#index'
+  get '/tind-download/find_collection', to: 'tind_download#find_collection'
+  get '/tind-download/download', to: 'tind_download#download'
+  post '/tind-download/download', to: 'tind_download#download'
 end

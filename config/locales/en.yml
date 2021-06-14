@@ -53,13 +53,13 @@ en:
         proxy_borrower_requests:
           attributes:
             research_last:
-              missing: 'Last name of proxy must not be blank'
+              missing: "Last name of proxy must not be blank"
             research_first:
-              missing: 'First name of proxy must not be blank'
+              missing: "First name of proxy must not be blank"
             date_term:
-              missing: 'Term of proxy card must not be blank and must be in the format mm/dd/yyyy'
-              expired: 'The Proxy Term must not be in the past'
-              too_long: 'The term of the Proxy Card must not be greater than %{max_term}'
+              missing: "Term of proxy card must not be blank and must be in the format mm/dd/yyyy"
+              expired: "The Proxy Term must not be in the past"
+              too_long: "The term of the Proxy Card must not be greater than %{max_term}"
 
   activemodel:
     attributes:
@@ -227,3 +227,15 @@ en:
       page_title: Add/Edit Administrators
     requests:
       page_title: Stack Pass Requests
+
+  fines:
+    index:
+      page_title: Library Fees List
+    payment:
+      page_title: Library Fees Confirm
+    transaction_cancel:
+      page_title: Payment Canceled
+    transaction_error:
+      page_title: Payment Error
+    transaction_fail:
+      page_title: Payment Failed

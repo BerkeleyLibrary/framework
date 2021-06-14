@@ -24,7 +24,7 @@ describe :stack_pass_form, type: :system do
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
       fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: date_str)
+      fill_in('stack_pass_form_pass_date', with: "#{date_str}\t") # \t to tab off date field
       fill_in('stack_pass_form_local_id', with: '123456789')
       choose('stack_pass_form_main_stack_yes')
 
@@ -39,7 +39,7 @@ describe :stack_pass_form, type: :system do
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
       fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: '04---13---1996')
+      fill_in('stack_pass_form_pass_date', with: "04---13---1996\t") # \t to tab off date field
       fill_in('stack_pass_form_local_id', with: '123456789')
       choose('stack_pass_form_main_stack_yes')
 
@@ -54,7 +54,7 @@ describe :stack_pass_form, type: :system do
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
       fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: '00/00/00zz')
+      fill_in('stack_pass_form_pass_date', with: "00/00/00zz\t") # \t to tab off date field
       fill_in('stack_pass_form_local_id', with: '123456789')
       choose('stack_pass_form_main_stack_yes')
 
@@ -69,7 +69,7 @@ describe :stack_pass_form, type: :system do
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'NOT-AN-EMAIL-ADDRESS')
       fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: '04/13/1996')
+      fill_in('stack_pass_form_pass_date', with: "04/13/1996\t") # \t to tab off date field
       fill_in('stack_pass_form_local_id', with: '123456789')
       choose('stack_pass_form_main_stack_yes')
 
@@ -104,7 +104,6 @@ describe :stack_pass_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      # TODO: figure out why we're seeing an unprocessed form
       # Verify Results:
       expect(page).to have_content('This request has been processed')
     end
@@ -118,7 +117,6 @@ describe :stack_pass_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      # TODO: figure out why we're seeing an unprocessed form
       # Verify Results:
       expect(page).to have_content('This request has been processed')
     end

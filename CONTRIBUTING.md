@@ -103,6 +103,14 @@ above, that service will fail to start.
 
 Navigate to [`http://localhost:3000/home`](http://localhost:3000/home).
 
+**Note:** On first run, the database will not exist and assets (javascript/css) will not be precompiled.
+To set up the database and precompile the assets, you can use `docker-compose exec` to run the relevant
+Rake tasks in the application container.
+
+```sh
+docker compose exec -u root app rails db:setup assets:precompile
+```
+
 #### Running commands in the application container
 
 With the Docker stack up and running, use `docker-compose exec app` and follow
