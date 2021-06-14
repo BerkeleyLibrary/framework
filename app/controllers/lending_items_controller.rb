@@ -13,20 +13,20 @@ class LendingItemsController < ApplicationController
   # ------------------------------------------------------------
   # Controller actions
 
-  # GET /lending_items or /lending_items.json
+  # GET /lending/items
   def index
     @lending_items = LendingItem.order(sort_column + ' ' + sort_direction)
   end
 
-  # GET /lending_items/1 or /lending_items/1.json
+  # GET /lending/items/1
   def show; end
 
-  # GET /lending_items/new
+  # GET /lending/items/new
   def new
     @lending_item = LendingItem.new
   end
 
-  # GET /lending_items/1/edit
+  # GET /lending/items/1/edit
   def edit; end
 
   # GET /manifests/:record_id/:barcode'
@@ -35,14 +35,14 @@ class LendingItemsController < ApplicationController
     @lending_item = LendingItem.having_record_id(record_id).find_by!(barcode: barcode)
 
     # TODO: allow non-admin when checked out?
-    raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{item.citation}" unless (iiif_item = @lending_item.iiif_item)
+    raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{@lending_item.citation}" unless (iiif_item = @lending_item.iiif_item)
 
     # TODO: cache this, or generate ERB, or something
-    manifest = iiif_item.to_manifest(lending_manifests_url(record_id: nil, barcode: nil), iiif_base_uri)
+    manifest = iiif_item.to_manifest(lending_manifests_url(record_id: nil, barcode: nil), image_server_base_uri)
     render(json: manifest)
   end
 
-  # POST /lending_items or /lending_items.json
+  # POST /lending/items
   def create
     @lending_item = LendingItem.new(lending_item_params)
     render_with_errors(:new, errors) && return unless @lending_item.save
@@ -51,7 +51,7 @@ class LendingItemsController < ApplicationController
     redirect_to @lending_item
   end
 
-  # PATCH/PUT /lending_items/1 or /lending_items/1.json
+  # PATCH/PUT /lending/items/1
   def update
     render_with_errors(:edit, errors) && return unless @lending_item.update(lending_item_params)
 
@@ -59,7 +59,7 @@ class LendingItemsController < ApplicationController
     redirect_to @lending_item
   end
 
-  # DELETE /lending_items/1 or /lending_items/1.json
+  # DELETE /lending/items/1
   def destroy
     @lending_item.destroy
     respond_to do |format|
@@ -104,9 +104,9 @@ class LendingItemsController < ApplicationController
   end
 
   # TODO: move this to a utility class
-  def iiif_base_uri
-    UCBLIT::Util::URIs.uri_or_nil(Rails.application.config.iiif_base_uri).tap do |uri|
-      raise ArgumentError, 'iiif_base_uri not set' unless uri
+  def image_server_base_uri
+    UCBLIT::Util::URIs.uri_or_nil(Rails.application.config.image_server_base_uri).tap do |uri|
+      raise ArgumentError, 'image_server_base_uri not set' unless uri
     end
   end
 end

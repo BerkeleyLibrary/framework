@@ -1,5 +1,3 @@
-require 'dotenv/load' unless Docker.running_in_container?
-
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -54,6 +52,6 @@ Rails.application.configure do
   # back to the application (directly to the approval form for an pass request):
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
-  config.iiif_base_uri = 'http://iiif.test/'
+  config.image_server_base_uri = 'http://iipsrv/'
   config.iiif_final_dir = 'spec/data/lending/final'
 end

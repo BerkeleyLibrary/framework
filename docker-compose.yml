@@ -14,7 +14,7 @@ services:
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
       IIIF_INCOMING_DIR: spec/data/lending/incoming
       IIIF_FINAL_DIR: spec/data/lending/final
-      IIIF_BASE_URL: http://iiif.test/
+      IMAGE_SERVER_BASE_URL: http://iipsrv/
     init: true
     networks:
       default:
@@ -51,11 +51,11 @@ services:
     volumes:
       - ./spec/data/lending/final:/data
     ports:
-      - 8180:80
+      - 80:80
     networks:
       default:
         aliases:
-          - iiif.test
+          - iipsrv.test
     entrypoint: ["/iipsrv-entrypoint.sh"]
 
   selenium:

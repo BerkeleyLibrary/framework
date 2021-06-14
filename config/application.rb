@@ -1,6 +1,10 @@
-# Read Docker secrets into the environment. Must be before 'rails/all'.
 require_relative '../lib/docker'
+
+# Read Docker secrets into the environment. Must be before 'rails/all'.
 Docker::Secret.setup_environment!
+
+# Read .env in local dev and test, but not in Docker
+require 'dotenv/load' unless Rails.env.production? || Docker.running_in_container?
 
 require_relative 'boot'
 require 'rails/all'
@@ -38,7 +42,7 @@ module Framework
     config.tind_api_key = config.altmedia['tind_api_key']
 
     # Lending
-    config.iiif_base_uri = config.altmedia['iiif_base_uri']
+    config.image_server_base_uri = config.altmedia['image_server_base_uri']
     config.iiif_final_dir = config.altmedia['iiif_final_dir']
     config.iiif_incoming_dir = config.altmedia['iiif_incoming_dir']
   end
