@@ -22,7 +22,7 @@ default: &default
   # Image server root directory (shared volume)
   iiif_final_dir: <%= ENV["IIIF_FINAL_DIR"] %>
   # Base URL for image server
-  iiif_base_uri: <%= ENV["IIIF_BASE_URL"] %>
+  image_server_base_uri: <%= ENV["IMAGE_SERVER_BASE_URL"] %>
 development:
   <<: *default
 
