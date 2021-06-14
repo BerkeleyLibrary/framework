@@ -72,11 +72,11 @@ module Lending
       IIIF::Presentation::Manifest.new.tap do |mf|
         mf['@id'] = manifest_uri
         mf.label = title
-        mf.metadata << md(Title: title)
-        mf.metadata << md(Author: author)
+        mf.metadata << { Title: title }
+        mf.metadata << { Author: author }
         mf.sequences << IIIF::Presentation::Sequence.new.tap do |seq|
           pages.each do |page|
-            seq << page.to_canvas(manifest_uri, image_dir_uri)
+            seq.canvases << page.to_canvas(manifest_uri, image_dir_uri)
           end
         end
       end
@@ -94,17 +94,11 @@ module Lending
     private
 
     def decompose_dirname(path)
+      # TODO: what about check digits?
       match_data = DIRNAME_RE.match(path.basename.to_s)
       raise ArgumentError, format(MSG_BAD_DIRNAME, path) unless match_data
 
       %i[record_id barcode].map { |f| match_data[f] }
-    end
-
-    # TODO: share code w/Page
-    def md(**kvp)
-      return kvp.map { |k, v| { label: k, value: v } } if kvp.size == 1
-
-      raise ArgumentError("Metadata entry #{kvp.inspect} should be of the form {label: value}")
     end
   end
 end
