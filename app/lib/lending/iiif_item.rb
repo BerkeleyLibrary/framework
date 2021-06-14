@@ -28,7 +28,7 @@ module Lending
     end
 
     class << self
-      include UCBLIT::Util::Logging
+      include UCBLIT::Logging
 
       def create_from(source_dir, output_dir, title:, author:)
         logger.info("Creating IIIF directory #{output_dir} from #{source_dir}")
@@ -66,7 +66,7 @@ module Lending
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def to_manifest(manifest_root_uri, image_root_uri)
-      manifest_uri = UCBLIT::Util::URIs.append(manifest_root_uri, dir_basename)
+      manifest_uri = UCBLIT::Util::URIs.append(manifest_root_uri, record_id, barcode)
       image_dir_uri = UCBLIT::Util::URIs.append(image_root_uri, dir_basename)
 
       IIIF::Presentation::Manifest.new.tap do |mf|
