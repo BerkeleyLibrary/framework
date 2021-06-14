@@ -27,6 +27,20 @@ class LendingItem < ActiveRecord::Base
   ILS_RECORD_FIELDS = %i[alma_record millennium_record].freeze
 
   # ------------------------------------------------------------
+  # Class methods
+
+  class << self
+    # @return LendingItem::ActiveRecord_Relation
+    def having_record_id(record_id)
+      # TODO: get rid of Millennium IDs and get rid of this
+      ILS_RECORD_FIELDS.inject(nil) do |conditions, f|
+        cond = where(f => record_id)
+        conditions.nil? ? cond : conditions.or(cond)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------
   # Instance methods
 
   def available?

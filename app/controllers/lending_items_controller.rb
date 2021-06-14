@@ -32,11 +32,14 @@ class LendingItemsController < ApplicationController
   # TODO: better URL
   # GET /lending_items/1/manifest
   def manifest
+    record_id, barcode = params.require(%i[record_id barcode])
+    @lending_item = LendingItem.having_record_id(record_id).find_by!(barcode: barcode)
+
     # TODO: allow non-admin when checked out?
     raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{item.citation}" unless (iiif_item = @lending_item.iiif_item)
 
-    # TODO: cache this
-    manifest = iiif_item.to_manifest(lending_items_manifest_url, iiif_base_uri)
+    # TODO: cache this, or generate ERB, or something
+    manifest = iiif_item.to_manifest(lending_manifests_url, iiif_base_uri)
     render(json: manifest)
   end
 

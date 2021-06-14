@@ -45,6 +45,9 @@ Rails.application.routes.draw do
     post '/items/:lending_item_id/loans/checkout', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
     # TODO: something more RESTful
     post '/items/:lending_item_id/loans/return', to: 'lending_item_loans#return', as: 'lending_item_loans_return'
+
+    # We mark these parameters optional so we can use the route helper to get the base URL/path, but they're not optional
+    get '/manifests(/:record_id/:barcode)', to: 'lending_items#manifest', as: 'lending_manifests'
   end
 
   # Proxy Borrower Admin Routes:

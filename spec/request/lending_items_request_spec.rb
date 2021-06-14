@@ -37,7 +37,7 @@ RSpec.describe LendingItem, type: :request do
       mock_calnet_login(CalNet::LENDING_ADMIN_UID)
     end
 
-    describe 'GET /index' do
+    describe :index do
       it 'renders a successful response' do
         LendingItem.create! valid_attributes
         get lending_items_url
@@ -45,7 +45,7 @@ RSpec.describe LendingItem, type: :request do
       end
     end
 
-    describe 'GET /show' do
+    describe :show do
       it 'renders a successful response' do
         lending_item = LendingItem.create! valid_attributes
         get lending_item_url(lending_item)
@@ -53,14 +53,14 @@ RSpec.describe LendingItem, type: :request do
       end
     end
 
-    describe 'GET /new' do
+    describe :new do
       it 'renders a successful response' do
         get new_lending_item_url
         expect(response).to be_successful
       end
     end
 
-    describe 'GET /edit' do
+    describe :edit do
       it 'render a successful response' do
         lending_item = LendingItem.create! valid_attributes
         get edit_lending_item_url(lending_item)
@@ -68,7 +68,7 @@ RSpec.describe LendingItem, type: :request do
       end
     end
 
-    describe 'POST /create' do
+    describe :create do
       context 'with valid parameters' do
         it 'creates a new LendingItem' do
           expect do
@@ -95,7 +95,7 @@ RSpec.describe LendingItem, type: :request do
       end
     end
 
-    describe 'PATCH /update' do
+    describe :update do
       context 'with valid parameters' do
         let(:new_attributes) do
           {
@@ -136,7 +136,7 @@ RSpec.describe LendingItem, type: :request do
       end
     end
 
-    describe 'DELETE /destroy' do
+    describe :delete do
       it 'destroys the requested lending_item' do
         lending_item = LendingItem.create! valid_attributes
         expect do
@@ -149,6 +149,12 @@ RSpec.describe LendingItem, type: :request do
         delete lending_item_url(lending_item)
         expect(response).to redirect_to(lending_items_url)
       end
+    end
+
+    describe :manifest do
+      context 'with valid record ID and barcode'
+      context 'with bad record ID'
+      context 'with bad barcode'
     end
   end
 
