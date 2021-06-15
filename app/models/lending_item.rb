@@ -72,22 +72,24 @@ class LendingItem < ActiveRecord::Base
   def iiif_item
     return unless iiif_dir
 
-    Lending::IIIFItem.new(title: title, author: author, dir_path: File.join(iiif_final_dir, iiif_dir))
+    Lending::IIIFItem.new(title: title, author: author, dir_path: iiif_dir_actual)
   end
 
   def create_iiif_item!
     raise ActiveRecord::RecordNotFound, "Source directory not found (tried: #{source_dirs.join(', ')})" unless source_dir
 
-    iiif_dir = File.basename(source_dir)
-    output_dir = File.join(iiif_final_dir, iiif_dir)
-    Lending::IIIFItem.create_from(source_dir, output_dir, title: title, author: author).tap do
-      self.iiif_dir = iiif_dir
+    self.iiif_dir = File.basename(source_dir)
+    Lending::IIIFItem.create_from(source_dir, iiif_dir_actual, title: title, author: author).tap do
       save(validate: false)
     end
   end
 
   def source_dir
     source_dirs.each { |dir| return dir if File.directory?(dir) }
+  end
+
+  def iiif_dir_actual
+    iiif_dir && File.join(iiif_final_dir, iiif_dir)
   end
 
   # ------------------------------------------------------------

@@ -51,6 +51,23 @@ RSpec.describe LendingItem, type: :request do
         get lending_item_url(lending_item)
         expect(response).to be_successful
       end
+
+      it 'includes the iiif_dir, if present' do
+        lending_item = LendingItem.create valid_attributes
+        iiif_dir = "#{lending_item.millennium_record}_#{lending_item.barcode}"
+        lending_item.iiif_dir = iiif_dir
+        lending_item.save!
+
+        get lending_item_url(lending_item)
+        expect(response).to be_successful
+
+        body = response.body
+        expect(body).to include(iiif_dir)
+
+        iiif_dir_actual = lending_item.iiif_dir_actual
+        expect(body).to include(iiif_dir_actual)
+        expect(body).to include(File.absolute_path(iiif_dir_actual))
+      end
     end
 
     describe :new do

@@ -4,6 +4,19 @@
   <table class="table table-bordered table-striped" style="width: auto;">
     <tbody>
     <%= render(partial: 'metadata') %>
+    <tr>
+      <th>Processed?</th>
+      <td><%= @lending_item.processed? ? 'Yes' : 'No' %></td>
+    </tr>
+    <% if (iiif_dir = @lending_item.iiif_dir) %>
+    <tr>
+      <th>IIIF directory</th>
+      <td>
+        <%= iiif_dir %>
+        <!-- full path: <%= File.absolute_path(@lending_item.iiif_dir_actual) %> -->
+      </td>
+    </tr>
+    <% end %>
     <% unless (due_dates = @lending_item.due_dates.to_a).empty? %>
       <tr>
         <th>Due dates for current checkouts:</th>
