@@ -11,13 +11,13 @@ RSpec.describe LendingItemLoansController, type: :request do
       @user = login_as_patron(patron_id)
 
       @lending_item = LendingItem.create!(
-        barcode: 'C08675309',
-        filename: 'villette.pdf',
-        title: 'Villette',
-        author: 'Brontë, Charlotte',
-        millennium_record: 'b9551212',
-        alma_record: nil,
-        copies: 3
+        author: 'Clavin, Patricia',
+        title: 'The Great Depression in Europe, 1929-1939',
+        barcode: 'C068087930',
+        millennium_record: 'b135297126',
+        filename: 'b135297126_C068087930',
+        copies: 2,
+        iiif_dir: 'b135297126_C068087930'
       )
     end
 
@@ -34,6 +34,7 @@ RSpec.describe LendingItemLoansController, type: :request do
           lending_item_id: lending_item.id,
           patron_identifier: user.lending_id
         )
+        expect(loan.errors.full_messages).to be_empty
         expect(loan).to be_persisted # just to be sure
         get lending_item_loans_path(lending_item_id: lending_item.id)
         expect(response).to be_successful
@@ -68,12 +69,15 @@ RSpec.describe LendingItemLoansController, type: :request do
 
         get lending_item_loans_path(lending_item_id: lending_item.id)
         expect(response).to be_successful
-        expect(response.body).to include(LendingItemLoansController::MSG_UNAVAILABLE)
+        expect(response.body).to include(LendingItem::MSG_UNAVAILABLE)
 
         # TODO: format all dates
         due_date_str = lending_item.next_due_date.to_s
         expect(response.body).to include(due_date_str)
       end
+
+      # TODO: implement this test
+      xit 'displays an item that has not yet been processed'
     end
 
     describe :check_out do
@@ -125,6 +129,8 @@ RSpec.describe LendingItemLoansController, type: :request do
         expect(response.status).to eq(422) # unprocessable entity
       end
 
+      # TODO: implement this test
+      xit 'fails if the item has not been processed'
     end
 
     describe :return do

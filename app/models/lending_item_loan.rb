@@ -21,6 +21,7 @@ class LendingItemLoan < ActiveRecord::Base
   validates :lending_item, presence: true
   validates :patron_identifier, presence: true
   validate :no_duplicate_checkouts
+  validate :item_processed
   validate :item_available
 
   # ------------------------------------------------------------
@@ -72,9 +73,15 @@ class LendingItemLoan < ActiveRecord::Base
     errors.add(:base, 'You have already checked out this item.')
   end
 
+  def item_processed
+    return if lending_item.processed?
+
+    errors.add(:base, LendingItem::MSG_UNPROCESSED)
+  end
+
   def item_available
     return if lending_item.available?
 
-    errors.add(:base, 'No copies available')
+    errors.add(:base, LendingItem::MSG_UNAVAILABLE)
   end
 end

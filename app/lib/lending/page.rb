@@ -3,6 +3,7 @@ require 'iiif/presentation'
 require 'ucblit/util/uris'
 
 module Lending
+  # rubocop:disable Metrics/ClassLength
   class Page
     include Comparable
 
@@ -91,7 +92,7 @@ module Lending
       tiff_path <=> other.tiff_path
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def to_canvas(manifest_uri, image_dir_uri)
       canvas_uri = canvas_uri_for(manifest_uri)
       tiff_uri = tiff_uri_for(image_dir_uri)
@@ -100,36 +101,43 @@ module Lending
         canvas.label = "Page #{number}"
         canvas.width = width
         canvas.height = height
-        canvas.images << IIIF::Presentation::Annotation.new.tap do |a8n|
-          a8n['on'] = canvas_uri
-          a8n['@id'] = annotation_id_for(tiff_uri)
-
-          resource_id = resource_id_for(tiff_uri)
-          service_id = tiff_uri # TODO: is this right?
-          a8n.resource = IIIF::Presentation::ImageResource.create_image_api_image_resource(
-            resource_id: resource_id,
-            service_id: service_id,
-            format: SCALED_IMAGE_FMT,
-            width: width,
-            height: height,
-            profile: 'http://iiif.io/api/image/2/level1.json',
-            sizes: tiles.map { |page| { width: page.width, height: page.height } },
-            tiles: [
-              {
-                width: 256, # TODO: why is this 256?
-                height: 256, # TODO: why is this 256?
-                scaleFactors: tile_scale_factors
-              }
-            ]
-          )
-        end
-        # TODO: does this work?
+        canvas.images << create_image_annotation(canvas_uri, tiff_uri)
         add_metadata(canvas, Transcript: File.read(txt_path)) if txt_path
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     private
+
+    def create_image_annotation(canvas_uri, tiff_uri)
+      IIIF::Presentation::Annotation.new.tap do |a8n|
+        a8n['on'] = canvas_uri
+        a8n['@id'] = annotation_id_for(tiff_uri)
+
+        a8n.resource = create_image_resource(tiff_uri)
+      end
+    end
+
+    # rubocop:disable Metrics/MethodLength
+    def create_image_resource(tiff_uri)
+      IIIF::Presentation::ImageResource.create_image_api_image_resource(
+        resource_id: resource_id_for(tiff_uri),
+        service_id: tiff_uri, # TODO: is this right?
+        format: SCALED_IMAGE_FMT,
+        width: width,
+        height: height,
+        profile: 'http://iiif.io/api/image/2/level1.json',
+        sizes: tiles.map { |page| { width: page.width, height: page.height } },
+        tiles: [
+          {
+            width: 256, # TODO: why is this 256?
+            height: 256, # TODO: why is this 256?
+            scaleFactors: tile_scale_factors
+          }
+        ]
+      )
+    end
+    # rubocop:enable Metrics/MethodLength
 
     def canvas_uri_for(manifest_uri)
       UCBLIT::Util::URIs.append(manifest_uri, "canvas/p#{number}")
@@ -170,4 +178,5 @@ module Lending
     end
 
   end
+  # rubocop:enable Metrics/ClassLength
 end
