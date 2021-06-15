@@ -7,9 +7,6 @@
 # Additional IDEA/RubyMine ignores
 .idea/.rakeTasks
 
-# Development Postgres data volume
-/postgresql/
-
 # Build/test artifacts
 /artifacts/
 
