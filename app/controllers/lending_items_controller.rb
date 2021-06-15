@@ -7,7 +7,7 @@ class LendingItemsController < ApplicationController
   # ------------------------------------------------------------
   # Hooks
 
-  before_action :require_lending_admin!
+  before_action :require_lending_admin!, except: :manifest
   before_action :set_lending_item, only: %i[show edit update destroy]
 
   # ------------------------------------------------------------

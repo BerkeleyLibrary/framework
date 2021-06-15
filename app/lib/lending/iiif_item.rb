@@ -72,8 +72,7 @@ module Lending
       IIIF::Presentation::Manifest.new.tap do |mf|
         mf['@id'] = manifest_uri
         mf.label = title
-        mf.metadata << { Title: title }
-        mf.metadata << { Author: author }
+        add_metadata(mf, Title: title, Author: author)
         mf.sequences << IIIF::Presentation::Sequence.new.tap do |seq|
           pages.each do |page|
             seq.canvases << page.to_canvas(manifest_uri, image_dir_uri)
@@ -92,6 +91,11 @@ module Lending
     end
 
     private
+
+    # TODO: share code between Page and IIIFItem
+    def add_metadata(resource, **md)
+      md.each { |k, v| resource.metadata << { label: k, value: v } }
+    end
 
     def decompose_dirname(path)
       # TODO: what about check digits?
