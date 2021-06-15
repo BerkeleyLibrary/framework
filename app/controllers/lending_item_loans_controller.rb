@@ -1,8 +1,6 @@
 class LendingItemLoansController < ApplicationController
   before_action :authenticate!
 
-  MSG_UNAVAILABLE = 'This item is not available.'.freeze
-
   def show
     @lending_item_loan = existing_loan || LendingItemLoan.new(**loan_args)
     return if @lending_item_loan.active?
@@ -38,9 +36,12 @@ class LendingItemLoansController < ApplicationController
 
   private
 
-  # TODO: format all dates
+  # TODO: separate "unavailable" and "unprocessed"
   def msg_unavailable(lending_item)
-    MSG_UNAVAILABLE.dup.tap do |msg|
+    return LendingItem::MSG_UNPROCESSED unless lending_item.processed?
+
+    # TODO: format all dates
+    LendingItem::MSG_UNAVAILABLE.dup.tap do |msg|
       next unless (due_date = lending_item.next_due_date)
 
       msg << " It will be returned on #{due_date}"

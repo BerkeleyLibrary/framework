@@ -26,6 +26,10 @@ class LendingItem < ActiveRecord::Base
   # ILS record ID fields in order of preference
   ILS_RECORD_FIELDS = %i[alma_record millennium_record].freeze
 
+  # TODO: Use Rails i18n
+  MSG_UNAVAILABLE = 'There are no available copies of this item.'.freeze
+  MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
+
   # ------------------------------------------------------------
   # Class methods
 
@@ -45,6 +49,10 @@ class LendingItem < ActiveRecord::Base
 
   def available?
     copies_available > 0
+  end
+
+  def processed?
+    !iiif_dir.nil?
   end
 
   def copies_available
