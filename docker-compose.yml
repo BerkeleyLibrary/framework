@@ -14,7 +14,7 @@ services:
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
       IIIF_INCOMING_DIR: spec/data/lending/incoming
       IIIF_FINAL_DIR: spec/data/lending/final
-      IMAGE_SERVER_BASE_URL: http://iipsrv/
+      IMAGE_SERVER_BASE_URL: http://iipsrv/iiif/
     init: true
     networks:
       default:
@@ -40,6 +40,7 @@ services:
       - 5432:5432
     volumes:
       - ./:/build:rw
+      - ./postgresql:/var/lib/postgresql:rw
 
   iipsrv:
     image: containers.lib.berkeley.edu/lap/iiip-nginx-single/master:latest
@@ -48,10 +49,11 @@ services:
       - VERBOSITY=6
       - LOGFILE=/dev/stdout
       - FILESYSTEM_PREFIX=/data/
+      - CORS=*
     volumes:
       - ./spec/data/lending/final:/data
     ports:
-      - 80:80
+      - 8180:80
     networks:
       default:
         aliases:

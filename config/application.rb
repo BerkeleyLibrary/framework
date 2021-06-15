@@ -3,11 +3,12 @@ require_relative '../lib/docker'
 # Read Docker secrets into the environment. Must be before 'rails/all'.
 Docker::Secret.setup_environment!
 
+require_relative 'boot'
+require 'rails/all'
+
 # Read .env in local dev and test, but not in Docker
 require 'dotenv/load' unless Rails.env.production? || Docker.running_in_container?
 
-require_relative 'boot'
-require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module Framework

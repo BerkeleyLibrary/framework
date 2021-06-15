@@ -66,4 +66,6 @@ Rails.application.configure do
   # back to the application (directly to the approval form for an pass request):
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
+  default_headers = config.action_dispatch.default_headers ||= {}
+  default_headers['Access-Control-Allow-Origin'] = '*'
 end
