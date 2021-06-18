@@ -13,20 +13,20 @@
     display: 'block',
     instance_name: 'miradorInstance',
     options: {
-      annotationEndpoint: { name: 'Local Storage', module: 'LocalStorageEndpoint' },
       mainMenuSettings: { show: false },
       data: [
         { manifestUri: manifest_url, location: 'UC Berkeley Library' }
       ],
       windowObjects: [
         {
+          annotatinLayer: false,
           loadedManifest: manifest_url,
           canvasID: canvas_id,
-          viewType: 'BookView',
+          viewType: 'ImageView',
           displayLayout: false,
-          annotationLayer: true,
-          annotationCreation: true,
-          annotationState: 'annoOnCreateOn'
+          annotationLayer: false,
+          sidePanel: false,
+          availableViews: ['ImageView']
         }
       ]
     }
