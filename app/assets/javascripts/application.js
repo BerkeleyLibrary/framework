@@ -17,4 +17,3 @@
 //= require jquery-ui
 //= require popper
 //= require bootstrap
-//= require_tree .

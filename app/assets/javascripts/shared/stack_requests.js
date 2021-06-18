@@ -1,36 +1,41 @@
+/* exported showBlock */
+/* exported hideBlock */
+
+/* exported disableElement */
+/* exported enableElement */
+
 /* exported formReset */
-/* exported hardReset */
+
 /* exported checkStackPassInputs */
 
-/* global hideBlock */
-/* global showBlock */
-/* global enableElement */
-/* global disableElement */
+/**
+ * Show a block-level element by setting display: block
+ */
+function showBlock (id) {
+  document.getElementById(id).style.display = 'block'
+}
 
 /**
- * hardReset
- * Resets the Proxy Borrower Card DSP and Faculty forms
- * Needed in the event someone submits bad data and we
- * reload the form with the previous results; a plain
- * jane html 'reset' button will reset to the values
- * returned to the form.
+ * Hide a block-level element by setting display: none
  */
-function hardReset () {
-  // These fields are all the same in both DSP and Faculty forms:
-  document.getElementById('research_last').value = ''
-  document.getElementById('research_first').value = ''
-  document.getElementById('research_middle').value = ''
-  document.getElementById('term').value = ''
-  document.getElementById('renewal_1').checked = false
-  document.getElementById('renewal_0').checked = true
+function hideBlock (id) {
+  document.getElementById(id).style.display = 'none'
+}
 
-  // In case user changed the renewal to 'yes', clear it:
-  setProxyBorrowerRenewal('not_renewal')
+/**
+ * Disable an element - such as a button
+ */
+function disableElement (id) {
+  const elem = document.getElementById(id)
+  elem && (elem.disabled = true)
+}
 
-  // DSP Form only:
-  if (document.getElementById('dsp_rep')) {
-    document.getElementById('dsp_rep').value = ''
-  }
+/**
+ * Enable an element - such as a button
+ */
+function enableElement (id) {
+  const elem = document.getElementById(id)
+  elem && (elem.disabled = false)
 }
 
 /**
@@ -105,19 +110,5 @@ function checkStackPassInputs () {
   } else {
     // If neither radio is selected: disable submit
     disableElement('process_btn')
-  }
-}
-
-/**
- * Toggles the renewal instructions for the 2
- * proxy borrower forms.
- */
-function setProxyBorrowerRenewal (id) {
-  if (id === 'not_renewal') {
-    showBlock('not_renewalf')
-    hideBlock('renewalf')
-  } else {
-    showBlock('renewalf')
-    hideBlock('not_renewalf')
   }
 }
