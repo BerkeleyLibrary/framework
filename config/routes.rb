@@ -32,6 +32,7 @@ Rails.application.routes.draw do
 
   # Controlled Digital Lending Routes:
   # - LendingItem (admin view) is simple, LendingItemLoan (patron view) is complex
+  mount MiradorRails::Engine, at: MiradorRails::Engine.locales_mount_path
   scope :lending, { format: 'html' } do
     get '/items', to: 'lending_items#index', as: 'lending_items'
     post '/items', to: 'lending_items#create'

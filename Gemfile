@@ -16,6 +16,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jwt', '~> 1.5', '>= 1.5.4'
 gem 'lograge', '>=0.11.2'
+gem 'mirador_rails', git: 'https://github.com/sul-dlss/mirador_rails.git', ref: 'e021335'
 gem 'net-ssh'
 gem 'netaddr', '~> 1.5', '>= 1.5.1'
 gem 'omniauth-cas',

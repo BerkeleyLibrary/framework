@@ -1,0 +1,26 @@
+<% manifest_url = lending_manifests_url(record_id: @lending_item.iiif_record_id, barcode: @lending_item.barcode) %>
+<% canvas_id = UCBLIT::Util::URIs.append(manifest_url, '/canvas/p1').to_s %>
+<script>
+  console.log("<%= manifest_url %>");
+  console.log("<%= canvas_id %>");
+</script>
+<%=
+  mirador_tag(
+    id: 'iiif_viewer',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    display: 'block',
+    options: {
+      data: [
+        { manifestUri: manifest_url, location: 'UC Berkeley Library' }
+      ],
+      windowObjects: [
+        {
+          loadedManifest: manifest_url,
+          canvasID: canvas_id,
+          viewType: 'BookView'
+        }
+      ]
+    }
+  ) %>
