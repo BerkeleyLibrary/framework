@@ -49,7 +49,7 @@ module Lending
           next unless Tileizer.tiff?(f) && Page.page_number?(f)
 
           Page.new(f)
-        end
+        end.sort
       end
 
       private
@@ -86,7 +86,7 @@ module Lending
       return unless other.class == self.class
       return 0 if equal?(other)
 
-      order = number <=> other.order
+      order = number <=> other.number
       return order if order != 0
 
       tiff_path <=> other.tiff_path
