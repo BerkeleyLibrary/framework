@@ -75,6 +75,13 @@ class LendingItem < ActiveRecord::Base
     Lending::IIIFItem.new(title: title, author: author, dir_path: iiif_dir_actual)
   end
 
+  def iiif_record_id
+    # TODO: something less awful
+    return unless iiif_dir
+
+    iiif_dir.delete_suffix("_#{barcode}")
+  end
+
   def create_iiif_item!
     raise ActiveRecord::RecordNotFound, "Source directory not found (tried: #{source_dirs.join(', ')})" unless source_dir
 
