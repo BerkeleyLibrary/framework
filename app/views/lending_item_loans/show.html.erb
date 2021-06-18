@@ -52,3 +52,9 @@
     </tfoot>
   </table>
 </section>
+
+<% if @lending_item_loan.active? %>
+  <aside class="viewer">
+    <%= render(partial: 'lending_items/viewer') %>
+  </aside>
+<% end %>
