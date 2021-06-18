@@ -3,29 +3,69 @@
 
 /* global miradorInstance */
 
-/* exported miradorTest */
-
-function miradorTest () {
-  if (typeof (miradorInstance) === 'undefined') {
-    return
-  }
-
+function currentMiradorWindow () {
   const vstate = miradorInstance.viewer.state
   const windowObjects = vstate.currentConfig.windowObjects
-  const windowObject = windowObjects[0]
-  const windowID = windowObject.id
+  return windowObjects[0]
+}
 
-  miradorInstance.eventEmitter.subscribe('currentCanvasIDUpdated.' + windowID, function (_) {
-    // const $overlay = $('.overlay');
-    // if ($overlay.length <= 0) {
-    //   return
-    // }
-    // const overlay = $overlay[0]
+function showMetadataInOverlay (metadata) {
+  const $overlay = $('.overlay')
+  if ($overlay.length <= 0) {
+    console.log('.overlay not found')
+    return
+  }
+  const overlay = $overlay[0]
 
+  const canvasMetadataId = 'canvas-metadata'
+  let canvasMetadata = overlay.querySelector('#' + canvasMetadataId)
+  if (!canvasMetadata) {
+    canvasMetadata = document.createElement('div')
+    canvasMetadata.id = canvasMetadataId
+    overlay.append(canvasMetadata)
+  } else {
+    let child
+    while ((child = canvasMetadata.firstChild)) {
+      child.remove()
+    }
+  }
+
+  metadata.forEach(function (elem) {
+    console.log(elem.label + ': ' + elem.value)
+
+    const label = document.createElement('div')
+    label.className = 'sub-title'
+    label.append(elem.label)
+    canvasMetadata.append(label)
+
+    const value = document.createElement('div')
+    value.className = 'metadata-listing'
+    value.append(elem.value)
+    canvasMetadata.append(value)
+  })
+}
+
+function addMetadataHandler (eventEmitter, windowObject) {
+  console.log('Adding Mirador transcript handler for window "' + windowObject.id + '"')
+  eventEmitter.subscribe('currentCanvasIDUpdated.' + windowObject.id, function (_) {
     const canvasId = windowObject.canvasID
     const canvasObj = windowObject.canvases[canvasId]
     const canvas = canvasObj.canvas
     const metadata = canvas.metadata
-    metadata.forEach(elem => console.log(elem.label + ': ' + elem.value))
+    showMetadataInOverlay(metadata);
+  })
+}
+
+/* exported addMiradorMetadataHandler */
+function addMiradorMetadataHandler () {
+  if (typeof (miradorInstance) === 'undefined') {
+    console.log('miradorInstance not found')
+    return
+  }
+  const eventEmitter = miradorInstance.eventEmitter
+
+  eventEmitter.subscribe('windowAdded', function (_) {
+    const windowObject = currentMiradorWindow()
+    addMetadataHandler(eventEmitter, windowObject)
   })
 }
