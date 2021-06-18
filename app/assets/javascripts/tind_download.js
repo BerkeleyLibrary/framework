@@ -121,9 +121,13 @@ class TindDownload {
 
 const tindDownload = new TindDownload()
 
+// TODO: don't load this except on TIND download page
 // TODO: name callback-wrapper functions & move them into tindDownload (see also _doSubmit() )
 $(document).ready(function () {
   const collectionNameField = $('#collection_name')
+  if (collectionNameField.length <= 0) {
+    return
+  }
   collectionNameField.on('propertychange change click keyup input paste', function () {
     tindDownload.collectionNameChanged()
   })
