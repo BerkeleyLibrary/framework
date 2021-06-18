@@ -1,9 +1,5 @@
 <% manifest_url = lending_manifests_url(record_id: @lending_item.iiif_record_id, barcode: @lending_item.barcode) %>
 <% canvas_id = UCBLIT::Util::URIs.append(manifest_url, '/canvas/p1').to_s %>
-<script>
-  console.log("<%= manifest_url %>");
-  console.log("<%= canvas_id %>");
-</script>
 <%=
   mirador_tag(
     id: 'iiif_viewer',
@@ -19,15 +15,17 @@
       ],
       windowObjects: [
         {
-          annotatinLayer: false,
           loadedManifest: manifest_url,
           canvasID: canvas_id,
           viewType: 'ImageView',
-          displayLayout: false,
+          availableViews: ['ImageView'],
           annotationLayer: false,
+          displayLayout: false,
           sidePanel: false,
-          availableViews: ['ImageView']
         }
       ]
     }
   ) %>
+<script>
+  $(function() { addMiradorMetadataHandler() })
+</script>
