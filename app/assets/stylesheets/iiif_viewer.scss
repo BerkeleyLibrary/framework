@@ -1,0 +1,10 @@
+// TODO: don't load this in application.scss
+/*
+ *= require mirador
+ */
+
+aside.viewer {
+  border: 2px solid magenta;
+  width: 1280px;
+  height: 900px;
+}
