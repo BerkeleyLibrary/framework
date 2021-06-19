@@ -1,7 +1,198 @@
 //= require shared/mirador
 
-aside.viewer {
-  border: 2px solid magenta;
-  width: 1156px;
-  height: 900px;
+// ////////////////////////////////////////////////////////////
+// mini-reset
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+// ////////////////////////////////////////////////////////////
+// Layout
+
+// //////////////////////////////
+// Text
+
+$em: 1em; // SCSS math works better on variables than literals
+
+$font-size-xsmall: 3 * $em / 4;
+$font-size-small: 11 * $em / 12;
+$font-size-large: 7 * $em / 6;
+$font-size-xlarge: 2 * $em;
+
+$line-height: 4 * $em / 3;
+
+$image-error-width: $font-size-large;
+$image-error-height: 576 * $image-error-width / 512;
+
+// //////////////////////////////
+// Box layout
+
+$margin-xsmall: $em / 6;
+$margin-small: $em / 3;
+$margin: $em / 2;
+$margin-large: 2 * $margin-small;
+$margin-xlarge: $em;
+
+$padding-header-footer: $em;
+$sitename-baseline-adjust: 5 * $em / 6;
+
+// //////////////////////////////
+// Mobile/desktop layout
+
+// TODO: Something more sophisticated that works properly w/iPhone X
+$media-breakpoint-width: 800px;
+
+// ////////////////////////////////////////////////////////////
+// Colors
+
+// //////////////////////////////
+// UC brand colors
+
+$color-pacific: #46535e;
+$color-web-grey: #888888;
+$color-bay-fog: #ddd5c7;
+$color-california-gold: #fdb515;
+$color-golden-gate: #ed4e33;
+
+// //////////////////////////////
+// As used
+
+$color-site-name: $color-pacific;
+$color-header-divider: $color-web-grey;
+
+$color-reversed-background: $color-pacific;
+$color-row-divider: $color-bay-fog;
+$color-anchor-highlight: $color-california-gold;
+
+// ////////////////////////////////////////////////////////////
+// Fonts
+
+$font-family-sans: 'freight-sans-pro', Helvetica, sans-serif;
+$font-family-mono: Hasklig, Menlo, Consolas, Cousine, Courier, 'Courier New', monospace;
+
+$font-weight-light: 300;
+$font-weight-book: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// ////////////////////////////////////////////////////////////
+// Desktop layout
+
+@media (min-width: $media-breakpoint-width) {
+
+  body {
+    font-size: 14pt;
+  }
+
+  main.main {
+    margin-left: auto;
+    margin-right: auto;
+    width: $media-breakpoint-width;
+  }
+
+  // //////////////////////////////
+  // record
+
+  section {
+    &.record {
+      h2 {
+        line-height: $line-height;
+      }
+
+      table {
+        display: grid;
+        grid-template-columns: min-content 1fr;
+
+        thead {
+          th {
+            grid-column: 1 / 3;
+          }
+        }
+
+        tr {
+          &:last-child {
+            th {
+              border-bottom: 0;
+            }
+          }
+        }
+
+        th {
+          grid-column: 1;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        td {
+          grid-column: 2;
+
+          &.description {
+            grid-column: 1 / 3;
+          }
+        }
+      }
+    }
+  }
+
+  aside.viewer {
+    border: 2px solid magenta;
+    width: 1156px;
+    height: 900px;
+  }
+
+}
+
+// ////////////////////////////////////////////////////////////
+// Mobile layout
+
+@media (max-width: $media-breakpoint-width) {
+
+  body {
+    font-size: 12pt;
+  }
+
+  main.main {
+    margin: $margin-xlarge;
+  }
+
+  section {
+    &.record {
+      h2 {
+        line-height: $em;
+      }
+
+      table {
+        display: flex;
+        flex-direction: column;
+
+        tbody {
+          th {
+            border-bottom: 0;
+            padding-bottom: 0;
+          }
+
+          td {
+            padding-left: $em;
+
+            &.description {
+              padding-left: $margin-xsmall;
+              padding-right: $margin-xsmall;
+            }
+          }
+        }
+
+        th {
+          text-align: left;
+        }
+      }
+    }
+  }
+
+  aside.viewer {
+    width: 100%;
+    height: 900px;
+  }
 }
