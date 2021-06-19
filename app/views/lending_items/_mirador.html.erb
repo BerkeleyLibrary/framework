@@ -1,6 +1,7 @@
 <% manifest_url = lending_manifests_url(record_id: @lending_item.iiif_record_id, barcode: @lending_item.barcode) %>
 <% canvas_id = UCBLIT::Util::URIs.append(manifest_url, '/canvas/p1').to_s %>
 <%=
+  # TODO: do all this by hand in a $(document).ready()
   mirador_tag(
     id: 'iiif_viewer',
     width: '100%',

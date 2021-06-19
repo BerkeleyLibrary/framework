@@ -121,14 +121,13 @@ class TindDownload {
 
 const tindDownload = new TindDownload()
 
-// TODO: don't load this except on TIND download page
 // TODO: name callback-wrapper functions & move them into tindDownload (see also _doSubmit() )
 $(document).ready(function () {
-  const collectionNameField = $('#collection_name')
-  if (collectionNameField.length <= 0) {
+  const $collectionName = $('#collection_name')
+  if ($collectionName.length <= 0) {
     return
   }
-  collectionNameField.on('propertychange change click keyup input paste', function () {
+  $collectionName.on('propertychange change click keyup input paste', function () {
     tindDownload.collectionNameChanged()
   })
 
@@ -136,7 +135,7 @@ $(document).ready(function () {
   //   cf. https://stackoverflow.com/questions/9887032/how-to-highlight-input-words-in-autocomplete-jquery-ui
   //   https://baymard.com/blog/autocomplete-design
   // TODO: add some sort of spinner to show we're working
-  collectionNameField.autocomplete({
+  $collectionName.autocomplete({
     source: function (req, resp) { tindDownload.autocompleteCollection(req, resp) },
     response: function (event, ui) {
       if (ui.content) {

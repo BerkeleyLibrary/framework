@@ -51,7 +51,9 @@ services:
       - FILESYSTEM_PREFIX=/data/
       - CORS=*
     volumes:
-      - ./spec/data/lending/final:/data
+      - type: bind
+        source: ./spec/data/lending/final
+        target: /data
     ports:
       - 8180:80
     networks:
