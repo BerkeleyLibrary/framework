@@ -13,6 +13,9 @@ class LendingItemsController < ApplicationController
   # ------------------------------------------------------------
   # Controller actions
 
+  # ------------------------------
+  # Item actions
+
   # GET /lending/items
   def index
     @lending_items = LendingItem.order(sort_column + ' ' + sort_direction)
@@ -28,19 +31,6 @@ class LendingItemsController < ApplicationController
 
   # GET /lending/items/1/edit
   def edit; end
-
-  # GET /manifests/:record_id/:barcode'
-  def manifest
-    record_id, barcode = params.require(%i[record_id barcode])
-    @lending_item = LendingItem.having_record_id(record_id).find_by!(barcode: barcode)
-
-    # TODO: allow non-admin when checked out?
-    raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{@lending_item.citation}" unless (iiif_item = @lending_item.iiif_item)
-
-    # TODO: cache this, or generate ERB, or something
-    manifest = iiif_item.to_manifest(lending_manifests_url(record_id: nil, barcode: nil), image_server_base_uri)
-    render(json: manifest)
-  end
 
   # POST /lending/items
   def create
@@ -67,6 +57,25 @@ class LendingItemsController < ApplicationController
       format.html { redirect_to lending_items_url }
     end
   end
+
+  # ------------------------------
+  # IIIF manifest actions
+
+  # GET /manifests/:record_id/:barcode'
+  def manifest
+    record_id, barcode = params.require(%i[record_id barcode])
+    @lending_item = LendingItem.having_record_id(record_id).find_by!(barcode: barcode)
+
+    # TODO: allow non-admin when checked out?
+    raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{@lending_item.citation}" unless (iiif_item = @lending_item.iiif_item)
+
+    # TODO: cache this, or generate ERB, or something
+    manifest = iiif_item.to_manifest(lending_manifests_url(record_id: nil, barcode: nil), image_server_base_uri)
+    render(json: manifest)
+  end
+
+  # ------------------------------
+  # Loan actions
 
   # ------------------------------------------------------------
   # Helper methods

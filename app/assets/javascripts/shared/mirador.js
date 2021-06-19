@@ -1,4 +1,3 @@
-// TODO: don't load this in application.js
 //= require mirador
 
 /* global miradorInstance */
@@ -31,8 +30,6 @@ function showMetadataInOverlay (metadata) {
   }
 
   metadata.forEach(function (elem) {
-    console.log(elem.label + ': ' + elem.value)
-
     const label = document.createElement('div')
     label.className = 'sub-title'
     label.append(elem.label)
@@ -52,7 +49,7 @@ function addMetadataHandler (eventEmitter, windowObject) {
     const canvasObj = windowObject.canvases[canvasId]
     const canvas = canvasObj.canvas
     const metadata = canvas.metadata
-    showMetadataInOverlay(metadata);
+    showMetadataInOverlay(metadata)
   })
 }
 
