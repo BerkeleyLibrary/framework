@@ -1,3 +1,5 @@
+# TODO: use a dynamic error controller so we can rescue from things like RoutingError
+#       see http://web.archive.org/web/20141231234828/http://wearestac.com/blog/dynamic-error-pages-in-rails
 module ExceptionHandling
   extend ActiveSupport::Concern
 
@@ -10,11 +12,6 @@ module ExceptionHandling
     rescue_from StandardError do |error|
       log_error(error)
       render :standard_error, status: :internal_server_error, locals: { exception: error }
-    end
-
-    rescue_from ActionController::RoutingError do |error|
-      log_error(error)
-      render :not_found, status: :not_found, locals: { exception: error }
     end
 
     rescue_from ActiveRecord::RecordNotFound do |error|
