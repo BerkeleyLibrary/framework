@@ -69,28 +69,24 @@ module Lending
       # Invokes either #tileize or #tileize_all based on environment
       # variables $INFILE and $OUTFILE.
       def tileize_env
-        raise ArgumentError, "$#{ENV_INFILE} not set" if (infile = ENV[ENV_INFILE]).blank?
-        raise ArgumentError, "$#{ENV_OUTFILE} not set" if (outfile = ENV[ENV_OUTFILE]).blank?
+        infile, outfile = [ENV_INFILE, ENV_OUTFILE].map { |v| env_path(v) }
+        return tileize_all(infile, outfile) if infile.directory?
 
-        if File.directory?(infile)
-          tileize_all(infile, outfile)
-        else
-          tileize(infile, outfile, fail_fast: true)
-        end
+        tileize(infile, outfile, fail_fast: true)
       end
 
       # TODO: move this to UCBLIT::Util::Files or something
       def ensure_filepath(f)
         raise ArgumentError, "Not a file path: #{f}" unless f && File.file?(f.to_s)
 
-        Pathname.new(f.to_s)
+        ensure_path(f)
       end
 
       # TODO: move this to UCBLIT::Util::Files or something
       def ensure_dirpath(dir)
         raise ArgumentError, "Not a directory: #{dir.inspect}" unless dir && File.directory?(dir.to_s)
 
-        Pathname.new(dir.to_s)
+        ensure_path(dir)
       end
 
       def tiff?(pathname)
@@ -98,6 +94,16 @@ module Lending
       end
 
       private
+
+      def env_path(varname)
+        raise ArgumentError, "$#{varname} not set" if (val = ENV[varname]).blank?
+
+        ensure_path(val)
+      end
+
+      def ensure_path(p)
+        p.is_a?(Pathname) ? p : Pathname.new(p.to_s)
+      end
 
       def tileize!(infile_path, outfile_path, fail_fast)
         Tileizer.new(infile_path, outfile_path).tap do |tileizer|
