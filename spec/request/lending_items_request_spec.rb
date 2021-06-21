@@ -174,6 +174,33 @@ RSpec.describe LendingItem, type: :request do
           attr_reader :item
 
           before(:each) do
+            allow(Rails.application.config).to receive(:image_server_base_uri).and_return('http://iipsrv.example.edu/iiif')
+          end
+
+          def expect_array_eq(expected, actual)
+            expect(actual).to be_a(Array)
+            expect(actual.size).to eq(expected.size)
+            expected.each_with_index do |ex, i|
+              break if i >= expected.size
+
+              expect_deep_eq(ex, actual[i])
+            end
+          end
+
+          def expect_hash_eq(expected, actual)
+            expect(actual).to be_a(Hash)
+            expect(actual.keys).to match_array(expected.keys)
+            expected.each { |k, v_ex| expect_deep_eq(v_ex, actual[k]) }
+          end
+
+          def expect_deep_eq(expected, actual)
+            return expect_array_eq(expected, actual) if expected.is_a?(Array)
+            return expect_hash_eq(expected, actual) if expected.is_a?(Hash)
+
+            expect(actual).to eq(expected)
+          end
+
+          before(:each) do
             @item = LendingItem.create!(
               author: 'Clavin, Patricia',
               title: 'The Great Depression in Europe, 1929-1939',
@@ -189,7 +216,16 @@ RSpec.describe LendingItem, type: :request do
           it 'returns a manifest' do
             get lending_manifests_url(record_id: item.millennium_record, barcode: item.barcode)
             expect(response).to be_successful
-            File.write('spec/data/lending/samples/b135297126_C068087930/manifest.json', response.body)
+
+            expected_json = File.read('spec/data/lending/samples/b135297126_C068087930/manifest.json')
+            expected = JSON.parse(expected_json)
+
+            actual_json = response.body
+            actual = JSON.parse(actual_json)
+
+            aggregate_failures('json') do
+              expect_deep_eq(expected, actual)
+            end
           end
         end
       end
