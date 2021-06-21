@@ -84,12 +84,15 @@ module Lending
 
     def <=>(other)
       return unless other.class == self.class
-      return 0 if equal?(other)
 
-      order = number <=> other.number
-      return order if order != 0
+      0.tap do
+        break if equal?(other)
 
-      tiff_path <=> other.tiff_path
+        %i[number tiff_path].each do |attr|
+          order = send(attr) <=> other.send(attr)
+          return order if order != 0
+        end
+      end
     end
 
     # rubocop:disable Metrics/AbcSize
