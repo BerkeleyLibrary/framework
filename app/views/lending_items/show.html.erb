@@ -1,7 +1,35 @@
-<h1>Controlled Digital Lending</h1>
+<% content_for(:page_title, "UC BEARS: #{@lending_item.title}") %>
 
 <section class="record">
-  <table class="table table-bordered table-striped" style="width: auto;">
+  <table>
+    <thead>
+    <tr>
+      <th>Preview</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <% if @lending_item.processed? %>
+        <td class="viewer">
+          <div class="viewer">
+            <%= render(partial: 'mirador') %>
+          </div>
+        </td>
+      <% else %>
+        <td class="description">
+          <p>This item has not yet been processed for viewing.</p>
+        </td>
+      <% end %>
+    </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Details</th>
+    </tr>
+    </thead>
     <tbody>
     <%= render(partial: 'metadata') %>
     <tr>
@@ -9,13 +37,13 @@
       <td><%= @lending_item.processed? ? 'Yes' : 'No' %></td>
     </tr>
     <% if (iiif_dir = @lending_item.iiif_dir) %>
-    <tr>
-      <th>IIIF directory</th>
-      <td>
-        <%= iiif_dir %>
-        <!-- full path: <%= File.absolute_path(@lending_item.iiif_dir_actual) %> -->
-      </td>
-    </tr>
+      <tr>
+        <th>IIIF directory</th>
+        <td>
+          <%= iiif_dir %>
+          <!-- full path: <%= File.absolute_path(@lending_item.iiif_dir_actual) %> -->
+        </td>
+      </tr>
     <% end %>
     <% unless (due_dates = @lending_item.due_dates.to_a).empty? %>
       <tr>
@@ -35,11 +63,8 @@
     </tr>
     </tbody>
   </table>
-</section>
 
-<aside class="viewer">
-  <%= render(partial: 'mirador') %>
-</aside>
+</section>
 
 <%= link_to 'Edit', edit_lending_item_path(@lending_item) %> |
 <%= link_to 'Back', lending_items_path %>

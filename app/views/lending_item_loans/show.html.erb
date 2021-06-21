@@ -1,9 +1,37 @@
-<h1>Controlled Digital Lending</h1>
-
 <% @lending_item = @lending_item_loan.lending_item %>
 
+<% content_for(:page_title, "UC BEARS: #{@lending_item.title}") %>
+
 <section class="record">
-  <table class="table table-bordered table-striped" style="width: auto;">
+  <table>
+    <thead>
+    <% if @lending_item_loan.active? %>
+      <tr>
+        <th>View</th>
+      </tr>
+      <tr>
+        <% if @lending_item.processed? %>
+          <td class="viewer">
+            <div class="viewer">
+              <%= render(partial: 'lending_items/mirador') %>
+            </div>
+          </td>
+        <% else %>
+          <td class="description">
+            <p>This item has not yet been processed for viewing.</p>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    </thead>
+  </table>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Details</th>
+    </tr>
+    </thead>
     <tbody>
     <%= render partial: 'lending_items/metadata' %>
 
@@ -30,31 +58,24 @@
         </tr>
       <% end %>
     <% end %>
-    </tbody>
-
-    <tfoot>
     <tr>
-      <td></td>
-      <td>
-        <% if @lending_item_loan.active? %>
+      <% if @lending_item_loan.active? %>
+        <th class="action return">
           <%= form_with(url: lending_item_loans_return_path, id: 'return-form', local: true) do |f| %>
             <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
             <%= f.submit('Return now', style: 'width: 100%;') %>
           <% end %>
-        <% else %>
+        </th>
+      <% else %>
+        <th class="action checkout">
           <%= form_with(url: lending_item_loans_checkout_path, id: 'checkout-form', local: true) do |f| %>
             <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
             <%= f.submit('Check out', style: 'width: 100%;', disabled: !@lending_item.available?, disable_with: 'No copies available') %>
           <% end %>
-        <% end %>
-      </td>
+        </th>
+      <% end %>
     </tr>
-    </tfoot>
+    </tbody>
+
   </table>
 </section>
-
-<% if @lending_item_loan.active? %>
-  <aside class="viewer">
-    <%= render(partial: 'lending_items/mirador') %>
-  </aside>
-<% end %>
