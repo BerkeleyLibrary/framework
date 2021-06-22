@@ -1,4 +1,4 @@
-require 'lending/iiif_item'
+require 'lending'
 require 'ucblit/util/uris'
 
 class LendingItem < ActiveRecord::Base
@@ -46,6 +46,8 @@ class LendingItem < ActiveRecord::Base
 
   # ------------------------------------------------------------
   # Instance methods
+
+  # TODO: clean these up
 
   def available?
     copies_available > 0
@@ -107,6 +109,11 @@ class LendingItem < ActiveRecord::Base
     iiif_dir && File.join(iiif_final_dir, iiif_dir)
   end
 
+  def citation
+    record_id_str = ILS_RECORD_FIELDS.filter_map { |f| "#{f}: #{send(f)}" if send(f) }.join(', ')
+    "#{author}, #{title} (barcode: #{barcode}, #{record_id_str})"
+  end
+
   # ------------------------------------------------------------
   # Custom validation methods
 
@@ -116,16 +123,11 @@ class LendingItem < ActiveRecord::Base
     errors.add(:base, "At least one ILS record ID (#{ILS_RECORD_FIELDS.join(', ')} must be present")
   end
 
+  private
+
   def record_ids
     ILS_RECORD_FIELDS.lazy.map { |f| send(f) }.reject(&:nil?)
   end
-
-  def citation
-    record_id_str = ILS_RECORD_FIELDS.filter_map { |f| "#{f}: #{send(f)}" if send(f) }.join(', ')
-    "#{author}, #{title} (barcode: #{barcode}, #{record_id_str})"
-  end
-
-  private
 
   def ensure_iiif_dir!
     self.iiif_dir = File.basename(source_dir)
