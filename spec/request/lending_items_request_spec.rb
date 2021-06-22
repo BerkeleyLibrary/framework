@@ -228,9 +228,29 @@ RSpec.describe LendingItem, type: :request do
             end
           end
         end
+
+        context 'without processed images' do
+          attr_reader :item
+          attr_reader :iiif_final_dir
+
+          before(:each) do
+            @item = LendingItem.create!(
+              barcode: 'fakebarcode',
+              filename: 'b11996535_fakebarcode',
+              title: 'Pamphlet',
+              author: 'Canada. Department of Agriculture.',
+              millennium_record: 'b11996535',
+              alma_record: nil,
+              copies: 1
+            )
+          end
+
+          it 'returns a 404' do
+            get lending_manifests_url(record_id: item.millennium_record, barcode: item.barcode)
+            expect(response.status).to eq(404)
+          end
+        end
       end
-      context 'with bad record ID'
-      context 'with bad barcode'
     end
   end
 
