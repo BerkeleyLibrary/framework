@@ -1,4 +1,4 @@
-require_relative '../../app/lib/lending/tileizer'
+require 'lending'
 
 namespace :lending do
   desc 'Creates tiled TIFFs from an image or list of images.'

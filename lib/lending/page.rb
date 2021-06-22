@@ -1,3 +1,4 @@
+require 'lending/path_utils'
 require 'lending/tileizer'
 require 'iiif/presentation'
 require 'ucblit/util/uris'
@@ -16,50 +17,32 @@ module Lending
 
     attr_reader :tiff_path
     attr_reader :basename
-    attr_reader :stem
     attr_reader :number
     attr_reader :txt_path
 
     def initialize(tiff_path)
-      @tiff_path = Tileizer.ensure_filepath(tiff_path)
-      raise ArgumentError, 'Not a TIFF file' unless Tileizer.tiff?(@tiff_path)
-
+      @tiff_path = ensure_page_tiff_path(tiff_path)
       @basename = @tiff_path.basename.to_s
-      @stem = @tiff_path.basename(tiff_path.extname)
-      @number = Integer(stem.to_s, 10)
-      @txt_path = Page.txt_path_from(@tiff_path)
+      @number = Integer(PathUtils.stem(tiff_path), 10)
+      @txt_path = PathUtils.txt_path_from(@tiff_path)
     end
 
     class << self
       DIGITS_RE = /^\d+$/.freeze
 
       def page_number?(path)
-        path.basename(path.extname).to_s =~ DIGITS_RE
-      end
-
-      def txt_path_from(tiff_path)
-        stem = tiff_path.basename(tiff_path.extname)
-        txt_path = tiff_path.parent.join("#{stem}.txt")
-        txt_path if txt_path.file?
+        PathUtils.stem(path) =~ DIGITS_RE
       end
 
       def all_from_directory(dir)
-        dirpath = Tileizer.ensure_dirpath(dir)
+        dirpath = PathUtils.ensure_dirpath(dir)
         dirpath.children.filter_map do |f|
-          next unless Tileizer.tiff?(f) && Page.page_number?(f)
+          next unless PathUtils.tiff?(f) && Page.page_number?(f)
 
           Page.new(f)
         end.sort
       end
 
-      private
-
-      def ensure_page_tiff_path(path)
-        Tileizer.ensure_filepath(path).tap do |tiff_path|
-          raise ArgumentError, "Not a TIFF file: #{tiff_path}" unless Tileizer.tiff?(tiff_path)
-          raise ArgumentError, "Not a numeric page number: #{tiff_path}" unless page_number?(tiff_path)
-        end
-      end
     end
 
     def image
@@ -111,6 +94,13 @@ module Lending
     # rubocop:enable Metrics/AbcSize
 
     private
+
+    def ensure_page_tiff_path(path)
+      PathUtils.ensure_filepath(path).tap do |tiff_path|
+        raise ArgumentError, "Not a TIFF file: #{tiff_path}" unless PathUtils.tiff?(tiff_path)
+        raise ArgumentError, "Not a numeric page number: #{tiff_path}" unless Page.page_number?(tiff_path)
+      end
+    end
 
     def create_image_annotation(canvas_uri, tiff_uri)
       IIIF::Presentation::Annotation.new.tap do |a8n|
