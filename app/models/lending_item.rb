@@ -92,10 +92,9 @@ class LendingItem < ActiveRecord::Base
   end
 
   def create_iiif_item!
-    raise ActiveRecord::RecordNotFound, "Source directory not found (tried: #{source_dirs.join(', ')})" unless source_dir
+    raise ActiveRecord::RecordNotFound, "Source directory not found (tried: #{source_dirs.to_a.join(', ')})" unless source_dir
 
-    self.iiif_dir = File.basename(source_dir)
-    Lending::IIIFItem.create_from(source_dir, iiif_dir_actual, title: title, author: author).tap do
+    Lending::IIIFItem.create_from(source_dir, ensure_iiif_dir!, title: title, author: author).tap do
       save(validate: false)
     end
   end
@@ -127,6 +126,13 @@ class LendingItem < ActiveRecord::Base
   end
 
   private
+
+  def ensure_iiif_dir!
+    self.iiif_dir = File.basename(source_dir)
+    iiif_dir_actual.tap do |dir|
+      Dir.mkdir(dir) unless File.directory?(dir)
+    end
+  end
 
   def source_dirs
     record_ids.map { |record_id| File.join(iiif_source_dir, "#{record_id}_#{barcode}") }
