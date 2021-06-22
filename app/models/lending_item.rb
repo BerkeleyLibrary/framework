@@ -55,6 +55,15 @@ class LendingItem < ActiveRecord::Base
     !iiif_dir.nil?
   end
 
+  def checkout_disabled?
+    !checkout_disabled_reason.nil?
+  end
+
+  def checkout_disabled_reason
+    return LendingItem::MSG_UNPROCESSED unless processed?
+    return LendingItem::MSG_UNAVAILABLE unless available?
+  end
+
   def copies_available
     (copies - lending_item_loans.where(loan_status: :active).count)
   end

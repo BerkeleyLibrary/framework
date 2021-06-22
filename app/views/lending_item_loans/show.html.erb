@@ -18,7 +18,7 @@
           </td>
         <% else %>
           <td class="description">
-            <p>This item has not yet been processed for viewing.</p>
+            <p><%= LendingItem::MSG_UNPROCESSED %></p>
           </td>
         <% end %>
       </tr>
@@ -70,7 +70,12 @@
         <th class="action checkout">
           <%= form_with(url: lending_item_loans_checkout_path, id: 'checkout-form', local: true) do |f| %>
             <%= f.hidden_field('lending_item_id', value: @lending_item.id) %>
-            <%= f.submit('Check out', style: 'width: 100%;', disabled: !@lending_item.available?, disable_with: 'No copies available') %>
+            <%= f.submit(
+                  'Check out',
+                  style: 'width: 100%;',
+                  disabled: @lending_item.checkout_disabled?,
+                  disable_with: @lending_item.checkout_disabled_reason
+                ) %>
           <% end %>
         </th>
       <% end %>

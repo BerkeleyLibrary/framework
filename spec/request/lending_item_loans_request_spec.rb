@@ -76,8 +76,15 @@ RSpec.describe LendingItemLoansController, type: :request do
         expect(response.body).to include(due_date_str)
       end
 
-      # TODO: implement this test
-      xit 'displays an item that has not yet been processed'
+      it 'displays an item that has not yet been processed' do
+        lending_item.iiif_dir = nil
+        lending_item.save!
+        expect(lending_item).not_to be_processed # just to be sure
+
+        get lending_item_loans_path(lending_item_id: lending_item.id)
+        expect(response).to be_successful
+        expect(response.body).to include(LendingItem::MSG_UNPROCESSED)
+      end
     end
 
     describe :check_out do
