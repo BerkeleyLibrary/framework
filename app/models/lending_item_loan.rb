@@ -42,7 +42,7 @@ class LendingItemLoan < ActiveRecord::Base
   end
 
   def expired?
-    due_date && due_date <= Time.now.utc
+    due_date && due_date.utc <= Time.now.utc
   end
 
   # ------------------------------------------------------------
