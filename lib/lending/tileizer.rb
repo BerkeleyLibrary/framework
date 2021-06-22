@@ -1,6 +1,7 @@
 require 'vips'
 require 'pathname'
 require 'ucblit/logging'
+require 'lending/path_utils'
 
 module Lending
   class Tileizer
@@ -22,8 +23,8 @@ module Lending
     attr_reader :outfile_path
 
     def initialize(infile, outfile)
-      @infile_path = Tileizer.ensure_filepath(infile)
-      @outfile_path = ensure_file_or_missing(outfile)
+      @infile_path = PathUtils.ensure_filepath(infile)
+      @outfile_path = PathUtils.ensure_non_directory(outfile)
     end
 
     def tileized?
@@ -45,10 +46,10 @@ module Lending
       # ENV_OUTFILE = Tileizer::ENV_OUTFILE
 
       def tileize_all(indir, outdir)
-        indir_path, outdir_path = [indir, outdir].map { |d| ensure_dirpath(d) }
+        indir_path, outdir_path = [indir, outdir].map { |d| PathUtils.ensure_dirpath(d) }
         raise ArgumentError, "Can't write tileized files to same directory as input files" if indir_path == outdir_path
 
-        infiles = indir_path.children.select { |p| tiff?(p) }.sort
+        infiles = indir_path.children.select { |p| PathUtils.tiff?(p) }.sort
         infiles.map do |infile_path|
           outfile_path = outdir_path.join(infile_path.basename)
           tileize(infile_path, outfile_path)
@@ -69,41 +70,13 @@ module Lending
       # Invokes either #tileize or #tileize_all based on environment
       # variables $INFILE and $OUTFILE.
       def tileize_env
-        infile, outfile = [ENV_INFILE, ENV_OUTFILE].map { |v| env_path(v) }
+        infile, outfile = [ENV_INFILE, ENV_OUTFILE].map { |v| PathUtils.env_path(v) }
         return tileize_all(infile, outfile) if infile.directory?
 
         tileize(infile, outfile, fail_fast: true)
       end
 
-      # TODO: move this to UCBLIT::Util::Files or something
-      def ensure_filepath(f)
-        raise ArgumentError, "Not a file path: #{f}" unless f && File.file?(f.to_s)
-
-        ensure_path(f)
-      end
-
-      # TODO: move this to UCBLIT::Util::Files or something
-      def ensure_dirpath(dir)
-        raise ArgumentError, "Not a directory: #{dir.inspect}" unless dir && File.directory?(dir.to_s)
-
-        ensure_path(dir)
-      end
-
-      def tiff?(pathname)
-        pathname.file? && pathname.extname =~ /\.tiff?/
-      end
-
       private
-
-      def env_path(varname)
-        raise ArgumentError, "$#{varname} not set" if (val = ENV[varname]).blank?
-
-        ensure_path(val)
-      end
-
-      def ensure_path(p)
-        p.is_a?(Pathname) ? p : Pathname.new(p.to_s)
-      end
 
       def tileize!(infile_path, outfile_path, fail_fast)
         Tileizer.new(infile_path, outfile_path).tap do |tileizer|
@@ -116,13 +89,6 @@ module Lending
       end
     end
 
-    private
-
-    def ensure_file_or_missing(f)
-      return Tileizer.ensure_filepath(f) if File.exist?(f.to_s)
-
-      Pathname.new(f.to_s)
-    end
   end
 
   class TileizeFailed < StandardError
