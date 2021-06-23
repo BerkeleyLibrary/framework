@@ -56,10 +56,11 @@ module Lending
         end
       end
 
-      # @param infile_path [Pathname] the input file path
-      # @param outfile_path [Pathname] the output file or directory path. If a directory,
+      # @param infile_path [String, Pathname] the input file path
+      # @param outfile_path [String, Pathname] the output file or directory path. If a directory,
       #   the actual file will be created based on the input filename.
       def tileize(infile_path, outfile_path, fail_fast: false)
+        infile_path, outfile_path = PathUtils.ensure_pathnames(infile_path, outfile_path)
         if outfile_path.directory?
           stem = infile_path.basename(infile_path.extname)
           outfile_path = outfile_path.join("#{stem}.tif")

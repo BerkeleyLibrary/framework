@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_225013) do
+ActiveRecord::Schema.define(version: 2021_06_23_164113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,17 +46,14 @@ ActiveRecord::Schema.define(version: 2021_06_11_225013) do
   end
 
   create_table "lending_items", force: :cascade do |t|
-    t.string "barcode"
-    t.string "filename"
+    t.string "directory"
     t.string "title"
     t.string "author"
-    t.string "millennium_record"
-    t.string "alma_record"
     t.integer "copies"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "iiif_dir"
-    t.index ["barcode", "filename"], name: "lending_item_uniqueness", unique: true
+    t.boolean "processed"
+    t.index ["directory"], name: "index_lending_items_on_directory", unique: true
   end
 
   create_table "proxy_borrower_requests", force: :cascade do |t|

@@ -6,25 +6,19 @@ RSpec.describe LendingItem, type: :request do
   # adjust the attributes here as well.
   let(:valid_attributes) do
     {
-      barcode: 'C08675309',
-      filename: 'villette.pdf',
+      directory: 'b155001346_C044219363',
       title: 'Villette',
       author: 'Brontë, Charlotte',
-      millennium_record: 'b9551212',
-      alma_record: nil,
       copies: 1
     }
   end
 
   let(:invalid_attributes) do
     {
-      barcode: nil,
-      filename: nil,
+      directory: nil,
       title: nil,
       author: nil,
-      millennium_record: nil,
-      alma_record: nil,
-      copies: 1
+      copies: -1
     }
   end
 
@@ -54,19 +48,15 @@ RSpec.describe LendingItem, type: :request do
 
       it 'includes the iiif_dir, if present' do
         lending_item = LendingItem.create valid_attributes
-        iiif_dir = "#{lending_item.millennium_record}_#{lending_item.barcode}"
-        lending_item.iiif_dir = iiif_dir
+        lending_item.processed = true
         lending_item.save!
 
         get lending_item_url(lending_item)
         expect(response).to be_successful
 
         body = response.body
-        expect(body).to include(iiif_dir)
-
-        iiif_dir_actual = lending_item.iiif_dir_actual
-        expect(body).to include(iiif_dir_actual)
-        expect(body).to include(File.absolute_path(iiif_dir_actual))
+        realpath = File.realpath(lending_item.iiif_dir)
+        expect(body).to include(realpath)
       end
     end
 
@@ -116,8 +106,8 @@ RSpec.describe LendingItem, type: :request do
       context 'with valid parameters' do
         let(:new_attributes) do
           {
-            alma_record: '8675309-5551212',
-            copies: 2
+            copies: 2,
+            processed: true
           }
         end
 
@@ -125,7 +115,10 @@ RSpec.describe LendingItem, type: :request do
           lending_item = LendingItem.create! valid_attributes
           patch lending_item_url(lending_item), params: { lending_item: new_attributes }
           lending_item.reload
-          new_attributes.each { |attr, val| expect(lending_item.send(attr)).to eq(val) }
+          new_attributes.each do |attr, val|
+            actual = lending_item.send(attr)
+            expect(actual).to eq(val), "Wrong value for #{attr}: expected #{val.inspect}, got #{actual.inspect}"
+          end
         end
 
         it 'redirects to the lending_item' do
@@ -204,17 +197,15 @@ RSpec.describe LendingItem, type: :request do
             @item = LendingItem.create!(
               author: 'Clavin, Patricia',
               title: 'The Great Depression in Europe, 1929-1939',
-              barcode: 'C068087930',
-              millennium_record: 'b135297126',
-              filename: 'b135297126_C068087930',
+              directory: 'b135297126_C068087930',
               copies: 2,
-              iiif_dir: 'b135297126_C068087930'
+              processed: true
             )
             allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/final')
           end
 
           it 'returns a manifest' do
-            get lending_manifests_url(record_id: item.millennium_record, barcode: item.barcode)
+            get lending_manifests_url(directory: item.directory)
             expect(response).to be_successful
 
             expected_json = File.read('spec/data/lending/samples/b135297126_C068087930/manifest.json')
@@ -235,18 +226,15 @@ RSpec.describe LendingItem, type: :request do
 
           before(:each) do
             @item = LendingItem.create!(
-              barcode: 'fakebarcode',
-              filename: 'b11996535_fakebarcode',
               title: 'Pamphlet',
               author: 'Canada. Department of Agriculture.',
-              millennium_record: 'b11996535',
-              alma_record: nil,
+              directory: 'b11996535_B 3 106 704',
               copies: 1
             )
           end
 
           it 'returns a 404' do
-            get lending_manifests_url(record_id: item.millennium_record, barcode: item.barcode)
+            get lending_manifests_url(directory: item.directory)
             expect(response.status).to eq(404)
           end
         end

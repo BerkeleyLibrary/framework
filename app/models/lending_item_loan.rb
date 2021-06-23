@@ -1,11 +1,6 @@
 class LendingItemLoan < ActiveRecord::Base
 
   # ------------------------------------------------------------
-  # Constants
-
-  LOAN_DURATION_HOURS = 2 # TODO: make this configurable
-
-  # ------------------------------------------------------------
   # Relations
 
   belongs_to :lending_item
@@ -46,31 +41,13 @@ class LendingItemLoan < ActiveRecord::Base
   end
 
   # ------------------------------------------------------------
-  # Class methods
-
-  class << self
-    def check_out(lending_item_id:, patron_identifier:)
-      loan_date = Time.now.utc
-      due_date = loan_date + LOAN_DURATION_HOURS.hours
-
-      LendingItemLoan.create(
-        lending_item_id: lending_item_id,
-        patron_identifier: patron_identifier,
-        loan_status: :active,
-        loan_date: loan_date,
-        due_date: due_date
-      )
-    end
-  end
-
-  # ------------------------------------------------------------
   # Custom validation methods
 
   def no_duplicate_checkouts
     active_checkout = LendingItemLoan.find_by(lending_item_id: lending_item_id, patron_identifier: patron_identifier, loan_status: 'active')
     return if active_checkout.nil? || active_checkout.id == id
 
-    errors.add(:base, 'You have already checked out this item.')
+    errors.add(:base, LendingItem::MSG_CHECKED_OUT)
   end
 
   def item_processed

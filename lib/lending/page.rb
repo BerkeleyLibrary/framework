@@ -88,6 +88,7 @@ module Lending
         canvas.width = width
         canvas.height = height
         canvas.images << create_image_annotation(canvas_uri, tiff_uri)
+        # TODO: use :rendering
         add_metadata(canvas, Transcript: File.read(txt_path)) if txt_path
       end
     end

@@ -11,50 +11,52 @@ class LendingItem < ActiveRecord::Base
   # ------------------------------------------------------------
   # Validations
 
-  validates :barcode, presence: true
-  # TODO: rename :filename to :directory or something
-  validates :filename, presence: true
+  validates :directory, presence: true
+  validates_uniqueness_of :directory
   validates :title, presence: true
   validates :author, presence: true
   validates :copies, numericality: { greater_than_or_equal_to: 0 }
-  validates_uniqueness_of :filename, scope: :barcode
-  validate :ils_record_present
 
   # ------------------------------------------------------------
   # Constants
 
-  # ILS record ID fields in order of preference
-  ILS_RECORD_FIELDS = %i[alma_record millennium_record].freeze
+  LOAN_DURATION_HOURS = 2 # TODO: make this configurable
 
   # TODO: Use Rails i18n
+  MSG_CHECKED_OUT = 'You have already checked out this item.'.freeze
   MSG_UNAVAILABLE = 'There are no available copies of this item.'.freeze
   MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
 
   # ------------------------------------------------------------
-  # Class methods
+  # Instance methods
 
-  class << self
-    # @return LendingItem::ActiveRecord_Relation
-    def having_record_id(record_id)
-      # TODO: get rid of Millennium IDs and get rid of this
-      ILS_RECORD_FIELDS.inject(nil) do |conditions, f|
-        cond = where(f => record_id)
-        conditions.nil? ? cond : conditions.or(cond)
-      end
-    end
+  # @return [LendingItemLoan] the created loan
+  def check_out_to(patron_identifier)
+    loan_date = Time.now.utc
+    due_date = loan_date + LOAN_DURATION_HOURS.hours
+
+    LendingItemLoan.create(
+      lending_item_id: id,
+      patron_identifier: patron_identifier,
+      loan_status: :active,
+      loan_date: loan_date,
+      due_date: due_date
+    )
+  end
+
+  def generate_manifest(manifest_root_uri, image_server_base_uri)
+    iiif_item.to_manifest(manifest_root_uri, image_server_base_uri)
   end
 
   # ------------------------------------------------------------
-  # Instance methods
-
-  # TODO: clean these up
+  # Synthetic accessors
 
   def available?
-    copies_available > 0
+    processed? && copies_available > 0
   end
 
-  def processed?
-    !iiif_dir.nil?
+  def copies_available
+    (copies - lending_item_loans.where(loan_status: :active).count)
   end
 
   def checkout_disabled?
@@ -64,10 +66,6 @@ class LendingItem < ActiveRecord::Base
   def checkout_disabled_reason
     return LendingItem::MSG_UNPROCESSED unless processed?
     return LendingItem::MSG_UNAVAILABLE unless available?
-  end
-
-  def copies_available
-    (copies - lending_item_loans.where(loan_status: :active).count)
   end
 
   def due_dates
@@ -81,74 +79,27 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_item
-    return unless iiif_dir
+    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless processed
 
-    Lending::IIIFItem.new(title: title, author: author, dir_path: iiif_dir_actual)
+    Lending::IIIFItem.new(title: title, author: author, dir_path: iiif_dir)
   end
 
-  def iiif_record_id
-    # TODO: something less awful
-    return unless iiif_dir
-
-    iiif_dir.delete_suffix("_#{barcode}")
-  end
-
-  def create_iiif_item!
-    raise ActiveRecord::RecordNotFound, "Source directory not found (tried: #{source_dirs.to_a.join(', ')})" unless source_dir
-
-    Lending::IIIFItem.create_from(source_dir, ensure_iiif_dir!, title: title, author: author).tap do
-      save(validate: false)
-    end
-  end
-
-  def source_dir
-    source_dirs.each { |dir| return dir if File.directory?(dir) }
-  end
-
-  def iiif_dir_actual
-    iiif_dir && File.join(iiif_final_dir, iiif_dir)
+  def iiif_dir
+    iiif_dir_relative = File.join(iiif_final_dir, directory)
+    Dir.mkdir(iiif_dir_relative) unless File.directory?(iiif_dir_relative)
+    File.realpath(iiif_dir_relative)
   end
 
   def citation
-    record_id_str = ILS_RECORD_FIELDS.filter_map { |f| "#{f}: #{send(f)}" if send(f) }.join(', ')
-    "#{author}, #{title} (barcode: #{barcode}, #{record_id_str})"
+    "#{author}, #{title} (#{directory})"
   end
 
   # ------------------------------------------------------------
-  # Custom validation methods
-
-  def ils_record_present
-    return if ILS_RECORD_FIELDS.any? { |f| send(f).present? }
-
-    errors.add(:base, "At least one ILS record ID (#{ILS_RECORD_FIELDS.join(', ')} must be present")
-  end
+  # Private methods
 
   private
 
-  def record_ids
-    ILS_RECORD_FIELDS.lazy.map { |f| send(f) }.reject(&:nil?)
-  end
-
-  def ensure_iiif_dir!
-    self.iiif_dir = File.basename(source_dir)
-    iiif_dir_actual.tap do |dir|
-      Dir.mkdir(dir) unless File.directory?(dir)
-    end
-  end
-
-  def source_dirs
-    record_ids.map { |record_id| File.join(iiif_source_dir, "#{record_id}_#{barcode}") }
-  end
-
-  # TODO: move this to a utility class
-  def iiif_source_dir
-    Rails.application.config.iiif_source_dir.tap do |dir|
-      raise ArgumentError, 'iiif_source_dir not set' if dir.blank?
-      raise ArgumentError, "iiif_source_dir #{dir} is not a directory" unless File.directory?(dir)
-    end
-  end
-
-  # TODO: move this to a utility class
+  # TODO: move this to a helper
   def iiif_final_dir
     Rails.application.config.iiif_final_dir.tap do |dir|
       raise ArgumentError, 'iiif_final_dir not set' if dir.blank?

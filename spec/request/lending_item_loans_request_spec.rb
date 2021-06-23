@@ -13,11 +13,9 @@ RSpec.describe LendingItemLoansController, type: :request do
       @lending_item = LendingItem.create!(
         author: 'Clavin, Patricia',
         title: 'The Great Depression in Europe, 1929-1939',
-        barcode: 'C068087930',
-        millennium_record: 'b135297126',
-        filename: 'b135297126_C068087930',
+        directory: 'b135297126_C068087930',
         copies: 2,
-        iiif_dir: 'b135297126_C068087930'
+        processed: true
       )
     end
 
@@ -30,10 +28,7 @@ RSpec.describe LendingItemLoansController, type: :request do
       end
 
       it 'shows a loan' do
-        loan = LendingItemLoan.check_out(
-          lending_item_id: lending_item.id,
-          patron_identifier: user.lending_id
-        )
+        loan = lending_item.check_out_to(user.lending_id)
         expect(loan.errors.full_messages).to be_empty
         expect(loan).to be_persisted # just to be sure
         get lending_item_loans_path(lending_item_id: lending_item.id)
@@ -42,7 +37,7 @@ RSpec.describe LendingItemLoansController, type: :request do
 
       it 'pre-returns the loan if already expired' do
         loan_date = Time.now.utc - 3.weeks
-        due_date = loan_date + LendingItemLoan::LOAN_DURATION_HOURS.hours
+        due_date = loan_date + LendingItem::LOAN_DURATION_HOURS.hours
         loan = LendingItemLoan.create(
           lending_item_id: lending_item.id,
           patron_identifier: user.lending_id,
@@ -60,10 +55,7 @@ RSpec.describe LendingItemLoansController, type: :request do
 
       it 'displays an item with no available copies' do
         lending_item.copies.times do |copy|
-          LendingItemLoan.check_out(
-            lending_item_id: lending_item.id,
-            patron_identifier: "patron-#{copy}"
-          )
+          lending_item.check_out_to("patron-#{copy}")
         end
         expect(lending_item).not_to be_available # just to be sure
 
@@ -77,7 +69,7 @@ RSpec.describe LendingItemLoansController, type: :request do
       end
 
       it 'displays an item that has not yet been processed' do
-        lending_item.iiif_dir = nil
+        lending_item.processed = false
         lending_item.save!
         expect(lending_item).not_to be_processed # just to be sure
 
@@ -100,17 +92,14 @@ RSpec.describe LendingItemLoansController, type: :request do
         expect(loan).to be_active
         expect(loan.loan_date).to be <= Time.now.utc
         expect(loan.due_date).to be > Time.now.utc
-        expect(loan.due_date - loan.loan_date).to eq(LendingItemLoan::LOAN_DURATION_HOURS.hours)
+        expect(loan.due_date - loan.loan_date).to eq(LendingItem::LOAN_DURATION_HOURS.hours)
 
         expected_path = lending_item_loans_path(lending_item_id: lending_item.id)
         expect(response).to redirect_to(expected_path)
       end
 
       it 'fails if this user has already checked out the item' do
-        loan = LendingItemLoan.check_out(
-          lending_item_id: lending_item.id,
-          patron_identifier: user.lending_id
-        )
+        loan = lending_item.check_out_to(user.lending_id)
         expect(loan).to be_persisted # just to be sure
 
         expect do
@@ -122,10 +111,7 @@ RSpec.describe LendingItemLoansController, type: :request do
 
       it 'fails if there are no copies available' do
         lending_item.copies.times do |copy|
-          LendingItemLoan.check_out(
-            lending_item_id: lending_item.id,
-            patron_identifier: "patron-#{copy}"
-          )
+          lending_item.check_out_to("patron-#{copy}")
         end
         expect(lending_item).not_to be_available # just to be sure
 
@@ -137,7 +123,7 @@ RSpec.describe LendingItemLoansController, type: :request do
       end
 
       it 'fails if the item has not been processed' do
-        lending_item.iiif_dir = nil
+        lending_item.processed = false
         lending_item.save!
         expect(lending_item).not_to be_processed # just to be sure
 
@@ -152,10 +138,7 @@ RSpec.describe LendingItemLoansController, type: :request do
 
     describe :return do
       it 'returns an item' do
-        loan = LendingItemLoan.check_out(
-          lending_item_id: lending_item.id,
-          patron_identifier: user.lending_id
-        )
+        loan = lending_item.check_out_to(user.lending_id)
         post lending_item_loans_return_path(lending_item_id: lending_item.id)
 
         loan.reload
@@ -166,10 +149,7 @@ RSpec.describe LendingItemLoansController, type: :request do
       end
 
       it 'succeeds even if the item was already returned' do
-        loan = LendingItemLoan.check_out(
-          lending_item_id: lending_item.id,
-          patron_identifier: user.lending_id
-        )
+        loan = lending_item.check_out_to(user.lending_id)
         loan.return!
 
         post lending_item_loans_return_path(lending_item_id: lending_item.id)

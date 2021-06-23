@@ -6,6 +6,10 @@ module Lending
       p.is_a?(Pathname) ? p : Pathname.new(p.to_s)
     end
 
+    def ensure_pathnames(*paths)
+      paths.map { |p| ensure_pathname(p) }
+    end
+
     def ensure_filepath(f)
       raise ArgumentError, "Not a file path: #{f}" unless f && File.file?(f.to_s)
 
