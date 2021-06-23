@@ -36,12 +36,11 @@
       <th>Processed?</th>
       <td><%= @lending_item.processed? ? 'Yes' : 'No' %></td>
     </tr>
-    <% if (iiif_dir = @lending_item.iiif_dir) %>
+    <% if @lending_item.processed? %>
       <tr>
         <th>IIIF directory</th>
         <td>
-          <%= iiif_dir %>
-          <!-- full path: <%= File.absolute_path(@lending_item.iiif_dir_actual) %> -->
+          <%= @lending_item.iiif_dir %>
         </td>
       </tr>
     <% end %>

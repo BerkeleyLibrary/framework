@@ -12,7 +12,11 @@ class LendingItemLoansController < ApplicationController
   end
 
   def check_out
-    @lending_item_loan = LendingItemLoan.check_out(**loan_args)
+    lending_item_id = loan_args[:lending_item_id]
+    lending_item = LendingItem.find(lending_item_id)
+
+    patron_identifier = loan_args[:patron_identifier]
+    @lending_item_loan = lending_item.check_out_to(patron_identifier)
 
     errors = @lending_item_loan.errors
     render_with_errors(:show, errors) && return unless errors.empty?

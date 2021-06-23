@@ -3,6 +3,7 @@ require 'lending/page'
 require 'ucblit/util/uris'
 
 module Lending
+  # TODO: rename this to IIIFManifest, #to_manifest to #to_json_str or something
   class IIIFItem
 
     MANIFEST_NAME = 'manifest.json'.freeze

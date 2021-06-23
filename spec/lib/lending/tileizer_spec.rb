@@ -7,29 +7,60 @@ module Lending
     let(:indir) { 'spec/data/lending/incoming/b100523250_C044235662' }
     let(:infiles) { Dir.entries(indir).select { |f| f.end_with?('.tif') }.sort }
 
-    it 'tileizes' do
-      infile = File.join(samples, 'incoming/00000100.tif')
-      expected = File.join(samples, 'final/00000100.tif')
+    describe 'instance #tileize' do
+      it 'tileizes to a specified file' do
+        infile = File.join(samples, 'incoming/00000100.tif')
+        expected = File.join(samples, 'final/00000100.tif')
 
-      Dir.mktmpdir do |outdir|
-        basename = File.basename(infile)
-        outfile = File.join(outdir, basename)
-        tileizer = Tileizer.new(infile, outfile)
-        tileizer.tileize!
-        expect(tileizer).to be_tileized
+        Dir.mktmpdir do |outdir|
+          basename = File.basename(infile)
+          outfile = File.join(outdir, basename)
+          tileizer = Tileizer.new(infile, outfile)
+          tileizer.tileize!
+          expect(tileizer).to be_tileized
 
-        # Note: we can't just compare files because we need to handle minor differences
-        # in output across OSes and libvips/libtiff versions, so let's leverage the code
-        # we already wrote to detect image tiles for IIIF manifest generation
+          # Note: we can't just compare files because we need to handle minor differences
+          # in output across OSes and libvips/libtiff versions, so let's leverage the code
+          # we already wrote to detect image tiles for IIIF manifest generation
 
-        page_expected = Lending::Page.new(expected)
-        page_actual = Lending::Page.new(outfile)
+          page_expected = Lending::Page.new(expected)
+          page_actual = Lending::Page.new(outfile)
 
-        aggregate_failures 'output image' do
-          %i[width height tile_scale_factors].each do |attr|
-            expected_val = page_expected.send(attr)
-            actual_val = page_actual.send(attr)
-            expect(actual_val).to eq(expected_val), "#{attr}: expected #{expected_val}, got #{actual_val}"
+          aggregate_failures 'output image' do
+            %i[width height tile_scale_factors].each do |attr|
+              expected_val = page_expected.send(attr)
+              actual_val = page_actual.send(attr)
+              expect(actual_val).to eq(expected_val), "#{attr}: expected #{expected_val}, got #{actual_val}"
+            end
+          end
+        end
+      end
+    end
+
+    describe 'class #tileize' do
+      it 'tileizes to a specified directory' do
+        infile = File.join(samples, 'incoming/00000100.tif')
+        expected = File.join(samples, 'final/00000100.tif')
+
+        Dir.mktmpdir do |outdir|
+          basename = File.basename(infile)
+          outfile = Tileizer.tileize(infile, outdir)
+          expect(outfile.to_s).to eq(File.join(outdir, basename))
+          expect(outfile.exist?).to eq(true)
+
+          # Note: we can't just compare files because we need to handle minor differences
+          # in output across OSes and libvips/libtiff versions, so let's leverage the code
+          # we already wrote to detect image tiles for IIIF manifest generation
+
+          page_expected = Lending::Page.new(expected)
+          page_actual = Lending::Page.new(outfile)
+
+          aggregate_failures 'output image' do
+            %i[width height tile_scale_factors].each do |attr|
+              expected_val = page_expected.send(attr)
+              actual_val = page_actual.send(attr)
+              expect(actual_val).to eq(expected_val), "#{attr}: expected #{expected_val}, got #{actual_val}"
+            end
           end
         end
       end

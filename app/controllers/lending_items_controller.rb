@@ -61,16 +61,14 @@ class LendingItemsController < ApplicationController
   # ------------------------------
   # IIIF manifest actions
 
-  # GET /manifests/:record_id/:barcode'
+  # GET /manifests/:directory'
   def manifest
-    record_id, barcode = params.require(%i[record_id barcode])
-    @lending_item = LendingItem.having_record_id(record_id).find_by!(barcode: barcode)
-
     # TODO: allow non-admin when checked out?
-    raise ActiveRecord::RecordNotFound, "IIIF manifest not found for #{@lending_item.citation}" unless (iiif_item = @lending_item.iiif_item)
+    directory = params.require(:directory)
+    @lending_item = LendingItem.find_by!(directory: directory)
 
     # TODO: cache this, or generate ERB, or something
-    manifest = iiif_item.to_manifest(lending_manifests_url(record_id: nil, barcode: nil), image_server_base_uri)
+    manifest = @lending_item.generate_manifest(manifest_root_uri, image_server_base_uri)
     render(json: manifest)
   end
 
@@ -109,13 +107,19 @@ class LendingItemsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def lending_item_params
-    params.require(:lending_item).permit(:barcode, :filename, :title, :author, :millennium_record, :alma_record, :copies)
+    params.require(:lending_item).permit(:directory, :title, :author, :copies, :processed)
   end
 
-  # TODO: move this to a utility class
+  # TODO: move this to a helper
   def image_server_base_uri
     UCBLIT::Util::URIs.uri_or_nil(Rails.application.config.image_server_base_uri).tap do |uri|
       raise ArgumentError, 'image_server_base_uri not set' unless uri
     end
   end
+
+  # TODO: move this to a helper
+  def manifest_root_uri
+    lending_manifests_url(directory: nil)
+  end
+
 end

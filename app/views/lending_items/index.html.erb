@@ -4,16 +4,13 @@
 
 <h1>UC Berkeley Electronic and Accessible Reserves System</h1>
 
-<%# TODO: figure out why this isn't sorting %>
+<%# TODO: test sorting %>
 <table class="table table-bordered mt-5">
   <thead class="thead-light">
   <tr>
-    <th scope="col"><%= sortable(:barcode, 'Barcode') %></th>
-    <th scope="col"><%= sortable(:filename, 'Filename') %></th>
     <th scope="col"><%= sortable(:title, 'Title') %></th>
     <th scope="col"><%= sortable(:author, 'Author') %></th>
-    <th scope="col"><%= sortable(:millennium_record, 'Millennium Record') %></th>
-    <th scope="col"><%= sortable(:alma_record, 'Alma Record') %></th>
+    <th scope="col"><%= sortable(:directory, 'Filename') %></th>
     <th scope="col"><%= sortable(:copies, 'Copies') %></th>
     <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
     <th scope="col">Due</th>
@@ -24,12 +21,9 @@
   <tbody>
   <% @lending_items.each do |lending_item| %>
     <tr>
-      <td><%= lending_item.barcode %></td>
-      <td><%= lending_item.filename %></td>
       <td><%= lending_item.title %></td>
       <td><%= lending_item.author %></td>
-      <td><%= lending_item.millennium_record %></td>
-      <td><%= lending_item.alma_record %></td>
+      <td><%= lending_item.directory %></td>
       <td><%= lending_item.copies %></td>
       <td><%= lending_item.copies_available %></td>
       <td>
