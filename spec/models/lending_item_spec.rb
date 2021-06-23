@@ -36,7 +36,7 @@ describe LendingItem, type: :model do
     end
   end
 
-  describe :create_iiif_item do
+  describe :create_iiif_item! do
     let(:source_dir) { 'spec/data/lending/incoming/b11996535_fakebarcode' }
 
     attr_reader :item
