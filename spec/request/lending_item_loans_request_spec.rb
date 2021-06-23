@@ -136,8 +136,18 @@ RSpec.describe LendingItemLoansController, type: :request do
         expect(response.status).to eq(422) # unprocessable entity
       end
 
-      # TODO: implement this test
-      xit 'fails if the item has not been processed'
+      it 'fails if the item has not been processed' do
+        lending_item.iiif_dir = nil
+        lending_item.save!
+        expect(lending_item).not_to be_processed # just to be sure
+
+        expect do
+          post lending_item_loans_checkout_path(lending_item_id: lending_item.id)
+        end.not_to change(LendingItemLoan, :count)
+
+        expect(response.status).to eq(422)
+        expect(response.body).to include(LendingItem::MSG_UNPROCESSED)
+      end
     end
 
     describe :return do

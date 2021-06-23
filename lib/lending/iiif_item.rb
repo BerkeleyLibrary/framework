@@ -83,13 +83,13 @@ module Lending
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-    def write_manifest!(manifest_root_uri, image_root_uri)
-      manifest = to_manifest(manifest_root_uri, image_root_uri)
-      manifest_json = manifest.to_json
-      dir_path.join(MANIFEST_NAME).tap do |manifest_path|
-        manifest_path.open('w') { |f| f.write(manifest_json) }
-      end
-    end
+    # def write_manifest!(manifest_root_uri, image_root_uri)
+    #   manifest = to_manifest(manifest_root_uri, image_root_uri)
+    #   manifest_json = manifest.to_json
+    #   dir_path.join(MANIFEST_NAME).tap do |manifest_path|
+    #     manifest_path.open('w') { |f| f.write(manifest_json) }
+    #   end
+    # end
 
     private
 
