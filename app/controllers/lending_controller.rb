@@ -9,7 +9,7 @@ class LendingController < ApplicationController
   # ------------------------------------------------------------
   # Helpers
 
-  helper_method :sort_column, :sort_direction
+  helper_method :sort_column, :sort_direction, :lending_admin?, :manifest_url
 
   # ------------------------------------------------------------
   # Hooks
@@ -32,24 +32,11 @@ class LendingController < ApplicationController
     @lending_item = LendingItem.new
   end
 
-  # TODO: do we need empty placeholders?
-  def edit; end
+  def edit; end # TODO: is this necessary?
 
   def show
-    user_is_admin = lending_admin?
-    locals = {
-      user_is_admin: user_is_admin,
-      item: @lending_item,
-      loan: nil,
-      manifest_url: manifest_url
-    }
-
-    unless user_is_admin || active_loan
-      locals[:loan] = ensure_lending_item_loan!
-      flash[:danger] = reason_unavailable unless available?
-    end
-
-    render(locals: locals)
+    ensure_lending_item_loan!
+    flash[:danger] = reason_unavailable unless lending_admin? || available?
   end
 
   def manifest
@@ -65,17 +52,17 @@ class LendingController < ApplicationController
 
   def create
     @lending_item = LendingItem.create(lending_item_params)
-    render_with_errors(:new, @lending_item.errors) && return unless @lending_item.persisted?
+    render_with_errors(:new, @lending_item.errors, locals: { item: @lending_item }) && return unless @lending_item.persisted?
 
     flash[:success] = 'Item created.'
-    redirect_to lending_show(directory: directory)
+    redirect_to lending_show_url(directory: directory)
   end
 
   def update
     render_with_errors(:edit, errors) && return unless @lending_item.update(lending_item_params)
 
     flash[:success] = 'Item updated.'
-    redirect_to lending_show(directory: directory)
+    redirect_to lending_show_url(directory: directory)
   end
 
   def check_out
@@ -83,7 +70,7 @@ class LendingController < ApplicationController
     render_with_errors(:show, @lending_item_loan.errors) && return unless @lending_item_loan.persisted?
 
     flash[:success] = 'Checkout successful.'
-    redirect_to :lending_item
+    redirect_to lending_show_url(directory: directory)
   end
 
   def return
@@ -94,7 +81,7 @@ class LendingController < ApplicationController
       flash[:danger] = MSG_NOT_CHECKED_OUT
     end
 
-    redirect_to lending_show(directory: directory)
+    redirect_to lending_show_url(directory: directory)
   end
 
   def destroy
@@ -175,13 +162,13 @@ class LendingController < ApplicationController
 
   # create/update parameters
   def lending_item_params # TODO: better/more consistent name
-    params.require(:lending_item).permit(:directory, :title, :author, :copies, :processed)
+    params.permit(:directory, :title, :author, :copies, :processed)
   end
 
   # loan lookup parameters
   def loan_args # TODO: better/more consistent name
     {
-      directory: directory,
+      lending_item: ensure_lending_item!,
       patron_identifier: patron_identifier
     }
   end
@@ -208,7 +195,7 @@ class LendingController < ApplicationController
   end
 
   def ensure_lending_item!
-    @lending_item = LendingItem.find_by(directory: directory)
+    @lending_item ||= LendingItem.find_by(directory: directory)
   end
 
   def ensure_lending_item_loan!

@@ -1,0 +1,9 @@
+<% content_for(:page_title, "UC BEARS: Editing #{item.title}") %>
+
+<%# TODO: style navigation properly %>
+<h2>
+<%= link_to 'Show', lending_path(directory: item.directory) %> |
+<%= link_to 'Back', lending_path %>
+</h2>
+
+<%= render('form', locals: { item: item }) %>

@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   mount MiradorRails::Engine, at: MiradorRails::Engine.locales_mount_path
 
   # Lending (UC BEARS) routes
+  # TODO: get Rails to use :directory as the primary key and this all gets a lot simpler
   scope :lending, { format: 'json' } do
     get '/:directory/manifest', to: 'lending#manifest', as: :lending_manifest
   end
