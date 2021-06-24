@@ -30,12 +30,26 @@ Rails.application.routes.draw do
   post '/fines/payment', to: 'fines#payment'
   post '/fines/transaction_complete', to: 'fines#transaction_complete'
 
-  # Controlled Digital Lending Routes:
-  # - LendingItem (admin view) is simple, LendingItemLoan (patron view) is complex
+  # Mirador IIIF viewer
   mount MiradorRails::Engine, at: MiradorRails::Engine.locales_mount_path
-  scope :lending, { format: 'html' } do
-    # TODO: can we run all of these off /:directory? even the manifest?
 
+  # Lending (UC BEARS) routes
+  scope :lending, { format: 'json' } do
+    get '/:directory/manifest', to: 'lending#manifest', as: :lending_manifest
+  end
+  scope :lending, { format: 'html' } do
+    get '/', to: 'lending#index', as: :lending
+    get '/new', to: 'lending#new', as: :lending_new
+    get '/:directory/edit', to: 'lending#edit', as: :lending_edit
+    get '/:directory', to: 'lending#show', as: :lending_show
+    post '/', to: 'lending#create', as: :lending_create
+    patch '/:directory', to: 'lending#update', as: :lending_update
+    delete '/:directory', to: 'lending#destroy', as: :lending_destroy
+    # TODO: something more RESTful
+    post '/:directory/checkout', to: 'lending#check_out', as: :lending_check_out
+    post '/:directory/return', to: 'lending#return', as: :lending_return
+
+    # TODO: remove these once we've finished switching over to unified controller
     get '/items', to: 'lending_items#index', as: 'lending_items'
     post '/items', to: 'lending_items#create'
     get '/items/new', to: 'lending_items#new', as: 'new_lending_item'
