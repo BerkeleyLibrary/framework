@@ -44,8 +44,13 @@ class LendingItem < ActiveRecord::Base
     )
   end
 
+  # TODO: remove this once we've finished switching over to unified controller
   def generate_manifest(manifest_root_uri, image_server_base_uri)
     iiif_item.to_manifest(manifest_root_uri, image_server_base_uri)
+  end
+
+  def create_manifest(manifest_uri)
+    iiif_item.create_manifest(manifest_uri, image_server_base_uri)
   end
 
   # ------------------------------------------------------------
@@ -104,6 +109,13 @@ class LendingItem < ActiveRecord::Base
     Rails.application.config.iiif_final_dir.tap do |dir|
       raise ArgumentError, 'iiif_final_dir not set' if dir.blank?
       raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
+    end
+  end
+
+  # TODO: move this to a helper
+  def image_server_base_uri
+    UCBLIT::Util::URIs.uri_or_nil(Rails.application.config.image_server_base_uri).tap do |uri|
+      raise ArgumentError, 'image_server_base_uri not set' unless uri
     end
   end
 

@@ -144,6 +144,14 @@ class User
     affiliations&.include?('EMPLOYEE-TYPE-STAFF')
   end
 
+  def ucb_student?
+    return unless affiliations
+
+    # 'NOT-REGISTERED' = summer session / concurrent enrollment? maybe?
+    # see https://calnetweb.berkeley.edu/calnet-technologists/single-sign/cas/casify-your-web-application-or-web-server
+    %w[STUDENT-TYPE-REGISTERED STUDENT-TYPE-NOT-REGISTERED].any? { |a9n| affiliations.include?(a9n) }
+  end
+
   # Whether the user is a member of the Framework admin CalGroup
   # @return [Boolean]
   def framework_admin?
