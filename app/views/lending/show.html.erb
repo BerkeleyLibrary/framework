@@ -48,7 +48,7 @@
 
 <% if lending_admin? %>
   <%# TODO: style navigation properly %>
-  <h2><%= link_to 'Back', lending_items_path %></h2>
+  <nav><%= link_to 'Back', lending_path %></nav>
 <% end %>
 
 <section class="record">
@@ -77,6 +77,13 @@
         </td>
       </tr>
     <% end %>
+    <% if lending_admin? %>
+      <tr>
+        <th class="action edit">
+          <%= link_to 'Edit', lending_edit_path(directory: directory) %>
+        </th>
+      </tr>
+    <% end %>
     <% if @lending_item_loan %> <%# TODO: is this the best way to decide whether to show the checkout button? %>
       <tr>
         <% if loan_active %>
@@ -98,13 +105,6 @@
             <% end %>
           </th>
         <% end %>
-      </tr>
-    <% end %>
-    <% if lending_admin? %>
-      <tr>
-        <th class="action edit">
-          <%= link_to 'Edit', lending_edit_path(directory: directory) %>
-        </th>
       </tr>
     <% end %>
   </table>

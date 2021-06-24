@@ -84,6 +84,12 @@ describe LendingController, type: :request do
           end
         end
       end
+
+      # TODO: test this
+      xdescribe :new
+
+      # TODO: test this
+      xdescribe :edit
     end
 
     context 'with items' do
