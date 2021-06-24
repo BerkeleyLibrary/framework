@@ -14,6 +14,13 @@ module ExceptionHandling
       render :standard_error, status: :internal_server_error, locals: { exception: error }
     end
 
+    # :nocov:
+    rescue_from ActionController::RoutingError do |error|
+      log_error(error)
+      render :not_found, status: :not_found, locals: { exception: error }
+    end
+    # :nocov:
+
     rescue_from ActiveRecord::RecordNotFound do |error|
       log_error(error)
       render :not_found, status: :not_found, locals: { exception: error }

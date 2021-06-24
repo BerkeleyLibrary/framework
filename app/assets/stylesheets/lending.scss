@@ -89,6 +89,10 @@ $font-weight-bold: 700;
 // ////////////////////////////////////////////////////////////
 // Shared between layouts
 
+nav {
+  font-size: $font-size-large;
+}
+
 section {
   &.record {
     table {
@@ -135,6 +139,7 @@ section {
           color: white;
           padding-left: 5px;
           padding-right: 5px;
+          text-align: left;
 
           input {
             border: none;
@@ -157,6 +162,8 @@ section {
           a {
             display: block;
             text-decoration: none;
+            box-shadow: none;
+            color: inherit;
 
             &:hover {
               background: $color-anchor-highlight;
