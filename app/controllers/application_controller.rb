@@ -16,8 +16,6 @@ class ApplicationController < ActionController::Base
   # @see https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection/ClassMethods.html
   protect_from_forgery with: :exception
 
-  private
-
   # Require that the current user be authenticated
   #
   # @return [void]
@@ -111,9 +109,16 @@ class ApplicationController < ActionController::Base
   # @param view [Symbol] the view to render
   # @param errors [ActiveModel::Errors] the errors
   # @param status [Symbol] the name of the HTTP status to render
-  def render_with_errors(view, errors, status: :unprocessable_entity)
+  def render_with_errors(view, errors, status: :unprocessable_entity, locals: {})
+    flash_errors(errors)
+    render(view, status: status, locals: locals)
+  end
+
+  # Add the specified validation errors to the flash messages.
+  #
+  # @param errors [ActiveModel::Errors] the errors
+  def flash_errors(errors)
     flash[:danger] ||= []
     errors.full_messages.each { |msg| flash[:danger] << msg }
-    render view, status: status
   end
 end

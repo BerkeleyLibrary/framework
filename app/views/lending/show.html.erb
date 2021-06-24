@@ -1,0 +1,111 @@
+<% content_for(:page_title, "UC BEARS: #{@lending_item.title}") %>
+
+<%
+  # TODO: should this logic really be in the view?
+
+  loan_active = @lending_item_loan&.active?
+  show_viewer = loan_active || lending_admin?
+  viewer_title = loan_active ? 'View' : 'Preview'
+  item_processed = @lending_item.processed?
+  directory = @lending_item.directory
+
+  # TODO: Use Rails i18n
+  fields = {
+    'Title' => @lending_item.title,
+    'Author' => @lending_item.author,
+    'Record ID' => @lending_item.record_id,
+    'Barcode' => @lending_item.barcode,
+    'Copies' => @lending_item.copies,
+    'Copies available' => @lending_item.copies_available
+  }
+  if @lending_item_loan
+    if @lending_item_loan.persisted?
+      fields['Loan status'] = @lending_item_loan.loan_status
+      fields['Checked out'] = @lending_item_loan.loan_date # TODO: format all dates
+      fields['Due'] = @lending_item_loan.due_date # TODO: format all dates
+    end
+    if @lending_item_loan.complete?
+      fields['Returned'] = @lending_item_loan.return_date
+    end
+  end
+
+  if lending_admin?
+    if @lending_item.processed?
+      fields['Processed?'] = 'Yes'
+      fields['IIIF directory'] = @lending_item.iiif_dir
+    else
+      fields['Processed?'] = 'No'
+    end
+
+    due_dates = @lending_item.due_dates.to_a
+    unless due_dates.empty?
+      fields['Due dates for current checkouts'] = due_dates
+    end
+
+    fields['Direct link'] = link_to(lending_url(directory: directory))
+  end
+%>
+
+<% if lending_admin? %>
+  <%# TODO: style navigation properly %>
+  <h2><%= link_to 'Back', lending_items_path %></h2>
+<% end %>
+
+<section class="record">
+  <% if show_viewer %>
+    <%= render(partial: 'viewer', locals: {
+      manifest_url: manifest_url,
+      viewer_title: viewer_title,
+      item_processed: item_processed
+    }) %>
+  <% end %>
+
+  <table>
+    <% fields.each do |label, value| %>
+      <tr>
+        <th><%= label %></th>
+        <td>
+          <% if value.respond_to?(:each) %>
+            <ul>
+              <% value.each do |v| %>
+                <li><%= v %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <%= value %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    <% if @lending_item_loan %> <%# TODO: is this the best way to decide whether to show the checkout button? %>
+      <tr>
+        <% if loan_active %>
+          <th class="action return">
+            <%= form_with(url: lending_return_path, id: 'return-form', local: true) do |f| %>
+              <%= f.hidden_field('directory', value: directory) %>
+              <%= f.submit('Return now') %>
+            <% end %>
+          </th>
+        <% else %>
+          <th class="action checkout">
+            <%= form_with(url: lending_check_out_path, id: 'checkout-form', local: true) do |f| %>
+              <%= f.hidden_field('directory', value: directory) %>
+              <%= f.submit(
+                    'Check out',
+                    disabled: @lending_item.checkout_disabled?,
+                    disable_with: @lending_item.checkout_disabled_reason
+                  ) %>
+            <% end %>
+          </th>
+        <% end %>
+      </tr>
+    <% end %>
+    <% if lending_admin? %>
+      <tr>
+        <th class="action edit">
+          <%= link_to 'Edit', lending_edit_path(directory: directory) %>
+        </th>
+      </tr>
+    <% end %>
+  </table>
+</section>

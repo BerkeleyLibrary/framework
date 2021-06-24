@@ -114,9 +114,9 @@ class LendingItem < ActiveRecord::Base
   # Custom validators
 
   def correct_directory_format
-    return if directory.split('_').size == 2
+    return if directory && directory.split('_').size == 2
 
-    errors.add(:directory, "directory should be in the format <bibliographic record id>_<item barcode>")
+    errors.add(:directory, 'directory should be in the format <bibliographic record id>_<item barcode>')
   end
 
   # ------------------------------------------------------------

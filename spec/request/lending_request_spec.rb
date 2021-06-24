@@ -36,7 +36,7 @@ describe LendingController, type: :request do
     context 'without any items' do
       describe :index do
         it 'shows an empty list' do
-          get lending_url
+          get lending_path
           expect(response).to be_successful
         end
       end
@@ -45,7 +45,7 @@ describe LendingController, type: :request do
         it 'creates items' do
           valid_item_attributes.each do |item_attributes|
             expect do
-              post lending_url, attributes: { lending_item: item_attributes }
+              post lending_path, params: item_attributes
             end.to change(LendingItem, :count).by(1)
 
             directory = item_attributes[:directory]
@@ -63,21 +63,21 @@ describe LendingController, type: :request do
           let(:invalid_item_attributes) do
             valid_attributes = valid_item_attributes[0]
             [].tap do |invalid_item_attributes|
-              [:directory, :title, :author].each do |attr|
+              %i[directory title author].each do |attr|
                 invalid_attributes = valid_attributes.dup
                 invalid_attributes.delete(attr)
                 invalid_item_attributes << invalid_attributes
               end
 
               invalid_attributes = valid_attributes.dup
-              invalid_attributes.copies = -1
+              invalid_attributes[:copies] = -1
               invalid_item_attributes << invalid_attributes
             end
           end
 
           it 'does not create items' do
             invalid_item_attributes.each do |item_attributes|
-              expect { post lending_url, attributes: { lending_item: item_attributes } }
+              expect { post lending_path, params: item_attributes }
                 .not_to change(LendingItem, :count)
               expect(response.status).to eq(422) # unprocessable entity
             end
@@ -95,7 +95,7 @@ describe LendingController, type: :request do
 
       describe :index do
         it 'lists the items' do
-          get lending_url
+          get lending_path
           expect(response).to be_successful
 
           body = response.body
@@ -110,7 +110,7 @@ describe LendingController, type: :request do
       describe :show do
         it 'shows an item' do
           items.each do |item|
-            get lending_show_url(directory: item.directory)
+            get lending_show_path(directory: item.directory)
             expect(response).to be_successful
           end
         end
@@ -119,7 +119,7 @@ describe LendingController, type: :request do
       describe :manifest do
         it 'shows the manifest for processed items' do
           items.select(&:processed?).each do |item|
-            get lending_manifest_url(directory: item.directory)
+            get lending_manifest_path(directory: item.directory)
             expect(response).to be_successful
 
             # TODO: validate manifest contents
@@ -140,10 +140,10 @@ describe LendingController, type: :request do
             directory = item.directory
 
             expect do
-              patch lending_url(attributes: { directory: directory, lending_item: new_attributes })
+              patch lending_update_path(directory: directory), params: new_attributes
             end.not_to change(LendingItem, :count)
 
-            expect(response).to redirect_to lending_url(directory: directory)
+            expect(response).to redirect_to lending_show_path(directory: directory)
 
             item.reload
             new_attributes.each { |attr, val| expect(item.send(attr)).to eq(val) }
@@ -165,7 +165,7 @@ describe LendingController, type: :request do
     describe :show do
       it "doesn't create a new loan record" do
         expect do
-          get lending_show_url(directory: item.directory)
+          get lending_show_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
         expect(response.body).to include('Check out')
@@ -178,7 +178,7 @@ describe LendingController, type: :request do
         expect(loan).to be_persisted # just to be sure
 
         expect do
-          get lending_show_url(directory: item.directory)
+          get lending_show_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
@@ -189,7 +189,7 @@ describe LendingController, type: :request do
         expect(body).to include(due_date_str)
 
         expect(body).not_to include('Check out')
-        expect(body).to include('Return')
+        expect(body).to include('Return now')
       end
 
       it 'pre-returns the loan if already expired' do
@@ -202,9 +202,12 @@ describe LendingController, type: :request do
           loan_date: loan_date,
           due_date: due_date
         )
+        loan.reload
+        expect(loan.complete?).to eq(true)
+        expect(loan.active?).to eq(false)
 
         expect do
-          get lending_show_url(directory: item.directory)
+          get lending_show_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
@@ -215,11 +218,11 @@ describe LendingController, type: :request do
         body = response.body
 
         # TODO: format all dates
-        return_date_str = loan.return_date
+        return_date_str = loan.return_date.to_s
         expect(body).to include(return_date_str)
 
         expect(body).to include('Check out')
-        expect(body).not_to include('Return')
+        expect(body).not_to include('Return now')
       end
 
       it 'displays an item with no available copies' do
@@ -229,13 +232,13 @@ describe LendingController, type: :request do
         expect(item).not_to be_available # just to be sure
 
         expect do
-          get lending_show_url(directory: item.directory)
+          get lending_show_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
         body = response.body
-        expect(body).not_to include('Check out')
-        expect(body).not_to include('Return')
+        # TODO: verify checkout disabled
+        expect(body).not_to include('Return now')
         expect(body).to include(LendingItem::MSG_UNAVAILABLE)
 
         # TODO: format all dates
@@ -248,12 +251,12 @@ describe LendingController, type: :request do
         item.save!
 
         expect do
-          get lending_show_url(directory: item.directory)
+          get lending_show_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
         body = response.body
-        expect(body).not_to include('Check out')
+        # TODO: verify checkout disabled
         expect(body).not_to include('Return')
         expect(body).to include(LendingItem::MSG_UNPROCESSED)
       end
@@ -262,11 +265,11 @@ describe LendingController, type: :request do
     describe :check_out do
       it 'checks out an item' do
         expect do
-          post lending_check_out(directory: item.directory)
+          post lending_check_out_path(directory: item.directory)
         end.to change(LendingItemLoan, :count).by(1)
 
         loan = LendingItemLoan.find_by(
-          lending_item_id: lending_item.id,
+          lending_item_id: item.id,
           patron_identifier: user.lending_id
         )
         expect(loan).to be_active
@@ -283,11 +286,11 @@ describe LendingController, type: :request do
         expect(loan).to be_persisted
 
         expect do
-          post lending_check_out(directory: item.directory)
-        end.not_to change(LendingItemLoan, :count).by(1)
+          post lending_check_out_path(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
 
         expect(response.status).to eq(422) # unprocessable entity
-        expect(reponse.body).to include(LendingItem::MSG_CHECKED_OUT)
+        expect(response.body).to include(LendingItem::MSG_CHECKED_OUT)
       end
 
       it 'fails if there are no copies available' do
@@ -297,11 +300,11 @@ describe LendingController, type: :request do
         expect(item).not_to be_available
 
         expect do
-          post lending_check_out(directory: item.directory)
-        end.not_to change(LendingItemLoan, :count).by(1)
+          post lending_check_out_path(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
 
         expect(response.status).to eq(422) # unprocessable entity
-        expect(reponse.body).to include(LendingItem::MSG_UNAVAILABLE)
+        expect(response.body).to include(LendingItem::MSG_UNAVAILABLE)
       end
 
       it 'fails if the item has not been processed' do
@@ -310,7 +313,7 @@ describe LendingController, type: :request do
         expect(item).not_to be_processed # just to be sure
 
         expect do
-          post lending_check_out(directory: item.directory)
+          post lending_check_out_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
 
         expect(response.status).to eq(422)

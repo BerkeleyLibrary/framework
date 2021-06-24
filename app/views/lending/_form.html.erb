@@ -1,0 +1,33 @@
+<section class="record">
+  <%= form_with(model: item, local: true) do |form| %>
+    <table>
+      <tbody>
+      <tr>
+        <th><%= form.label(:title, class: 'control-label') %></th>
+        <td><%= form.text_field(:title, class: 'form-control add-required') %></td>
+      </tr>
+
+      <tr>
+        <th><%= form.label(:author, class: 'control-label') %></th>
+        <td><%= form.text_field(:author, class: 'form-control add-required') %></td>
+      </tr>
+
+      <tr>
+        <th><%= form.label(:directory, class: 'control-label') %></th>
+        <td><%= form.text_field(:directory, class: 'form-control add-required') %></td>
+      </tr>
+
+      <tr>
+        <th><%= form.label(:copies, class: 'control-label') %></th>
+        <td><%= form.text_field(:copies, class: 'form-control add-required') %></td>
+      </tr>
+
+      <tr>
+        <th class="action edit">
+          <%= form.submit %>
+        </th>
+      </tr>
+      </tbody>
+    </table>
+  <% end %>
+</section>
