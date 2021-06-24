@@ -1,7 +1,3 @@
-class LendingItem < ActiveRecord::Base
-  # stub so migration can run even without model class
-end
-
 class SimplifyLendingItems < ActiveRecord::Migration[6.0]
   DROPPED_COLUMNS = [:millennium_record, :alma_record, :barcode, :iiif_dir]
 

@@ -39,10 +39,11 @@ Rails.application.routes.draw do
   end
   scope :lending, { format: 'html' } do
     get '/', to: 'lending#index', as: :lending
+    post '/', to: 'lending#create', as: :lending
+
     get '/new', to: 'lending#new', as: :lending_new
     get '/:directory/edit', to: 'lending#edit', as: :lending_edit
     get '/:directory', to: 'lending#show', as: :lending_show
-    post '/', to: 'lending#create', as: :lending_create
     patch '/:directory', to: 'lending#update', as: :lending_update
     delete '/:directory', to: 'lending#destroy', as: :lending_destroy
     # TODO: something more RESTful
