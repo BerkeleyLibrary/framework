@@ -26,23 +26,23 @@ module ExceptionHandling
 
     rescue_from Error::PatronNotFoundError do |error|
       log_error(error)
-      render :patron_not_found_error, status: :forbidden
+      render :patron_not_found_error, status: :forbidden, locals: { exception: error }
     end
 
     rescue_from Error::ForbiddenError do |error|
       log_error(error)
-      render :forbidden, status: :forbidden
+      render :forbidden, status: :forbidden, locals: { exception: error }
     end
 
     rescue_from Error::PatronNotEligibleError do |error|
       log_error(error)
       @error = error # so view has access
-      render :patron_not_eligible_error, status: :forbidden
+      render :patron_not_eligible_error, status: :forbidden, locals: { exception: error }
     end
 
     rescue_from Error::PatronBlockedError do |error|
       log_error(error)
-      render :blocked, status: :forbidden
+      render :blocked, status: :forbidden, locals: { exception: error }
     end
 
     rescue_from Error::UnauthorizedError do |error|

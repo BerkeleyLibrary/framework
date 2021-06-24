@@ -36,19 +36,27 @@ class LendingController < ApplicationController
   def edit; end
 
   def show
-    return if lending_admin?
+    user_is_admin = lending_admin?
+    locals = {
+      user_is_admin: user_is_admin,
+      item: @lending_item,
+      loan: nil,
+      manifest_url: manifest_url
+    }
 
-    ensure_lending_item_loan!
-    return if @lending_item_loan.active? || @lending_item.available?
+    unless user_is_admin || active_loan
+      locals[:loan] = ensure_lending_item_loan!
+      flash[:danger] = reason_unavailable unless available?
+    end
 
-    flash[:danger] = reason_unavailable
+    render(locals: locals)
   end
 
   def manifest
     require_active_loan! unless lending_admin?
 
     # TODO: cache this, or generate ERB, or something
-    manifest = @lending_item.generate_manifest(manifest_root_uri, image_server_base_uri)
+    manifest = @lending_item.create_manifest(manifest_url)
     render(json: manifest)
   end
 
@@ -140,12 +148,21 @@ class LendingController < ApplicationController
     @most_recent_loan ||= LendingItemLoan.where(**loan_args).order(:updated_at).last
   end
 
+  def available?
+    @lending_item_loan.active? || @lending_item.available?
+  end
+
   def reason_unavailable
+    return if available?
     return LendingItem::MSG_UNPROCESSED unless @lending_item.processed?
     return LendingItem::MSG_UNAVAILABLE unless (due_date = @lending_item.next_due_date)
 
     # TODO: format all dates
     "#{LendingItem::MSG_UNAVAILABLE} It will be returned on #{due_date}"
+  end
+
+  def manifest_url
+    lending_manifest_url(directory: directory)
   end
 
   # ------------------------------

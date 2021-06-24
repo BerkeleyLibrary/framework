@@ -258,9 +258,102 @@ describe LendingController, type: :request do
         expect(body).to include(LendingItem::MSG_UNPROCESSED)
       end
     end
+
+    describe :check_out do
+      it 'checks out an item' do
+        expect do
+          post lending_check_out(directory: item.directory)
+        end.to change(LendingItemLoan, :count).by(1)
+
+        loan = LendingItemLoan.find_by(
+          lending_item_id: lending_item.id,
+          patron_identifier: user.lending_id
+        )
+        expect(loan).to be_active
+        expect(loan.loan_date).to be <= Time.now.utc
+        expect(loan.due_date).to be > Time.now.utc
+        expect(loan.due_date - loan.loan_date).to eq(LendingItem::LOAN_DURATION_HOURS.hours)
+
+        expected_path = lending_show_path(directory: item.directory)
+        expect(response).to redirect_to(expected_path)
+      end
+
+      it 'fails if this user has already checked out the item' do
+        loan = item.check_out_to(user.lending_id)
+        expect(loan).to be_persisted
+
+        expect do
+          post lending_check_out(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count).by(1)
+
+        expect(response.status).to eq(422) # unprocessable entity
+        expect(reponse.body).to include(LendingItem::MSG_CHECKED_OUT)
+      end
+
+      it 'fails if there are no copies available' do
+        item.copies.times do |copy|
+          item.check_out_to("patron-#{copy}")
+        end
+        expect(item).not_to be_available
+
+        expect do
+          post lending_check_out(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count).by(1)
+
+        expect(response.status).to eq(422) # unprocessable entity
+        expect(reponse.body).to include(LendingItem::MSG_UNAVAILABLE)
+      end
+
+      it 'fails if the item has not been processed' do
+        item.processed = false
+        item.save!
+        expect(item).not_to be_processed # just to be sure
+
+        expect do
+          post lending_check_out(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
+
+        expect(response.status).to eq(422)
+        expect(response.body).to include(LendingItem::MSG_UNPROCESSED)
+      end
+    end
+
+    describe :return do
+      it 'returns an item' do
+        loan = item.check_out_to(user.lending_id)
+        post lending_return_path(directory: item.directory)
+
+        loan.reload
+        expect(loan).to be_complete
+
+        expected_path = lending_show_path(directory: item.directory)
+        expect(response).to redirect_to(expected_path)
+      end
+
+      it 'succeeds even if the item was already returned' do
+        loan = item.check_out_to(user.lending_id)
+        loan.return!
+
+        post lending_return_path(directory: item.directory)
+        expected_path = lending_show_path(directory: item.directory)
+        expect(response).to redirect_to(expected_path)
+      end
+
+      it 'succeeds even if the item was never checked out' do
+        expect do
+          post lending_return_path(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
+        expected_path = lending_show_path(directory: item.directory)
+        expect(response).to redirect_to(expected_path)
+      end
+    end
   end
 
   describe 'without login' do
     xit 'redirects to login'
+  end
+
+  describe 'with ineligible patron' do
+    xit 'displays unauthorized'
   end
 end

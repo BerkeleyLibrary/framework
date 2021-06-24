@@ -16,6 +16,7 @@ class LendingItem < ActiveRecord::Base
   validates :title, presence: true
   validates :author, presence: true
   validates :copies, numericality: { greater_than_or_equal_to: 0 }
+  validate :correct_directory_format
 
   # ------------------------------------------------------------
   # Constants
@@ -99,10 +100,35 @@ class LendingItem < ActiveRecord::Base
     "#{author}, #{title} (#{directory})"
   end
 
+  def record_id
+    ensure_record_id_and_barcode
+    @record_id
+  end
+
+  def barcode
+    ensure_record_id_and_barcode
+    @barcode
+  end
+
+  # ------------------------------------------------------------
+  # Custom validators
+
+  def correct_directory_format
+    return if directory.split('_').size == 2
+
+    errors.add(:directory, "directory should be in the format <bibliographic record id>_<item barcode>")
+  end
+
   # ------------------------------------------------------------
   # Private methods
 
   private
+
+  def ensure_record_id_and_barcode
+    return if @record_id && @barcode
+
+    @record_id, @barcode = directory.split('_')
+  end
 
   # TODO: move this to a helper
   def iiif_final_dir

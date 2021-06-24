@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   end
   scope :lending, { format: 'html' } do
     get '/', to: 'lending#index', as: :lending
-    post '/', to: 'lending#create', as: :lending
+    post '/', to: 'lending#create'
 
     get '/new', to: 'lending#new', as: :lending_new
     get '/:directory/edit', to: 'lending#edit', as: :lending_edit
