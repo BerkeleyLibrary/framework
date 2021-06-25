@@ -14,17 +14,12 @@ module ExceptionHandling
       render :standard_error, status: :internal_server_error, locals: { exception: error }
     end
 
-    # :nocov:
-    rescue_from ActionController::RoutingError do |error|
-      log_error(error)
-      render :not_found, status: :not_found, locals: { exception: error }
-    end
-    # :nocov:
+    # NOTE: Ordinarily this is never reached (and seems to be unreachable in tests),
+    # but it's needed when Mirador (1) fails to find a message localization JSON file,
+    # and then (2) fails to find its expected 404 template. TODO: Sort this out
+    rescue_from ActionController::RoutingError, with: :handle_not_found
 
-    rescue_from ActiveRecord::RecordNotFound do |error|
-      log_error(error)
-      render :not_found, status: :not_found, locals: { exception: error }
-    end
+    rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
 
     rescue_from Error::PatronApiError do |error|
       log_error(error)
@@ -57,6 +52,11 @@ module ExceptionHandling
       # not logged in, so we don't need the full stack trace etc.
       logger.info(error)
       redirect_to login_path(url: request.fullpath)
+    end
+
+    def handle_not_found(error)
+      log_error(error)
+      render :not_found, status: :not_found, locals: { exception: error }
     end
   end
   # rubocop:enable Metrics/BlockLength
