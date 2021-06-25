@@ -4,7 +4,7 @@ require 'lending'
 module Lending
   describe Tileizer do
     let(:samples) { 'spec/data/lending/samples/b135297126_C068087930' }
-    let(:indir) { 'spec/data/lending/incoming/b100523250_C044235662' }
+    let(:indir) { 'spec/data/lending/incoming/b11996535_B 3 106 704' }
     let(:infiles) { Dir.entries(indir).select { |f| f.end_with?('.tif') }.sort }
 
     describe 'instance #tileize' do

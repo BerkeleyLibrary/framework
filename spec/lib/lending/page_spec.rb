@@ -3,7 +3,7 @@ require 'lending/page'
 
 module Lending
   describe Page do
-    let(:tiff_path) { 'spec/data/lending/final/b135297126_C068087930/00000004.tif' }
+    let(:tiff_path) { 'spec/data/lending/samples/b135297126_C068087930/final/00000100.tif' }
 
     describe :new do
       it 'accepts a string path' do
