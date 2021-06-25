@@ -42,6 +42,13 @@ describe LendingController, type: :request do
         end
       end
 
+      describe :new do
+        it 'displays the form' do
+          get lending_new_path
+          expect(response).to be_successful
+        end
+      end
+
       describe :create do
         it 'creates items' do
           valid_item_attributes.each do |item_attributes|
@@ -85,9 +92,6 @@ describe LendingController, type: :request do
           end
         end
       end
-
-      # TODO: test this
-      xdescribe :new
 
       # TODO: test this
       xdescribe :edit
