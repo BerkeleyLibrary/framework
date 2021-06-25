@@ -31,7 +31,7 @@ module Lending
 
       describe :number do
         it 'extracts the page number as an int' do
-          expect(page.number).to eq(4)
+          expect(page.number).to eq(100)
         end
       end
 
