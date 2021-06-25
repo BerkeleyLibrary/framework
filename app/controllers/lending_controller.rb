@@ -84,13 +84,14 @@ class LendingController < ApplicationController
     redirect_to lending_show_url(directory: directory)
   end
 
-  def destroy
-    @lending_item.destroy
-    respond_to do |format|
-      flash[:success] = 'Item deleted.'
-      format.html { redirect_to lending_items_url }
-    end
-  end
+  # TODO: reimplement as "withdraw" or similar
+  # def destroy
+  #   @lending_item.destroy
+  #   respond_to do |format|
+  #     flash[:success] = 'Item deleted.'
+  #     format.html { redirect_to lending_items_url }
+  #   end
+  # end
 
   # ------------------------------------------------------------
   # Helper methods

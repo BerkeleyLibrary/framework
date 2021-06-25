@@ -15,7 +15,8 @@
     <th scope="col"><%= sortable(:copies, 'Copies') %></th>
     <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
     <th scope="col">Due</th>
-    <th colspan="3"></th>
+    <%# TODO: reimplement "Destroy" as "withdraw" or similar %>
+    <th colspan="2">Actions</th>
   </tr>
   </thead>
 
@@ -39,7 +40,10 @@
       </td>
       <td><%= link_to 'Show', lending_show_path(directory: directory) %></td>
       <td><%= link_to 'Edit', lending_edit_path(directory: directory) %></td>
-      <td><%= link_to 'Destroy', lending_destroy_path(directory: directory), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <%# TODO: reimplement "Destroy" as "withdraw" or similar %>
+      <!--      <td>-->
+      <%# <%= link_to 'Destroy', lending_destroy_path(directory: directory), method: :delete, data: { confirm: 'Are you sure?' } %> %>
+      <!--      </td>-->
     </tr>
   <% end %>
   </tbody>
