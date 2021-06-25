@@ -7,21 +7,22 @@ describe LendingController, type: :request do
         title: 'Villette',
         author: 'Brontë, Charlotte',
         directory: 'b155001346_C044219363',
-        processed: true,
+        processed: false,
         copies: 1
-      },
-      {
-        title: 'Pamphlet',
-        author: 'Canada. Department of Agriculture.',
-        directory: 'b11996535_B 3 106 704',
-        copies: 0
       },
       {
         title: 'The Great Depression in Europe, 1929-1939',
         author: 'Clavin, Patricia',
         directory: 'b135297126_C068087930',
-        copies: 2,
-        processed: true
+        processed: false,
+        copies: 3
+      },
+      {
+        title: 'Pamphlet',
+        author: 'Canada. Department of Agriculture.',
+        directory: 'b11996535_B 3 106 704',
+        processed: true,
+        copies: 2
       }
     ]
   end
@@ -120,6 +121,9 @@ describe LendingController, type: :request do
             expect(response).to be_successful
           end
         end
+
+        xit 'only shows the viewer for processed items'
+        xit 'shows a message for unprocessed items'
       end
 
       describe :manifest do
