@@ -66,13 +66,6 @@ module Lending
       end
     end
 
-    # TODO: remove this once we've finished switching over to unified controller
-    def to_manifest(manifest_root_uri, image_root_uri)
-      barcode_encoded = ERB::Util.url_encode(barcode)
-      manifest_uri = UCBLIT::Util::URIs.append(manifest_root_uri, record_id, barcode_encoded)
-      create_manifest(manifest_uri, image_root_uri)
-    end
-
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def create_manifest(manifest_uri, image_root_uri)
       dir_basename_encoded = ERB::Util.url_encode(dir_basename)
