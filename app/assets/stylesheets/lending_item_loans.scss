@@ -1,1 +1,0 @@
-//= require lending_items
