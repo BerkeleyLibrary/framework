@@ -1,6 +1,6 @@
 <% content_for(:page_title, "UC BEARS: New Item") %>
 
 <%# TODO: style navigation properly %>
-<nav><%= link_to 'Back', lending_items_path %></nav>
+<nav><%= link_to 'Back', lending_path %></nav>
 
 <%= render(partial: 'form', locals: { item: @lending_item }) %>
