@@ -50,23 +50,6 @@ Rails.application.routes.draw do
     # TODO: something more RESTful
     post '/:directory/checkout', to: 'lending#check_out', as: :lending_check_out
     post '/:directory/return', to: 'lending#return', as: :lending_return
-
-    # TODO: remove these once we've finished switching over to unified controller
-    get '/items', to: 'lending_items#index', as: 'lending_items'
-    post '/items', to: 'lending_items#create'
-    get '/items/new', to: 'lending_items#new', as: 'new_lending_item'
-    get '/items/:id/edit', to: 'lending_items#edit', as: 'edit_lending_item'
-    get '/items/:id', to: 'lending_items#show', as: 'lending_item'
-    patch '/items/:id', to: 'lending_items#update'
-    delete '/items/:id', to: 'lending_items#destroy'
-
-    get '/items/:lending_item_id/loans', to: 'lending_item_loans#show', as: 'lending_item_loans'
-    post '/items/:lending_item_id/loans/checkout', to: 'lending_item_loans#check_out', as: 'lending_item_loans_checkout'
-    # TODO: something more RESTful
-    post '/items/:lending_item_id/loans/return', to: 'lending_item_loans#return', as: 'lending_item_loans_return'
-
-    # We mark these parameters optional so we can use the route helper to get the base URL/path, but they're not optional
-    get '/manifests(/:directory)', to: 'lending_items#manifest', as: 'lending_manifests'
   end
 
   # Proxy Borrower Admin Routes:
