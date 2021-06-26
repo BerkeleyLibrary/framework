@@ -28,6 +28,7 @@ describe LendingController, type: :request do
   end
 
   attr_reader :items
+  attr_reader :item
 
   after(:each) { logout! }
 
@@ -367,10 +368,67 @@ describe LendingController, type: :request do
   end
 
   describe 'without login' do
-    xit 'redirects to login'
+    before(:each) do
+      @item = LendingItem.create(**valid_item_attributes.last)
+    end
+
+    it 'GET lending_manifest_path redirects to login' do
+      get(path = lending_manifest_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
+    it 'GET lending_new_path redirects to login' do
+      get(path = lending_new_path)
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
+    it 'GET lending_edit_path redirects to login' do
+      get(path = lending_edit_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
+    it 'GET lending_show_path redirects to login' do
+      get(path = lending_show_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
+    xit 'POST endpoints redirects to login'
   end
 
   describe 'with ineligible patron' do
-    xit 'displays unauthorized'
+    around(:each) do |example|
+      patron_id = Patron::Type.sample_id_for(Patron::Type::VISITING_SCHOLAR)
+      with_patron_login(patron_id) { example.run }
+    end
+
+    before(:each) do
+      @item = LendingItem.create(**valid_item_attributes.last)
+    end
+
+    it 'GET lending_manifest_path returns 403 Forbidden' do
+      get lending_manifest_path(directory: item.directory)
+      expect(response.status).to eq(403)
+    end
+
+    it 'GET lending_new_path returns 403 Forbidden' do
+      get lending_new_path
+      expect(response.status).to eq(403)
+    end
+
+    it 'GET lending_edit_path returns 403 Forbidden' do
+      get lending_edit_path(directory: item.directory)
+      expect(response.status).to eq(403)
+    end
+
+    it 'GET lending_show_path returns 403 Forbidden' do
+      get lending_show_path(directory: item.directory)
+      expect(response.status).to eq(403)
+    end
+
+    xit 'POST endpoints returns 403 Forbidden'
   end
 end
