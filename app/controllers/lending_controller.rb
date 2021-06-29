@@ -121,7 +121,7 @@ class LendingController < ApplicationController
   end
 
   def eligible_patron?
-    current_user.ucb_staff? || current_user.ucb_faculty? || current_user.ucb_student?
+    current_user.ucb_student? || current_user.ucb_faculty? || current_user.ucb_staff?
   end
 
   def existing_loan
@@ -192,7 +192,7 @@ class LendingController < ApplicationController
   def require_active_loan!
     require_eligible_patron!
 
-    raise ActiveRecord::RecordNotFound, MSG_NOT_CHECKED_OUT unless active_loan
+    raise Error::ForbiddenError, MSG_NOT_CHECKED_OUT unless active_loan
   end
 
   def ensure_lending_item!
