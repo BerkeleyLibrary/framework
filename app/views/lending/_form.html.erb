@@ -1,5 +1,9 @@
 <section class="record">
-  <%= form_with(model: item, local: true) do |form| %>
+  <%
+    # TODO: see if this is simpler if we use directory as ID
+    url = item.persisted? ? lending_update_path(directory: item.directory) : lending_path
+  %>
+  <%= form_with(model: item, url: url, local: true) do |form| %>
     <table>
       <tbody>
       <tr>
