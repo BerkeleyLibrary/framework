@@ -47,14 +47,7 @@ describe LendingController, type: :request do
         it 'displays the form' do
           get lending_new_path
           expect(response).to be_successful
-        end
-      end
-
-      describe :edit do
-        it 'displays the form' do
-          item = LendingItem.create(**valid_item_attributes.last)
-          get lending_edit_path(directory: item.directory)
-          expect(response).to be_successful
+          expect(response.body).to include(lending_path)
         end
       end
 
@@ -134,6 +127,17 @@ describe LendingController, type: :request do
 
         xit 'only shows the viewer for processed items'
         xit 'shows a message for unprocessed items'
+      end
+
+      describe :edit do
+        it 'displays the form' do
+          items.each do |item|
+            get lending_edit_path(directory: item.directory)
+            expect(response).to be_successful
+            expected_path = lending_update_path(directory: item.directory)
+            expect(response.body).to include(expected_path)
+          end
+        end
       end
 
       describe :manifest do
@@ -368,6 +372,20 @@ describe LendingController, type: :request do
         end.not_to change(LendingItemLoan, :count)
         expected_path = lending_show_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
+      end
+    end
+
+    describe :new do
+      it 'returns 403 forbidden' do
+        get lending_new_path
+        expect(response.status).to eq(403)
+      end
+    end
+
+    describe :edit do
+      it 'returns 403 forbidden' do
+        get lending_edit_path(directory: item.directory)
+        expect(response.status).to eq(403)
       end
     end
   end
