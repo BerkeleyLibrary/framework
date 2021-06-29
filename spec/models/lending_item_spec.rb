@@ -49,4 +49,29 @@ describe LendingItem, type: :model do
       end
     end
   end
+
+  describe :iiif_item do
+    attr_reader :processed, :unprocessed
+
+    before(:each) do
+      @processed = items.select(&:processed)
+      @unprocessed = items.reject(&:processed)
+    end
+
+    it 'returns the IIIFItem if the item has been processed' do
+      processed.each do |item|
+        iiif_item = item.iiif_item
+        expect(iiif_item).to be_a(Lending::IIIFItem)
+        expect(iiif_item.title).to eq(item.title)
+        expect(iiif_item.author).to eq(item.author)
+        expect(iiif_item.dir_path.to_s).to eq(item.iiif_dir)
+      end
+    end
+
+    it 'raises RecordNotFound if the item has not been processed' do
+      unprocessed.each do |item|
+        expect { item.iiif_item }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end
