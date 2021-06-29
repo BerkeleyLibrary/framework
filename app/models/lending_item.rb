@@ -45,11 +45,6 @@ class LendingItem < ActiveRecord::Base
     )
   end
 
-  # TODO: remove this once we've finished switching over to unified controller
-  def generate_manifest(manifest_root_uri, image_server_base_uri)
-    iiif_item.to_manifest(manifest_root_uri, image_server_base_uri)
-  end
-
   def create_manifest(manifest_uri)
     iiif_item.create_manifest(manifest_uri, image_server_base_uri)
   end
