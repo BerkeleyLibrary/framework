@@ -50,6 +50,14 @@ describe LendingController, type: :request do
         end
       end
 
+      describe :edit do
+        it 'displays the form' do
+          item = LendingItem.create(**valid_item_attributes.last)
+          get lending_edit_path(directory: item.directory)
+          expect(response).to be_successful
+        end
+      end
+
       describe :create do
         it 'creates items' do
           valid_item_attributes.each do |item_attributes|
@@ -93,9 +101,6 @@ describe LendingController, type: :request do
           end
         end
       end
-
-      # TODO: test this
-      xdescribe :edit
     end
 
     context 'with items' do
