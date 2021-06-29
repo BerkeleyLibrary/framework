@@ -181,7 +181,7 @@ describe LendingController, type: :request do
     attr_reader :user, :item
 
     before(:each) do
-      patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD_SLE)
+      patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD)
       @user = login_as_patron(patron_id)
       @item = LendingItem.create(**valid_item_attributes.last)
     end
@@ -372,6 +372,19 @@ describe LendingController, type: :request do
         end.not_to change(LendingItemLoan, :count)
         expected_path = lending_show_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
+      end
+    end
+
+    describe 'manifest' do
+      it 'returns the manifest for a checked-out item' do
+        item.check_out_to(user.lending_id)
+        get lending_manifest_path(directory: item.directory)
+        expect(response).to be_successful
+      end
+
+      it 'returns 403 Forbidden if the item has not been checked out' do
+        get lending_manifest_path(directory: item.directory)
+        expect(response.status).to eq(403)
       end
     end
 
