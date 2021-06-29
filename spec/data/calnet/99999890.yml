@@ -10,3 +10,5 @@ extra:
   uid: '00000012'
   berkeleyEduIsMemberOf:
   - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
+  berkeleyEduAffiliations:
+  - STUDENT-TYPE-REGISTERED

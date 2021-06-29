@@ -23,6 +23,7 @@ extra:
   departmentNumber: KPADM
   berkeleyEduIsMemberOf:
     - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
-  berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
+  berkeleyEduAffiliations:
+  - EMPLOYEE-TYPE-STAFF
   berkeleyEduOfficialEmail: rjroe@berkeley.edu
   longTermAuthenticationRequestTokenUsed: 'false'

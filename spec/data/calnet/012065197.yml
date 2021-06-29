@@ -11,3 +11,5 @@ extra:
   uid: '00000009'
   berkeleyEduIsMemberOf:
   - cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu
+  berkeleyEduAffiliations:
+  - EMPLOYEE-TYPE-STAFF

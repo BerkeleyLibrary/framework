@@ -10,3 +10,5 @@ extra:
   uid: '123545'
   berkeleyEduIsMemberOf:
   - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
+  berkeleyEduAffiliations:
+  - AFFILIATE-TYPE-STAFF EMERITUS

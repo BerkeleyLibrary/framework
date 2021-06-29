@@ -11,3 +11,5 @@ extra:
   uid: '212387'
   berkeleyEduIsMemberOf:
   - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
+  berkeleyEduAffiliations:
+  - EMPLOYEE-TYPE-STAFF
