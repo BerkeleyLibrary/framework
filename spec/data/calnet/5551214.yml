@@ -11,4 +11,5 @@ extra:
   uid: '05551214'
   berkeleyEduIsMemberOf:
   - cn=edu:berkeley:org:libr:framework:LIBR-framework-lending-admins,ou=campus groups,dc=berkeley,dc=edu
-  berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
+  berkeleyEduAffiliations:
+  - EMPLOYEE-TYPE-STAFF

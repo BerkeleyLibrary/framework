@@ -71,6 +71,8 @@ extra:
   - cn=edu:berkeley:official:employees:all-emp,ou=campus groups,dc=berkeley,dc=edu
   - cn=edu:berkeley:app:calmessages:CM-Student-Staff,ou=campus groups,dc=berkeley,dc=edu
   - cn=edu:berkeley:official:students:Programs:Undergrad:16288U,ou=campus groups,dc=berkeley,dc=edu
-  berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
+  berkeleyEduAffiliations:
+  - EMPLOYEE-TYPE-STAFF
+  - STUDENT-TYPE-REGISTERED
   berkeleyEduOfficialEmail: jrdoe@berkeley.edu
   longTermAuthenticationRequestTokenUsed: 'false'
