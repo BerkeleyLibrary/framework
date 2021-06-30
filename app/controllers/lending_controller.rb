@@ -55,7 +55,7 @@ class LendingController < ApplicationController
     render_with_errors(:new, @lending_item.errors, locals: { item: @lending_item }) && return unless @lending_item.persisted?
 
     flash[:success] = 'Item created.'
-    redirect_to lending_show_url(directory: directory)
+    redirect_to lending_show_url(directory: @lending_item.directory)
   end
 
   def update
@@ -158,14 +158,7 @@ class LendingController < ApplicationController
 
   # item lookup parameter (pseudo-ID)
   def directory
-    # TODO: something less janky
-    dir_params = params.permit(:directory)
-    return dir_params[:directory] if dir_params.key?(:directory)
-
-    item_params = params.permit(lending_item: [:directory])[:lending_item]
-    return item_params[:directory] if item_params && item_params.key?(:directory)
-
-    raise ActionController::ParameterMissing, :directory
+    params.require(:directory)
   end
 
   # create/update parameters
