@@ -5,7 +5,7 @@ namespace :lending do
   task :tileize do
     Lending::Tileizer.tileize_env
   rescue StandardError
-    puts 'Usage: rake INFILE=<infile> OUTFILE=<outfile> lending:tileize'
+    puts 'Usage: rake INFILE=<infile> OUTFILE=<outfile> [SKIP_EXISTING=skip] lending:tileize'
     raise
   end
 end
