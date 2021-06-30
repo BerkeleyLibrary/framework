@@ -3,9 +3,8 @@
 <h1>UC Berkeley Electronic and Accessible Reserves System</h1>
 
 <%# TODO: style navigation properly %>
-<nav><%= link_to 'Add Lending Item', lending_new_path %></nav>
+<nav><%= link_to('Add Lending Item', lending_new_path) %></nav>
 
-<%# TODO: test sorting %>
 <table class="table table-bordered mt-5">
   <thead class="thead-light">
   <tr>
@@ -41,9 +40,6 @@
       <td><%= link_to 'Show', lending_show_path(directory: directory) %></td>
       <td><%= link_to 'Edit', lending_edit_path(directory: directory) %></td>
       <%# TODO: reimplement "Destroy" as "withdraw" or similar %>
-      <!--      <td>-->
-      <%# <%= link_to 'Destroy', lending_destroy_path(directory: directory), method: :delete, data: { confirm: 'Are you sure?' } %> %>
-      <!--      </td>-->
     </tr>
   <% end %>
   </tbody>
