@@ -7,21 +7,18 @@ describe LendingController, type: :request do
         title: 'Villette',
         author: 'Brontë, Charlotte',
         directory: 'b155001346_C044219363',
-        processed: false,
         copies: 1
       },
       {
         title: 'The Great Depression in Europe, 1929-1939',
         author: 'Clavin, Patricia',
         directory: 'b135297126_C068087930',
-        processed: false,
         copies: 3
       },
       {
         title: 'Pamphlet',
         author: 'Canada. Department of Agriculture.',
         directory: 'b11996535_B 3 106 704',
-        processed: true,
         copies: 2
       }
     ]
@@ -29,6 +26,14 @@ describe LendingController, type: :request do
 
   attr_reader :items
   attr_reader :item
+
+  def processed
+    items.select(&:processed?)
+  end
+
+  def unprocessed
+    items.reject(&:processed?)
+  end
 
   after(:each) { logout! }
 
@@ -55,7 +60,7 @@ describe LendingController, type: :request do
         it 'creates items' do
           valid_item_attributes.each do |item_attributes|
             expect do
-              post lending_path, params: item_attributes
+              post lending_path, params: { lending_item: item_attributes }
             end.to change(LendingItem, :count).by(1)
 
             directory = item_attributes[:directory]
@@ -87,7 +92,7 @@ describe LendingController, type: :request do
 
           it 'does not create items' do
             invalid_item_attributes.each do |item_attributes|
-              expect { post lending_path, params: item_attributes }
+              expect { post lending_path, params: { lending_item: item_attributes } }
                 .not_to change(LendingItem, :count)
               expect(response.status).to eq(422) # unprocessable entity
             end
@@ -142,7 +147,7 @@ describe LendingController, type: :request do
 
       describe :manifest do
         it 'shows the manifest for processed items' do
-          items.select(&:processed?).each do |item|
+          processed.each do |item|
             get lending_manifest_path(directory: item.directory)
             expect(response).to be_successful
 
@@ -154,8 +159,7 @@ describe LendingController, type: :request do
       describe :update do
         let(:new_attributes) do
           {
-            copies: 2,
-            processed: true
+            copies: 2
           }
         end
 
@@ -164,7 +168,7 @@ describe LendingController, type: :request do
             directory = item.directory
 
             expect do
-              patch lending_update_path(directory: directory), params: new_attributes
+              patch lending_update_path(directory: directory), params: { lending_item: new_attributes }
             end.not_to change(LendingItem, :count)
 
             expect(response).to redirect_to lending_show_path(directory: directory)
@@ -183,7 +187,10 @@ describe LendingController, type: :request do
     before(:each) do
       patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD)
       @user = login_as_patron(patron_id)
-      @item = LendingItem.create(**valid_item_attributes.last)
+      @items = valid_item_attributes.map do |item_attributes|
+        LendingItem.create!(**item_attributes)
+      end
+      @item = processed.last
     end
 
     describe :show do
@@ -271,8 +278,7 @@ describe LendingController, type: :request do
       end
 
       it 'displays an item that has not yet been processed' do
-        item.processed = false
-        item.save!
+        item = unprocessed.first
 
         expect do
           get lending_show_path(directory: item.directory)
@@ -332,9 +338,7 @@ describe LendingController, type: :request do
       end
 
       it 'fails if the item has not been processed' do
-        item.processed = false
-        item.save!
-        expect(item).not_to be_processed # just to be sure
+        item = unprocessed.first
 
         expect do
           post lending_check_out_path(directory: item.directory)
