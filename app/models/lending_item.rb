@@ -53,7 +53,8 @@ class LendingItem < ActiveRecord::Base
   # Synthetic accessors
 
   def processed?
-    return false if Dir.empty?(iiif_dir) # :empty? covers missing directories and non-directories
+    return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
+    return false if Dir.empty?(iiif_dir)
 
     Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
   end
@@ -93,7 +94,7 @@ class LendingItem < ActiveRecord::Base
 
   def iiif_dir
     @iiif_dir ||= begin
-      iiif_dir_relative = File.join(iiif_final_dir, directory)
+      iiif_dir_relative = File.join(iiif_final_root, directory)
       File.absolute_path(iiif_dir_relative)
     end
   end
@@ -133,7 +134,7 @@ class LendingItem < ActiveRecord::Base
   end
 
   # TODO: move this to a helper
-  def iiif_final_dir
+  def iiif_final_root
     Rails.application.config.iiif_final_dir.tap do |dir|
       raise ArgumentError, 'iiif_final_dir not set' if dir.blank?
       raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
