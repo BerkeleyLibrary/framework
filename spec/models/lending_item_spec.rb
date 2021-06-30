@@ -43,7 +43,7 @@ describe LendingItem, type: :model do
       expect(unprocessed).not_to be_empty
       unprocessed.each do |item|
         iiif_dir = item.iiif_dir
-        expect(Dir.empty?(iiif_dir)).to eq(true)
+        expect(Dir.empty?(iiif_dir)).to eq(true) if File.exist?(iiif_dir)
       end
     end
   end
