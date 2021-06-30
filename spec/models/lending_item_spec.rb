@@ -18,6 +18,12 @@ describe LendingItem, type: :model do
         copies: 3
       },
       {
+        title: 'The Plan of St. Gall',
+        author: 'Horn, Walter',
+        directory: 'b100523250_C044235662',
+        copies: '6'
+      },
+      {
         title: 'Pamphlet',
         author: 'Canada. Department of Agriculture.',
         directory: 'b11996535_B 3 106 704',
