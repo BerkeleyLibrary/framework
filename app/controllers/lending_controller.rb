@@ -29,7 +29,7 @@ class LendingController < ApplicationController
   end
 
   def new
-    @lending_item = LendingItem.new
+    @lending_item = LendingItem.new(copies: 0)
   end
 
   def edit; end # TODO: is this necessary?
@@ -158,12 +158,19 @@ class LendingController < ApplicationController
 
   # item lookup parameter (pseudo-ID)
   def directory
-    params.require(:directory)
+    # TODO: something less janky
+    dir_params = params.permit(:directory)
+    return dir_params[:directory] if dir_params.key?(:directory)
+
+    item_params = params.permit(lending_item: [:directory])[:lending_item]
+    return item_params[:directory] if item_params && item_params.key?(:directory)
+
+    raise ActionController::ParameterMissing, :directory
   end
 
   # create/update parameters
   def lending_item_params # TODO: better/more consistent name
-    params.permit(:directory, :title, :author, :copies, :processed)
+    params.require(:lending_item).permit(:directory, :title, :author, :copies)
   end
 
   # loan lookup parameters

@@ -1,63 +1,82 @@
 require 'rails_helper'
 
 describe LendingItem, type: :model do
-  attr_reader :mill_item, :alma_item, :items
+  attr_reader :items, :processed, :unprocessed
 
   before(:each) do
-    @mill_item = LendingItem.create!(
-      directory: 'b155001346_C044219363',
-      title: 'Villette',
-      author: 'Brontë, Charlotte',
-      processed: true,
-      copies: 1
-    )
-    @alma_item = LendingItem.create!(
-      directory: '9910661966906531_C044219363',
-      title: 'Villette',
-      author: 'Brontë, Charlotte',
-      processed: true,
-      copies: 1
-    )
-    @items = [mill_item, alma_item]
+    @items = [
+      {
+        title: 'Villette',
+        author: 'Brontë, Charlotte',
+        directory: 'b155001346_C044219363',
+        copies: 1
+      },
+      {
+        title: 'The Great Depression in Europe, 1929-1939',
+        author: 'Clavin, Patricia',
+        directory: 'b135297126_C068087930',
+        copies: 3
+      },
+      {
+        title: 'Pamphlet',
+        author: 'Canada. Department of Agriculture.',
+        directory: 'b11996535_B 3 106 704',
+        copies: 2
+      }
+    ].map { |item_attributes| LendingItem.create!(**item_attributes) }
+
+    @processed = items.select(&:processed?)
+    @unprocessed = items.reject(&:processed?)
+  end
+
+  describe :processed? do
+    it 'returns true for items with populated image directories' do
+      expect(processed).not_to be_empty
+      processed.each do |item|
+        iiif_dir = item.iiif_dir
+        expect(File.directory?(iiif_dir)).to eq(true)
+        expect(Dir.empty?(iiif_dir)).to eq(false)
+      end
+    end
+
+    it 'returns false for items without populated image directories' do
+      expect(unprocessed).not_to be_empty
+      unprocessed.each do |item|
+        iiif_dir = item.iiif_dir
+        expect(Dir.empty?(iiif_dir)).to eq(true)
+      end
+    end
   end
 
   describe :available? do
     it 'returns true if there are copies available' do
-      items.each do |item|
+      processed.each do |item|
         expect(item.available?).to eq(true)
       end
     end
 
     it 'returns false if there are no copies available' do
-      items.each do |item|
+      processed.each do |item|
         item.copies = 0
         expect(item.available?).to eq(false)
       end
     end
 
     it 'returns false if the item has not been processed' do
-      items.each do |item|
-        item.processed = false
+      unprocessed.each do |item|
         expect(item.available?).to eq(false)
       end
     end
 
     it 'returns false if all copies are checked out' do
-      items.each_with_index do |item, i|
-        item.check_out_to("patron-#{i}")
+      processed.each do |item|
+        item.copies.times { |i| item.check_out_to("patron-#{i}") }
         expect(item.available?).to eq(false)
       end
     end
   end
 
   describe :iiif_item do
-    attr_reader :processed, :unprocessed
-
-    before(:each) do
-      @processed = items.select(&:processed)
-      @unprocessed = items.reject(&:processed)
-    end
-
     it 'returns the IIIFItem if the item has been processed' do
       processed.each do |item|
         iiif_item = item.iiif_item

@@ -30,17 +30,18 @@
   end
 
   if lending_admin?
+    due_dates = @lending_item.due_dates.to_a
+    unless due_dates.empty?
+      fields['Due dates for current checkouts'] = due_dates
+    end
+
     if @lending_item.processed?
       fields['Processed?'] = 'Yes'
       fields['IIIF directory'] = @lending_item.iiif_dir
     else
       fields['Processed?'] = 'No'
     end
-
-    due_dates = @lending_item.due_dates.to_a
-    unless due_dates.empty?
-      fields['Due dates for current checkouts'] = due_dates
-    end
+    fields['Directory'] = @lending_item.directory
 
     fields['Direct link'] = link_to(lending_url(directory: directory))
   end

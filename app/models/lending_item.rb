@@ -52,6 +52,12 @@ class LendingItem < ActiveRecord::Base
   # ------------------------------------------------------------
   # Synthetic accessors
 
+  def processed?
+    return false if Dir.empty?(iiif_dir) # :empty? covers missing directories and non-directories
+
+    Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
+  end
+
   def available?
     processed? && copies_available > 0
   end
@@ -80,15 +86,16 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_item
-    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless processed
+    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless processed?
 
     Lending::IIIFItem.new(title: title, author: author, dir_path: iiif_dir)
   end
 
   def iiif_dir
-    iiif_dir_relative = File.join(iiif_final_dir, directory)
-    Dir.mkdir(iiif_dir_relative) unless File.directory?(iiif_dir_relative)
-    File.realpath(iiif_dir_relative)
+    @iiif_dir ||= begin
+      iiif_dir_relative = File.join(iiif_final_dir, directory)
+      File.absolute_path(iiif_dir_relative)
+    end
   end
 
   def citation
