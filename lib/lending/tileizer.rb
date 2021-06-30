@@ -8,6 +8,7 @@ module Lending
 
     ENV_INFILE = 'INFILE'.freeze
     ENV_OUTFILE = 'OUTFILE'.freeze
+    SKIP_EXISTING = 'SKIP_EXISTING'.freeze
 
     # vips tiffsave <infile> <outfile> --tile --pyramid --compression jpeg --tile-width 256 --tile-height 256
     VIPS_OPTIONS = {
@@ -42,39 +43,44 @@ module Lending
     class << self
       include UCBLIT::Logging
 
-      # ENV_INFILE = Tileizer::ENV_INFILE
-      # ENV_OUTFILE = Tileizer::ENV_OUTFILE
-
-      def tileize_all(indir, outdir)
+      def tileize_all(indir, outdir, skip_existing: false)
         indir_path, outdir_path = [indir, outdir].map { |d| PathUtils.ensure_dirpath(d) }
         raise ArgumentError, "Can't write tileized files to same directory as input files" if indir_path == outdir_path
 
         infiles = indir_path.children.select { |p| PathUtils.tiff?(p) }.sort
         infiles.map do |infile_path|
           outfile_path = outdir_path.join(infile_path.basename)
-          tileize(infile_path, outfile_path)
+
+          tileize(infile_path, outfile_path, skip_existing: skip_existing)
         end
       end
 
       # @param infile_path [String, Pathname] the input file path
       # @param outfile_path [String, Pathname] the output file or directory path. If a directory,
       #   the actual file will be created based on the input filename.
-      def tileize(infile_path, outfile_path, fail_fast: false)
+      def tileize(infile_path, outfile_path, skip_existing: false, fail_fast: false)
         infile_path, outfile_path = PathUtils.ensure_pathnames(infile_path, outfile_path)
         if outfile_path.directory?
           stem = infile_path.basename(infile_path.extname)
           outfile_path = outfile_path.join("#{stem}.tif")
         end
+        if skip_existing && outfile_path.exist?
+          logger.info("Skipping existing file #{outfile_path}")
+          return
+        end
+
         outfile_path.tap { |op| tileize!(infile_path, op, fail_fast) }
       end
 
       # Invokes either #tileize or #tileize_all based on environment
-      # variables $INFILE and $OUTFILE.
+      # variables $INFILE and $OUTFILE, skipping existing files if
+      # $SKIP_EXISTING is set and not blank.
       def tileize_env
+        skip_existing = !ENV[SKIP_EXISTING].to_s.blank?
         infile, outfile = [ENV_INFILE, ENV_OUTFILE].map { |v| PathUtils.env_path(v) }
-        return tileize_all(infile, outfile) if infile.directory?
+        return tileize_all(infile, outfile, skip_existing: skip_existing) if infile.directory?
 
-        tileize(infile, outfile, fail_fast: true)
+        tileize(infile, outfile, skip_existing: skip_existing, fail_fast: true)
       end
 
       private

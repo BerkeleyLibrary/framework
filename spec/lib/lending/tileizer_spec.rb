@@ -64,6 +64,49 @@ module Lending
           end
         end
       end
+
+      describe 'tileizing a file to a directory' do
+        context 'with skip_existing: true' do
+          it 'skips an existing file' do
+            expect(Vips::Image).not_to receive(:new_from_file)
+            infile = File.join(samples, 'incoming/00000100.tif')
+            Dir.mktmpdir do |outdir|
+              outfile = File.join(outdir, File.basename(infile))
+              FileUtils.touch(outfile)
+              Tileizer.tileize(infile, outdir, skip_existing: true)
+            end
+          end
+        end
+      end
+
+      describe 'tileizing a file to a file' do
+        context 'with skip_existing: true' do
+          it 'skips an existing file' do
+            expect(Vips::Image).not_to receive(:new_from_file)
+            infile = File.join(samples, 'incoming/00000100.tif')
+            Dir.mktmpdir do |outdir|
+              outfile = File.join(outdir, File.basename(infile))
+              FileUtils.touch(outfile)
+              Tileizer.tileize(infile, outfile, skip_existing: true)
+            end
+          end
+        end
+      end
+
+      describe 'tileizing a directory to a directory' do
+        context 'with skip_existing: true' do
+          it 'skips an existing file' do
+            infile = File.join(samples, 'incoming/00000100.tif')
+            Dir.mktmpdir do |outdir|
+              outfile = File.join(outdir, File.basename(infile))
+              FileUtils.touch(outfile)
+
+              expect(Vips::Image).not_to receive(:new_from_file).with(outfile.to_s, **Tileizer::VIPS_OPTIONS)
+              Tileizer.tileize(infile, outfile, skip_existing: true)
+            end
+          end
+        end
+      end
     end
 
     it 'handles failures' do
@@ -112,7 +155,7 @@ module Lending
     describe :tileize_env do
 
       before(:each) do
-        envvars = [Tileizer::ENV_INFILE, Tileizer::ENV_OUTFILE]
+        envvars = [Tileizer::ENV_INFILE, Tileizer::ENV_OUTFILE, Tileizer::SKIP_EXISTING]
         @env_orig = envvars.map { |v| [v, ENV[v]] }.to_h.freeze
         envvars.each { |v| ENV[v] = nil }
       end
@@ -151,6 +194,50 @@ module Lending
           end
 
           Tileizer.tileize_env
+        end
+      end
+
+      context 'with SKIP_EXISTING' do
+        before(:each) do
+          ENV[Tileizer::SKIP_EXISTING] = 'skip'
+        end
+
+        it 'skips a single file' do
+          infile = File.join(samples, 'incoming/00000100.tif')
+          Dir.mktmpdir do |outdir|
+            basename = File.basename(infile)
+            outfile = File.join(outdir, basename)
+            ENV[Tileizer::ENV_INFILE] = infile
+            ENV[Tileizer::ENV_OUTFILE] = outfile
+
+            FileUtils.touch(outfile)
+            expect(Vips::Image).not_to receive(:new_from_file).with(infile)
+
+            Tileizer.tileize_env
+          end
+        end
+
+        it 'skips existing files in a directory' do
+          Dir.mktmpdir do |outdir|
+            ENV[Tileizer::ENV_INFILE] = indir
+            ENV[Tileizer::ENV_OUTFILE] = outdir
+
+            infiles.each_with_index do |f, i|
+              infile = File.join(indir, f)
+              outfile = File.join(outdir, f)
+
+              if i.odd?
+                source_img = double(Vips::Image)
+                expect(Vips::Image).to receive(:new_from_file).with(infile).and_return(source_img).ordered
+                expect(source_img).to receive(:tiffsave).with(outfile.to_s, **Tileizer::VIPS_OPTIONS).ordered
+              else
+                FileUtils.touch(outfile)
+                expect(Vips::Image).not_to receive(:new_from_file).with(infile)
+              end
+            end
+
+            Tileizer.tileize_env
+          end
         end
       end
     end
