@@ -6,7 +6,7 @@ class LendingItem < ActiveRecord::Base
   # ------------------------------------------------------------
   # Relations
 
-  has_many :lending_item_loans
+  has_many :lending_item_loans, dependent: :destroy
 
   # ------------------------------------------------------------
   # Validations
