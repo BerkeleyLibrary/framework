@@ -22,7 +22,9 @@
     if @lending_item_loan.persisted?
       fields['Loan status'] = @lending_item_loan.loan_status
       fields['Checked out'] = @lending_item_loan.loan_date # TODO: format all dates
-      fields['Due'] = @lending_item_loan.due_date # TODO: format all dates
+      if @lending_item_loan.active?
+        fields['Due'] = @lending_item_loan.due_date # TODO: format all dates
+      end
     end
     if @lending_item_loan.complete?
       fields['Returned'] = @lending_item_loan.return_date
@@ -67,46 +69,28 @@
         <th><%= label %></th>
         <td>
           <% if value.respond_to?(:each) %>
-            <ul>
-              <% value.each do |v| %>
-                <li><%= v %></li>
-              <% end %>
-            </ul>
+              <% value.each { |v| %><p><%= v %></p><% } %>
           <% else %>
             <%= value %>
           <% end %>
         </td>
       </tr>
     <% end %>
-    <% if lending_admin? %>
-      <tr>
-        <th class="action edit">
-          <%= link_to 'Edit', lending_edit_path(directory: directory) %>
-        </th>
-      </tr>
-    <% end %>
-    <% if @lending_item_loan %> <%# TODO: is this the best way to decide whether to show the checkout button? %>
-      <tr>
-        <% if loan_active %>
-          <th class="action return">
-            <%= form_with(url: lending_return_path, id: 'return-form', local: true) do |f| %>
-              <%= f.hidden_field('directory', value: directory) %>
-              <%= f.submit('Return now') %>
-            <% end %>
-          </th>
-        <% else %>
-          <th class="action checkout">
-            <%= form_with(url: lending_check_out_path, id: 'checkout-form', local: true) do |f| %>
-              <%= f.hidden_field('directory', value: directory) %>
-              <%= f.submit(
-                    'Check out',
-                    disabled: @lending_item.checkout_disabled?,
-                    disable_with: @lending_item.checkout_disabled_reason
-                  ) %>
-            <% end %>
-          </th>
+    <tr>
+      <th class="action">
+        <% if @lending_item_loan %> <%# TODO: is this the best way to decide whether to show the checkout button? %>
+          <% if loan_active %>
+            <%= link_to('Return now', lending_return_path(directory: directory), class: 'btn btn-danger') %>
+          <% elsif @lending_item.checkout_disabled? %>
+            <span class="btn btn-primary disabled">Check out</span>
+          <% else %>
+            <%= link_to('Check out', lending_check_out_path(directory: directory), class: 'btn btn-primary') %>
+          <% end %>
         <% end %>
-      </tr>
-    <% end %>
+        <% if lending_admin? %>
+          <%= link_to('Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary') %>
+        <% end %>
+      </th>
+    </tr>
   </table>
 </section>

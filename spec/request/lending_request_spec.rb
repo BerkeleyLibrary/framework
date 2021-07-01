@@ -295,7 +295,7 @@ describe LendingController, type: :request do
     describe :check_out do
       it 'checks out an item' do
         expect do
-          post lending_check_out_path(directory: item.directory)
+          get lending_check_out_path(directory: item.directory)
         end.to change(LendingItemLoan, :count).by(1)
 
         loan = LendingItemLoan.find_by(
@@ -316,7 +316,7 @@ describe LendingController, type: :request do
         expect(loan).to be_persisted
 
         expect do
-          post lending_check_out_path(directory: item.directory)
+          get lending_check_out_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
 
         expect(response.status).to eq(422) # unprocessable entity
@@ -330,7 +330,7 @@ describe LendingController, type: :request do
         expect(item).not_to be_available
 
         expect do
-          post lending_check_out_path(directory: item.directory)
+          get lending_check_out_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
 
         expect(response.status).to eq(422) # unprocessable entity
@@ -341,7 +341,7 @@ describe LendingController, type: :request do
         item = unprocessed.first
 
         expect do
-          post lending_check_out_path(directory: item.directory)
+          get lending_check_out_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
 
         expect(response.status).to eq(422)
@@ -352,7 +352,7 @@ describe LendingController, type: :request do
     describe :return do
       it 'returns an item' do
         loan = item.check_out_to(user.lending_id)
-        post lending_return_path(directory: item.directory)
+        get lending_return_path(directory: item.directory)
 
         loan.reload
         expect(loan).to be_complete
@@ -365,14 +365,14 @@ describe LendingController, type: :request do
         loan = item.check_out_to(user.lending_id)
         loan.return!
 
-        post lending_return_path(directory: item.directory)
+        get lending_return_path(directory: item.directory)
         expected_path = lending_show_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
       end
 
       it 'succeeds even if the item was never checked out' do
         expect do
-          post lending_return_path(directory: item.directory)
+          get lending_return_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expected_path = lending_show_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)

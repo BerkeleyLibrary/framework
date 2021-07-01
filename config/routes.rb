@@ -48,8 +48,8 @@ Rails.application.routes.draw do
     patch '/:directory', to: 'lending#update', as: :lending_update
     delete '/:directory', to: 'lending#destroy', as: :lending_destroy
     # TODO: something more RESTful
-    post '/:directory/checkout', to: 'lending#check_out', as: :lending_check_out
-    post '/:directory/return', to: 'lending#return', as: :lending_return
+    get '/:directory/checkout', to: 'lending#check_out', as: :lending_check_out
+    get '/:directory/return', to: 'lending#return', as: :lending_return
   end
 
   # Proxy Borrower Admin Routes:

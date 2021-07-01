@@ -1,7 +1,14 @@
 <section class="record">
   <%
-    # TODO: see if this is simpler if we use directory as ID
-    url = item.persisted? ? lending_update_path(directory: item.directory) : lending_path
+    if item.persisted?
+      # TODO: see if this is simpler if we use directory as ID
+      url = lending_update_path(directory: item.directory)
+      submit_label = 'Save Changes'
+    else
+      url = lending_path
+      submit_label = 'Add Item'
+    end
+
   %>
   <%= form_with(model: item, url: url, local: true) do |form| %>
     <table>
@@ -25,13 +32,14 @@
         <th><%= form.label(:copies, class: 'control-label') %></th>
         <td><%= form.text_field(:copies, class: 'form-control add-required') %></td>
       </tr>
-
+      </tbody>
+      <tfoot>
       <tr>
-        <th class="action edit">
-          <%= form.submit %>
+        <th class="action">
+          <input type="submit" class="btn btn-primary" value="<%= submit_label %>">
         </th>
       </tr>
-      </tbody>
+      </tfoot>
     </table>
   <% end %>
 </section>
