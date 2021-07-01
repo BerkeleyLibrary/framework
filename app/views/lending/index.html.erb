@@ -29,16 +29,13 @@
       <td><%= item.copies %></td>
       <td><%= item.copies_available %></td>
       <td>
+        <%# TODO: format all dates %>
         <% unless (due_dates = item.due_dates.to_a).empty? %>
-          <ul>
-            <% due_dates.each do |d| %>
-              <li><%= d %></li>
-            <% end %>
-          </ul>
+          <% due_dates.each { |d| %><p><%= d %></p><% } %>
         <% end %>
       </td>
-      <td><%= link_to 'Show', lending_show_path(directory: directory) %></td>
-      <td><%= link_to 'Edit', lending_edit_path(directory: directory) %></td>
+      <td><%= link_to 'Show', lending_show_path(directory: directory), class: 'btn btn-secondary' %></td>
+      <td><%= link_to 'Edit', lending_edit_path(directory: directory), class: 'btn btn-primary' %></td>
       <%# TODO: reimplement "Destroy" as "withdraw" or similar %>
     </tr>
   <% end %>
