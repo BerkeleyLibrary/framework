@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     get '/new', to: 'lending#new', as: :lending_new
     get '/:directory/edit', to: 'lending#edit', as: :lending_edit
     get '/:directory', to: 'lending#show', as: :lending_show
+    get '/:directory/view', to: 'lending#view', as: :lending_view
     patch '/:directory', to: 'lending#update', as: :lending_update
     delete '/:directory', to: 'lending#destroy', as: :lending_destroy
     # TODO: something more RESTful

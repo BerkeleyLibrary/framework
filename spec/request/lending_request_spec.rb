@@ -64,6 +64,8 @@ describe LendingController, type: :request do
             end.to change(LendingItem, :count).by(1)
 
             directory = item_attributes[:directory]
+            expect(response).to redirect_to lending_show_path(directory: directory)
+
             item = LendingItem.find_by(directory: directory)
             expect(item).not_to be_nil
 
@@ -139,8 +141,8 @@ describe LendingController, type: :request do
           items.each do |item|
             get lending_edit_path(directory: item.directory)
             expect(response).to be_successful
-            expected_path = lending_update_path(directory: item.directory)
-            expect(response.body).to include(expected_path)
+            update_path = lending_update_path(directory: item.directory)
+            expect(response.body).to include(update_path)
           end
         end
       end
@@ -194,13 +196,21 @@ describe LendingController, type: :request do
     end
 
     describe :show do
+      it 'returns 403 Forbidden' do
+        get lending_show_path(directory: item.directory)
+        expect(response.status).to eq(403)
+      end
+
+    end
+
+    describe :view do
       it "doesn't create a new loan record" do
         expect do
-          get lending_show_path(directory: item.directory)
+          get lending_view_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
-        expect(response).to be_successful
         expect(response.body).to include('Check out')
         expect(response.body).not_to include('Return')
+        expect(response).to be_successful
       end
 
       it 'shows a loan if one exists' do
@@ -209,7 +219,7 @@ describe LendingController, type: :request do
         expect(loan).to be_persisted # just to be sure
 
         expect do
-          get lending_show_path(directory: item.directory)
+          get lending_view_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
@@ -238,7 +248,7 @@ describe LendingController, type: :request do
         expect(loan.active?).to eq(false)
 
         expect do
-          get lending_show_path(directory: item.directory)
+          get lending_view_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
@@ -263,7 +273,7 @@ describe LendingController, type: :request do
         expect(item).not_to be_available # just to be sure
 
         expect do
-          get lending_show_path(directory: item.directory)
+          get lending_view_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
@@ -281,7 +291,7 @@ describe LendingController, type: :request do
         item = unprocessed.first
 
         expect do
-          get lending_show_path(directory: item.directory)
+          get lending_view_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
         expect(response).to be_successful
 
@@ -307,7 +317,7 @@ describe LendingController, type: :request do
         expect(loan.due_date).to be > Time.now.utc
         expect(loan.due_date - loan.loan_date).to eq(LendingItem::LOAN_DURATION_HOURS.hours)
 
-        expected_path = lending_show_path(directory: item.directory)
+        expected_path = lending_view_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
       end
 
@@ -357,7 +367,7 @@ describe LendingController, type: :request do
         loan.reload
         expect(loan).to be_complete
 
-        expected_path = lending_show_path(directory: item.directory)
+        expected_path = lending_view_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
       end
 
@@ -366,7 +376,7 @@ describe LendingController, type: :request do
         loan.return!
 
         get lending_return_path(directory: item.directory)
-        expected_path = lending_show_path(directory: item.directory)
+        expected_path = lending_view_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
       end
 
@@ -374,12 +384,12 @@ describe LendingController, type: :request do
         expect do
           get lending_return_path(directory: item.directory)
         end.not_to change(LendingItemLoan, :count)
-        expected_path = lending_show_path(directory: item.directory)
+        expected_path = lending_view_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
       end
     end
 
-    describe 'manifest' do
+    describe :manifest do
       it 'returns the manifest for a checked-out item' do
         item.check_out_to(user.lending_id)
         get lending_manifest_path(directory: item.directory)
@@ -430,6 +440,12 @@ describe LendingController, type: :request do
       expect(response).to redirect_to(login_with_callback_url)
     end
 
+    it 'GET lending_view_path redirects to login' do
+      get(path = lending_view_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
     it 'GET lending_show_path redirects to login' do
       get(path = lending_show_path(directory: item.directory))
       login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
@@ -464,8 +480,8 @@ describe LendingController, type: :request do
       expect(response.status).to eq(403)
     end
 
-    it 'GET lending_show_path returns 403 Forbidden' do
-      get lending_show_path(directory: item.directory)
+    it 'GET lending_view_path returns 403 Forbidden' do
+      get lending_view_path(directory: item.directory)
       expect(response.status).to eq(403)
     end
 
