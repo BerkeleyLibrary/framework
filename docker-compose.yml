@@ -13,7 +13,7 @@ services:
       LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
       IIIF_FINAL_DIR: spec/data/lending/final
-      IMAGE_SERVER_BASE_URL: http://iipsrv/iiif/
+      IMAGE_SERVER_BASE_URL: http://ucbears-iiif/iiif/
     init: true
     networks:
       default:
@@ -41,7 +41,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./:/build:rw
 
-  iipsrv:
+  ucbears-iiif:
     image: containers.lib.berkeley.edu/lap/iiip-nginx-single/master:latest
     init: true
     environment:
@@ -58,8 +58,8 @@ services:
     networks:
       default:
         aliases:
-          - iipsrv.test
-    entrypoint: [ "/iipsrv-entrypoint.sh" ]
+          - ucbears-iiif.test
+    entrypoint: [ "/ucbears-iiif-entrypoint.sh" ]
 
   selenium:
     image: selenium/hub
