@@ -59,7 +59,7 @@ services:
       default:
         aliases:
           - iipsrv.test
-    entrypoint: ["/iipsrv-entrypoint.sh"]
+    entrypoint: [ "/iipsrv-entrypoint.sh" ]
 
   selenium:
     image: selenium/hub
@@ -94,6 +94,6 @@ services:
       - 8080:8080
 
 volumes:
-  postgres_data: {}
+  postgres_data: { }
 
 version: '3.8'
