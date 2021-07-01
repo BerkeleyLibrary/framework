@@ -45,6 +45,5 @@ module Framework
     # Lending
     config.image_server_base_uri = config.altmedia['image_server_base_uri']
     config.iiif_final_dir = config.altmedia['iiif_final_dir']
-    config.iiif_incoming_dir = config.altmedia['iiif_incoming_dir']
   end
 end
