@@ -15,7 +15,7 @@ class LendingController < ApplicationController
   # Hooks
 
   before_action(:authenticate!)
-  before_action(:require_lending_admin!, only: %i[index new create edit update destroy])
+  before_action(:require_lending_admin!, except: %i[view manifest check_out return])
   before_action(:ensure_lending_item!, except: %i[index new create])
 
   # ------------------------------------------------------------
@@ -34,7 +34,11 @@ class LendingController < ApplicationController
 
   def edit; end # TODO: is this necessary?
 
-  def show
+  # Admin view
+  def show; end # TODO: is this necessary?
+
+  # Patron view
+  def view
     ensure_lending_item_loan!
     flash[:danger] = reason_unavailable unless lending_admin? || available?
   end
@@ -70,7 +74,7 @@ class LendingController < ApplicationController
     render_with_errors(:show, @lending_item_loan.errors) && return unless @lending_item_loan.persisted?
 
     flash[:success] = 'Checkout successful.'
-    redirect_to lending_show_url(directory: directory)
+    redirect_to lending_view_url(directory: directory)
   end
 
   def return
@@ -81,7 +85,7 @@ class LendingController < ApplicationController
       flash[:danger] = MSG_NOT_CHECKED_OUT
     end
 
-    redirect_to lending_show_url(directory: directory)
+    redirect_to lending_view_url(directory: directory)
   end
 
   # TODO: reimplement as "withdraw" or similar
@@ -137,7 +141,7 @@ class LendingController < ApplicationController
   end
 
   def available?
-    @lending_item_loan.active? || @lending_item.available?
+    @lending_item.available? || @lending_item_loan.active?
   end
 
   def reason_unavailable

@@ -1,0 +1,43 @@
+<%
+  fields = {
+    'Title' => @lending_item.title,
+    'Author' => @lending_item.author,
+    'Record ID' => @lending_item.record_id,
+    'Barcode' => @lending_item.barcode,
+    'Copies' => @lending_item.copies,
+    'Copies available' => @lending_item.copies_available
+  }.merge(additional_fields)
+%>
+
+<section class="record">
+  <% if show_viewer %>
+    <%=
+      render(
+        partial: 'viewer',
+        locals: {
+          manifest_url: manifest_url,
+          viewer_title: viewer_title,
+        }
+      )
+    %>
+  <% end %>
+
+  <table>
+    <% fields.each do |label, value| %>
+      <tr>
+        <th><%= label %></th>
+        <td>
+          <% if value.respond_to?(:each) %>
+            <% value.each { |v| %><p><%= v %></p>
+            <% } %>
+          <% else %>
+            <%= value %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+      <th class="action"><%= action %></th>
+    </tr>
+  </table>
+</section>
