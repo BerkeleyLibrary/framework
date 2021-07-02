@@ -19,7 +19,7 @@ describe :stack_pass_form, type: :system do
     end
 
     it 'accepts a valid request' do
-      date_str = Date.today.strftime('%m/%d/%y')
+      date_str = Date.current.strftime('%m/%d/%y')
       visit new_stack_pass_form_path
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
@@ -85,7 +85,7 @@ describe :stack_pass_form, type: :system do
     before(:each) do
       # Create some requests:
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
 
       # These functions require admin privledges:
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])

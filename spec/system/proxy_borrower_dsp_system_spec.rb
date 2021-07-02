@@ -10,7 +10,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
 
   before(:all) do
     # Calculate and define the max date and an invalid date:
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr += 1 if mo >= 4
@@ -90,7 +90,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
 
-    today = Date.today
+    today = Date.current
     year = today.month >= 4 ? today.year + 1 : today.year
     expected_max = Date.new(year, 6, 30).strftime('%B %e, %Y')
 

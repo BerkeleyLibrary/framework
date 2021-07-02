@@ -1,6 +1,8 @@
 class ApplicationJob < ActiveJob::Base
+  MILL_DATE_FORMAT = '%Y%m%d'
+
   def today
-    @today ||= Time.now.strftime('%Y%m%d')
+    @today ||= Time.current.strftime(MILL_DATE_FORMAT)
   end
 
   # Log an exception

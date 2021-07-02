@@ -148,7 +148,7 @@ module Patron
       # missing date shouldn't happen, but if it does, err on the side of expiring
       return true unless expiration_date
 
-      expiration_date < Date.today
+      expiration_date < Date.current
     end
 
     def active?

@@ -16,6 +16,8 @@ module Framework
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    config.time_zone = 'America/Los_Angeles'
+
     # Load our custom config. This is implicitly consumed in a few remaining
     # places (e.g. RequestMailer). A good development improvement would be to
     # inject those configs like we do with the Patron class.
