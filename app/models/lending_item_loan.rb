@@ -22,7 +22,7 @@ class LendingItemLoan < ActiveRecord::Base
   # ------------------------------------------------------------
   # Callbacks
 
-  after_find { |loan| loan.return! if loan.expired? }
+  after_find { |loan| loan.return! if loan.expired? || loan.lending_item.copies == 0 }
 
   # ------------------------------------------------------------
   # Instance methods

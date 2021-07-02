@@ -266,6 +266,35 @@ describe LendingController, type: :request do
         expect(body).not_to include('Return now')
       end
 
+      it 'pre-returns the loan if the number of copies is changed to zero' do
+        loan = item.check_out_to(user.lending_id)
+
+        item.copies = 0
+        item.save!
+
+        loan.reload
+        expect(loan.complete?).to eq(true)
+        expect(loan.active?).to eq(false)
+
+        expect do
+          get lending_view_path(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
+        expect(response).to be_successful
+
+        loan.reload
+        expect(loan).to be_complete
+        expect(loan.return_date).to be_within(1.minute).of Time.now
+
+        body = response.body
+
+        # TODO: format all dates
+        return_date_str = loan.return_date.to_s
+        expect(body).to include(return_date_str)
+
+        expect(body).to include('Check out')
+        expect(body).not_to include('Return now')
+      end
+
       it 'displays an item with no available copies' do
         item.copies.times do |copy|
           item.check_out_to("patron-#{copy}")

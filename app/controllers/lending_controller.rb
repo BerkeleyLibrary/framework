@@ -40,7 +40,7 @@ class LendingController < ApplicationController
   # Patron view
   def view
     ensure_lending_item_loan!
-    flash[:danger] = reason_unavailable unless lending_admin? || available?
+    flash[:danger] = reason_unavailable unless available?
   end
 
   def manifest
