@@ -187,7 +187,7 @@ class RequestMailer < ApplicationMailer
               Gardner Stacks Level A along with a government-issued photo ID.', align: :center
     pdf.move_down 10
     pdf.text "Name: #{stackpass_form.name}", align: :center
-    pdf.text "Date of Stack Pass: #{stackpass_form.pass_date.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "Date of Stack Pass: #{stackpass_form.pass_date.to_s(:short)}", align: :center
     pdf.text "Approved by: #{stackpass_form.processed_by}", align: :center
     pdf.move_down 10
     pdf.text 'University of California, Berkeley Library'
@@ -209,8 +209,8 @@ class RequestMailer < ApplicationMailer
               Desk (Doe Library, Gardner Stacks Level A) along with a government-issued photo ID.', align: :center
     pdf.move_down 10
     pdf.text "Name: #{refcard_form.name}", align: :center
-    pdf.text "Start date of Reference card: #{refcard_form.pass_date.strftime('%m/%d/%Y')}", align: :center
-    pdf.text "End date of Reference card: #{refcard_form.pass_date_end.strftime('%m/%d/%Y')}", align: :center
+    pdf.text "Start date of Reference card: #{refcard_form.pass_date.to_s(:short)}", align: :center
+    pdf.text "End date of Reference card: #{refcard_form.pass_date_end.to_s(:short)}", align: :center
     pdf.text "Approved by: #{refcard_form.processed_by}", align: :center
     pdf.move_down 10
     pdf.text 'University of California, Berkeley Library'

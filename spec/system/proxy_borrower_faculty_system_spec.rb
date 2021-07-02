@@ -15,10 +15,11 @@ describe :forms_proxy_borrower_faculty, type: :system do
     yr = today.year
     yr += 1 if mo >= 4
     max_date = Date.new(yr, 6, 30)
+    invalid_date = Date.new(yr, 7, 1)
 
     # Thou shalt pass paramters as strings:
-    @invalid_date_str = Date.new(yr, 7, 0o1).strftime('%m/%d/%Y')
-    @max_date_str = max_date.strftime('%m/%d/%Y')
+    @invalid_date_str = invalid_date.to_s(:input)
+    @max_date_str = max_date.to_s(:input)
   end
 
   before(:each) do
@@ -91,7 +92,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
 
     today = Date.current
     year = today.month >= 4 ? today.year + 1 : today.year
-    expected_max = Date.new(year, 6, 30).strftime('%B %e, %Y')
+    expected_max = Date.new(year, 6, 30).to_s(:long)
 
     expect(page).to have_content("The term of the Proxy Card must not be greater than #{expected_max}")
   end

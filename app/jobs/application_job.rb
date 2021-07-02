@@ -1,5 +1,5 @@
 class ApplicationJob < ActiveJob::Base
-  MILL_DATE_FORMAT = '%Y%m%d'
+  MILL_DATE_FORMAT = '%Y%m%d'.freeze
 
   def today
     @today ||= Time.current.strftime(MILL_DATE_FORMAT)

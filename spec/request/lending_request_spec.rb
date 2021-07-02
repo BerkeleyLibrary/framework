@@ -226,7 +226,7 @@ describe LendingController, type: :request do
         body = response.body
 
         # TODO: format all dates
-        due_date_str = item.next_due_date.to_s
+        due_date_str = item.next_due_date.to_s(:short)
         expect(body).to include(due_date_str)
 
         expect(body).not_to include('Check out')
@@ -259,7 +259,7 @@ describe LendingController, type: :request do
         body = response.body
 
         # TODO: format all dates
-        return_date_str = loan.return_date.to_s
+        return_date_str = loan.return_date.to_s(:short)
         expect(body).to include(return_date_str)
 
         expect(body).to include('Check out')
@@ -288,7 +288,7 @@ describe LendingController, type: :request do
         body = response.body
 
         # TODO: format all dates
-        return_date_str = loan.return_date.to_s
+        return_date_str = loan.return_date.to_s(:short)
         expect(body).to include(return_date_str)
 
         expect(body).to include('Check out')
@@ -312,7 +312,7 @@ describe LendingController, type: :request do
         expect(body).to include(LendingItem::MSG_UNAVAILABLE)
 
         # TODO: format all dates
-        due_date_str = item.next_due_date.to_s
+        due_date_str = item.next_due_date.to_s(:long)
         expect(body).to include(due_date_str)
       end
 

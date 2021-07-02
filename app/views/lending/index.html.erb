@@ -31,7 +31,7 @@
       <td>
         <%# TODO: format all dates %>
         <% unless (due_dates = item.due_dates.to_a).empty? %>
-          <% due_dates.each { |d| %><p><%= d %></p><% } %>
+          <% due_dates.each { |d| %><p><%= d.to_s(:short) %></p><% } %>
         <% end %>
       </td>
       <td><%= link_to 'Show', lending_show_path(directory: directory), class: 'btn btn-secondary' %></td>

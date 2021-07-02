@@ -19,7 +19,7 @@ describe :stack_pass_form, type: :system do
     end
 
     it 'accepts a valid request' do
-      date_str = Date.current.strftime('%m/%d/%y')
+      date_str = Date.current.to_s(:input)
       visit new_stack_pass_form_path
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'jdoe@library.edu')

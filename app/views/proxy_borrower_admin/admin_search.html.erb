@@ -40,10 +40,10 @@
           <tr>
             <td><%= r.faculty_name %></td>
             <td><%= r.student_name %></td>
-            <td><%= r.full_name() %></td>
+            <td><%= r.full_name %></td>
             <td><%= r.dsp_rep %></td>
-            <td><%= r.created_at.strftime("%m/%d/%Y") %></td>
-            <td><%= r.date_term.strftime("%m/%d/%Y") %></td>
+            <td><%= r.created_at.to_s(:short) %></td>
+            <td><%= r.date_term.to_s(:short) %></td>
           </tr>
         <% end %>
       </tbody>

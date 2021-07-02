@@ -50,9 +50,8 @@ class ProxyBorrowerRequests < ActiveRecord::Base
 
   private
 
-  # For the export we want am/pm, not military time:
   def date_requested
-    created_at.in_time_zone('Pacific Time (US & Canada)').strftime('%D %r %Z')
+    created_at.in_time_zone.to_s(:export)
   end
 
   # Export also wants the proxy name in one field (first last):
@@ -64,7 +63,7 @@ class ProxyBorrowerRequests < ActiveRecord::Base
   def date_limit
     return errors.add(:date_term, :missing) unless date_term.present?
     return errors.add(:date_term, :expired) if date_term < Date.current
-    return errors.add(:date_term, :too_long, max_term: max_term.strftime('%B %e, %Y')) if date_term > max_term
+    return errors.add(:date_term, :too_long, max_term: max_term.to_s(:export)) if date_term > max_term
   end
 
   def max_term

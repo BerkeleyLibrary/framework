@@ -30,11 +30,11 @@
         </tr>
         <tr>
           <td>Start Date:</td>
-          <td><%= @req.pass_date.strftime("%m/%d/%Y") %></td>
+          <td><%= @req.pass_date.to_s(:short) %></td>
         </tr>
         <tr>
           <td>End Date:</td>
-          <td><%= @req.pass_date_end.strftime("%m/%d/%Y") %></td>
+          <td><%= @req.pass_date_end.to_s(:short) %></td>
         </tr>
         <tr>
           <td>Total days requested and approved:</td>
@@ -52,12 +52,12 @@
           <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
           <%= label_tag(:stack_pass_form_main_stack_1, "Deny") %>
           <!-- DENIAL REASON SELECT -->
-          <%= select(:stack_pass_denial, 
-            'denial_reason', 
-            ['Item listed at another library', 
-             '3-month maximum exceeded', 
+          <%= select(:stack_pass_denial,
+            'denial_reason',
+            ['Item listed at another library',
+             '3-month maximum exceeded',
              'Item at NRLF',
-             'Other'], 
+             'Other'],
             {prompt: 'Select reason for denial'},
             {:class => 'custom-select custom-select-sm col-md-4',
              :onchange => 'checkStackPassInputs()',
@@ -104,11 +104,11 @@
       </tr>
       <tr>
         <td>Start Date:</td>
-        <td><%= @req.pass_date.strftime("%m/%d/%Y") %></td>
+        <td><%= @req.pass_date.to_s(:short) %></td>
       </tr>
       <tr>
         <td>End Date:</td>
-        <td><%= @req.pass_date_end.strftime("%m/%d/%Y") %></td>
+        <td><%= @req.pass_date_end.to_s(:short) %></td>
       </tr>
       <tr>
         <td>Total days requested and approved:</td>

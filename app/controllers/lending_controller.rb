@@ -149,8 +149,8 @@ class LendingController < ApplicationController
     return LendingItem::MSG_UNPROCESSED unless @lending_item.processed?
     return LendingItem::MSG_UNAVAILABLE unless (due_date = @lending_item.next_due_date)
 
-    # TODO: format all dates
-    "#{LendingItem::MSG_UNAVAILABLE} It will be returned on #{due_date}"
+    date_str = due_date.to_s(:long)
+    "#{LendingItem::MSG_UNAVAILABLE} It will be returned on #{date_str}"
   end
 
   def manifest_url

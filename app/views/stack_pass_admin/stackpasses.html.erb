@@ -4,8 +4,8 @@
     <h1 class="inline-title">All Stack Pass Requests:</h1>
   </span>
   <span>
-    <%= link_to 'Admin Home', 
-      forms_stack_pass_admin_path, 
+    <%= link_to 'Admin Home',
+      forms_stack_pass_admin_path,
       class: "title-link text-nowrap" %>
   </span>
 </span>
@@ -30,7 +30,7 @@
         </td>
         <td><%= r.name %></td>
         <td><%= r.email %></td>
-        <td><%= r.pass_date.strftime("%m/%d/%Y") %></td>
+        <td><%= r.pass_date.to_s(:short) %></td>
         <% if r.approvedeny.nil? %>
           <td>Unprocessed</td>
         <% elsif r.approvedeny == true %>
@@ -38,7 +38,7 @@
         <% else %>
           <td>Denied</td>
         <% end %>
-        <td><%= r.created_at.strftime("%m/%d/%Y") %></td>
+        <td><%= r.created_at.to_s(:short) %></td>
       </tr>
     <% end %>
   </tbody>

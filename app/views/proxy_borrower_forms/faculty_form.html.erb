@@ -3,7 +3,7 @@
 <% mo = today.month %>
 <% yr = today.year %>
 <% yr += 1 if mo >= 4 %>
-<% max_date = Date.new(yr, 6, 30).strftime("%B %e, %Y") %>
+<% max_date = Date.new(yr, 6, 30) %>
 <!-- Flash any errors we encounter -->
 <% if @request_form.errors.any? %>
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -51,7 +51,7 @@
   <!-- Term of Proxy Card -->
   <div class="form-group m-0 required">
     <%= label_tag(:term, "Term of Proxy Card:", class: "control-label") %>
-    (not to exceed <%= max_date %> ) <br />
+    (not to exceed <%= max_date.to_s(:long) %> ) <br />
     <%= text_field_tag(:term, nil, class: "form-control w-25 mb-0", placeholder: "mm/dd/yyyy", required: true, autocomplete: 'off') %>
     <br/>
   </div>
