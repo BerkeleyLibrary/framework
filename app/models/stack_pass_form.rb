@@ -26,9 +26,9 @@ class StackPassForm < StackRequest
   # rubocop:disable Metrics/AbcSize
   def date_check
     date_entered = pass_date || nil
-    max_date = Date.today + 7
+    max_date = 7.days.from_now
 
-    min_date = Date.today
+    min_date = Date.current
     min_date = created_at.getlocal.to_date if created_at
 
     if date_entered

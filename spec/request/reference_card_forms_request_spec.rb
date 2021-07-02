@@ -18,7 +18,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'redirects to login if if user is not a stack pass admin' do
       form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                                      pass_date: Date.today, pass_date_end: Date.today + 1)
+                                      pass_date: Date.current, pass_date_end: 1.day.from_now)
       get(form_path = reference_card_form_path(id: form.id))
       expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
     end
@@ -53,7 +53,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'renders process form for unprocessed request' do
       form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                                      pass_date: Date.today, pass_date_end: Date.today + 1,
+                                      pass_date: Date.current, pass_date_end: 1.day.from_now,
                                       research_desc: 'This is research', affiliation: 'Affiliation 1',
                                       local_id: '8675309')
       get "/forms/reference-card/#{form.id}"
@@ -63,7 +63,7 @@ describe 'Reference Card Form', type: :request do
     it 'renders processed page for processed request' do
       form = ReferenceCardForm.create(
         email: 'closedreq@test.com', name: 'Jane Doe',
-        pass_date: Date.today, pass_date_end: Date.today + 1,
+        pass_date: Date.current, pass_date_end: 1.day.from_now,
         research_desc: 'This is research', affiliation: 'Affiliation 1',
         local_id: '8675309',
         approvedeny: true, processed_by: 'Test Admin'
@@ -80,7 +80,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'allows an admin to deny a request' do
       form = ReferenceCardForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                      affiliation: 'Red Bull', pass_date: Date.today, pass_date_end: Date.today + 1, local_id: '8675309')
+                                      affiliation: 'Red Bull', pass_date: Date.current, pass_date_end: 1.day.from_now, local_id: '8675309')
 
       params = {
         'stack_pass_[approve_deny]' => false,

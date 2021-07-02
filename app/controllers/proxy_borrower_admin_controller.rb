@@ -12,17 +12,17 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   def admin_view
     # Hey, let's look at all these glorious requests!!!
     # @requests = ProxyBorrowerRequests.all.order(sort_column + ' ' + sort_direction)
-    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.today).order(sort_column + ' ' + sort_direction)
+    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.current).order(sort_column + ' ' + sort_direction)
   end
 
   def admin_export
     # Let's give this admin all of the records in a file
     # @requests = ProxyBorrowerRequests.all.order(created_at: :desc)
-    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.today).order(created_at: :desc)
+    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.current).order(created_at: :desc)
 
     respond_to do |format|
       format.html { redirect_to forms_proxy_borrower_admin_path }
-      format.csv { send_data @requests.to_csv, filename: "ProxyRequests-#{Date.today}.csv" }
+      format.csv { send_data @requests.to_csv, filename: "ProxyRequests-#{Date.current}.csv" }
     end
   end
 
@@ -66,7 +66,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
       # so filtering the results into an array to be passed back to the view:
       @requests = []
       unfiltered_requests.each do |r|
-        @requests.push(r) if r.date_term > Date.today
+        @requests.push(r) if r.date_term > Date.current
       end
     end
   end

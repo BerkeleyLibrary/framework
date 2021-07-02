@@ -234,7 +234,7 @@ describe LendingController, type: :request do
       end
 
       it 'pre-returns the loan if already expired' do
-        loan_date = Time.now.utc - 3.weeks
+        loan_date = Time.current - 3.weeks
         due_date = loan_date + LendingItem::LOAN_DURATION_HOURS.hours
         loan = LendingItemLoan.create(
           lending_item_id: item.id,
@@ -254,7 +254,7 @@ describe LendingController, type: :request do
 
         loan.reload
         expect(loan).to be_complete
-        expect(loan.return_date).to be_within(1.minute).of Time.now
+        expect(loan.return_date).to be_within(1.minute).of Time.current
 
         body = response.body
 
@@ -283,7 +283,7 @@ describe LendingController, type: :request do
 
         loan.reload
         expect(loan).to be_complete
-        expect(loan.return_date).to be_within(1.minute).of Time.now
+        expect(loan.return_date).to be_within(1.minute).of Time.current
 
         body = response.body
 
@@ -342,8 +342,8 @@ describe LendingController, type: :request do
           patron_identifier: user.lending_id
         )
         expect(loan).to be_active
-        expect(loan.loan_date).to be <= Time.now.utc
-        expect(loan.due_date).to be > Time.now.utc
+        expect(loan.loan_date).to be <= Time.current
+        expect(loan.due_date).to be > Time.current
         expect(loan.due_date - loan.loan_date).to eq(LendingItem::LOAN_DURATION_HOURS.hours)
 
         expected_path = lending_view_path(directory: item.directory)

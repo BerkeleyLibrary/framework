@@ -66,7 +66,7 @@ class StackPassAdminController < AuthenticatedFormController
   end
 
   def start_school_year
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr -= 1 if mo < 7
@@ -74,7 +74,7 @@ class StackPassAdminController < AuthenticatedFormController
   end
 
   def start_calendar_year
-    today = Date.today
+    today = Date.current
     yr = today.year
     Date.new(yr, 1, 1)
   end

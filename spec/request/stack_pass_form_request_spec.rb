@@ -22,7 +22,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'redirects to login if if user is not a stack pass admin' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true)
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true)
 
       get((form_path = stack_pass_form_path(id: form.id)))
       expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
@@ -64,14 +64,14 @@ describe 'Stack Pass Form', type: :request do
 
     it 'renders process form for unprocessed request' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
       get "/forms/stack-pass/#{form.id}"
       expect(response.body).to include('<h3>This request needs to be processed.</h3>')
     end
 
     it 'renders processed page for processed request' do
       form = StackPassForm.create(email: 'closedreq@test.com', name: 'Jane Doe',
-                                  phone: '925-555-5678', pass_date: Date.today, main_stack: true, local_id: '8675309',
+                                  phone: '925-555-5678', pass_date: Date.current, main_stack: true, local_id: '8675309',
                                   approvedeny: true, processed_by: 'Test Admin')
       get "/forms/stack-pass/#{form.id}"
       expect(response.body).to include('<h2>This request has been processed</h2>')
@@ -85,7 +85,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'allows an admin to deny a request' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
 
       params = {
         'stack_pass_[approve_deny]' => false,
