@@ -17,7 +17,7 @@
         <div class="rts-cell rts-w400"><%= fine.type %></div>
         <div class="rts-cell rts-w400"><%= fine.owner %></div>
         <div class="rts-cell rts-w150">$<%= fine.balance %></div>
-        <div class="rts-cell rts-w400"><%= I18n.l(fine.date, format: :long) %></div>
+        <div class="rts-cell rts-w400"><%= fine.date.to_s(:long) %></div>
         <div class="rts-cell rts-c">
           <label for="fine_payment_<%= fine.id %>" class="hidden_label"><%= fine.type %></label>
           <%= freeze_pay_column ? check_box("fine", "payment_#{fine.id}", {:disabled => true, :checked => true} ) : check_box("fine", "payment", {:multiple => true}, fine.id, nil ) %>

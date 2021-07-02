@@ -48,7 +48,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
   end
 
   describe 'success' do
-    let(:today) { Time.current.strftime('%Y%m%d') }
+    let(:today) { Time.current.strftime(ApplicationJob::MILL_DATE_FORMAT) }
     let(:expected_note) { "#{today} #{note_text} [litscript]" }
     let(:expected_command) { ['/home/altmedia/bin/mkcallnote', expected_note, patron.id].shelljoin }
 

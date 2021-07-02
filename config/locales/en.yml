@@ -31,6 +31,28 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  site_name: UC Berkeley Library Forms
+
+  # TODO: is there a reason the 'export' date/time formats have to be different?
+  #       (see ProxyBorrowerRequests)
+
+  # TODO: replace :input format with more international-friendly :short format
+  #       (make sure JavaScript side works too)
+  #       (see also messages below)
+
+  date:
+    formats:
+      long: '%B %-d, %Y'                    # August 4, 2010
+      short: '%F'                           # 2010-08-04
+      export: '%B %e, %Y'                   # August  4, 2010
+      input: '%m/%d/%y'                     # 07/02/21
+
+  time:
+    formats:
+      long: '%B %-d, %Y, %-l:%M %P (%Z)'    # August 4, 2010, 9:33 am (PDT)
+      short: '%F %-l:%M %P %Z'              # 2010-08-04 9:33 am PDT
+      export: '%D %r %Z'                    # 08/04/10 09:33 AM PDT
+
   activerecord:
     attributes:
       stack_pass_form:
@@ -53,13 +75,13 @@ en:
         proxy_borrower_requests:
           attributes:
             research_last:
-              missing: "Last name of proxy must not be blank"
+              missing: "Last name of proxy must not be blank."
             research_first:
-              missing: "First name of proxy must not be blank"
+              missing: "First name of proxy must not be blank."
             date_term:
-              missing: "Term of proxy card must not be blank and must be in the format mm/dd/yyyy"
-              expired: "The Proxy Term must not be in the past"
-              too_long: "The term of the Proxy Card must not be greater than %{max_term}"
+              missing: "Term of proxy card must not be blank and must be in the format mm/dd/yyyy."
+              expired: "The Proxy Term must not be in the past."
+              too_long: "The term of the Proxy Card must not be greater than %{max_term}."
 
   activemodel:
     attributes:
@@ -167,8 +189,6 @@ en:
   service_article_request_forms:
     confirmed:
       page_title: Request submitted
-
-  site_name: UC Berkeley Library Forms
 
   student_edevices_loan_forms:
     all_checked:

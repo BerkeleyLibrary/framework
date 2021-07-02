@@ -14,8 +14,8 @@
     researchLast: <%= @proxy_request.research_last %> <br />
     researchFirst: <%= @proxy_request.research_first %> <br />
     researchMiddle: <%= @proxy_request.research_middle %> <br />
-    dateRequest: <%= @proxy_request.created_at.strftime('%D') %> <br />
-    dateTerm: <%= @proxy_request.date_term.strftime('%D') %> <br />
+    dateRequest: <%= @proxy_request.created_at.to_s(:short) %> <br />
+    dateTerm: <%= @proxy_request.date_term.to_s(:short) %> <br />
     renewal: <%= @proxy_request.renewal == 1 ? 'True' : 'False' %> <br />
   </body>
 </html>

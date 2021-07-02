@@ -8,12 +8,11 @@ describe ProxyBorrowerRequests do
     mo = today.month
     yr = today.year
     yr += 1 if mo >= 4
-    max_date = Date.new(yr, 6, 30)
+    @max_date = Date.new(yr, 6, 30)
 
     # Thou shalt pass paramters as strings:
-    @invalid_date_str = Date.new(yr, 7, 0o1).strftime('%m/%d/%Y')
-    @max_date_str = max_date.strftime('%m/%d/%Y')
-    @max_date_err_str = max_date.strftime('%B %e, %Y')
+    @invalid_date_str = Date.new(yr, 7, 1).to_s(:long)
+    @max_date_err_str = @max_date.to_s(:long)
   end
 
   it 'validates the form' do
@@ -22,9 +21,9 @@ describe ProxyBorrowerRequests do
         valid: false,
         attributes: {},
         errors: {
-          research_last: ['Last name of proxy must not be blank'],
-          research_first: ['First name of proxy must not be blank'],
-          date_term: ['Term of proxy card must not be blank and must be in the format mm/dd/yyyy']
+          research_last: ['Last name of proxy must not be blank.'],
+          research_first: ['First name of proxy must not be blank.'],
+          date_term: ['Term of proxy card must not be blank and must be in the format mm/dd/yyyy.']
         }
       },
       {
@@ -33,7 +32,7 @@ describe ProxyBorrowerRequests do
           date_term: Date.new(2000, 6, 30)
         },
         errors: {
-          date_term: ['The Proxy Term must not be in the past']
+          date_term: ['The Proxy Term must not be in the past.']
         }
       },
       {
@@ -42,7 +41,7 @@ describe ProxyBorrowerRequests do
           date_term: Date.current.next_day(720)
         },
         errors: {
-          date_term: ["The term of the Proxy Card must not be greater than #{@max_date_err_str}"]
+          date_term: ["The term of the Proxy Card must not be greater than #{@max_date_err_str}."]
         }
       },
       {
@@ -86,7 +85,7 @@ describe ProxyBorrowerRequests do
     attributes = {
       research_last: 'CSVLast',
       research_first: 'CSVFirst',
-      date_term: Date.strptime(@max_date_str, '%m/%d/%Y')
+      date_term: @max_date
     }
 
     # Create a new request

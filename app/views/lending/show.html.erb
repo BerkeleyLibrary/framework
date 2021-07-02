@@ -11,7 +11,6 @@
   # TODO: Use Rails i18n
   action = link_to('Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary')
 
-  # TODO: format all dates
   additional_fields = {}.tap do |ff|
     due_dates = @lending_item.due_dates.to_a
     ff['Due dates for current checkouts'] = due_dates unless due_dates.empty?

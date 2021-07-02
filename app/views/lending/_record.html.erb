@@ -26,14 +26,7 @@
     <% fields.each do |label, value| %>
       <tr>
         <th><%= label %></th>
-        <td>
-          <% if value.respond_to?(:each) %>
-            <% value.each { |v| %><p><%= v %></p>
-            <% } %>
-          <% else %>
-            <%= value %>
-          <% end %>
-        </td>
+        <td><%= format_value(value) %></td>
       </tr>
     <% end %>
     <tr>
