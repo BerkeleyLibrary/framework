@@ -3,8 +3,7 @@ require 'lending/page'
 require 'ucblit/util/uris'
 
 module Lending
-  # TODO: rename this to IIIFManifest, #to_manifest to #to_json_str or something
-  class IIIFItem
+  class IIIFManifest
 
     MANIFEST_NAME = 'manifest.json'.freeze
     DIRNAME_RE = /(?<record_id>b?[0-9]{8,}+)_(?<barcode>.+)/.freeze
@@ -30,7 +29,7 @@ module Lending
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def create_manifest(manifest_uri, image_root_uri)
+    def to_json_str(manifest_uri, image_root_uri)
       dir_basename_encoded = ERB::Util.url_encode(dir_basename)
       image_dir_uri = UCBLIT::Util::URIs.append(image_root_uri, dir_basename_encoded)
 

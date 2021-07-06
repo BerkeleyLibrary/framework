@@ -82,11 +82,11 @@ describe LendingItem, type: :model do
     end
   end
 
-  describe :iiif_item do
+  describe :iiif_manifest do
     it 'returns the IIIFItem if the item has been processed' do
       processed.each do |item|
-        iiif_item = item.iiif_item
-        expect(iiif_item).to be_a(Lending::IIIFItem)
+        iiif_item = item.iiif_manifest
+        expect(iiif_item).to be_a(Lending::IIIFManifest)
         expect(iiif_item.title).to eq(item.title)
         expect(iiif_item.author).to eq(item.author)
         expect(iiif_item.dir_path.to_s).to eq(item.iiif_dir)
@@ -95,7 +95,7 @@ describe LendingItem, type: :model do
 
     it 'raises RecordNotFound if the item has not been processed' do
       unprocessed.each do |item|
-        expect { item.iiif_item }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { item.iiif_manifest }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

@@ -46,7 +46,7 @@ class LendingItem < ActiveRecord::Base
   end
 
   def create_manifest(manifest_uri)
-    iiif_item.create_manifest(manifest_uri, image_server_base_uri)
+    iiif_manifest.to_json_str(manifest_uri, image_server_base_uri)
   end
 
   # ------------------------------------------------------------
@@ -77,10 +77,10 @@ class LendingItem < ActiveRecord::Base
     next_loan_due.due_date
   end
 
-  def iiif_item
+  def iiif_manifest
     raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless processed?
 
-    Lending::IIIFItem.new(title: title, author: author, dir_path: iiif_dir)
+    Lending::IIIFManifest.new(title: title, author: author, dir_path: iiif_dir)
   end
 
   def iiif_dir
