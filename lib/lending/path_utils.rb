@@ -52,11 +52,6 @@ module Lending
       pathname.extname.downcase =~ /\.tiff?$/
     end
 
-    def jpeg?(p)
-      pathname = ensure_pathname(p)
-      pathname.file? && jpeg_ext?(pathname)
-    end
-
     def jpeg_ext?(p)
       pathname = ensure_pathname(p)
       pathname.extname.downcase =~ /\.jpe?g$/
