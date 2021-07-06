@@ -48,21 +48,21 @@ module Lending
 
       def tileize_pages(source_dir_path, output_dir_path)
         source_dir_path.children.each do |f|
-          Tileizer.tileize(f, output_dir_path) if page_tiff?(f)
+          Tileizer.tileize(f, output_dir_path) if page_image?(f)
         end
       end
 
       def copy_page_texts(source_dir_path, output_dir_path)
         source_dir_path.children.each do |f|
-          next unless page_tiff?(f) && (txt_path = PathUtils.txt_path_from(f))
+          next unless page_image?(f) && (txt_path = PathUtils.txt_path_from(f))
 
           output_txt_path = output_dir_path.join(txt_path.basename)
           FileUtils.cp(txt_path, output_txt_path)
         end
       end
 
-      def page_tiff?(f)
-        PathUtils.tiff?(f) && Page.page_number?(f)
+      def page_image?(f)
+        PathUtils.image?(f) && Page.page_number?(f)
       end
     end
 
