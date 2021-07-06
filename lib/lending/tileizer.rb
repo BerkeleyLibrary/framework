@@ -25,7 +25,9 @@ module Lending
 
     def initialize(infile, outfile)
       @infile_path = PathUtils.ensure_filepath(infile)
-      @outfile_path = PathUtils.ensure_non_directory(outfile)
+      @outfile_path = PathUtils.ensure_non_directory(outfile).tap do |outfile_path|
+        raise ArgumentError, "Not a TIFF file: #{outfile_path}" unless PathUtils.tiff_ext?(outfile_path)
+      end
     end
 
     def tileized?
@@ -47,9 +49,9 @@ module Lending
         indir_path, outdir_path = [indir, outdir].map { |d| PathUtils.ensure_dirpath(d) }
         raise ArgumentError, "Can't write tileized files to same directory as input files" if indir_path == outdir_path
 
-        infiles = indir_path.children.select { |p| PathUtils.tiff?(p) }.sort
-        infiles.map do |infile_path|
-          outfile_path = outdir_path.join(infile_path.basename)
+        infiles_from(indir_path).map do |infile_path|
+          stem = infile_path.basename(infile_path.extname)
+          outfile_path = outdir_path.join("#{stem}.tif")
 
           tileize(infile_path, outfile_path, skip_existing: skip_existing)
         end
@@ -84,6 +86,18 @@ module Lending
       end
 
       private
+
+      def infiles_from(indir_path)
+        infiles_by_stem = indir_path.children.each_with_object({}) do |p, by_stem|
+          next unless PathUtils.image?(p)
+
+          # Prefer TIFF to JPEG if both exist
+          stem = PathUtils.stem(p)
+          by_stem[stem] = p unless by_stem.key?(stem) && PathUtils.jpeg_ext?(p)
+        end
+
+        infiles_by_stem.values.sort
+      end
 
       def tileize!(infile_path, outfile_path, fail_fast)
         Tileizer.new(infile_path, outfile_path).tap do |tileizer|
