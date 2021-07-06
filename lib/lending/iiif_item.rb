@@ -29,43 +29,6 @@ module Lending
       "#{record_id}_#{barcode}"
     end
 
-    class << self
-      include UCBLIT::Logging
-
-      def create_from(source_dir, output_dir, title:, author:)
-        logger.info("Creating IIIF directory #{output_dir} from #{source_dir}")
-
-        # TODO: use a temp directory
-        source_dir_path = PathUtils.ensure_dirpath(source_dir)
-        output_dir_path = PathUtils.ensure_dirpath(output_dir)
-        tileize_pages(source_dir_path, output_dir_path)
-        copy_page_texts(source_dir_path, output_dir_path)
-
-        IIIFItem.new(title: title, author: author, dir_path: output_dir_path)
-      end
-
-      private
-
-      def tileize_pages(source_dir_path, output_dir_path)
-        source_dir_path.children.each do |f|
-          Tileizer.tileize(f, output_dir_path) if page_image?(f)
-        end
-      end
-
-      def copy_page_texts(source_dir_path, output_dir_path)
-        source_dir_path.children.each do |f|
-          next unless page_image?(f) && (txt_path = PathUtils.txt_path_from(f))
-
-          output_txt_path = output_dir_path.join(txt_path.basename)
-          FileUtils.cp(txt_path, output_txt_path)
-        end
-      end
-
-      def page_image?(f)
-        PathUtils.image?(f) && Page.page_number?(f)
-      end
-    end
-
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def create_manifest(manifest_uri, image_root_uri)
       dir_basename_encoded = ERB::Util.url_encode(dir_basename)
