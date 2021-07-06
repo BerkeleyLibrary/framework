@@ -46,6 +46,17 @@ class LendingController < ApplicationController
   def manifest
     require_active_loan! unless lending_admin?
 
+    # result = RubyProf.profile do
+    #   manifest = @lending_item.create_manifest(manifest_url)
+    #   render(json: manifest)
+    # end
+    #
+    # RubyProf::FlatPrinter.new(result).print(STDOUT)
+    # report_path = 'tmp/profile.html'
+    # File.open(report_path, 'w') do |f|
+    #   RubyProf::GraphHtmlPrinter.new(result).print(f, min_percent: 0)
+    # end
+
     # TODO: cache this, or generate ERB, or something
     manifest = @lending_item.create_manifest(manifest_url)
     render(json: manifest)
