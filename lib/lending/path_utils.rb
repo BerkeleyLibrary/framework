@@ -2,6 +2,9 @@ require 'pathname'
 
 module Lending
   module PathUtils
+    DIRNAME_RE = /(?<record_id>[Bb]?[0-9]{8,}+)_(?<barcode>.+)/.freeze
+    MSG_BAD_DIRNAME = 'Item directory %s should be in the form <record_id>_<barcode>'.freeze
+
     def ensure_pathname(p)
       p.is_a?(Pathname) ? p : Pathname.new(p.to_s)
     end
@@ -67,6 +70,14 @@ module Lending
       raise ArgumentError, "$#{varname} not set" if (val = ENV[varname]).blank?
 
       ensure_pathname(val)
+    end
+
+    def decompose_dirname(path)
+      # TODO: do we care about check digits?
+      match_data = DIRNAME_RE.match(path.basename.to_s.downcase)
+      raise ArgumentError, format(MSG_BAD_DIRNAME, path) unless match_data
+
+      [match_data[:record_id].downcase, match_data[:barcode]]
     end
 
     class << self

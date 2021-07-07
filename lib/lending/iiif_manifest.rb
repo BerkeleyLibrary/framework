@@ -7,8 +7,6 @@ module Lending
     include UCBLIT::Logging
 
     MANIFEST_NAME = 'manifest.json'.freeze
-    DIRNAME_RE = /(?<record_id>b?[0-9]{8,}+)_(?<barcode>.+)/.freeze
-    MSG_BAD_DIRNAME = 'Item directory %s should be in the form <record_id>_<barcode>'.freeze
 
     MF_TAG = '<%= manifest_uri %>'.freeze
     IMG_TAG = '<%= image_dir_uri %>'.freeze
@@ -27,7 +25,7 @@ module Lending
       @title = title
       @author = author
       @dir_path = PathUtils.ensure_dirpath(dir_path)
-      @record_id, @barcode = decompose_dirname(@dir_path)
+      @record_id, @barcode = PathUtils.decompose_dirname(@dir_path)
       @pages = Page.all_from_directory(dir_path)
     end
 
@@ -54,7 +52,7 @@ module Lending
       template.result(binding)
     end
 
-    def write_manifest_erb
+    def write_manifest_erb!
       logger.info("Writing #{erb_path}")
       to_erb.tap { |erb| File.write(erb_path.to_s, erb) }
     end
@@ -73,7 +71,7 @@ module Lending
     end
 
     def erb_source
-      @erb_source ||= has_template? ? erb_path.read : write_manifest_erb
+      @erb_source ||= has_template? ? erb_path.read : write_manifest_erb!
     end
 
     def erb_path
@@ -100,12 +98,5 @@ module Lending
       md.each { |k, v| resource.metadata << { label: k, value: v } }
     end
 
-    def decompose_dirname(path)
-      # TODO: what about check digits?
-      match_data = DIRNAME_RE.match(path.basename.to_s)
-      raise ArgumentError, format(MSG_BAD_DIRNAME, path) unless match_data
-
-      %i[record_id barcode].map { |f| match_data[f] }
-    end
   end
 end
