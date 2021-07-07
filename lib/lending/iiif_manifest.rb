@@ -35,8 +35,16 @@ module Lending
       "#{record_id}_#{barcode}"
     end
 
+    # rubocop:disable Naming/PredicateName
+    def has_template?
+      erb_path.file?
+    end
+    # rubocop:enable Naming/PredicateName
+
     # noinspection RubyUnusedLocalVariable
-    def json_manifest(manifest_uri, image_root_uri)
+    def to_json(manifest_uri, image_root_uri)
+      raise ArgumentError, "#{record_id}_#{barcode}: manifest template not found at #{erb_path}" unless has_template?
+
       image_dir_uri = UCBLIT::Util::URIs.append(
         image_root_uri,
         ERB::Util.url_encode(dir_basename)
@@ -44,6 +52,11 @@ module Lending
 
       # depends on: manifest_uri, image_dir_uri
       template.result(binding)
+    end
+
+    def write_manifest_erb
+      logger.info("Writing #{erb_path}")
+      to_erb.tap { |erb| File.write(erb_path.to_s, erb) }
     end
 
     def to_erb
@@ -60,16 +73,11 @@ module Lending
     end
 
     def erb_source
-      @erb_source ||= erb_path.file? ? erb_path.read : write_erb
+      @erb_source ||= has_template? ? erb_path.read : write_manifest_erb
     end
 
     def erb_path
       @erb_path ||= dir_path.join('manifest.json.erb')
-    end
-
-    def write_erb
-      logger.info("Writing #{erb_path}")
-      to_erb.tap { |erb| File.write(erb_path.to_s, erb) }
     end
 
     # rubocop:disable Metrics/AbcSize

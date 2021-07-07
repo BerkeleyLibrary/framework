@@ -27,6 +27,7 @@ class LendingItem < ActiveRecord::Base
   MSG_CHECKED_OUT = 'You have already checked out this item.'.freeze
   MSG_UNAVAILABLE = 'There are no available copies of this item.'.freeze
   MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
+  MSG_NOT_CHECKED_OUT = 'This item is not checked out.'.freeze
 
   # ------------------------------------------------------------
   # Instance methods
@@ -45,18 +46,15 @@ class LendingItem < ActiveRecord::Base
     )
   end
 
-  def create_manifest(manifest_uri)
-    iiif_manifest.json_manifest(manifest_uri, image_server_base_uri)
+  def to_json_manifest(manifest_uri)
+    iiif_manifest.to_json(manifest_uri, image_server_base_uri)
   end
 
   # ------------------------------------------------------------
   # Synthetic accessors
 
   def processed?
-    return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
-    return false if Dir.empty?(iiif_dir)
-
-    Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
+    iiif_dir? && iiif_manifest.has_template?
   end
 
   def available?
@@ -78,7 +76,7 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_manifest
-    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless processed?
+    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless iiif_dir?
 
     Lending::IIIFManifest.new(title: title, author: author, dir_path: iiif_dir)
   end
@@ -102,6 +100,13 @@ class LendingItem < ActiveRecord::Base
   def barcode
     ensure_record_id_and_barcode
     @barcode
+  end
+
+  def iiif_dir?
+    return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
+    return false if Dir.empty?(iiif_dir)
+
+    Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
   end
 
   # ------------------------------------------------------------
