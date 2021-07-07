@@ -16,9 +16,9 @@ module Lending
 
     let(:manifest_json) { File.read('spec/data/lending/samples/b11996535_B 3 106 704/manifest.json') }
 
-    describe :json_manifest do
+    describe :to_json do
       it 'creates a manifest' do
-        actual = manifest.json_manifest(manifest_url, img_root_url)
+        actual = manifest.to_json(manifest_url, img_root_url)
         expect(actual.strip).to eq(manifest_json.strip)
       end
     end

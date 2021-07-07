@@ -3,9 +3,6 @@ class LendingController < ApplicationController
   # ------------------------------------------------------------
   # Constants
 
-  # TODO: Use Rails i18n
-  MSG_NOT_CHECKED_OUT = 'This item is not checked out.'.freeze
-
   # ------------------------------------------------------------
   # Helpers
 
@@ -17,6 +14,7 @@ class LendingController < ApplicationController
   before_action(:authenticate!)
   before_action(:require_lending_admin!, except: %i[view manifest check_out return])
   before_action(:ensure_lending_item!, except: %i[index new create])
+  before_action(:require_processed_item!, only: [:manifest])
 
   # ------------------------------------------------------------
   # Controller actions
@@ -46,19 +44,7 @@ class LendingController < ApplicationController
   def manifest
     require_active_loan! unless lending_admin?
 
-    # result = RubyProf.profile do
-    #   manifest = @lending_item.create_manifest(manifest_url)
-    #   render(json: manifest)
-    # end
-    #
-    # RubyProf::FlatPrinter.new(result).print(STDOUT)
-    # report_path = 'tmp/profile.html'
-    # File.open(report_path, 'w') do |f|
-    #   RubyProf::GraphHtmlPrinter.new(result).print(f, min_percent: 0)
-    # end
-
-    # TODO: cache this, or generate ERB, or something
-    manifest = @lending_item.create_manifest(manifest_url)
+    manifest = @lending_item.to_json_manifest(manifest_url)
     render(json: manifest)
   end
 
@@ -93,7 +79,7 @@ class LendingController < ApplicationController
       active_loan.return!
       flash[:success] = 'Item returned.'
     else
-      flash[:danger] = MSG_NOT_CHECKED_OUT
+      flash[:danger] = LendingItem::MSG_NOT_CHECKED_OUT
     end
 
     redirect_to lending_view_url(directory: directory)
@@ -192,6 +178,12 @@ class LendingController < ApplicationController
   # ------------------------------
   # Utility methods
 
+  def require_processed_item!
+    item = ensure_lending_item!
+
+    raise ActiveRecord::RecordNotFound, LendingItem::MSG_NOT_PROCESSED unless item.processed?
+  end
+
   def require_lending_admin!
     return if lending_admin?
 
@@ -207,7 +199,7 @@ class LendingController < ApplicationController
   def require_active_loan!
     require_eligible_patron!
 
-    raise Error::ForbiddenError, MSG_NOT_CHECKED_OUT unless active_loan
+    raise Error::ForbiddenError, LendingItem::MSG_NOT_CHECKED_OUT unless active_loan
   end
 
   def ensure_lending_item!

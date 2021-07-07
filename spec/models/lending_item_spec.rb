@@ -21,7 +21,7 @@ describe LendingItem, type: :model do
         title: 'The Plan of St. Gall',
         author: 'Horn, Walter',
         directory: 'b100523250_C044235662',
-        copies: '6'
+        copies: 6
       },
       {
         title: 'Pamphlet',
@@ -35,22 +35,23 @@ describe LendingItem, type: :model do
     @unprocessed = items.reject(&:processed?)
   end
 
-  describe :processed? do
+  describe :iiif_dir? do
     it 'returns true for items with populated image directories' do
-      expect(processed).not_to be_empty
-      processed.each do |item|
+      items.each do |item|
         iiif_dir = item.iiif_dir
-        expect(File.directory?(iiif_dir)).to eq(true)
-        expect(Dir.empty?(iiif_dir)).to eq(false)
+        expected = File.directory?(iiif_dir) && !Dir.empty?(iiif_dir)
+        expect(item.iiif_dir?).to eq(expected)
       end
     end
+  end
 
-    it 'returns false for items without populated image directories' do
-      expect(unprocessed).not_to be_empty
-      unprocessed.each do |item|
-        iiif_dir = item.iiif_dir
-        expect(Dir.empty?(iiif_dir)).to eq(true) if File.exist?(iiif_dir)
+  describe :processed? do
+    it 'returns true only items with manifest templates and populated image directories' do
+      items.each do |item|
+        expected = item.iiif_dir? && item.iiif_manifest.has_template?
+        expect(item.processed?).to eq(expected)
       end
+      expect(processed).not_to be_empty
     end
   end
 
