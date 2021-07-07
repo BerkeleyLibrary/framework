@@ -46,7 +46,7 @@ class LendingItem < ActiveRecord::Base
   end
 
   def create_manifest(manifest_uri)
-    iiif_manifest.to_json_str(manifest_uri, image_server_base_uri)
+    iiif_manifest.json_manifest(manifest_uri, image_server_base_uri)
   end
 
   # ------------------------------------------------------------
