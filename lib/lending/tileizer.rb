@@ -45,7 +45,7 @@ module Lending
     class << self
       include UCBLIT::Logging
 
-      def tileize_all(indir, outdir, skip_existing: false)
+      def tileize_all(indir, outdir, skip_existing: false, fail_fast: false)
         indir_path, outdir_path = [indir, outdir].map { |d| PathUtils.ensure_dirpath(d) }
         raise ArgumentError, "Can't write tileized files to same directory as input files" if indir_path == outdir_path
 
@@ -53,7 +53,7 @@ module Lending
           stem = infile_path.basename(infile_path.extname)
           outfile_path = outdir_path.join("#{stem}.tif")
 
-          tileize(infile_path, outfile_path, skip_existing: skip_existing)
+          tileize(infile_path, outfile_path, skip_existing: skip_existing, fail_fast: fail_fast)
         end
       end
 
