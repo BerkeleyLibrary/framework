@@ -59,7 +59,7 @@ services:
       default:
         aliases:
           - ucbears-iiif.test
-    entrypoint: [ "/ucbears-iiif-entrypoint.sh" ]
+    entrypoint: ["/iipsrv-entrypoint.sh"]
 
   selenium:
     image: selenium/hub

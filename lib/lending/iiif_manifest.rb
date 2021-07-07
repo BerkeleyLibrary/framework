@@ -4,10 +4,17 @@ require 'ucblit/util/uris'
 
 module Lending
   class IIIFManifest
+    include UCBLIT::Logging
 
     MANIFEST_NAME = 'manifest.json'.freeze
     DIRNAME_RE = /(?<record_id>b?[0-9]{8,}+)_(?<barcode>.+)/.freeze
     MSG_BAD_DIRNAME = 'Item directory %s should be in the form <record_id>_<barcode>'.freeze
+
+    MF_TAG = '<%= manifest_uri %>'.freeze
+    IMG_TAG = '<%= image_dir_uri %>'.freeze
+
+    MF_URL_PLACEHOLDER = 'https://ucbears.invalid/manifest'.freeze
+    IMGDIR_URL_PLACEHOLDER = 'https://ucbears.invalid/imgdir'.freeze
 
     attr_reader :title
     attr_reader :author
@@ -28,11 +35,45 @@ module Lending
       "#{record_id}_#{barcode}"
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def to_json_str(manifest_uri, image_root_uri)
-      dir_basename_encoded = ERB::Util.url_encode(dir_basename)
-      image_dir_uri = UCBLIT::Util::URIs.append(image_root_uri, dir_basename_encoded)
+    # noinspection RubyUnusedLocalVariable
+    def json_manifest(manifest_uri, image_root_uri)
+      image_dir_uri = UCBLIT::Util::URIs.append(
+        image_root_uri,
+        ERB::Util.url_encode(dir_basename)
+      )
 
+      # depends on: manifest_uri, image_dir_uri
+      template.result(binding)
+    end
+
+    def to_erb
+      create_manifest(MF_URL_PLACEHOLDER, IMGDIR_URL_PLACEHOLDER)
+        .to_json(pretty: true)
+        .gsub(MF_URL_PLACEHOLDER, MF_TAG)
+        .gsub(IMGDIR_URL_PLACEHOLDER, IMG_TAG)
+    end
+
+    private
+
+    def template
+      @template ||= ERB.new(erb_source)
+    end
+
+    def erb_source
+      @erb_source ||= erb_path.file? ? erb_path.read : write_erb
+    end
+
+    def erb_path
+      @erb_path ||= dir_path.join('manifest.json.erb')
+    end
+
+    def write_erb
+      logger.info("Writing #{erb_path}")
+      to_erb.tap { |erb| File.write(erb_path.to_s, erb) }
+    end
+
+    # rubocop:disable Metrics/AbcSize
+    def create_manifest(manifest_uri, image_dir_uri)
       IIIF::Presentation::Manifest.new.tap do |mf|
         mf['@id'] = manifest_uri
         mf.label = title
@@ -44,9 +85,7 @@ module Lending
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
-    private
+    # rubocop:enable Metrics/AbcSize
 
     # TODO: share code between Page and IIIFItem
     def add_metadata(resource, **md)

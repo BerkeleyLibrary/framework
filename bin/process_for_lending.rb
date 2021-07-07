@@ -19,7 +19,7 @@ Lending::Tileizer.tileize_all(indir, outdir, skip_existing: true)
 
 # Copy OCR text
 # TODO: put this in a library method and test it
-outdir.entries.each do |outfile|
+Dir.entries(outdir).each do |outfile|
   next unless Lending::PathUtils.tiff_ext?(outfile)
   next if (outfile_txt = Lending::PathUtils.txt_path_from(outfile).to_s)
 

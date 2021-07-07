@@ -57,8 +57,9 @@ module Lending
       pathname.extname.downcase =~ /\.jpe?g$/
     end
 
-    def txt_path_from(tiff_path)
-      txt_path = tiff_path.parent.join("#{stem(tiff_path)}.txt")
+    def txt_path_from(img_path)
+      img_path = ensure_pathname(img_path)
+      txt_path = img_path.parent.join("#{stem(img_path)}.txt")
       txt_path if txt_path.file?
     end
 
