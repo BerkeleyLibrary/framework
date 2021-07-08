@@ -40,15 +40,6 @@ module Lending
           txt_path = Pathname.new(tiff_path.sub(/\.tif$/, '.txt'))
           expect(page.txt_path).to eq(txt_path)
         end
-
-        it 'returns nil for a TIFF without corresponding text file' do
-          Dir.mktmpdir(File.basename(__FILE__, '.rb')) do |dir|
-            copy_path = File.join(dir, File.basename(tiff_path))
-            FileUtils.cp(tiff_path, copy_path)
-            page = Page.new(copy_path)
-            expect(page.txt_path).to be_nil
-          end
-        end
       end
     end
 
