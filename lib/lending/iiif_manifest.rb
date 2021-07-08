@@ -7,6 +7,7 @@ module Lending
     include UCBLIT::Logging
 
     MANIFEST_NAME = 'manifest.json'.freeze
+    MANIFEST_TEMPLATE_NAME = "#{MANIFEST_NAME}.erb".freeze
 
     MF_TAG = '<%= manifest_uri %>'.freeze
     IMG_TAG = '<%= image_dir_uri %>'.freeze
@@ -75,7 +76,7 @@ module Lending
     end
 
     def erb_path
-      @erb_path ||= dir_path.join('manifest.json.erb')
+      @erb_path ||= dir_path.join(MANIFEST_TEMPLATE_NAME)
     end
 
     # rubocop:disable Metrics/AbcSize

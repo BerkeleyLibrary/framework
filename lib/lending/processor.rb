@@ -7,14 +7,14 @@ module Lending
   class Processor
     include UCBLIT::Logging
 
-    attr_reader :ready_dir, :processing_dir, :record_id, :barcode, :marc_path
+    attr_reader :indir, :outdir, :record_id, :barcode, :marc_path
 
-    def initialize(ready_dir, processing_dir)
-      @ready_dir = PathUtils.ensure_dirpath(ready_dir)
-      @processing_dir = PathUtils.ensure_dirpath(processing_dir)
-      @record_id, @barcode = PathUtils.decompose_dirname(@ready_dir)
+    def initialize(indir, outdir)
+      @indir = PathUtils.ensure_dirpath(indir)
+      @outdir = PathUtils.ensure_dirpath(outdir)
+      @record_id, @barcode = PathUtils.decompose_dirname(@indir)
 
-      raise ArgumentError, "#{ready_dir}: MARC record not found" unless (@marc_path = find_marc_path)
+      raise ArgumentError, "#{indir}: MARC record not found" unless (@marc_path = find_marc_path)
     end
 
     def author
@@ -41,40 +41,51 @@ module Lending
     private
 
     def tileize_images!
-      Tileizer.tileize_all(ready_dir, processing_dir)
+      Tileizer.tileize_all(indir, outdir)
     end
 
     def copy_ocr_text!
-      output_images.each do |output_img_path|
-        output_txt_path = Lending::PathUtils.txt_path_from(output_img_path)
-        next unless (input_text_path = ready_dir.join(output_txt_path.basename)).exist?
+      input_txts.each do |input_txt|
+        output_txt = outdir.join(input_txt.basename)
+        logger.info("Copying #{input_txt} to #{output_txt}")
+        FileUtils.cp(input_txt.to_s, output_txt.to_s)
+      end
+    end
 
-        logger.info("Copying #{input_text_path} to #{output_txt_path}")
-        FileUtils.cp(input_text_path.to_s, output_txt_path.to_s)
+    def input_txts
+      @input_txts ||= indir.children.filter_map do |p|
+        next unless PathUtils.image_ext?(p)
+
+        txt_path = PathUtils.txt_path_from(p)
+        txt_path if txt_path.exist?
       end
     end
 
     def output_images
-      processing_dir.children(false).select { |c| Lending::PathUtils.tiff_ext?(c) }
+      outdir.children(false).select { |c| Lending::PathUtils.tiff_ext?(c) }
     end
 
     def write_manifest!
-      manifest = IIIFManifest.new(title: title, author: author, dir_path: processing_dir)
+      manifest = IIIFManifest.new(title: title, author: author, dir_path: outdir)
       manifest.write_manifest_erb!
     end
 
     def find_title
-      title_df = find_tag('245')
-      return unless title_df
+      df = find_tag('245')
+      return unless df
 
-      %w[a b].map { |code| title_df[code] }.join(' ')
+      join_subfields(df, %w[a b])
     end
 
     def find_author
-      author_df = find_tag('100') || find_tag('110') || find_tag('710')
-      return unless author_df
+      df = find_tag('100') || find_tag('110') || find_tag('710')
+      return unless df
 
-      %w[a b].map { |code| author_df[code] }.join(' ')
+      join_subfields(df, %w[a b])
+    end
+
+    def join_subfields(df, codes)
+      codes.map { |code| df[code] }.compact.map(&:strip).join(' ')
     end
 
     def find_tag(tag)
@@ -82,7 +93,7 @@ module Lending
     end
 
     def clean_value(v)
-      v.sub(/[,:; ]+$/, '')
+      v.strip.sub(%r{[ ,/:;]+$}, '')
     end
 
     def data_fields_by_tag
@@ -90,10 +101,13 @@ module Lending
     end
 
     def find_marc_path
-      marc_path = ready_dir.join('marc.xml')
+      marc_path = indir.join('marc.xml')
       return marc_path if marc_path.exist?
 
-      marc_path = ready_dir.join("#{record_id}.xml")
+      marc_path = indir.join("#{record_id}.xml")
+      return marc_path if marc_path.exist?
+
+      marc_path = indir.join("#{record_id.upcase}.xml")
       return marc_path if marc_path.exist?
     end
   end
