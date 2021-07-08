@@ -3,6 +3,15 @@ require 'calnet_helper'
 require 'roo'
 
 describe TindDownloadController, type: :system do
+
+  let(:tind_base_uri) { URI('https://digicoll.lib.berkeley.edu/') }
+  let(:tind_api_key) { 'not-a-real-api-key' }
+
+  before(:each) do
+    allow(UCBLIT::TIND::Config).to receive(:api_key).and_return(tind_api_key)
+    allow(UCBLIT::TIND::Config).to receive(:base_uri).and_return(tind_base_uri)
+  end
+
   describe 'unauthenticated user' do
     it 'redirects to login' do
       visit tind_download_path
@@ -30,7 +39,7 @@ describe TindDownloadController, type: :system do
     after(:each) { logout! }
 
     before(:each) do
-      stub_request(:get, 'https://digicoll.lib.berkeley.edu/api/v1/collections?depth=100').to_return(
+      stub_request(:get, UCBLIT::Util::URIs.append(tind_base_uri, 'api/v1/collections?depth=100')).to_return(
         status: 200,
         body: File.new('spec/data/tind_download/collections.json')
       )
@@ -55,7 +64,7 @@ describe TindDownloadController, type: :system do
       describe 'downloads' do
         before(:each) do
           search_id = 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY'
-          search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
+          search_url = UCBLIT::Util::URIs.append(tind_base_uri, 'api/v1/search')
           search_params = { c: 'Abraham Lincoln Papers', format: 'xml' }
           search_params_with_search_id = search_params.merge(search_id: search_id)
           result_1 = File.read('spec/data/tind_download/tind-abraham-lincoln-1.xml')

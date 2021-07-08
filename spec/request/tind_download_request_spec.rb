@@ -3,6 +3,14 @@ require 'forms_helper'
 describe TindDownloadController, type: :request do
   let(:collection_name) { 'Abraham Lincoln Papers' }
 
+  let(:tind_base_uri) { URI('https://digicoll.lib.berkeley.edu/') }
+  let(:tind_api_key) { 'not-a-real-api-key' }
+
+  before(:each) do
+    allow(UCBLIT::TIND::Config).to receive(:api_key).and_return(tind_api_key)
+    allow(UCBLIT::TIND::Config).to receive(:base_uri).and_return(tind_base_uri)
+  end
+
   attr_reader :patron_id
   attr_reader :patron
   attr_reader :user
