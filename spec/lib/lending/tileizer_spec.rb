@@ -4,15 +4,17 @@ require 'lending'
 module Lending
   describe Tileizer do
     let(:samples) { 'spec/data/lending/samples/b100523250_C044235662' }
+    let(:samples_ready) { 'spec/data/lending/samples/ready/b100523250_C044235662' }
+    let(:samples_final) { 'spec/data/lending/samples/final/b100523250_C044235662' }
 
-    let(:incoming) { 'spec/data/lending/incoming/b11996535_B 3 106 704' }
-    let(:infiles) { Dir.entries(incoming).select { |f| PathUtils.image_ext?(f) }.sort }
+    let(:ready) { 'spec/data/lending/ready/b11996535_B 3 106 704' }
+    let(:infiles) { Dir.entries(ready).select { |f| PathUtils.image_ext?(f) }.sort }
     let(:final) { 'spec/data/lending/final/b11996535_B 3 106 704' }
 
     describe 'instance #tileize' do
       it 'tileizes to a specified file' do
-        infile = File.join(samples, 'incoming/00000100.tif')
-        expected = File.join(samples, 'final/00000100.tif')
+        infile = File.join(samples_ready, '00000100.tif')
+        expected = File.join(samples_final, '00000100.tif')
 
         Dir.mktmpdir do |outdir|
           basename = File.basename(infile)
@@ -39,8 +41,8 @@ module Lending
       end
 
       it 'tileizes a JPEG' do
-        infile = File.join(samples, 'incoming/00000195.jpg')
-        expected = File.join(samples, 'final/00000195.tif')
+        infile = File.join(samples_ready, '00000195.jpg')
+        expected = File.join(samples_final, '00000195.tif')
 
         Dir.mktmpdir do |outdir|
           basename = File.basename(expected)
@@ -69,8 +71,8 @@ module Lending
 
     describe 'class #tileize' do
       it 'tileizes to a specified directory' do
-        infile = File.join(samples, 'incoming/00000100.tif')
-        expected = File.join(samples, 'final/00000100.tif')
+        infile = File.join(samples_ready, '00000100.tif')
+        expected = File.join(samples_final, '00000100.tif')
 
         Dir.mktmpdir do |outdir|
           basename = File.basename(infile)
@@ -99,7 +101,7 @@ module Lending
         context 'with skip_existing: true' do
           it 'skips an existing file' do
             expect(Vips::Image).not_to receive(:new_from_file)
-            infile = File.join(samples, 'incoming/00000100.tif')
+            infile = File.join(samples_ready, '00000100.tif')
             Dir.mktmpdir do |outdir|
               outfile = File.join(outdir, File.basename(infile))
               FileUtils.touch(outfile)
@@ -109,8 +111,8 @@ module Lending
         end
 
         it 'tileizes a JPEG' do
-          infile = File.join(samples, 'incoming/00000195.jpg')
-          expected = File.join(samples, 'final/00000195.tif')
+          infile = File.join(samples_ready, '00000195.jpg')
+          expected = File.join(samples_final, '00000195.tif')
 
           Dir.mktmpdir do |outdir|
             basename = File.basename(expected)
@@ -139,7 +141,7 @@ module Lending
         context 'with skip_existing: true' do
           it 'skips an existing file' do
             expect(Vips::Image).not_to receive(:new_from_file)
-            infile = File.join(samples, 'incoming/00000100.tif')
+            infile = File.join(samples_ready, '00000100.tif')
             Dir.mktmpdir do |outdir|
               outfile = File.join(outdir, File.basename(infile))
               FileUtils.touch(outfile)
@@ -153,7 +155,7 @@ module Lending
 
     it 'handles failures' do
       allow(Vips::Image).to receive(:new_from_file).and_raise('oops')
-      infile = File.join(samples, 'incoming/00000100.tif')
+      infile = File.join(samples_ready, '00000100.tif')
       Dir.mktmpdir do |outdir|
         basename = File.basename(infile)
         outfile = File.join(outdir, basename)
@@ -173,7 +175,7 @@ module Lending
         Dir.mktmpdir do |outdir|
           infiles.each do |f|
             stem = PathUtils.stem(f)
-            infile = File.join(incoming, f)
+            infile = File.join(ready, f)
             outfile = File.join(outdir, "#{stem}.tif")
 
             # Prefer TIFF to JPEG if both exist
@@ -186,7 +188,7 @@ module Lending
             end
           end
 
-          Tileizer.tileize_all(incoming, outdir)
+          Tileizer.tileize_all(ready, outdir)
         end
       end
 
@@ -196,7 +198,7 @@ module Lending
         Dir.mktmpdir do |outdir|
           infiles.each_with_index do |f, i|
             stem = PathUtils.stem(f)
-            infile = File.join(incoming, f)
+            infile = File.join(ready, f)
             outfile = File.join(outdir, "#{stem}.tif")
 
             # Prefer TIFF to JPEG if both exist
@@ -213,13 +215,13 @@ module Lending
             end
           end
 
-          Tileizer.tileize_all(incoming, outdir)
+          Tileizer.tileize_all(ready, outdir)
         end
       end
 
       context 'with skip_existing: true' do
         it 'skips an existing file' do
-          indir = File.join(samples, 'incoming')
+          indir = samples_ready
           infile = File.join(indir, '00000100.tif')
           Dir.mktmpdir do |outdir|
             outfile = File.join(outdir, File.basename(infile))
@@ -245,7 +247,7 @@ module Lending
       end
 
       it 'tileizes a file' do
-        infile = File.join(samples, 'incoming/00000100.tif')
+        infile = File.join(samples_ready, '00000100.tif')
         Dir.mktmpdir do |outdir|
           basename = File.basename(infile)
           outfile = File.join(outdir, basename)
@@ -264,11 +266,11 @@ module Lending
 
       it 'tileizes a directory' do
         Dir.mktmpdir do |outdir|
-          ENV[Tileizer::ENV_INFILE] = incoming
+          ENV[Tileizer::ENV_INFILE] = ready
           ENV[Tileizer::ENV_OUTFILE] = outdir
 
           expect(Tileizer).to receive(:tileize_all).with(
-            Pathname.new(incoming),
+            Pathname.new(ready),
             Pathname.new(outdir),
             skip_existing: false
           )
@@ -282,7 +284,7 @@ module Lending
         end
 
         it 'skips a single file' do
-          infile = File.join(samples, 'incoming/00000100.tif')
+          infile = File.join(samples_ready, '00000100.tif')
           Dir.mktmpdir do |outdir|
             basename = File.basename(infile)
             outfile = File.join(outdir, basename)
@@ -301,11 +303,11 @@ module Lending
 
         it 'skips existing files in a directory' do
           Dir.mktmpdir do |outdir|
-            ENV[Tileizer::ENV_INFILE] = incoming
+            ENV[Tileizer::ENV_INFILE] = ready
             ENV[Tileizer::ENV_OUTFILE] = outdir
 
             expect(Tileizer).to receive(:tileize_all).with(
-              Pathname.new(incoming),
+              Pathname.new(ready),
               Pathname.new(outdir),
               skip_existing: true
             )

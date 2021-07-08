@@ -14,12 +14,12 @@ module Lending
     let(:manifest_url) { 'https://ucbears.example.edu/lending/b11996535_B%203%20106%20704/manifest' }
     let(:img_root_url) { 'https://ucbears.example.edu/iiif/' }
 
-    let(:manifest_json) { File.read('spec/data/lending/samples/b11996535_B 3 106 704/manifest.json') }
+    let(:expected_manifest) { File.read('spec/data/lending/samples/manifest-b11996535.json') }
 
     describe :to_json do
       it 'creates a manifest' do
         actual = manifest.to_json(manifest_url, img_root_url)
-        expect(actual.strip).to eq(manifest_json.strip)
+        expect(actual.strip).to eq(expected_manifest.strip)
       end
     end
 
@@ -41,7 +41,7 @@ module Lending
         image_dir_uri = UCBLIT::Util::URIs.append(img_root_url, ERB::Util.url_encode(manifest.dir_basename))
 
         actual = ERB.new(manifest_erb).result(binding)
-        expect(actual.strip).to eq(manifest_json.strip)
+        expect(actual.strip).to eq(expected_manifest.strip)
       end
     end
   end
