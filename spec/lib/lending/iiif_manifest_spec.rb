@@ -24,9 +24,10 @@ module Lending
     end
 
     describe :to_erb do
-      let(:manifest_erb) { File.read('spec/data/lending/final/b11996535_B 3 106 704/manifest.json.erb') }
+      let(:expected_erb) { File.read('spec/data/lending/final/b11996535_B 3 106 704/manifest.json.erb') }
+
       it 'can create an ERB' do
-        expected = manifest_erb
+        expected = expected_erb
         actual = manifest.to_erb
         expect(actual.strip).to eq(expected.strip)
       end
@@ -40,7 +41,7 @@ module Lending
         # noinspection RubyUnusedLocalVariable
         image_dir_uri = UCBLIT::Util::URIs.append(img_root_url, ERB::Util.url_encode(manifest.dir_basename))
 
-        actual = ERB.new(manifest_erb).result(binding)
+        actual = ERB.new(expected_erb).result(binding)
         expect(actual.strip).to eq(expected_manifest.strip)
       end
     end
