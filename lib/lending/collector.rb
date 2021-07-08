@@ -1,7 +1,7 @@
 require 'ucblit/logging'
-require 'lending/pathutils'
+require 'lending/path_utils'
 require 'lending/processor'
-require 'lending/iif_manifest'
+require 'lending/iiif_manifest'
 
 module Lending
   class Collector
@@ -22,17 +22,17 @@ module Lending
     # Initializer
 
     def initialize(lending_root, interval)
-      raise ArgumentError, "Expected sleep interval in seconds, got #{interval.inspect}" unless interval.is_a?(Number)
-
-      @interval = interval
+      @interval = ensure_valid_interval(interval)
       @lending_root = PathUtils.ensure_dirpath(lending_root)
-      @stage_roots = STAGES.each_with_object({}) do |stage, roots|
-        roots[stage] = ensure_root(stage)
-      end
+      @stage_roots = STAGES.each_with_object({}) { |stage, roots| roots[stage] = ensure_root(stage) }
     end
 
     # ------------------------------------------------------------
     # Instance methods
+
+    def stop!
+      @stopped = true
+    end
 
     def collect!
       loop do
@@ -40,7 +40,7 @@ module Lending
         process_next_or_sleep
       rescue StandardError => e
         logger.error("#{self}: exiting due to error", e)
-        exit(1)
+        exit(false)
       end
     end
 
@@ -49,6 +49,13 @@ module Lending
     end
 
     private
+
+    def ensure_valid_interval(interval)
+      interval.tap do |v|
+        raise ArgumentError, "Expected sleep interval in seconds, got #{v.inspect}" unless v.is_a?(Numeric)
+        raise ArgumentError, "Expected non-negative sleep interval in seconds, got #{v.inspect}" unless v > 0
+      end
+    end
 
     def process_next_or_sleep
       if (ready_dir = next_ready_dir)
@@ -123,7 +130,7 @@ module Lending
     # @return Array<Pathname> the directories for this stage, in order from oldest to newest
     def item_directories(stage)
       stage_root = stage_root(stage)
-      stage_root.children.select { |p| p.to_s =~ PathUtils.DIRNAME_RE }.sort_by(&:mtime)
+      stage_root.children.select { |p| p.to_s =~ PathUtils::DIRNAME_RE }.sort_by(&:mtime)
     end
 
     # @return [Pathname]
