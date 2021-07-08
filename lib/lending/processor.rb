@@ -7,11 +7,11 @@ module Lending
   class Processor
     include UCBLIT::Logging
 
-    attr_reader :ready_dir, :final_dir, :record_id, :barcode, :marc_path
+    attr_reader :ready_dir, :processing_dir, :record_id, :barcode, :marc_path
 
-    def initialize(ready_dir, final_dir)
+    def initialize(ready_dir, processing_dir)
       @ready_dir = PathUtils.ensure_dirpath(ready_dir)
-      @final_dir = PathUtils.ensure_dirpath(final_dir)
+      @processing_dir = PathUtils.ensure_dirpath(processing_dir)
       @record_id, @barcode = PathUtils.decompose_dirname(@ready_dir)
 
       raise ArgumentError, "#{ready_dir}: MARC record not found" unless (@marc_path = find_marc_path)
@@ -41,7 +41,7 @@ module Lending
     private
 
     def tileize_images!
-      Tileizer.tileize_all(ready_dir, final_dir)
+      Tileizer.tileize_all(ready_dir, processing_dir)
     end
 
     def copy_ocr_text!
@@ -55,11 +55,11 @@ module Lending
     end
 
     def output_images
-      final_dir.children(false).select { |c| Lending::PathUtils.tiff_ext?(c) }
+      processing_dir.children(false).select { |c| Lending::PathUtils.tiff_ext?(c) }
     end
 
     def write_manifest!
-      manifest = IIIFManifest.new(title: title, author: author, dir_path: final_dir)
+      manifest = IIIFManifest.new(title: title, author: author, dir_path: processing_dir)
       manifest.write_manifest_erb!
     end
 
