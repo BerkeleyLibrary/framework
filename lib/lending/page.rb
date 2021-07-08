@@ -43,6 +43,18 @@ module Lending
         end.sort
       end
 
+      def assert_equal!(p1, p2)
+        page1, page2 = [p1, p2].map { |p| p.is_a?(Page) ? p : Page.new(p) }
+        errors = %i[basename width height tile_scale_factors].each_with_object([]) do |attr, errs|
+          v1, v2 = [page1, page2].map { |p| p.send(attr) }
+          errs << "#{attr}: expected #{v1}, got #{v2}" unless v1 == v2
+        end
+        raise ArgumentError, "#{page1} != #{page2}: " + errors.join('; ') unless errors.empty?
+      end
+    end
+
+    def to_s
+      "#<Page:#{tiff_path}>"
     end
 
     def image
@@ -89,7 +101,7 @@ module Lending
         canvas.height = height
         canvas.images << create_image_annotation(canvas_uri, tiff_uri)
         # TODO: use :rendering
-        add_metadata(canvas, Transcript: File.read(txt_path)) if txt_path
+        add_metadata(canvas, Transcript: txt_path.read) if txt_path.exist?
       end
     end
     # rubocop:enable Metrics/AbcSize

@@ -62,8 +62,7 @@ module Lending
 
     def txt_path_from(img_path)
       img_path = ensure_pathname(img_path)
-      txt_path = img_path.parent.join("#{stem(img_path)}.txt")
-      txt_path if txt_path.file?
+      img_path.parent.join("#{stem(img_path)}.txt")
     end
 
     def env_path(varname)
@@ -74,7 +73,7 @@ module Lending
 
     def decompose_dirname(path)
       # TODO: do we care about check digits?
-      match_data = DIRNAME_RE.match(path.basename.to_s.downcase)
+      match_data = DIRNAME_RE.match(path.basename.to_s)
       raise ArgumentError, format(MSG_BAD_DIRNAME, path) unless match_data
 
       [match_data[:record_id].downcase, match_data[:barcode]]

@@ -30,13 +30,7 @@ module Lending
           page_expected = Lending::Page.new(expected)
           page_actual = Lending::Page.new(outfile)
 
-          aggregate_failures 'output image' do
-            %i[width height tile_scale_factors].each do |attr|
-              expected_val = page_expected.send(attr)
-              actual_val = page_actual.send(attr)
-              expect(actual_val).to eq(expected_val), "#{attr}: expected #{expected_val}, got #{actual_val}"
-            end
-          end
+          Page.assert_equal!(page_expected, page_actual)
         end
       end
 
