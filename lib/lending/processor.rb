@@ -61,10 +61,6 @@ module Lending
       end
     end
 
-    def output_images
-      outdir.children(false).select { |c| Lending::PathUtils.tiff_ext?(c) }
-    end
-
     def write_manifest!
       manifest = IIIFManifest.new(title: title, author: author, dir_path: outdir)
       manifest.write_manifest_erb!
@@ -104,10 +100,10 @@ module Lending
       marc_path = indir.join('marc.xml')
       return marc_path if marc_path.exist?
 
-      marc_path = indir.join("#{record_id}.xml")
+      marc_path = indir.join("#{record_id.upcase}.xml")
       return marc_path if marc_path.exist?
 
-      marc_path = indir.join("#{record_id.upcase}.xml")
+      marc_path = indir.join("#{record_id}.xml")
       return marc_path if marc_path.exist?
     end
   end
