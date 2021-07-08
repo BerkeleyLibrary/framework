@@ -53,10 +53,6 @@ module Lending
       end
     end
 
-    def to_s
-      "#<Page:#{tiff_path}>"
-    end
-
     def image
       @image ||= Vips::Image.new_from_file(tiff_path.to_s)
     end
