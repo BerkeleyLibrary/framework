@@ -61,10 +61,10 @@ module Lending
         processor = instance_double(Processor)
         expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
 
-        expect(processor).to(receive(:process!)) {
+        expect(processor).to(receive(:process!)) do
           expect(processing_dir.exist?).to eq(true)
           collector.stop!
-        }
+        end
 
         manifest = instance_double(IIIFManifest)
         expect(IIIFManifest).to receive(:new).with(processing_dir).and_return(manifest)
@@ -72,8 +72,8 @@ module Lending
 
         Timeout.timeout(5) do
           collector.collect!
-        rescue SystemExit => err
-          expect(err.success?).to eq(true)
+        rescue SystemExit => e
+          expect(e.success?).to eq(true)
         end
 
         expect(processing_dir.exist?).to eq(false)
