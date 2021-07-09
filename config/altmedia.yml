@@ -25,7 +25,8 @@ default: &default
   iiif_final_dir: <%= ENV["IIIF_FINAL_DIR"] %>
 
   # Base URL for image server
-  image_server_base_uri: <%= ENV["IMAGE_SERVER_BASE_URL"] %>
+  # TODO: remove IMAGE_SERVER_BASE_URL once stacks all have LIT_IIIF_BASE_URL
+  image_server_base_uri: <%= ENV["LIT_IIIF_BASE_URL"] || ENV["IMAGE_SERVER_BASE_URL"] %>
 
 development:
   <<: *default
