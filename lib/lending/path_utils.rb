@@ -50,6 +50,11 @@ module Lending
       pathname.file? && tiff_ext?(pathname)
     end
 
+    def xml_ext?(p)
+      pathname = ensure_pathname(p)
+      pathname.extname.downcase == '.xml'
+    end
+
     def tiff_ext?(p)
       pathname = ensure_pathname(p)
       pathname.extname.downcase =~ /\.tiff?$/
@@ -63,12 +68,6 @@ module Lending
     def txt_path_from(img_path)
       img_path = ensure_pathname(img_path)
       img_path.parent.join("#{stem(img_path)}.txt")
-    end
-
-    def env_path(varname)
-      raise ArgumentError, "$#{varname} not set" if (val = ENV[varname]).blank?
-
-      ensure_pathname(val)
     end
 
     def decompose_dirname(path)

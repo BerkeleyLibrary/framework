@@ -97,14 +97,11 @@ module Lending
     end
 
     def find_marc_path
-      marc_path = indir.join('marc.xml')
-      return marc_path if marc_path.exist?
+      marc_stems = ['marc', record_id.downcase]
 
-      marc_path = indir.join("#{record_id.upcase}.xml")
-      return marc_path if marc_path.exist?
-
-      marc_path = indir.join("#{record_id}.xml")
-      return marc_path if marc_path.exist?
+      indir.children.find do |p|
+        PathUtils.xml_ext?(p) && marc_stems.include?(PathUtils.stem(p).downcase)
+      end
     end
   end
 end
