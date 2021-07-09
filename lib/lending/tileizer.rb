@@ -7,10 +7,6 @@ require 'lending/tileize_failed'
 module Lending
   class Tileizer
 
-    ENV_INFILE = 'INFILE'.freeze
-    ENV_OUTFILE = 'OUTFILE'.freeze
-    SKIP_EXISTING = 'SKIP_EXISTING'.freeze
-
     # vips tiffsave <infile> <outfile> --tile --pyramid --compression jpeg --tile-width 256 --tile-height 256
     VIPS_OPTIONS = {
       tile: true,
@@ -73,17 +69,6 @@ module Lending
         end
 
         outfile_path.tap { |op| tileize!(infile_path, op, fail_fast) }
-      end
-
-      # Invokes either #tileize or #tileize_all based on environment
-      # variables $INFILE and $OUTFILE, skipping existing files if
-      # $SKIP_EXISTING is set and not blank.
-      def tileize_env
-        skip_existing = !ENV[SKIP_EXISTING].to_s.blank?
-        infile, outfile = [ENV_INFILE, ENV_OUTFILE].map { |v| PathUtils.env_path(v) }
-        return tileize_all(infile, outfile, skip_existing: skip_existing) if infile.directory?
-
-        tileize(infile, outfile, skip_existing: skip_existing, fail_fast: true)
       end
 
       private

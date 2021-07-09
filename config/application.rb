@@ -46,6 +46,12 @@ module Framework
 
     # Lending
     config.image_server_base_uri = config.altmedia['image_server_base_uri']
-    config.iiif_final_dir = config.altmedia['iiif_final_dir']
+
+    # TODO: simplify this once stacks all have LENDING_ROOT
+    config.iiif_final_dir = if (lending_root = config.altmedia['lending_root_dir']).blank?
+                              config.altmedia['iiif_final_dir']
+                            else
+                              File.join(lending_root, 'final')
+                            end
   end
 end

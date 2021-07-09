@@ -17,10 +17,16 @@ default: &default
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
   tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
 
+  # Root directory for lending processing -- see Lending::ENV_ROOT
+  lending_root_dir: <%= ENV["LIT_LENDING_ROOT"] %>
+
   # Image server root directory (shared volume)
+  # TODO: remove this once stacks all have LENDING_ROOT
   iiif_final_dir: <%= ENV["IIIF_FINAL_DIR"] %>
+
   # Base URL for image server
   image_server_base_uri: <%= ENV["IMAGE_SERVER_BASE_URL"] %>
+
 development:
   <<: *default
 
