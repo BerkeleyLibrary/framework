@@ -19,10 +19,11 @@ module Lending
     end
 
     describe :collect do
+      let(:sleep_interval) { 0.01 }
       attr_reader :collector
 
       before(:each) do
-        @collector = Collector.new(lending_root, 0.01)
+        @collector = Collector.new(lending_root, sleep_interval)
       end
 
       it 'exits immediately if stopped' do
@@ -63,12 +64,26 @@ module Lending
 
         expect(processor).to(receive(:process!)) do
           expect(processing_dir.exist?).to eq(true)
-          collector.stop!
+
+          Thread.new do
+            sleep(2 * sleep_interval)
+            collector.stop!
+          end
         end
+
+        # allow(UCBLIT::Logging.logger).to receive(:info) do |msg|
+        #   $stderr.puts("#{Time.current.strftime('%H:%M:%S:%S.%6N')} #{msg}")
+        # end
 
         manifest = instance_double(IIIFManifest)
         expect(IIIFManifest).to receive(:new).with(processing_dir).and_return(manifest)
         expect(manifest).to receive(:has_template?).and_return(true)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/processing/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/moving/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing ready to process; sleeping/).at_least(:once).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
 
         Timeout.timeout(5) do
           collector.collect!
@@ -78,6 +93,44 @@ module Lending
 
         expect(processing_dir.exist?).to eq(false)
         expect(final_dir.exist?).to eq(true)
+
+        expect(collector.stopped?).to eq(true)
+      end
+
+      it 'exits in the event of an error' do
+        item_dirname = 'b12345678_c12345678'
+
+        ready_dir = lending_root.join('ready').join(item_dirname)
+        ready_dir.mkdir
+
+        processing_dir = lending_root.join('processing').join(item_dirname)
+        expect(processing_dir.exist?).to eq(false)
+
+        processor = instance_double(Processor)
+        expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
+
+        error_message = 'Oops'
+        expect(processor).to(receive(:process!)).and_raise(error_message)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/processing/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:error).with(/exiting due to error/, an_object_satisfying do |obj|
+          obj.is_a?(Lending::ProcessingFailed)
+          obj.message.include?(error_message)
+        end).ordered
+
+        Timeout.timeout(5) do
+          collector.collect!
+        rescue SystemExit => e
+          expect(e.success?).to eq(false)
+        end
+
+        expect(processing_dir.exist?).to eq(true)
+
+        final_dir = lending_root.join('final').join(item_dirname)
+        expect(final_dir.exist?).to eq(false)
+
+        expect(collector.stopped?).to eq(false)
       end
     end
   end
