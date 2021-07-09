@@ -33,18 +33,21 @@ module Lending
       tileize_images!
       copy_ocr_text!
       write_manifest!
-      # TODO: create database record?
     end
 
-    # TODO: verify
+    def to_s
+      @s ||= "#{self.class.name.split('::').last}@#{object_id}"
+    end
 
     private
 
     def tileize_images!
+      logger.info("#{self}: tileizing images from #{indir} to #{outdir}")
       Tileizer.tileize_all(indir, outdir)
     end
 
     def copy_ocr_text!
+      logger.info("#{self}: copying OCR text from #{indir} to #{outdir}")
       input_txts.each do |input_txt|
         output_txt = outdir.join(input_txt.basename)
         logger.info("Copying #{input_txt} to #{output_txt}")
@@ -62,6 +65,7 @@ module Lending
     end
 
     def write_manifest!
+      logger.info("#{self}: writing manifest template to #{outdir}")
       manifest = IIIFManifest.new(title: title, author: author, dir_path: outdir)
       manifest.write_manifest_erb!
     end

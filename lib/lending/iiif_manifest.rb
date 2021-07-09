@@ -54,7 +54,7 @@ module Lending
     end
 
     def write_manifest_erb!
-      logger.info("Writing #{erb_path}")
+      logger.info("#{self}: Writing #{erb_path}")
       to_erb.tap { |erb| File.write(erb_path.to_s, erb) }
     end
 
@@ -63,6 +63,10 @@ module Lending
         .to_json(pretty: true)
         .gsub(MF_URL_PLACEHOLDER, MF_TAG)
         .gsub(IMGDIR_URL_PLACEHOLDER, IMG_TAG)
+    end
+
+    def to_s
+      @s ||= "#{self.class.name.split('::').last}@#{object_id}"
     end
 
     private

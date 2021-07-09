@@ -197,7 +197,7 @@ However, you may run into issues using the same database for development and
 testing. You can work around this using Docker for just the database -- see 
 below.
 
-> #### TODO: Document IMAGE_SERVER_BASE_URL config, incl. hybrid w/Dockerized image server
+> #### TODO: Document LIT_IIIF_BASE_URL config, incl. hybrid w/Dockerized image server
 
 ##### Using a Dockerized database for local development
 

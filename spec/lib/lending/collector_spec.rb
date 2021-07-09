@@ -6,12 +6,12 @@ module Lending
   describe Collector do
     attr_reader :lending_root
 
+    let(:stem) { File.basename(__FILE__, '.rb') }
+
     before(:each) do
-      lending_root_str = Dir.mktmpdir(File.basename(__FILE__, '.rb'))
+      lending_root_str = Dir.mktmpdir(stem)
       @lending_root = Pathname.new(lending_root_str)
-      Collector::STAGES.each do |stage|
-        lending_root.join(stage.to_s).mkdir
-      end
+      Collector::STAGES.each { |stage| lending_root.join(stage.to_s).mkdir }
     end
 
     after(:each) do
@@ -20,10 +20,11 @@ module Lending
 
     describe :collect do
       let(:sleep_interval) { 0.01 }
+      let(:stop_file) { "#{stem}.stop" }
       attr_reader :collector
 
       before(:each) do
-        @collector = Collector.new(lending_root, sleep_interval)
+        @collector = Collector.new(lending_root, sleep_interval, stop_file)
       end
 
       it 'exits immediately if stopped' do
@@ -37,7 +38,7 @@ module Lending
       end
 
       it 'stops if a stop file is present' do
-        stop_file_path = lending_root.join(Collector::STOP_FILE)
+        stop_file_path = collector.stop_file_path
         FileUtils.touch(stop_file_path.to_s)
 
         Timeout.timeout(5) do
@@ -71,13 +72,13 @@ module Lending
           end
         end
 
-        # allow(UCBLIT::Logging.logger).to receive(:info) do |msg|
-        #   $stderr.puts("#{Time.current.strftime('%H:%M:%S:%S.%6N')} #{msg}")
-        # end
-
         manifest = instance_double(IIIFManifest)
         expect(IIIFManifest).to receive(:new).with(processing_dir).and_return(manifest)
         expect(manifest).to receive(:has_template?).and_return(true)
+
+        # allow(UCBLIT::Logging.logger).to receive(:info) do |msg|
+        #   $stderr.puts("#{Time.current.strftime('%H:%M:%S:%S.%6N')} #{msg}")
+        # end
 
         expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
         expect(UCBLIT::Logging.logger).to receive(:info).with(/processing/).ordered

@@ -11,20 +11,38 @@ module Lending
     # Constants
 
     STAGES = %i[ready processing final].freeze
-    STOP_FILE = 'collector.stop'.freeze
+    ENV_INTERVAL = 'LIT_LENDING_COLLECTOR_INTERVAL'.freeze
+    ENV_STOP_FILE = 'LIT_LENDING_COLLECTOR_STOP_FILE'.freeze
 
     # ------------------------------------------------------------
     # Fields
 
-    attr_reader :lending_root, :stage_roots, :interval
+    attr_reader :lending_root, :stage_roots, :interval, :stop_file_path
 
     # ------------------------------------------------------------
     # Initializer
 
-    def initialize(lending_root, interval)
+    def initialize(lending_root, interval, stop_file)
       @interval = ensure_valid_interval(interval)
       @lending_root = PathUtils.ensure_dirpath(lending_root)
       @stage_roots = STAGES.each_with_object({}) { |stage, roots| roots[stage] = ensure_root(stage) }
+      @stop_file_path = @lending_root.join(stop_file)
+    end
+
+    # ------------------------------------------------------------
+    # Class methods
+
+    class << self
+      def from_environment
+        args = [Lending::ENV_ROOT, ENV_INTERVAL, ENV_STOP_FILE].map(&method(:ensure_env))
+        Collector.new(*args)
+      end
+
+      private
+
+      def ensure_env(v)
+        ENV[v].tap { |value| raise ArgumentError, "$#{v} is unset or blank" if value.blank? }
+      end
     end
 
     # ------------------------------------------------------------
@@ -39,7 +57,7 @@ module Lending
     end
 
     def collect!
-      logger.info("#{self}: starting for lending_root: #{lending_root}, interval: #{interval}s")
+      logger.info("#{self}: starting for lending_root: #{lending_root}, interval: #{interval}s, stop_file: #{stop_file_path}")
       loop do
         exit_if_stopped
         process_next_or_sleep
@@ -80,16 +98,9 @@ module Lending
     def exit_if_stopped
       return unless stopped?
 
+      stop_reason = stop_file_path.exist? ? "stop file #{stop_file_path} found; exiting" : 'stopped'
       logger.info("#{self}: #{stop_reason}")
       exit(true)
-    end
-
-    def stop_reason
-      stop_file_path.exist? ? "stop file #{stop_file_path} found; exiting" : 'stopped'
-    end
-
-    def stop_file_path
-      lending_root.join(STOP_FILE)
     end
 
     # ------------------------------
@@ -106,17 +117,13 @@ module Lending
     end
 
     def process(ready_dir, processing_dir)
-      process!(ready_dir, processing_dir)
+      logger.info("#{self}: processing #{ready_dir} to #{processing_dir}")
+      Processor.new(ready_dir, processing_dir).process!
       verify(processing_dir)
 
       move_to_final!(processing_dir)
     rescue StandardError => e
       raise ProcessingFailed.new(ready_dir, processing_dir, cause: e)
-    end
-
-    def process!(ready_dir, processing_dir)
-      logger.info("#{self}: processing #{ready_dir} to #{processing_dir}")
-      Processor.new(ready_dir, processing_dir).process!
     end
 
     def verify(processing_dir)

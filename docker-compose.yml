@@ -1,5 +1,5 @@
 services:
-  app: &services-app
+  app:
     build:
       context: .
       target: development
@@ -7,13 +7,13 @@ services:
       - db
       - selenium
       - selenium-chrome
-    environment:
+    environment: &app-environment
       FRAMEWORK_ALMA_API_URL: ${FRAMEWORK_ALMA_API_URL}
       FRAMEWORK_ALMA_API_KEY: ${FRAMEWORK_ALMA_API_KEY}
       LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
       LIT_TIND_BASE_URL: ${LIT_TIND_BASE_URL}
       LIT_LENDING_ROOT: spec/data/lending
-      IMAGE_SERVER_BASE_URL: http://ucbears-iiif/iiif/
+      LIT_IIIF_BASE_URL: http://ucbears-iiif/iiif/
     init: true
     networks:
       default:
@@ -26,12 +26,15 @@ services:
     restart: always
 
   ucbears-collector:
-    <<: *services-app
-    command: bin/lending/collect.rb
-    depends_on:
-      - app
-      - db
+    build:
+      context: .
+      target: development
+    environment:
+      LIT_LENDING_ROOT: spec/data/lending
+      LIT_LENDING_COLLECTOR_INTERVAL: 5
+      LIT_LENDING_COLLECTOR_STOP_FILE: collector-dev.stop
     ports: []
+    command: bin/lending/collect.rb
     restart: "no"
 
   db:
