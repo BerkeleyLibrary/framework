@@ -66,7 +66,18 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   def init_form!; end
 
-  REQUEST_PARAMS = %w[faculty_name department faculty_id user_email student_name student_dsp research_last research_first research_middle dsp_rep].freeze
+  REQUEST_PARAMS = %w[
+    faculty_name
+    department
+    faculty_id
+    user_email
+    student_name
+    student_dsp
+    research_last
+    research_first
+    research_middle
+    dsp_rep
+  ].freeze
 
   def process_params(params)
     ProxyBorrowerRequests.new.tap do |request|
