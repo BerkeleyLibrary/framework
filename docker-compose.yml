@@ -25,6 +25,15 @@ services:
       - 3000:3000
     restart: always
 
+  ucbears-collector:
+    <<: *services-app
+    command: bin/lending/collect.rb
+    depends_on:
+      - app
+      - db
+    ports: []
+    restart: "no"
+
   db:
     environment:
       POSTGRES_PASSWORD: root
