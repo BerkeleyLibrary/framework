@@ -66,40 +66,22 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   def init_form!; end
 
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+  REQUEST_PARAMS = %w[faculty_name department faculty_id user_email student_name student_dsp research_last research_first research_middle dsp_rep].freeze
+
   def process_params(params)
-    request = ProxyBorrowerRequests.new
-    request['faculty_name'] = params['faculty_name'] || nil
-    request['department'] = params['department'] || nil
-    request['faculty_id'] = params['faculty_id'] || nil
-    request['user_email'] = params['user_email'] || nil
-    request['student_name'] = params['student_name'] || nil
-    request['student_dsp'] = params['student_dsp'] || nil
-    request['research_last'] = params['research_last'] || nil
-    request['research_first'] = params['research_first'] || nil
-    request['research_middle'] = params['research_middle'] || nil
-    request['dsp_rep'] = params['dsp_rep'] || nil
-    request['renewal'] = params['renewal'].to_i
-
-    # Handle the Proxy Term (date the term ends):
-    if params['term'].blank?
-      # If term is blank - set to nil:
-      request['date_term'] = nil
-    else
-      if (date_param = params['term'].match(%r{^(\d+/\d+/)(\d{2})$}))
-        params['term'] = date_param[1] + '20' + date_param[2]
-      end
-
-      begin
-        # Try to convert the string date to a date obj:
-        request['date_term'] = Date.strptime(params['term'], '%m/%d/%Y')
-      rescue ArgumentError
-        # If bad argument set to nil:
-        request['date_term'] = nil
-      end
+    ProxyBorrowerRequests.new.tap do |request|
+      REQUEST_PARAMS.each { |k| request[k] = params[k] }
+      request['renewal'] = params['renewal'].to_i
+      request['date_term'] = convert_date_param(params['term'])
     end
-    request
   end
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+
+  def convert_date_param(date_param)
+    return unless date_param
+
+    Date.strptime(date_param, '%m/%d/%y')
+  rescue Date::Error
+    nil
+  end
 
 end
