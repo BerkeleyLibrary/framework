@@ -18,7 +18,7 @@ class StackPassFormsController < ApplicationController
 
     # Need to gab and convert the date:
     unless params[:stack_pass_form][:pass_date].blank?
-      @form.pass_date = (convert_date_param if params[:stack_pass_form][:pass_date].split('/').length == 3)
+      @form.pass_date = (convert_date_param(params[:stack_pass_form][:pass_date]) if params[:stack_pass_form][:pass_date].split('/').length == 3)
     end
 
     if @form.save
@@ -70,18 +70,12 @@ class StackPassFormsController < ApplicationController
 
   private
 
-  def convert_date_param
-    # Try to handle mm/dd/yy:
-    if (date_param = params[:stack_pass_form][:pass_date].match(%r{^(\d+/\d+/)(\d{2})$}))
-      params[:stack_pass_form][:pass_date] = date_param[1] + '20' + date_param[2]
-    end
+  def convert_date_param(date_param)
+    return unless date_param
 
-    begin
-      # Try to convert the string date to a date obj:
-      Date.strptime(params[:stack_pass_form][:pass_date], '%m/%d/%Y')
-    rescue ArgumentError
-      # If bad argument set to nil:
-    end
+    Date.strptime(date_param, '%m/%d/%y')
+  rescue Date::Error
+    nil
   end
 
   def form_params

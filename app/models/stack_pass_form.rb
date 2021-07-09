@@ -29,7 +29,7 @@ class StackPassForm < StackRequest
     max_date = 7.days.from_now
 
     min_date = Date.current
-    min_date = created_at.getlocal.to_date if created_at
+    min_date = to_app_date(created_at) if created_at
 
     if date_entered
       errors.add(:pass_date, 'The date must not be in the past') if date_entered < min_date

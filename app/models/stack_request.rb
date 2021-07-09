@@ -32,4 +32,8 @@ class StackRequest < ActiveRecord::Base
     yr = today.year
     Date.new(yr, 1, 1)
   end
+
+  def to_app_date(db_date)
+    db_date.in_time_zone(Time.zone).to_date
+  end
 end
