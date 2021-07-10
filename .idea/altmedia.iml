@@ -83,6 +83,7 @@
     <orderEntry type="library" scope="PROVIDED" name="jquery-rails (v4.4.0, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jquery-ui-rails (v6.0.1, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="json (v2.5.1, RVM: ruby-2.7.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json-stream (v0.2.1, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jwt (v1.5.6, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="listen (v3.1.5, RVM: ruby-2.7.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="lograge (v0.11.2, RVM: ruby-2.7.2) [gem]" level="application" />
@@ -496,11 +497,6 @@
                   <RakeTaskImpl description="Automatically fix problems detected by ESLint" fullCommand="js:eslint:fix" id="fix" />
                 </subtasks>
               </RakeTaskImpl>
-            </subtasks>
-          </RakeTaskImpl>
-          <RakeTaskImpl id="lending">
-            <subtasks>
-              <RakeTaskImpl description="Creates tiled TIFFs from an image or list of images" fullCommand="lending:tileize" id="tileize" />
             </subtasks>
           </RakeTaskImpl>
           <RakeTaskImpl id="log">

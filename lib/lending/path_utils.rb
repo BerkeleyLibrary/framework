@@ -5,6 +5,22 @@ module Lending
     DIRNAME_RE = /(?<record_id>[Bb]?[0-9]{8,}+)_(?<barcode>.+)/.freeze
     MSG_BAD_DIRNAME = 'Item directory %s should be in the form <record_id>_<barcode>'.freeze
 
+    def all_item_dirs(parent)
+      each_item_dir(parent).to_a
+    end
+
+    def each_item_dir(parent)
+      parent = ensure_dirpath(parent)
+      return to_enum(:each_item_dir, parent) unless block_given?
+
+      parent.children.each { |p| yield p if item_dir?(p) }
+    end
+
+    def item_dir?(p)
+      pathname = ensure_pathname(p)
+      pathname.directory? && stem(pathname).to_s =~ DIRNAME_RE
+    end
+
     def ensure_pathname(p)
       p.is_a?(Pathname) ? p : Pathname.new(p.to_s)
     end

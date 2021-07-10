@@ -2,10 +2,13 @@ require 'ucblit/marc'
 require 'ucblit/logging'
 require 'lending/tileizer'
 require 'lending/path_utils'
+require 'lending/marc_metadata'
 
 module Lending
   class Processor
     include UCBLIT::Logging
+
+    MARC_XML_NAME = 'marc.xml'.freeze
 
     attr_reader :indir, :outdir, :record_id, :barcode, :marc_path
 
@@ -18,20 +21,17 @@ module Lending
     end
 
     def author
-      @author ||= clean_value(find_author)
+      marc_metadata.author
     end
 
     def title
-      @title ||= clean_value(find_title)
-    end
-
-    def marc_record
-      @marc_record ||= MARC::XMLReader.read(marc_path.to_s, freeze: true).first
+      marc_metadata.title
     end
 
     def process!
       tileize_images!
       copy_ocr_text!
+      copy_marc_record!
       write_manifest!
     end
 
@@ -40,6 +40,10 @@ module Lending
     end
 
     private
+
+    def marc_metadata
+      @marc_metadata ||= MarcMetadata.new(marc_path)
+    end
 
     def tileize_images!
       logger.info("#{self}: tileizing images from #{indir} to #{outdir}")
@@ -64,40 +68,16 @@ module Lending
       end
     end
 
+    def copy_marc_record!
+      output_marc_path = outdir.join(MARC_XML_NAME)
+      logger.info("#{self}: copying #{marc_path} to #{output_marc_path}")
+      FileUtils.cp(marc_path, output_marc_path)
+    end
+
     def write_manifest!
       logger.info("#{self}: writing manifest template to #{outdir}")
       manifest = IIIFManifest.new(title: title, author: author, dir_path: outdir)
       manifest.write_manifest_erb!
-    end
-
-    def find_title
-      df = find_tag('245')
-      return unless df
-
-      join_subfields(df, %w[a b])
-    end
-
-    def find_author
-      df = find_tag('100') || find_tag('110') || find_tag('710')
-      return unless df
-
-      join_subfields(df, %w[a b])
-    end
-
-    def join_subfields(df, codes)
-      codes.map { |code| df[code] }.compact.map(&:strip).join(' ')
-    end
-
-    def find_tag(tag)
-      data_fields_by_tag[tag]&.first
-    end
-
-    def clean_value(v)
-      v.strip.sub(%r{[ ,/:;]+$}, '')
-    end
-
-    def data_fields_by_tag
-      @data_fields_by_tag ||= marc_record.data_fields_by_tag
     end
 
     def find_marc_path

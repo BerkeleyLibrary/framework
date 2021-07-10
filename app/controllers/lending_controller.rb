@@ -23,6 +23,7 @@ class LendingController < ApplicationController
   # UI actions
 
   def index
+    LendingItem.scan_for_new_items!
     @lending_items = LendingItem.order(sort_column + ' ' + sort_direction)
   end
 

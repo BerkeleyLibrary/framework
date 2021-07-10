@@ -154,8 +154,7 @@ module Lending
     # The ready directories, in order from oldest to newest
     # @return [Array<Pathname>] the ready directories, in order from oldest to newest
     def ready_directories
-      stage_root = stage_root(:ready)
-      stage_root.children.select { |p| p.to_s =~ PathUtils::DIRNAME_RE }.sort_by(&:mtime)
+      PathUtils.all_item_dirs(stage_root(:ready)).sort_by(&:mtime)
     end
 
     # Returns the root directory for the specified stage
