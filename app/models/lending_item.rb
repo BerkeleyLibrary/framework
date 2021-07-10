@@ -1,6 +1,7 @@
 require 'lending'
 require 'ucblit/util/uris'
 
+# rubocop:disable Metrics/ClassLength
 class LendingItem < ActiveRecord::Base
 
   # ------------------------------------------------------------
@@ -28,6 +29,42 @@ class LendingItem < ActiveRecord::Base
   MSG_UNAVAILABLE = 'There are no available copies of this item.'.freeze
   MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
   MSG_NOT_CHECKED_OUT = 'This item is not checked out.'.freeze
+
+  # ------------------------------------------------------------
+  # Class methods
+
+  class << self
+    # TODO: test this, add logging, fail gracefully
+    def scan_for_new_items!
+      known_directories = LendingItem.pluck(:directory)
+
+      item_dirs = Lending::PathUtils.each_item_dir(iiif_final_root).to_a
+
+      item_dirs.filter_map do |item_dir|
+        stem = Lending::PathUtils.stem(item_dir).to_s
+        next if known_directories.include?(stem)
+
+        create_from(stem)
+      end
+    end
+
+    def create_from(directory)
+      return unless (item_dir = Pathname.new(iiif_final_root).join(directory)).directory?
+      return unless (marc_path = item_dir.join(Lending::Processor::MARC_XML_NAME)).exist?
+
+      metadata = Lending::MarcMetadata.new(marc_path)
+      item = LendingItem.create(directory: directory, title: metadata.title, author: metadata.author, copies: 0)
+      return item if item.persisted?
+    end
+
+    # TODO: move this to a helper
+    def iiif_final_root
+      Rails.application.config.iiif_final_dir.tap do |dir|
+        raise ArgumentError, 'iiif_final_dir not set' if dir.blank?
+        raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
+      end
+    end
+  end
 
   # ------------------------------------------------------------
   # Instance methods
@@ -131,10 +168,7 @@ class LendingItem < ActiveRecord::Base
 
   # TODO: move this to a helper
   def iiif_final_root
-    Rails.application.config.iiif_final_dir.tap do |dir|
-      raise ArgumentError, 'iiif_final_dir not set' if dir.blank?
-      raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
-    end
+    LendingItem.iiif_final_root
   end
 
   # TODO: move this to a helper
@@ -148,3 +182,4 @@ class LendingItem < ActiveRecord::Base
     lending_item_loans.active.order(:due_date)
   end
 end
+# rubocop:enable Metrics/ClassLength
