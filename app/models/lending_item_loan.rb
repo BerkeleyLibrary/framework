@@ -1,6 +1,11 @@
 class LendingItemLoan < ActiveRecord::Base
 
   # ------------------------------------------------------------
+  # Scopes
+
+  scope :overdue, -> { active.where('due_date < ?', Time.current.utc) }
+
+  # ------------------------------------------------------------
   # Relations
 
   belongs_to :lending_item
@@ -37,7 +42,7 @@ class LendingItemLoan < ActiveRecord::Base
   end
 
   def expired?
-    due_date && due_date <= Time.current
+    due_date && due_date.utc <= Time.current.utc
   end
 
   # ------------------------------------------------------------

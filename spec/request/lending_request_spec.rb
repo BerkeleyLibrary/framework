@@ -20,6 +20,10 @@ describe LendingController, type: :request do
   attr_reader :items
   attr_reader :item
 
+  def active
+    items.select(&:active?)
+  end
+
   def unprocessed
     items.reject(&:processed?)
   end
@@ -110,6 +114,49 @@ describe LendingController, type: :request do
             expect(body).to include(CGI.escapeHTML(item.title))
             expect(body).to include(item.author)
             expect(body).to include(item.directory)
+          end
+        end
+
+        it 'shows due dates' do
+          loans = active.each_with_object([]) do |item, ll|
+            item.copies.times do |copy|
+              loan = item.check_out_to("patron-#{copy}")
+              ll << loan
+            end
+          end
+
+          get lending_path
+          body = response.body
+          loans.each do |loan|
+            date = loan.due_date
+            expect(body).to include(date.to_s(:short))
+          end
+        end
+
+        it 'auto-expires overdue loans' do
+          loans = active.each_with_object([]) do |item, ll|
+            item.copies.times do |copy|
+              loan = item.check_out_to("patron-#{copy}")
+              if copy.odd?
+                loan.due_date = Time.current.utc - 1.days
+                loan.save!
+              end
+              ll << loan
+            end
+          end
+
+          get lending_path
+          body = response.body
+
+          loans.each do |loan|
+            loan.reload
+            date = loan.due_date
+            if loan.expired?
+              expect(loan).to be_complete
+              expect(body).not_to include(date.to_s(:short))
+            else
+              expect(body).to include(date.to_s(:short))
+            end
           end
         end
       end
