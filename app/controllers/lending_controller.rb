@@ -63,7 +63,7 @@ class LendingController < ApplicationController
   end
 
   def update
-    render_with_errors(:edit, @lending_item.errors) && return unless @lending_item.update(lending_item_params)
+    render_with_errors(:edit, errors) && return unless @lending_item.update(lending_item_params)
 
     flash[:success] = 'Item updated.'
     redirect_to lending_show_url(directory: directory)
@@ -109,15 +109,6 @@ class LendingController < ApplicationController
     end
     redirect_back(fallback_location: lending_path)
   end
-
-  # TODO: reimplement as "withdraw" or similar
-  # def destroy
-  #   @lending_item.destroy
-  #   respond_to do |format|
-  #     flash[:success] = 'Item deleted.'
-  #     format.html { redirect_to lending_items_url }
-  #   end
-  # end
 
   # ------------------------------------------------------------
   # Helper methods
@@ -189,7 +180,7 @@ class LendingController < ApplicationController
 
   # create/update parameters
   def lending_item_params # TODO: better/more consistent name
-    params.require(:lending_item).permit(:directory, :title, :author, :copies)
+    params.require(:lending_item).permit(:directory, :title, :author, :copies, :active)
   end
 
   # loan lookup parameters

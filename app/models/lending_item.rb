@@ -24,6 +24,8 @@ class LendingItem < ActiveRecord::Base
   validates :author, presence: true
   validates :copies, numericality: { greater_than_or_equal_to: 0 }
   validate :correct_directory_format
+  validate :active_items_have_copies
+  validate :active_items_are_processed
 
   # ------------------------------------------------------------
   # Constants
@@ -35,6 +37,7 @@ class LendingItem < ActiveRecord::Base
   MSG_UNAVAILABLE = 'There are no available copies of this item.'.freeze
   MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
   MSG_NOT_CHECKED_OUT = 'This item is not checked out.'.freeze
+  MSG_ZERO_COPIES = 'Items without copies cannot be made active.'.freeze
 
   # ------------------------------------------------------------
   # Class methods
@@ -129,6 +132,8 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_dir
+    return unless directory
+
     @iiif_dir ||= begin
       iiif_dir_relative = File.join(iiif_final_root, directory)
       File.absolute_path(iiif_dir_relative)
@@ -150,6 +155,7 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_dir?
+    return false unless iiif_dir
     return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
     return false if Dir.empty?(iiif_dir)
 
@@ -162,7 +168,19 @@ class LendingItem < ActiveRecord::Base
   def correct_directory_format
     return if directory && directory.split('_').size == 2
 
-    errors.add(:directory, 'directory should be in the format <bibliographic record id>_<item barcode>')
+    errors.add(:base, CGI.escapeHTML('directory should be in the format <bibliographic record id>_<item barcode>.'))
+  end
+
+  def active_items_have_copies
+    return if inactive? || copies > 0
+
+    errors.add(:base, MSG_ZERO_COPIES)
+  end
+
+  def active_items_are_processed
+    return if inactive? || processed?
+
+    errors.add(:base, MSG_UNPROCESSED)
   end
 
   # ------------------------------------------------------------
