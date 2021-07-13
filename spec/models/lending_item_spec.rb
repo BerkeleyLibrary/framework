@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 describe LendingItem, type: :model do
+  before(:each) do
+    allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/samples/final')
+  end
+
   attr_reader :items, :processed, :unprocessed, :active
 
   context 'without existing items' do
     describe :scan_for_new_items! do
       it 'creates new items' do
-        items = LendingItem.scan_for_new_items!
         expected_dirs = Pathname.new(LendingItem.iiif_final_root).children.select { |d| Lending::PathUtils.item_dir?(d) }
+        items = LendingItem.scan_for_new_items!
         expect(items.size).to eq(expected_dirs.size)
       end
     end
@@ -53,7 +57,7 @@ describe LendingItem, type: :model do
       it 'returns true for items with populated image directories' do
         items.each do |item|
           iiif_dir = item.iiif_dir
-          expected = File.directory?(iiif_dir) && !Dir.empty?(iiif_dir)
+          expected = File.directory?(iiif_dir) && Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
           expect(item.iiif_dir?).to eq(expected)
         end
       end
