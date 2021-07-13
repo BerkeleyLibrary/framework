@@ -223,7 +223,9 @@ describe LendingController, type: :request do
           item.update!(active: false)
 
           get lending_activate_path(directory: item.directory)
-          expect(response).to be_successful
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
           expect(response.body).to include('Item now active.')
 
           item.reload
@@ -232,7 +234,9 @@ describe LendingController, type: :request do
 
         it 'is successful for an already active item' do
           get lending_activate_path(directory: item.directory)
-          expect(response).to be_successful
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
           expect(response.body).to include('Item already active.')
 
           item.reload
@@ -243,7 +247,9 @@ describe LendingController, type: :request do
       describe :deactivate do
         it 'dactivates an active item' do
           get lending_deactivate_path(directory: item.directory)
-          expect(response).to be_successful
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
           expect(response.body).to include('Item now inactive.')
 
           item.reload
@@ -255,7 +261,9 @@ describe LendingController, type: :request do
 
           get lending_deactivate_path(directory: item.directory)
 
-          expect(response).to be_successful
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
           expect(response.body).to include('Item already inactive.')
 
           item.reload
