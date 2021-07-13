@@ -38,6 +38,7 @@ class LendingItem < ActiveRecord::Base
   MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
   MSG_NOT_CHECKED_OUT = 'This item is not checked out.'.freeze
   MSG_ZERO_COPIES = 'Items without copies cannot be made active.'.freeze
+  MSG_INACTIVE = 'This item is not in active circulation.'.freeze
 
   # ------------------------------------------------------------
   # Class methods
@@ -187,6 +188,8 @@ class LendingItem < ActiveRecord::Base
   # Private methods
 
   private
+
+  def return_overdue_loans; end
 
   def ensure_record_id_and_barcode
     return if @record_id && @barcode
