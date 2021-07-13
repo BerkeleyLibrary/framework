@@ -1,35 +1,24 @@
 require 'calnet_helper'
 
 describe LendingController, type: :request do
+  before(:each) do
+    allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/samples/final')
+  end
+
   let(:valid_item_attributes) do
     [
       {
-        title: 'Villette',
-        author: 'Brontë, Charlotte',
-        directory: 'b155001346_C044219363',
-        copies: 1
-      },
-      {
-        title: 'The Great Depression in Europe, 1929-1939',
-        author: 'Clavin, Patricia',
-        directory: 'b135297126_C068087930',
-        copies: 3
-      },
-      {
-        title: 'Pamphlet',
-        author: 'Canada. Department of Agriculture.',
-        directory: 'b11996535_B 3 106 704',
-        copies: 2
+        title: 'The Plan of St. Gall : a study of the architecture & economy of life in a paradigmatic Carolingian monastery',
+        author: 'Horn, Walter',
+        directory: 'b100523250_C044235662',
+        copies: 1,
+        active: true
       }
     ]
   end
 
   attr_reader :items
   attr_reader :item
-
-  def processed
-    items.select(&:processed?)
-  end
 
   def unprocessed
     items.reject(&:processed?)
@@ -117,7 +106,7 @@ describe LendingController, type: :request do
 
           body = response.body
           items.each do |item|
-            expect(body).to include(item.title)
+            expect(body).to include(CGI.escapeHTML(item.title))
             expect(body).to include(item.author)
             expect(body).to include(item.directory)
           end
@@ -149,7 +138,7 @@ describe LendingController, type: :request do
 
       describe :manifest do
         it 'shows the manifest for processed items' do
-          processed.each do |item|
+          items.each do |item|
             get lending_manifest_path(directory: item.directory)
             expect(response).to be_successful
 
@@ -192,7 +181,7 @@ describe LendingController, type: :request do
       @items = valid_item_attributes.map do |item_attributes|
         LendingItem.create!(**item_attributes)
       end
-      @item = processed.last
+      @item = items.last
     end
 
     describe :show do
@@ -270,6 +259,7 @@ describe LendingController, type: :request do
         loan = item.check_out_to(user.lending_id)
 
         item.copies = 0
+        item.active = false
         item.save!
 
         loan.reload
@@ -314,20 +304,6 @@ describe LendingController, type: :request do
         # TODO: format all dates
         due_date_str = item.next_due_date.to_s(:long)
         expect(body).to include(due_date_str)
-      end
-
-      it 'displays an item that has not yet been processed' do
-        item = unprocessed.first
-
-        expect do
-          get lending_view_path(directory: item.directory)
-        end.not_to change(LendingItemLoan, :count)
-        expect(response).to be_successful
-
-        body = response.body
-        # TODO: verify checkout disabled
-        expect(body).not_to include('Return')
-        expect(body).to include(LendingItem::MSG_UNPROCESSED)
       end
     end
 
@@ -374,17 +350,6 @@ describe LendingController, type: :request do
 
         expect(response.status).to eq(422) # unprocessable entity
         expect(response.body).to include(LendingItem::MSG_UNAVAILABLE)
-      end
-
-      it 'fails if the item has not been processed' do
-        item = unprocessed.first
-
-        expect do
-          get lending_check_out_path(directory: item.directory)
-        end.not_to change(LendingItemLoan, :count)
-
-        expect(response.status).to eq(422)
-        expect(response.body).to include(LendingItem::MSG_UNPROCESSED)
       end
     end
 
