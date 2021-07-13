@@ -93,11 +93,9 @@ class LendingController < ApplicationController
       flash[:info] = 'Item already active.'
     elsif @lending_item.update(active: true)
       flash[:success] = 'Item now active.'
-    else
-      flash_errors(@lending_item.errors)
     end
 
-    render(:index)
+    redirect_to(:lending)
   end
 
   def deactivate
@@ -105,11 +103,9 @@ class LendingController < ApplicationController
       flash[:info] = 'Item already inactive.'
     elsif @lending_item.update(active: false)
       flash[:success] = 'Item now inactive.'
-    else
-      flash_errors(@lending_item.errors)
     end
 
-    render(:index)
+    redirect_to(:lending)
   end
 
   # ------------------------------------------------------------
