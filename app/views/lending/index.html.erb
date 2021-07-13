@@ -2,8 +2,17 @@
 
 <h1>UC Berkeley Electronic and Accessible Reserves System</h1>
 
-<h2>Inactive Items</h2>
+<ul>
+  <li><a href="#inactive">New or inactive items</a></li>
+  <li><a href="#active">Active items</a></li>
+</ul>
+
+<h2 id="inactive">New or Inactive Items</h2>
 <%= render(partial: 'item_table', locals: { items: LendingItem.inactive }) %>
 
-<h2>Active Items</h2>
+<p><a href="#main">Return to top</a></p>
+
+<h2 id="active">Active Items</h2>
 <%= render(partial: 'item_table', locals: { items: LendingItem.active }) %>
+
+<p><a href="#main">Return to top</a></p>
