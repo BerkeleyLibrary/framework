@@ -18,6 +18,13 @@ module Lending
       FileUtils.remove_dir(lending_root.to_s, true)
     end
 
+    describe(:new) do
+      let(:stop_file) { "#{stem}.stop" }
+      it 'requires a numeric interval' do
+        expect { Collector.new(lending_root, 'not a number', stop_file) }.to raise_error(TypeError)
+      end
+    end
+
     describe :collect do
       let(:sleep_interval) { 0.01 }
       let(:stop_file) { "#{stem}.stop" }
@@ -132,6 +139,35 @@ module Lending
         expect(final_dir.exist?).to eq(false)
 
         expect(collector.stopped?).to eq(false)
+      end
+    end
+
+    describe :from_environment do
+      let(:env_vars) { [Lending::ENV_ROOT, Collector::ENV_INTERVAL, Collector::ENV_STOP_FILE] }
+
+      before(:each) do
+        @env_vals = env_vars.each_with_object({}) { |var, vals| vals[var] = ENV[var] }
+      end
+
+      after(:each) do
+        @env_vals.each { |var, val| ENV[var] = val }
+      end
+
+      it 'reads the initialization info from the stop file' do
+        Dir.mktmpdir(File.basename(__FILE__, '.rb')) do |lending_root|
+          Collector::STAGES.each do |stage|
+            FileUtils.mkdir(File.join(lending_root, stage.to_s))
+          end
+
+          ENV[Lending::ENV_ROOT] = lending_root
+          ENV[Collector::ENV_INTERVAL] = '60'
+          ENV[Collector::ENV_STOP_FILE] = 'stop.stop'
+
+          collector = Collector.from_environment
+          expect(collector.lending_root.to_s).to eq(lending_root)
+          expect(collector.interval).to eq(60.0)
+          expect(collector.stop_file_path.to_s).to eq(File.join(lending_root, 'stop.stop'))
+        end
       end
     end
   end

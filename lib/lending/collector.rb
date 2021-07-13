@@ -80,9 +80,8 @@ module Lending
     # Initialization validators
 
     def ensure_valid_interval(interval)
-      interval.tap do |v|
-        raise ArgumentError, "Expected sleep interval in seconds, got #{v.inspect}" unless v.is_a?(Numeric)
-        raise ArgumentError, "Expected non-negative sleep interval in seconds, got #{v.inspect}" unless v > 0
+      (interval.is_a?(Numeric) ? interval : Float(interval)).tap do |v|
+        raise ArgumentError, "Expected non-negative sleep interval in seconds, got #{interval.inspect}" unless v > 0
       end
     end
 
