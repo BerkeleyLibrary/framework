@@ -138,8 +138,13 @@ module Lending
     #
     # @return [Pathname, nil] the next ready directory, or nil if non exists
     def next_ready_dir
-      ready_directories.find do |dir|
-        %i[processing final].none? { |stage| stage_dir(dir, stage).exist? }
+      downstream_stages = %i[processing final]
+      ready_directories.find do |rdir|
+        downstream_stage = downstream_stages.find { |stage| stage_dir(rdir, stage).exist? }
+        downstream_stage.nil?.tap do |not_found|
+          msg = not_found ? "has no downstream directories; returning #{rdir}" : "#{downstream_stage} directory already exists; skipping #{rdir}"
+          logger.debug("#{self}: #{rdir.basename} " + msg)
+        end
       end
     end
 

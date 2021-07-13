@@ -30,8 +30,49 @@ module Lending
       let(:stop_file) { "#{stem}.stop" }
       attr_reader :collector
 
+      # rubocop:disable Metrics/AbcSize
+      def expect_to_process(item_dirname)
+        ready_dir = lending_root.join('ready').join(item_dirname)
+        ready_dir.mkdir
+
+        processing_dir = lending_root.join('processing').join(item_dirname)
+        expect(processing_dir.exist?).to eq(false)
+
+        final_dir = lending_root.join('final').join(item_dirname)
+        expect(final_dir.exist?).to eq(false)
+
+        processor = instance_double(Processor)
+        expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
+
+        expect(processor).to receive(:process!) do
+          expect(processing_dir.exist?).to eq(true)
+        end
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/processing.*#{item_dirname}/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/moving.*#{item_dirname}/).ordered
+
+        [processing_dir, final_dir]
+      end
+      # rubocop:enable Metrics/AbcSize
+
+      def async_collect!
+        Concurrent::CountDownLatch.new(1).tap do |latch|
+          Thread.new do
+            collector.collect!
+          rescue SystemExit => e
+            expect(e.success?).to eq(true)
+          ensure
+            latch.count_down
+          end
+        end
+      end
+
       before(:each) do
         @collector = Collector.new(lending_root, sleep_interval, stop_file)
+
+        allow(UCBLIT::Logging.logger).to receive(:debug) do |msg|
+          warn(msg)
+        end
       end
 
       it 'exits immediately if stopped' do
@@ -56,47 +97,55 @@ module Lending
       end
 
       it 'processes files' do
-        item_dirname = 'b12345678_c12345678'
-
-        ready_dir = lending_root.join('ready').join(item_dirname)
-        ready_dir.mkdir
-
-        processing_dir = lending_root.join('processing').join(item_dirname)
-        expect(processing_dir.exist?).to eq(false)
-
-        final_dir = lending_root.join('final').join(item_dirname)
-        expect(final_dir.exist?).to eq(false)
-
-        processor = instance_double(Processor)
-        expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
-
-        expect(processor).to(receive(:process!)) do
-          expect(processing_dir.exist?).to eq(true)
-
-          Thread.new do
-            sleep(2 * sleep_interval)
-            collector.stop!
-          end
-        end
-
-        # allow(UCBLIT::Logging.logger).to receive(:info) do |msg|
-        #   $stderr.puts("#{Time.current.strftime('%H:%M:%S:%S.%6N')} #{msg}")
-        # end
-
         expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/processing/).ordered
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/moving/).ordered
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing ready to process; sleeping/).at_least(:once).ordered
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
 
-        Timeout.timeout(5) do
-          collector.collect!
-        rescue SystemExit => e
-          expect(e.success?).to eq(true)
+        item_dirname = 'b12345678_c12345678'
+        processing_dir, final_dir = expect_to_process(item_dirname)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing ready to process; sleeping/).at_least(:once).ordered
+
+        latch = async_collect!
+
+        sleep(2 * sleep_interval)
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
+        collector.stop!
+
+        latch.wait(5)
+
+        expect(processing_dir).not_to exist
+        expect(final_dir).to exist
+        expect(collector.stopped?).to eq(true)
+      end
+
+      it 'finds the next file' do
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+
+        item_dirs = %w[b12345678_c12345678 b86753090_c86753090].each_with_object({}) do |item, dirs|
+          dirs[item] = expect_to_process(item)
         end
 
-        expect(processing_dir.exist?).to eq(false)
-        expect(final_dir.exist?).to eq(true)
+        latch = async_collect!
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing ready to process; sleeping/).at_least(:once).ordered
+
+        sleep(2 * sleep_interval)
+
+        'b05531212_c05531212'.tap { |item| item_dirs[item] = expect_to_process(item) }
+
+        ready_dirs = collector.instance_eval { ready_directories }
+        expect(ready_dirs.map(&:basename).map(&:to_s)).to contain_exactly(*item_dirs.keys)
+
+        sleep(2 * sleep_interval)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
+        collector.stop!
+
+        latch.wait(5)
+
+        item_dirs.each_value do |dirs|
+          pdir, fdir = dirs
+          expect(pdir).not_to exist
+          expect(fdir).to exist
+        end
 
         expect(collector.stopped?).to eq(true)
       end
