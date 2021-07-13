@@ -11,4 +11,5 @@ end
 require 'lending'
 
 # Run collector
-Lending::Collector.from_environment
+collector = Lending::Collector.from_environment
+collector.collect!
