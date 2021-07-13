@@ -10,6 +10,12 @@ class LendingItem < ActiveRecord::Base
   has_many :lending_item_loans, dependent: :destroy
 
   # ------------------------------------------------------------
+  # Scopes
+
+  scope :active, -> { where(active: true) }
+  scope :inactive, -> { where(active: false) }
+
+  # ------------------------------------------------------------
   # Validations
 
   validates :directory, presence: true
@@ -95,7 +101,11 @@ class LendingItem < ActiveRecord::Base
   end
 
   def available?
-    processed? && copies_available > 0
+    active? && processed? && copies_available > 0
+  end
+
+  def inactive?
+    !active?
   end
 
   def copies_available

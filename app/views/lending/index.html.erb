@@ -2,42 +2,8 @@
 
 <h1>UC Berkeley Electronic and Accessible Reserves System</h1>
 
-<%# TODO: style navigation properly %>
-<nav><%= link_to('Add Lending Item', lending_new_path) %></nav>
+<h2>Inactive Items</h2>
+<%= render(partial: 'item_table', locals: { items: LendingItem.inactive }) %>
 
-<table class="table table-bordered mt-5">
-  <thead class="thead-light">
-  <tr>
-    <th scope="col"><%= sortable(:title, 'Title') %></th>
-    <th scope="col"><%= sortable(:author, 'Author') %></th>
-    <th scope="col"><%= sortable(:directory, 'Directory') %></th>
-    <th scope="col"><%= sortable(:copies, 'Copies') %></th>
-    <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
-    <th scope="col">Due</th>
-    <%# TODO: reimplement "Destroy" as "withdraw" or similar %>
-    <th colspan="2">Actions</th>
-  </tr>
-  </thead>
-
-  <tbody>
-  <% @lending_items.each do |item| %>
-    <% directory = item.directory %>
-    <tr>
-      <td><%= item.title %></td>
-      <td><%= item.author %></td>
-      <td><%= directory %></td>
-      <td><%= item.copies %></td>
-      <td><%= item.copies_available %></td>
-      <td>
-        <%# TODO: format all dates %>
-        <% unless (due_dates = item.due_dates.to_a).empty? %>
-          <% due_dates.each { |d| %><p><%= d.to_s(:short) %></p><% } %>
-        <% end %>
-      </td>
-      <td><%= link_to 'Show', lending_show_path(directory: directory), class: 'btn btn-secondary' %></td>
-      <td><%= link_to 'Edit', lending_edit_path(directory: directory), class: 'btn btn-primary' %></td>
-      <%# TODO: reimplement "Destroy" as "withdraw" or similar %>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<h2>Active Items</h2>
+<%= render(partial: 'item_table', locals: { items: LendingItem.active }) %>
