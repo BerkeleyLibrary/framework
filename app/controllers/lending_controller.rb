@@ -31,10 +31,12 @@ class LendingController < ApplicationController
     @lending_item = LendingItem.new(copies: 0)
   end
 
-  def edit; end # TODO: is this necessary?
+  def edit; end
+  # TODO: is this necessary?
 
   # Admin view
-  def show; end # TODO: is this necessary?
+  def show; end
+  # TODO: is this necessary?
 
   # Patron view
   def view
@@ -61,7 +63,7 @@ class LendingController < ApplicationController
   end
 
   def update
-    render_with_errors(:edit, errors) && return unless @lending_item.update(lending_item_params)
+    render_with_errors(:edit, @lending_item.errors) && return unless @lending_item.update(lending_item_params)
 
     flash[:success] = 'Item updated.'
     redirect_to lending_show_url(directory: directory)
@@ -84,6 +86,28 @@ class LendingController < ApplicationController
     end
 
     redirect_to lending_view_url(directory: directory)
+  end
+
+  def activate
+    if @lending_item.active?
+      flash[:info] = 'Item already active.'
+    elsif @lending_item.update(active: true)
+      flash[:success] = 'Item now active.'
+    else
+      flash_errors(@lending_item.errors)
+    end
+    redirect_back(fallback_location: lending_path)
+  end
+
+  def deactivate
+    if @lending_item.inactive?
+      flash[:info] = 'Item already inactive.'
+    elsif @lending_item.update(active: false)
+      flash[:success] = 'Item now inactive.'
+    else
+      flash_errors(@lending_item.errors)
+    end
+    redirect_back(fallback_location: lending_path)
   end
 
   # TODO: reimplement as "withdraw" or similar

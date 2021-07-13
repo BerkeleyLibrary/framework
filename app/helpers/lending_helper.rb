@@ -11,6 +11,6 @@ module LendingHelper
   end
 
   def format_values(values)
-    values.map { |v| tag.p(format_value(v)) }.join
+    values.map { |v| tag.p(format_value(v)) }.join.html_safe
   end
 end

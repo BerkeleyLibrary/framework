@@ -1,0 +1,41 @@
+<table class="table table-bordered mt-5">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col"><%= sortable(:title, 'Title') %></th>
+    <th scope="col"><%= sortable(:author, 'Author') %></th>
+    <th scope="col"><%= sortable(:directory, 'Directory') %></th>
+    <th scope="col"><%= sortable(:copies, 'Copies') %></th>
+    <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
+    <th scope="col">Due</th>
+    <th colspan="3">Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% items.each do |item| %>
+    <% directory = item.directory %>
+    <tr>
+      <td><%= item.title %></td>
+      <td><%= item.author %></td>
+      <td><%= directory %></td>
+      <td><%= item.copies %></td>
+      <td><%= item.copies_available %></td>
+      <td>
+        <% unless (due_dates = item.due_dates.to_a).empty? %>
+          <% due_dates.each { |d| %><p><%= d.to_s(:short) %></p>
+          <% } %>
+        <% end %>
+      </td>
+      <td><%= link_to 'Show', lending_show_path(directory: directory), class: 'btn btn-secondary' %></td>
+      <td><%= link_to 'Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary' %></td>
+      <td>
+        <% if item.inactive? %>
+          <%= link_to 'Make Active', lending_activate_path(directory: directory), class: 'btn btn-primary' %>
+        <% else %>
+          <%= link_to 'Make Inactive', lending_deactivate_path(directory: directory), class: 'btn btn-danger' %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

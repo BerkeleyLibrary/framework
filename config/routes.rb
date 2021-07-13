@@ -51,6 +51,8 @@ Rails.application.routes.draw do
     # TODO: something more RESTful
     get '/:directory/checkout', to: 'lending#check_out', as: :lending_check_out
     get '/:directory/return', to: 'lending#return', as: :lending_return
+    get '/:directory/activate', to: 'lending#activate', as: :lending_activate
+    get '/:directory/deactivate', to: 'lending#deactivate', as: :lending_deactivate
   end
 
   # Proxy Borrower Admin Routes:
