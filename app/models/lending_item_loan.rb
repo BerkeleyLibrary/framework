@@ -16,7 +16,6 @@ class LendingItemLoan < ActiveRecord::Base
   validates :lending_item, presence: true
   validates :patron_identifier, presence: true
   validate :no_duplicate_checkouts
-  validate :item_processed
   validate :item_available
   validate :item_active
 
@@ -49,12 +48,6 @@ class LendingItemLoan < ActiveRecord::Base
     return if active_checkout.nil? || active_checkout.id == id
 
     errors.add(:base, LendingItem::MSG_CHECKED_OUT)
-  end
-
-  def item_processed
-    return if lending_item.processed?
-
-    errors.add(:base, LendingItem::MSG_UNPROCESSED)
   end
 
   def item_available
