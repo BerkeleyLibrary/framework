@@ -117,18 +117,11 @@ module Lending
 
     def process(ready_dir, processing_dir)
       logger.info("#{self}: processing #{ready_dir} to #{processing_dir}")
-      Processor.new(ready_dir, processing_dir).process!
-      verify(processing_dir)
-
+      processor = Processor.new(ready_dir, processing_dir)
+      processor.process!
       move_to_final!(processing_dir)
     rescue StandardError => e
       raise ProcessingFailed.new(ready_dir, processing_dir, cause: e)
-    end
-
-    def verify(processing_dir)
-      # TODO: something more sophisticated
-      manifest = IIIFManifest.new(processing_dir)
-      raise ArgumentError, "Manifest template not present in processing directory #{processing_dir}" unless manifest.has_template?
     end
 
     def move_to_final!(processing_dir)

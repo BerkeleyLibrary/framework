@@ -21,7 +21,7 @@ module Lending
     describe(:new) do
       let(:stop_file) { "#{stem}.stop" }
       it 'requires a numeric interval' do
-        expect { Collector.new(lending_root, 'not a number', stop_file) }.to raise_error(TypeError)
+        expect { Collector.new(lending_root, 'not a number', stop_file) }.to raise_error(ArgumentError)
       end
     end
 
@@ -78,10 +78,6 @@ module Lending
             collector.stop!
           end
         end
-
-        manifest = instance_double(IIIFManifest)
-        expect(IIIFManifest).to receive(:new).with(processing_dir).and_return(manifest)
-        expect(manifest).to receive(:has_template?).and_return(true)
 
         # allow(UCBLIT::Logging.logger).to receive(:info) do |msg|
         #   $stderr.puts("#{Time.current.strftime('%H:%M:%S:%S.%6N')} #{msg}")

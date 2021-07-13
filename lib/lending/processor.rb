@@ -32,11 +32,17 @@ module Lending
       tileize_images!
       copy_ocr_text!
       copy_marc_record!
-      write_manifest!
+      manifest = write_manifest!
+      verify(manifest)
     end
 
     def to_s
       @s ||= "#{self.class.name.split('::').last}@#{object_id}"
+    end
+
+    def verify(manifest)
+      raise ArgumentError, 'Manifest never written' unless manifest
+      raise ArgumentError, "Manifest template not present in processing directory #{manifest.dir_path}" unless manifest.has_template?
     end
 
     private
@@ -76,8 +82,7 @@ module Lending
 
     def write_manifest!
       logger.info("#{self}: writing manifest template to #{outdir}")
-      manifest = IIIFManifest.new(title: title, author: author, dir_path: outdir)
-      manifest.write_manifest_erb!
+      IIIFManifest.new(title: title, author: author, dir_path: outdir).tap(&:write_manifest_erb!)
     end
 
     def find_marc_path
