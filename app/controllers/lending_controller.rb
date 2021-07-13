@@ -96,7 +96,8 @@ class LendingController < ApplicationController
     else
       flash_errors(@lending_item.errors)
     end
-    redirect_back(fallback_location: lending_path)
+
+    render(:index)
   end
 
   def deactivate
@@ -107,7 +108,8 @@ class LendingController < ApplicationController
     else
       flash_errors(@lending_item.errors)
     end
-    redirect_back(fallback_location: lending_path)
+
+    render(:index)
   end
 
   # ------------------------------------------------------------

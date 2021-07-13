@@ -18,6 +18,7 @@ class LendingItemLoan < ActiveRecord::Base
   validate :no_duplicate_checkouts
   validate :item_processed
   validate :item_available
+  validate :item_active
 
   # ------------------------------------------------------------
   # Callbacks
@@ -60,5 +61,11 @@ class LendingItemLoan < ActiveRecord::Base
     return if lending_item.available?
 
     errors.add(:base, LendingItem::MSG_UNAVAILABLE)
+  end
+
+  def item_active
+    return if lending_item.active?
+
+    errors.add(:base, LendingItem::MSG_INACTIVE)
   end
 end

@@ -97,6 +97,7 @@ describe LendingController, type: :request do
         @items = valid_item_attributes.map do |item_attributes|
           LendingItem.create!(**item_attributes)
         end
+        @item = items.first
       end
 
       describe :index do
@@ -167,6 +168,51 @@ describe LendingController, type: :request do
             item.reload
             new_attributes.each { |attr, val| expect(item.send(attr)).to eq(val) }
           end
+        end
+      end
+
+      describe :activate do
+        it 'activates an inactive item' do
+          item.update!(active: false)
+
+          get lending_activate_path(directory: item.directory)
+          expect(response).to be_successful
+          expect(response.body).to include('Item now active.')
+
+          item.reload
+          expect(item.active?).to eq(true)
+        end
+
+        it 'is successful for an already active item' do
+          get lending_activate_path(directory: item.directory)
+          expect(response).to be_successful
+          expect(response.body).to include('Item already active.')
+
+          item.reload
+          expect(item.active?).to eq(true)
+        end
+      end
+
+      describe :deactivate do
+        it 'dactivates an active item' do
+          get lending_deactivate_path(directory: item.directory)
+          expect(response).to be_successful
+          expect(response.body).to include('Item now inactive.')
+
+          item.reload
+          expect(item.active?).to eq(false)
+        end
+
+        it 'is successful even for an already inactive item' do
+          item.update!(active: false)
+
+          get lending_deactivate_path(directory: item.directory)
+
+          expect(response).to be_successful
+          expect(response.body).to include('Item already inactive.')
+
+          item.reload
+          expect(item.active?).to eq(false)
         end
       end
     end
@@ -258,9 +304,7 @@ describe LendingController, type: :request do
       it 'pre-returns the loan if the number of copies is changed to zero' do
         loan = item.check_out_to(user.lending_id)
 
-        item.copies = 0
-        item.active = false
-        item.save!
+        item.update!(copies: 0, active: false)
 
         loan.reload
         expect(loan.complete?).to eq(true)
@@ -351,6 +395,17 @@ describe LendingController, type: :request do
         expect(response.status).to eq(422) # unprocessable entity
         expect(response.body).to include(LendingItem::MSG_UNAVAILABLE)
       end
+
+      it 'fails if the item is not active' do
+        item.update!(active: false)
+
+        expect do
+          get lending_check_out_path(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
+
+        expect(response.status).to eq(422) # unprocessable entity
+        expect(response.body).to include(LendingItem::MSG_INACTIVE)
+      end
     end
 
     describe :return do
@@ -407,6 +462,32 @@ describe LendingController, type: :request do
       it 'returns 403 forbidden' do
         get lending_edit_path(directory: item.directory)
         expect(response.status).to eq(403)
+      end
+    end
+
+    describe :activate do
+      it 'returns 403 forbidden' do
+        get lending_edit_path(directory: item.directory)
+        expect(response.status).to eq(403)
+      end
+
+      it "doesn't activate the item" do
+        item.update!(active: false)
+
+        get lending_edit_path(directory: item.directory)
+
+        item.reload
+        expect(item.active).to eq(false)
+      end
+    end
+
+    describe :inactivate do
+      it 'returns 403 forbidden' do
+        get lending_edit_path(directory: item.directory)
+        expect(response.status).to eq(403)
+
+        item.reload
+        expect(item.active).to eq(true)
       end
     end
   end

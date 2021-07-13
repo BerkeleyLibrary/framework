@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LendingItem, type: :model do
-  attr_reader :items, :processed, :unprocessed
+  attr_reader :items, :processed, :unprocessed, :active
 
   context 'without existing items' do
     describe :scan_for_new_items! do
@@ -33,7 +33,8 @@ describe LendingItem, type: :model do
           title: 'The Plan of St. Gall',
           author: 'Horn, Walter',
           directory: 'b100523250_C044235662',
-          copies: 6
+          copies: 6,
+          active: true
         },
         {
           title: 'Pamphlet',
@@ -45,6 +46,7 @@ describe LendingItem, type: :model do
 
       @processed = items.select(&:processed?)
       @unprocessed = items.reject(&:processed?)
+      @active = @processed.select(&:active?)
     end
 
     describe :iiif_dir? do
@@ -69,13 +71,13 @@ describe LendingItem, type: :model do
 
     describe :available? do
       it 'returns true if there are copies available' do
-        processed.each do |item|
+        active.each do |item|
           expect(item.available?).to eq(true)
         end
       end
 
       it 'returns false if there are no copies available' do
-        processed.each do |item|
+        active.each do |item|
           item.copies = 0
           expect(item.available?).to eq(false)
         end
@@ -88,7 +90,7 @@ describe LendingItem, type: :model do
       end
 
       it 'returns false if all copies are checked out' do
-        processed.each do |item|
+        active.each do |item|
           item.copies.times { |i| item.check_out_to("patron-#{i}") }
           expect(item.available?).to eq(false)
         end
