@@ -87,7 +87,7 @@ module Lending
       describe :to_json do
         it 'generates a manifest with the correct image path' do
           manifest_url_upcase = manifest_url.gsub('b11996535', 'b11996535'.upcase)
-          expected = expected_manifest.gsub('b11996535', 'b11996535'.upcase)
+          expected = expected_manifest.gsub('b11996535', 'b11996535'.upcase).strip
           actual = manifest.to_json(manifest_url_upcase, img_root_url).strip
           expect(actual).to eq(expected)
         end

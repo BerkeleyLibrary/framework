@@ -42,7 +42,6 @@ module Lending
 
     # noinspection RubyUnusedLocalVariable
     def to_json(manifest_uri, image_root_uri)
-      super
       raise ArgumentError, "#{record_id}_#{barcode}: manifest template not found at #{erb_path}" unless has_template?
 
       image_dir_uri = UCBLIT::Util::URIs.append(

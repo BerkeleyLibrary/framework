@@ -109,6 +109,17 @@ class LendingController < ApplicationController
     redirect_to(:lending)
   end
 
+  def destroy
+    if @lending_item.processed?
+      flash[:error] = 'Processed items cannot be deleted.'
+    else
+      @lending_item.destroy!
+      flash[:success] = 'Item deleted.'
+    end
+
+    redirect_to(:lending)
+  end
+
   # ------------------------------------------------------------
   # Helper methods
 
