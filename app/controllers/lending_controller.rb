@@ -94,6 +94,8 @@ class LendingController < ApplicationController
       flash[:info] = 'Item already active.'
     elsif @lending_item.update(active: true)
       flash[:success] = 'Item now active.'
+    else
+      flash_errors(@lending_item.errors)
     end
 
     redirect_to(:lending)

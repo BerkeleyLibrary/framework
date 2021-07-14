@@ -222,7 +222,7 @@ describe LendingController, type: :request do
         it 'activates an inactive item' do
           item.update!(active: false)
 
-          get lending_activate_path(directory: item.directory)
+          get lending_activate_path(directory: item.directory) # TODO: use PATCH
           expect(response).to redirect_to lending_path
 
           follow_redirect!
@@ -233,7 +233,7 @@ describe LendingController, type: :request do
         end
 
         it 'is successful for an already active item' do
-          get lending_activate_path(directory: item.directory)
+          get lending_activate_path(directory: item.directory) # TODO: use PATCH
           expect(response).to redirect_to lending_path
 
           follow_redirect!
@@ -242,11 +242,24 @@ describe LendingController, type: :request do
           item.reload
           expect(item.active?).to eq(true)
         end
+
+        it 'displays an error for an item with zero copies' do
+          item.update!(active: false, copies: 0)
+
+          get lending_activate_path(directory: item.directory) # TODO: use PATCH
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
+          expect(response.body).to include(LendingItem::MSG_ZERO_COPIES)
+
+          item.reload
+          expect(item.active?).to eq(false)
+        end
       end
 
       describe :deactivate do
         it 'deactivates an active item' do
-          get lending_deactivate_path(directory: item.directory)
+          get lending_deactivate_path(directory: item.directory) # TODO: use PATCH
           expect(response).to redirect_to lending_path
 
           follow_redirect!
@@ -259,7 +272,7 @@ describe LendingController, type: :request do
         it 'is successful even for an already inactive item' do
           item.update!(active: false)
 
-          get lending_deactivate_path(directory: item.directory)
+          get lending_deactivate_path(directory: item.directory) # TODO: use PATCH
 
           expect(response).to redirect_to lending_path
 
@@ -268,6 +281,19 @@ describe LendingController, type: :request do
 
           item.reload
           expect(item.active?).to eq(false)
+        end
+
+        it 'expires any checkouts' do
+          loan = item.check_out_to('patron-1')
+
+          get lending_deactivate_path(directory: item.directory) # TODO: use PATCH
+          follow_redirect!
+          expect(response.body).to include('Item now inactive.')
+
+          loan.reload
+          expect(loan.active?).to eq(false)
+
+          expect(item.lending_item_loans.active).to be_empty
         end
       end
 
@@ -616,6 +642,26 @@ describe LendingController, type: :request do
     end
 
     xit 'POST endpoints redirects to login'
+
+    it 'DELETE lending_destroy_path redirects to login' do
+      delete(path = lending_destroy_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
+    # TODO: use PATCH
+    it 'GET lending_activate_path redirects to login' do
+      get(path = lending_activate_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
+
+    # TODO: use PATCH
+    it 'GET lending_deactivate_path redirects to login' do
+      get(path = lending_deactivate_path(directory: item.directory))
+      login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: path)}"
+      expect(response).to redirect_to(login_with_callback_url)
+    end
   end
 
   describe 'with ineligible patron' do
@@ -649,5 +695,22 @@ describe LendingController, type: :request do
     end
 
     xit 'POST endpoints returns 403 Forbidden'
+
+    it 'DELETE lending_destroy_path returns 403 Forbidden' do
+      delete lending_destroy_path(directory: item.directory)
+      expect(response.status).to eq(403)
+    end
+
+    # TODO: use PATCH
+    it 'GET lending_activate_path returns 403 Forbidden' do
+      get lending_activate_path(directory: item.directory)
+      expect(response.status).to eq(403)
+    end
+
+    # TODO: use PATCH
+    it 'GET lending_deactivate_path returns 403 Forbidden' do
+      get lending_deactivate_path(directory: item.directory)
+      expect(response.status).to eq(403)
+    end
   end
 end

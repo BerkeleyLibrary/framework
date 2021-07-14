@@ -10,7 +10,9 @@ class LendingItem < ActiveRecord::Base
   has_many :lending_item_loans, dependent: :destroy
 
   # ------------------------------------------------------------
-  # Scopes
+  # Callbacks
+
+  after_update :return_loans_if_inactive
 
   # ------------------------------------------------------------
   # Validations
@@ -198,7 +200,11 @@ class LendingItem < ActiveRecord::Base
 
   private
 
-  def return_overdue_loans; end
+  def return_loans_if_inactive
+    return if active?
+
+    lending_item_loans.find_each(&:return!)
+  end
 
   def ensure_record_id_and_barcode
     return if @record_id && @barcode
