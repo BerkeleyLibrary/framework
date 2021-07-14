@@ -29,10 +29,14 @@
       <td><%= link_to 'Show', lending_show_path(directory: directory), class: 'btn btn-secondary' %></td>
       <td><%= link_to 'Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary' %></td>
       <td>
-        <% if item.inactive? %>
-          <%= link_to 'Make Active', lending_activate_path(directory: directory), class: 'btn btn-primary' %>
+        <% if item.processed? %>
+          <% if item.inactive? %>
+            <%= link_to 'Make Active', lending_activate_path(directory: directory), class: 'btn btn-primary' %>
+          <% else %>
+            <%= link_to 'Make Inactive', lending_deactivate_path(directory: directory), class: 'btn btn-warning' %>
+          <% end %>
         <% else %>
-          <%= link_to 'Make Inactive', lending_deactivate_path(directory: directory), class: 'btn btn-danger' %>
+          <%= button_to 'Delete', lending_destroy_path(directory: directory), method: :delete, class: 'btn btn-danger' %>
         <% end %>
       </td>
     </tr>

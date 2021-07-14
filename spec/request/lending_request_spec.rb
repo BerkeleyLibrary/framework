@@ -245,7 +245,7 @@ describe LendingController, type: :request do
       end
 
       describe :deactivate do
-        it 'dactivates an active item' do
+        it 'deactivates an active item' do
           get lending_deactivate_path(directory: item.directory)
           expect(response).to redirect_to lending_path
 
@@ -268,6 +268,39 @@ describe LendingController, type: :request do
 
           item.reload
           expect(item.active?).to eq(false)
+        end
+      end
+
+      describe :destroy do
+        it 'destroys an unprocessed item' do
+          item = LendingItem.create!(
+            title: 'Villette',
+            author: 'Brontë, Charlotte',
+            directory: 'b155001346_C044219363',
+            copies: 1
+          )
+          expect(item).not_to be_processed # just to be sure
+
+          delete lending_destroy_path(directory: item.directory)
+
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
+          expect(response.body).to include('Item deleted.')
+
+          expect { LendingItem.find(item.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it 'does not destroy a processed item' do
+          expect(item).to be_processed # just to be sure
+
+          delete lending_destroy_path(directory: item.directory)
+          expect(response).to redirect_to lending_path
+
+          follow_redirect!
+          expect(response.body).to include('Processed items cannot be deleted.')
+
+          expect(LendingItem.find(item.id)).to eq(item)
         end
       end
     end

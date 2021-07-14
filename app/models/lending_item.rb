@@ -12,9 +12,6 @@ class LendingItem < ActiveRecord::Base
   # ------------------------------------------------------------
   # Scopes
 
-  scope :active, -> { where(active: true) }
-  scope :inactive, -> { where(active: false) }
-
   # ------------------------------------------------------------
   # Validations
 
@@ -44,7 +41,18 @@ class LendingItem < ActiveRecord::Base
   # Class methods
 
   class << self
-    # TODO: test this, add logging, fail gracefully
+    def active
+      LendingItem.where(active: true).lazy.select(&:processed?)
+    end
+
+    def inactive
+      LendingItem.where(active: false).lazy.select(&:processed?)
+    end
+
+    def invalid
+      LendingItem.find_each.lazy.reject(&:processed?)
+    end
+
     def scan_for_new_items!
       known_directories = LendingItem.pluck(:directory)
 
@@ -74,6 +82,7 @@ class LendingItem < ActiveRecord::Base
         raise ArgumentError, "iiif_final_dir #{dir} is not a directory" unless File.directory?(dir)
       end
     end
+
   end
 
   # ------------------------------------------------------------
