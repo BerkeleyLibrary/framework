@@ -185,6 +185,11 @@ section {
           text-align: left;
           white-space: normal;
 
+          h3 {
+            font-size: $font-size-large;
+            font-weight: $font-weight-bold;
+          }
+
           p {
             font-weight: $font-weight-book;
           }
