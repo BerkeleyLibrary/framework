@@ -55,11 +55,12 @@ class LendingItemPresenterBase
   def marc_metadata
     return @marc_metadata if instance_variable_defined?(:@marc_metadata)
 
-    @marc_metadata = begin
-      item.marc_metadata
-                     rescue ActiveRecord::RecordNotFound => e
-                       logger.warn(e)
-                       nil
-    end
+    @marc_metadata =
+      begin
+        item.marc_metadata
+      rescue ActiveRecord::RecordNotFound => e
+        logger.warn(e)
+        nil
+      end
   end
 end
