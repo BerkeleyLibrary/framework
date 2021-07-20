@@ -207,7 +207,7 @@ class LendingController < ApplicationController
   def require_processed_item!
     item = ensure_lending_item!
 
-    raise ActiveRecord::RecordNotFound, LendingItem::MSG_NOT_PROCESSED unless item.processed?
+    raise ActiveRecord::RecordNotFound, LendingItem::MSG_UNPROCESSED unless item.processed?
   end
 
   def require_lending_admin!

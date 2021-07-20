@@ -247,8 +247,8 @@ class LendingItem < ActiveRecord::Base
   end
 
   def marc_path
-    return false unless iiif_dir
-    return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
+    return unless iiif_dir
+    return unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
 
     Pathname.new(iiif_dir).join(Lending::Processor::MARC_XML_NAME)
   end
