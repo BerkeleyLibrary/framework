@@ -13,6 +13,13 @@ describe LendingController, type: :request do
         directory: 'b100523250_C044235662',
         copies: 1,
         active: true
+      },
+      {
+        title: 'Villette',
+        author: 'Brontë, Charlotte',
+        directory: 'b155001346_C044219363',
+        copies: 0,
+        active: false
       }
     ]
   end
@@ -22,6 +29,10 @@ describe LendingController, type: :request do
 
   def active
     items.select(&:active?)
+  end
+
+  def processed
+    items.select(&:processed?)
   end
 
   def unprocessed
@@ -186,7 +197,7 @@ describe LendingController, type: :request do
 
       describe :manifest do
         it 'shows the manifest for processed items' do
-          items.each do |item|
+          processed.each do |item|
             get lending_manifest_path(directory: item.directory)
             expect(response).to be_successful
 
@@ -299,12 +310,7 @@ describe LendingController, type: :request do
 
       describe :destroy do
         it 'destroys an unprocessed item' do
-          item = LendingItem.create!(
-            title: 'Villette',
-            author: 'Brontë, Charlotte',
-            directory: 'b155001346_C044219363',
-            copies: 1
-          )
+          item = unprocessed.first
           expect(item).not_to be_processed # just to be sure
 
           delete lending_destroy_path(directory: item.directory)
@@ -341,7 +347,7 @@ describe LendingController, type: :request do
       @items = valid_item_attributes.map do |item_attributes|
         LendingItem.create!(**item_attributes)
       end
-      @item = items.last
+      @item = items.find(&:processed?)
     end
 
     describe :show do
