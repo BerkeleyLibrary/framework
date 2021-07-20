@@ -1,14 +1,24 @@
 <%
+  author = @lending_item.author
+
   fields = {
     'Title' => @lending_item.title,
-    'Author' => @lending_item.author,
+    'Author' => author,
   }.merge(additional_fields)
 %>
 
 <section class="record">
-  <h2><%= @lending_item.title %></h2>
-  <h3><%= @lending_item.author %></h3>
-
+  <table>
+    <thead>
+    <tr>
+      <th>
+        <h2>
+          <%= @lending_item.title %>
+        </h2>
+      </th>
+    </tr>
+    </thead>
+  </table>
   <% if show_viewer %>
     <%=
       render(
