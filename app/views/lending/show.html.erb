@@ -11,7 +11,12 @@
   # TODO: Use Rails i18n
   action = link_to('Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary')
 
-  additional_fields = {}.tap do |ff|
+  additional_fields = {
+    'Record ID' => @lending_item.record_id,
+    'Barcode' => @lending_item.barcode,
+    'Copies' => @lending_item.copies,
+    'Copies available' => @lending_item.copies_available
+  }.tap do |ff|
     ff['Active'] = @lending_item.active? ? 'Yes' : 'No'
 
     @lending_item.due_dates.to_a.tap do |due_dates|

@@ -1,7 +1,10 @@
 # rubocop:disable Metrics/ClassLength
 class LendingController < ApplicationController
+
   # ------------------------------------------------------------
-  # Constants
+  # Configuration
+
+  self.support_email = 'helpbox@library.berkeley.edu'
 
   # ------------------------------------------------------------
   # Helpers
