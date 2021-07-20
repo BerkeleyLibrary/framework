@@ -2,14 +2,13 @@
   fields = {
     'Title' => @lending_item.title,
     'Author' => @lending_item.author,
-    'Record ID' => @lending_item.record_id,
-    'Barcode' => @lending_item.barcode,
-    'Copies' => @lending_item.copies,
-    'Copies available' => @lending_item.copies_available
   }.merge(additional_fields)
 %>
 
 <section class="record">
+  <h2><%= @lending_item.title %></h2>
+  <h3><%= @lending_item.author %></h3>
+
   <% if show_viewer %>
     <%=
       render(
@@ -30,7 +29,26 @@
       </tr>
     <% end %>
     <tr>
-      <th class="action"><%= action %></th>
+      <th class="action">
+        <% if show_copyright_warning %>
+          <section class="copyright-warning">
+          <h4>Notice concerning copyright restrictions</h4>
+          <p>
+            The copyright law of the United States (Title 17, United States Code)
+            governs the making of digital reproductions of copyrighted material.
+          </p>
+          <p>
+            Under certain conditions specified in the law, libraries and archives
+            are authorized to furnish a digital reproduction. The digital reproduction
+            is not to be “used for any purpose other than private study, scholarship,
+            or research.” If a user makes a request for, or later uses, a digital
+            reproduction for purposes in excess of fair use, that user may be liable
+            for copyright infringement.
+          </p>
+          </section>
+        <% end %>
+        <%= action %>
+      </th>
     </tr>
   </table>
 </section>
