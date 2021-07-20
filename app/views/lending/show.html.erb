@@ -1,5 +1,7 @@
 <% content_for(:page_title, "UC BEARS: #{@lending_item.title}") %>
 
+<h1>UC BEARS (UC Berkeley Electronic and Accessible Reserves System)</h1>
+
 <%# TODO: style navigation properly %>
 <nav><%= link_to 'Index', lending_path %></nav>
 
@@ -42,6 +44,7 @@
       show_viewer: true,
       viewer_title: 'Preview',
       additional_fields: additional_fields,
+      show_copyright_warning: false,
       action: action
     }
   )
