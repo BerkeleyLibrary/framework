@@ -1,4 +1,8 @@
+require 'ucblit/logging'
+
 class LendingItemPresenterBase
+  include UCBLIT::Logging
+
   attr_reader :view_context, :item
 
   delegate_missing_to :@view_context
@@ -19,8 +23,8 @@ class LendingItemPresenterBase
   end
 
   def fields
-    @fields ||= marc_metadata.to_display_fields.tap do |fields|
-      fields.merge!(additional_fields) if respond_to?(:additional_fields)
+    @fields ||= base_fields.tap do |ff|
+      ff.merge!(additional_fields) if respond_to?(:additional_fields)
     end
   end
 
@@ -33,7 +37,7 @@ class LendingItemPresenterBase
   end
 
   def title
-    marc_metadata.title
+    marc_metadata&.title || item.title
   end
 
   def to_yes_or_no(b)
@@ -42,7 +46,20 @@ class LendingItemPresenterBase
 
   private
 
+  def base_fields
+    return { 'Title': item.title, 'Author': item.author } unless (md = marc_metadata)
+
+    md.to_display_fields
+  end
+
   def marc_metadata
-    item.marc_metadata
+    return @marc_metadata if instance_variable_defined?(:@marc_metadata)
+
+    @marc_metadata = begin
+      item.marc_metadata
+                     rescue ActiveRecord::RecordNotFound => e
+                       logger.warn(e)
+                       nil
+    end
   end
 end

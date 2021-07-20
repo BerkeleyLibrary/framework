@@ -161,7 +161,7 @@ class User
   # Whether the user is a member of the Framework lending admin CalGroup
   # @return [Boolean]
   def lending_admin?
-    cal_groups.include?(LENDING_ADMIN_GROUP)
+    cal_groups&.include?(LENDING_ADMIN_GROUP)
   end
 
   def lending_id

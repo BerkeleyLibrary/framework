@@ -14,10 +14,10 @@ class LendingController < ApplicationController
   # ------------------------------------------------------------
   # Hooks
 
-  before_action(:authenticate!)
-  before_action(:require_lending_admin!, except: %i[view manifest check_out return])
   before_action(:ensure_lending_item!, except: %i[index new create])
   before_action(:require_processed_item!, only: [:manifest])
+  before_action(:require_lending_admin!, except: %i[view manifest check_out return])
+  before_action(:authenticate!)
 
   # ------------------------------------------------------------
   # Controller actions
@@ -205,18 +205,21 @@ class LendingController < ApplicationController
   # Utility methods
 
   def require_processed_item!
+    require_eligible_patron! unless lending_admin?
     item = ensure_lending_item!
 
     raise ActiveRecord::RecordNotFound, LendingItem::MSG_UNPROCESSED unless item.processed?
   end
 
   def require_lending_admin!
+    authenticate!
     return if lending_admin?
 
     raise Error::ForbiddenError, 'This page is restricted to UC BEARS administrators.'
   end
 
   def require_eligible_patron!
+    authenticate!
     return if eligible_patron?
 
     raise Error::ForbiddenError, 'This page is restricted to active UC Berkeley faculty, staff, and students.'
