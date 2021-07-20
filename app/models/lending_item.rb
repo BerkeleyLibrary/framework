@@ -123,6 +123,16 @@ class LendingItem < ActiveRecord::Base
     !active?
   end
 
+  def reason_unavailable
+    return if available?
+    return LendingItem::MSG_INACTIVE unless active?
+    return LendingItem::MSG_UNPROCESSED unless processed?
+    return LendingItem::MSG_UNAVAILABLE unless (due_date = next_due_date)
+
+    date_str = due_date.to_s(:long)
+    "#{LendingItem::MSG_UNAVAILABLE} It will be returned on #{date_str}"
+  end
+
   def copies_available
     (copies - lending_item_loans.where(loan_status: :active).count)
   end
@@ -141,6 +151,14 @@ class LendingItem < ActiveRecord::Base
     raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless iiif_dir?
 
     Lending::IIIFManifest.new(title: title, author: author, dir_path: iiif_dir)
+  end
+
+  def marc_metadata
+    @marc_metadata ||= begin
+      raise ActiveRecord::RecordNotFound, "Error loading MARC record for #{citation}: #{MSG_UNPROCESSED}" unless marc_path&.file?
+
+      Lending::MarcMetadata.new(marc_path)
+    end
   end
 
   def iiif_dir
@@ -226,6 +244,13 @@ class LendingItem < ActiveRecord::Base
 
   def active_loans
     lending_item_loans.active.order(:due_date)
+  end
+
+  def marc_path
+    return false unless iiif_dir
+    return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
+
+    Pathname.new(iiif_dir).join(Lending::Processor::MARC_XML_NAME)
   end
 end
 # rubocop:enable Metrics/ClassLength

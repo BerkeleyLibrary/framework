@@ -1,48 +1,39 @@
-<%
-  author = @lending_item.author
-
-  fields = {
-    'Title' => @lending_item.title,
-    'Author' => author,
-  }.merge(additional_fields)
-%>
-
 <section class="record">
   <table>
     <thead>
     <tr>
       <th>
         <h2>
-          <%= @lending_item.title %>
+          <%= presenter.title %>
         </h2>
       </th>
     </tr>
     </thead>
   </table>
-  <% if show_viewer %>
+
+  <% if presenter.show_viewer? %>
     <%=
       render(
         partial: 'viewer',
         locals: {
           manifest_url: manifest_url,
-          viewer_title: viewer_title,
+          viewer_title: presenter.viewer_title,
         }
       )
     %>
   <% end %>
 
   <table>
-    <% fields.each do |label, value| %>
+    <% presenter.fields.each do |label, value| %>
       <tr>
         <th><%= label %></th>
         <td><%= format_value(value) %></td>
       </tr>
     <% end %>
-    <tr>
-      <th class="action">
-        <% if show_copyright_warning %>
-          <section class="copyright-warning">
-          <h3>Notice concerning copyright restrictions</h3>
+    <% if presenter.show_copyright_warning? %>
+      <tr>
+        <td class="copyright">
+          <h3>⚠️ Notice concerning copyright restrictions</h3>
           <p>
             The copyright law of the United States (Title 17, United States Code)
             governs the making of digital reproductions of copyrighted material.
@@ -55,10 +46,20 @@
             reproduction for purposes in excess of fair use, that user may be liable
             for copyright infringement.
           </p>
-          </section>
-        <% end %>
-        <%= action %>
-      </th>
-    </tr>
+        </td>
+      </tr>
+      <tr>
+        <th class="action" style="grid-column: 1 / 3"><%# TODO: something less hacky %>
+          <%= presenter.action %>
+        </th>
+      </tr>
+    <% else %>
+      <tr>
+        <th class="action">
+          <%= presenter.action %>
+        </th>
+      </tr>
+    <% end %>
+
   </table>
 </section>

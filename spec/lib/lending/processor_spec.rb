@@ -15,7 +15,7 @@ module Lending
         },
         {
           title: 'The Plan of St. Gall : a study of the architecture & economy of life in a paradigmatic Carolingian monastery',
-          author: 'Horn, Walter',
+          author: 'Horn, Walter, 1908-1995.',
           directory: 'b100523250_C044235662',
           record_id: 'b100523250',
           barcode: 'C044235662'
@@ -114,7 +114,7 @@ module Lending
         actual_template = processor.outdir.join(Lending::IIIFManifest::MANIFEST_TEMPLATE_NAME)
         expect(actual_template.exist?).to eq(true)
 
-        expect(actual_template.read).to eq(expected_template.read)
+        expect(actual_template.read.strip).to eq(expected_template.read.strip)
       end
     end
   end

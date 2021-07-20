@@ -2,25 +2,89 @@ require 'lending/path_utils'
 
 module Lending
   class MarcMetadata
+
+    # ------------------------------------------------------------
+    # Accessors
+
     attr_reader :marc_path
+
+    # ------------------------------------------------------------
+    # Initializer
 
     def initialize(marc_path)
       @marc_path = PathUtils.ensure_filepath(marc_path)
     end
 
+    # ------------------------------------------------------------
+    # Synthetic accessors
+
     def author
-      @author ||= clean_value(find_author)
+      @author ||= author_personal || author_corporate
     end
 
     def title
       @title ||= clean_value(find_title)
     end
 
+    def publisher
+      return @publisher if instance_variable_defined?(:@publisher)
+
+      @publisher = find_publisher
+    end
+
+    def physical_desc
+      return @physical_desc if instance_variable_defined?(:@physical_desc)
+
+      @physical_desc = find_physical_desc
+    end
+
     def marc_record
       @marc_record ||= MARC::XMLReader.read(marc_path.to_s, freeze: true).first
     end
 
+    # ------------------------------------------------------------
+    # Public utility methods
+
+    # Returns a hash of displayable MARC fields mapping labels to values.
+    #
+    # @return [Hash{String => String, Date, Numeric}]
+    def to_display_fields
+      fields = {
+        'Title': title,
+        author_label => author
+      }
+      fields.tap do |ff|
+        ff['Publisher'] = publisher if publisher
+        ff['Physical Description'] = physical_desc if physical_desc
+      end
+    end
+
+    # ------------------------------------------------------------
+    # Private methods
+
     private
+
+    # ------------------------------
+    # Private accessors
+
+    def author_label
+      author_personal.nil? ? 'Corporate Author' : 'Author'
+    end
+
+    def author_personal
+      return @author_personal if instance_variable_defined?(:@author_personal)
+
+      @author_personal = clean_value(find_author_personal)
+    end
+
+    def author_corporate
+      return @author_corporate if instance_variable_defined?(:@author_corporate)
+
+      @author_corporate = clean_value(find_author_corporate)
+    end
+
+    # ------------------------------
+    # MARC lookup
 
     def find_title
       df = find_tag('245')
@@ -29,12 +93,36 @@ module Lending
       join_subfields(df, %w[a b])
     end
 
-    def find_author
-      df = find_tag('100') || find_tag('110') || find_tag('710')
+    def find_author_personal
+      df = find_tag('100') || find_tag('700')
       return unless df
 
-      join_subfields(df, %w[a b])
+      join_subfields(df, %w[a b c d])
     end
+
+    def find_author_corporate
+      df = find_tag('110') || find_tag('710')
+      return unless df
+
+      join_subfields(df, %w[a b c d])
+    end
+
+    def find_publisher
+      df = find_tag('260')
+      return unless df
+
+      join_subfields(df, %w[a b c d])
+    end
+
+    def find_physical_desc
+      df = find_tag('300')
+      return unless df
+
+      join_subfields(df, %w[a b c])
+    end
+
+    # ------------------------------
+    # Utility methods
 
     def join_subfields(df, codes)
       codes.map { |code| df[code] }.compact.map(&:strip).join(' ')
@@ -45,7 +133,7 @@ module Lending
     end
 
     def clean_value(v)
-      v.strip.sub(%r{[ ,/:;]+$}, '')
+      v && v.strip.sub(%r{[ ,/:;]+$}, '')
     end
 
     def data_fields_by_tag
