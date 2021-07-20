@@ -146,6 +146,12 @@ section {
           border: 0;
           color: white;
           text-align: left;
+
+          h2 {
+            font-size: 1.25rem;
+            font-weight: $font-weight-book;
+            margin-bottom: 0;
+          }
         }
       }
 
@@ -235,11 +241,6 @@ section {
         thead {
           th {
             grid-column: 1 / 3;
-
-            h2 {
-              font-size: 1.25rem;
-              font-weight: $font-weight-book;
-            }
           }
         }
 
