@@ -6,46 +6,10 @@
 <nav><%= link_to 'Index', lending_path %></nav>
 
 <%=
-  # TODO: should this logic really be in the view?
-
-  directory = @lending_item.directory
-
-  # TODO: Use Rails i18n
-  action = link_to('Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary')
-
-  additional_fields = {
-    'Record ID' => @lending_item.record_id,
-    'Barcode' => @lending_item.barcode,
-    'Copies' => @lending_item.copies,
-    'Copies available' => @lending_item.copies_available
-  }.tap do |ff|
-    ff['Active'] = @lending_item.active? ? 'Yes' : 'No'
-
-    @lending_item.due_dates.to_a.tap do |due_dates|
-      ff['Due dates for current checkouts'] = due_dates.empty? ? 'None' : due_dates
-    end
-
-    if @lending_item.processed?
-      ff['Processed?'] = 'Yes'
-      ff['IIIF directory'] = @lending_item.iiif_dir
-    else
-      ff['Processed?'] = 'No'
-    end
-
-    ff['Directory'] = directory
-
-    view_url = lending_view_url(directory: directory)
-    ff['Direct link'] = link_to(view_url, view_url, target: '_blank')
-  end
-
   render(
     partial: 'record',
     locals: {
-      show_viewer: true,
-      viewer_title: 'Preview',
-      additional_fields: additional_fields,
-      show_copyright_warning: false,
-      action: action
+      presenter:LendingItemShowPresenter.new(self, @lending_item)
     }
   )
 %>

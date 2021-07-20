@@ -191,15 +191,6 @@ section {
           text-align: left;
           white-space: normal;
 
-          h3 {
-            font-size: $font-size-large;
-            font-weight: $font-weight-bold;
-          }
-
-          p {
-            font-weight: $font-weight-book;
-          }
-
           a, input {
             color: white;
             font-weight: $font-weight-bold;
@@ -210,6 +201,17 @@ section {
       td {
         border-bottom: 1px solid $color-row-divider;
         padding: $margin-small;
+
+        &.copyright {
+          border-bottom: none;
+          margin-top: $margin-xlarge;
+
+          h3 {
+            font-size: $font-size-large;
+            font-weight: $font-weight-bold;
+            padding-top: $margin-xlarge;
+          }
+        }
       }
     }
   }
@@ -265,7 +267,7 @@ section {
         td {
           grid-column: 2;
 
-          &.description {
+          &.description, &.copyright {
             grid-column: 1 / 3;
           }
 
