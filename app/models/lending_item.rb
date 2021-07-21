@@ -39,6 +39,10 @@ class LendingItem < ActiveRecord::Base
   MSG_ZERO_COPIES = 'Items without copies cannot be made active.'.freeze
   MSG_INACTIVE = 'This item is not in active circulation.'.freeze
 
+  # TODO: make this configurable
+  MAX_CHECKOUTS_PER_PATRON = 1
+  MSG_CHECKOUT_LIMIT_REACHED = "You may only check out #{MAX_CHECKOUTS_PER_PATRON} item at a time.".freeze
+
   # ------------------------------------------------------------
   # Class methods
 
@@ -213,6 +217,10 @@ class LendingItem < ActiveRecord::Base
     errors.add(:base, MSG_UNPROCESSED)
   end
 
+  def active_loans
+    lending_item_loans.active.order(:due_date)
+  end
+
   # ------------------------------------------------------------
   # Private methods
 
@@ -240,10 +248,6 @@ class LendingItem < ActiveRecord::Base
     UCBLIT::Util::URIs.uri_or_nil(Rails.application.config.image_server_base_uri).tap do |uri|
       raise ArgumentError, 'image_server_base_uri not set' unless uri
     end
-  end
-
-  def active_loans
-    lending_item_loans.active.order(:due_date)
   end
 
   def marc_path

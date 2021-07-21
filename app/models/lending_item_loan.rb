@@ -13,6 +13,7 @@ class LendingItemLoan < ActiveRecord::Base
   # ------------------------------------------------------------
   # Attribute restrictions
 
+  # TODO: just calculate this from dates
   enum loan_status: { pending: 'pending', active: 'active', complete: 'complete' }
 
   # ------------------------------------------------------------
@@ -20,7 +21,7 @@ class LendingItemLoan < ActiveRecord::Base
 
   validates :lending_item, presence: true
   validates :patron_identifier, presence: true
-  validate :no_duplicate_checkouts
+  validate :patron_can_check_out
   validate :item_available
   validate :item_active
 
@@ -48,22 +49,45 @@ class LendingItemLoan < ActiveRecord::Base
   # ------------------------------------------------------------
   # Custom validation methods
 
-  def no_duplicate_checkouts
-    active_checkout = LendingItemLoan.find_by(lending_item_id: lending_item_id, patron_identifier: patron_identifier, loan_status: 'active')
-    return if active_checkout.nil? || active_checkout.id == id
+  def patron_can_check_out
+    errors.add(:base, LendingItem::MSG_CHECKED_OUT) if duplicate_checkout
+    return if other_checkouts.count < LendingItem::MAX_CHECKOUTS_PER_PATRON
 
-    errors.add(:base, LendingItem::MSG_CHECKED_OUT)
+    errors.add(:base, LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
   end
 
   def item_available
     return if lending_item.available?
+    # Don't count this loan against number of available copies
+    return if lending_item.active_loans.include?(self)
 
-    errors.add(:base, LendingItem::MSG_UNAVAILABLE)
+    errors.add(:base, lending_item.reason_unavailable)
   end
 
   def item_active
     return if lending_item.active?
 
     errors.add(:base, LendingItem::MSG_INACTIVE)
+  end
+
+  private
+
+  def other_checkouts
+    conditions = <<~SQL
+      patron_identifier = ? AND
+      due_date > ? AND
+      return_date IS NULL AND
+      lending_item_id <> ?
+    SQL
+    LendingItemLoan.where(conditions, patron_identifier, Time.current.utc, lending_item_id)
+  end
+
+  def duplicate_checkout
+    dup = LendingItemLoan.find_by(
+      lending_item_id: lending_item_id,
+      patron_identifier: patron_identifier,
+      loan_status: 'active'
+    )
+    dup && dup.id != id
   end
 end
