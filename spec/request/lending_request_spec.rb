@@ -15,6 +15,13 @@ describe LendingController, type: :request do
         active: true
       },
       {
+        title: 'The great depression in Europe, 1929-1939',
+        author: 'Clavin, Patricia.',
+        directory: 'b135297126_C068087930',
+        copies: 2,
+        active: true
+      },
+      {
         title: 'Villette',
         author: 'Brontë, Charlotte',
         directory: 'b155001346_C044219363',
@@ -145,13 +152,14 @@ describe LendingController, type: :request do
         end
 
         it 'auto-expires overdue loans' do
+          active.each do |items|
+            expect(items.lending_item_loans).to be_empty
+          end
           loans = active.each_with_object([]) do |item, ll|
             item.copies.times do |copy|
-              loan = item.check_out_to("patron-#{copy}")
-              if copy.odd?
-                loan.due_date = Time.current.utc - 1.days
-                loan.save!
-              end
+              loan = item.check_out_to("patron-#{item.directory}-#{copy}")
+              loan.due_date = Time.current.utc - 1.days if copy.odd?
+              loan.save!
               ll << loan
             end
           end
@@ -473,6 +481,7 @@ describe LendingController, type: :request do
 
     describe :check_out do
       it 'checks out an item' do
+        # TODO: share these assertions
         expect do
           get lending_check_out_path(directory: item.directory)
         end.to change(LendingItemLoan, :count).by(1)
@@ -488,6 +497,8 @@ describe LendingController, type: :request do
 
         expected_path = lending_view_path(directory: item.directory)
         expect(response).to redirect_to(expected_path)
+
+        expect(response.body).not_to include(LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
       end
 
       it 'fails if this user has already checked out the item' do
@@ -500,6 +511,81 @@ describe LendingController, type: :request do
 
         expect(response.status).to eq(422) # unprocessable entity
         expect(response.body).to include(LendingItem::MSG_CHECKED_OUT)
+      end
+
+      it 'fails if this user has already hit the checkout limit' do
+        max_checkouts = LendingItem::MAX_CHECKOUTS_PER_PATRON
+        expect(active.size).to be > max_checkouts # just to be sure
+        max_checkouts.times { |i| active[i].check_out_to(user.lending_id) }
+        item = active[max_checkouts] # next active item
+
+        expect do
+          get lending_check_out_path(directory: item.directory)
+        end.not_to change(LendingItemLoan, :count)
+
+        expect(response.status).to eq(422) # unprocessable entity
+        expect(response.body).to include(LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
+      end
+
+      it 'allows a checkout if the user previously checked something out, but returned it' do
+        max_checkouts = LendingItem::MAX_CHECKOUTS_PER_PATRON
+        expect(active.size).to be > max_checkouts # just to be sure
+        max_checkouts.times do |i|
+          loan = active[i].check_out_to(user.lending_id)
+          loan.return!
+        end
+
+        item = active[max_checkouts] # next active item
+
+        # TODO: share these assertions
+        expect do
+          get lending_check_out_path(directory: item.directory)
+        end.to change(LendingItemLoan, :count).by(1)
+
+        loan = LendingItemLoan.find_by(
+          lending_item_id: item.id,
+          patron_identifier: user.lending_id
+        )
+        expect(loan).to be_active
+        expect(loan.loan_date).to be <= Time.current
+        expect(loan.due_date).to be > Time.current
+        expect(loan.due_date - loan.loan_date).to eq(LendingItem::LOAN_DURATION_HOURS.hours)
+
+        expected_path = lending_view_path(directory: item.directory)
+        expect(response).to redirect_to(expected_path)
+
+        expect(response.body).not_to include(LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
+      end
+
+      it 'allows a checkout if the user previously checked something out, but it was auto-returned' do
+        max_checkouts = LendingItem::MAX_CHECKOUTS_PER_PATRON
+        expect(active.size).to be > max_checkouts # just to be sure
+        max_checkouts.times do |i|
+          loan = active[i].check_out_to(user.lending_id)
+          loan.due_date = Time.current.utc - 1.days
+          loan.save!
+        end
+
+        item = active[max_checkouts] # next active item
+
+        # TODO: share these assertions
+        expect do
+          get lending_check_out_path(directory: item.directory)
+        end.to change(LendingItemLoan, :count).by(1)
+
+        loan = LendingItemLoan.find_by(
+          lending_item_id: item.id,
+          patron_identifier: user.lending_id
+        )
+        expect(loan).to be_active
+        expect(loan.loan_date).to be <= Time.current
+        expect(loan.due_date).to be > Time.current
+        expect(loan.due_date - loan.loan_date).to eq(LendingItem::LOAN_DURATION_HOURS.hours)
+
+        expected_path = lending_view_path(directory: item.directory)
+        expect(response).to redirect_to(expected_path)
+
+        expect(response.body).not_to include(LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
       end
 
       it 'fails if there are no copies available' do
