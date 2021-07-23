@@ -24,14 +24,21 @@ end
 
 # Logs out. Suitable for calling in an after() block.
 def logout!
-  OmniAuth.config.mock_auth[:calnet] = nil
   stub_request(:get, 'https://auth-test.berkeley.edu/cas/logout').to_return(status: 200)
   without_redirects { do_get logout_path }
 
+  clear_login_state!
+end
+
+# Clears login state without actually loading SessionController#logout.
+# Use this if you want Capybara failure screenshots to capture the page
+# under test instead of the 'logout successful' page.
+def clear_login_state!
   # ActionDispatch::TestProcess#session delegates to request.session,
   # but doesn't check whether it's actually present
-  session.destroy if request
+  request.reset_session if request
 
+  OmniAuth.config.mock_auth[:calnet] = nil
   CapybaraHelper.delete_all_cookies if defined?(CapybaraHelper)
 end
 

@@ -8,10 +8,6 @@ describe LendingController, type: :system do
 
   let(:states) { %i[active inactive incomplete] }
 
-  before(:each) do
-    allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/samples/final')
-  end
-
   let(:valid_item_attributes) do
     [
       {
@@ -25,7 +21,7 @@ describe LendingController, type: :system do
         title: 'The great depression in Europe, 1929-1939',
         author: 'Clavin, Patricia.',
         directory: 'b135297126_C068087930',
-        copies: 0,
+        copies: 1,
         active: false
       },
       {
@@ -64,7 +60,20 @@ describe LendingController, type: :system do
     processed.reject(&:active?)
   end
 
-  after(:each) { logout! }
+  before(:each) do
+    allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/samples/final')
+  end
+
+  after(:each) do
+    clear_login_state!
+  end
+
+  # ------------------------------------------------------------
+  # Helper methods
+
+  def expect_no_alerts
+    expect(page).not_to have_xpath("//div[contains(@class, 'alerts')]")
+  end
 
   # ------------------------------------------------------------
   # Tests
@@ -78,7 +87,7 @@ describe LendingController, type: :system do
           visit lending_path
 
           expect(page.title).to include('UC BEARS')
-          expect(page).not_to have_xpath("//div[contains(@class, 'alerts')]")
+          expect_no_alerts
         end
       end
     end
@@ -98,7 +107,7 @@ describe LendingController, type: :system do
 
         it 'lists the items' do
           expect(page.title).to include('UC BEARS')
-          expect(page).not_to have_xpath("//div[contains(@class, 'alerts')]")
+          expect_no_alerts
 
           aggregate_failures :items do
             items.each do |item|
@@ -183,7 +192,57 @@ describe LendingController, type: :system do
             end
           end
         end
+
+        describe 'Show' do
+          it 'shows the item preview' do
+            item = items.first
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+
+            show_path = lending_show_path(directory: item.directory)
+            show_link = item_row.find_link('Show', href: show_path)
+            show_link.click
+
+            expect_no_alerts
+            expect(page).to have_current_path(show_path)
+          end
+        end
+
+        describe 'Edit' do
+          it 'shows the edit screen' do
+            item = items.first
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+
+            edit_path = lending_edit_path(directory: item.directory)
+            edit_link = item_row.find_link('Edit', href: edit_path)
+            edit_link.click
+
+            expect_no_alerts
+            expect(page).to have_current_path(edit_path)
+          end
+        end
+
+        describe 'Make Active' do
+          it 'activates an item' do
+            item = inactive.find { |it| it.copies > 0 }
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+
+            activate_path = lending_activate_path(directory: item.directory)
+            activate_link = item_row.find_link('Make Active', href: activate_path)
+            activate_link.click
+
+            item.reload
+            expect(item).to be_active
+
+            active_table = find(:xpath, "//table[@id='lending-active']")
+            expect(active_table).to have_xpath(".//tr[td[contains(text(), '#{item.title}')]]")
+
+            alert = page.find('.alert-success')
+            expect(alert).to have_text('Item now active.')
+          end
+        end
       end
+
+      xdescribe :show
     end
   end
 end
