@@ -16,7 +16,7 @@ class LendingItemViewPresenter < LendingItemPresenterBase
 
   def action
     return action_return if loan.active?
-    return action_check_out if item.available?
+    return action_check_out if loan.ok_to_check_out?
 
     tag.a(class: 'btn btn-primary disabled') { 'Check out' }.html_safe
   end
