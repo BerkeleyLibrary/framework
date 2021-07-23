@@ -24,7 +24,7 @@ class LendingItem < ActiveRecord::Base
   validates :copies, numericality: { greater_than_or_equal_to: 0 }
   validate :correct_directory_format
   validate :active_items_have_copies
-  validate :active_items_are_processed
+  validate :active_items_are_complete
 
   # ------------------------------------------------------------
   # Constants
@@ -34,10 +34,14 @@ class LendingItem < ActiveRecord::Base
   # TODO: Use Rails i18n
   MSG_CHECKED_OUT = 'You have already checked out this item.'.freeze
   MSG_UNAVAILABLE = 'There are no available copies of this item.'.freeze
-  MSG_UNPROCESSED = 'This item has not yet been processed for viewing.'.freeze
+  MSG_INCOMPLETE = 'This item has not yet been processed for viewing.'.freeze
   MSG_NOT_CHECKED_OUT = 'This item is not checked out.'.freeze
   MSG_ZERO_COPIES = 'Items without copies cannot be made active.'.freeze
   MSG_INACTIVE = 'This item is not in active circulation.'.freeze
+  MSG_NO_IIIF_DIR = 'The item directory does not exist, or is not a directory'.freeze
+  MSG_NO_PAGE_IMAGES = 'The item directory has no page images'.freeze
+  MSG_NO_MANIFEST_TEMPLATE = 'The item directory does not have a IIIF manifest template'.freeze
+  MSG_NO_MARC_XML = "The item directory does not contain a #{Lending::Processor::MARC_XML_NAME} file".freeze
 
   # TODO: make this configurable
   MAX_CHECKOUTS_PER_PATRON = 1
@@ -48,15 +52,15 @@ class LendingItem < ActiveRecord::Base
 
   class << self
     def active
-      LendingItem.where(active: true).lazy.select(&:processed?)
+      LendingItem.where(active: true).lazy.select(&:complete?)
     end
 
     def inactive
-      LendingItem.where(active: false).lazy.select(&:processed?)
+      LendingItem.where(active: false).lazy.select(&:complete?)
     end
 
-    def invalid
-      LendingItem.find_each.lazy.reject(&:processed?)
+    def incomplete
+      LendingItem.find_each.lazy.reject(&:complete?)
     end
 
     def scan_for_new_items!
@@ -115,12 +119,16 @@ class LendingItem < ActiveRecord::Base
   # ------------------------------------------------------------
   # Synthetic accessors
 
-  def processed?
-    iiif_dir? && iiif_manifest.has_template?
+  def complete?
+    has_iiif_dir? && has_page_images? && has_manifest_template? && has_marc_record?
+  end
+
+  def incomplete?
+    !complete?
   end
 
   def available?
-    active? && processed? && copies_available > 0
+    active? && complete? && copies_available > 0
   end
 
   def inactive?
@@ -130,11 +138,19 @@ class LendingItem < ActiveRecord::Base
   def reason_unavailable
     return if available?
     return LendingItem::MSG_INACTIVE unless active?
-    return LendingItem::MSG_UNPROCESSED unless processed?
+    return LendingItem::MSG_INCOMPLETE unless complete?
     return LendingItem::MSG_UNAVAILABLE unless (due_date = next_due_date)
 
     date_str = due_date.to_s(:long)
     "#{LendingItem::MSG_UNAVAILABLE} It will be returned on #{date_str}"
+  end
+
+  def reason_incomplete
+    return if complete?
+    return MSG_NO_IIIF_DIR unless has_iiif_dir?
+    return MSG_NO_PAGE_IMAGES unless has_page_images?
+    return MSG_NO_MANIFEST_TEMPLATE unless has_manifest_template?
+    return MSG_NO_MARC_XML unless has_marc_record?
   end
 
   def copies_available
@@ -152,14 +168,15 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_manifest
-    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_UNPROCESSED}" unless iiif_dir?
+    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_NO_IIIF_DIR}" unless has_iiif_dir?
+    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_NO_PAGE_IMAGES}" unless has_page_images?
 
     Lending::IIIFManifest.new(title: title, author: author, dir_path: iiif_dir)
   end
 
   def marc_metadata
     @marc_metadata ||= begin
-      raise ActiveRecord::RecordNotFound, "Error loading MARC record for #{citation}: #{MSG_UNPROCESSED}" unless marc_path&.file?
+      raise ActiveRecord::RecordNotFound, "Error loading MARC record for #{citation}: #{MSG_NO_MARC_XML}" unless has_marc_record?
 
       Lending::MarcMetadata.new(marc_path)
     end
@@ -188,13 +205,21 @@ class LendingItem < ActiveRecord::Base
     @barcode
   end
 
-  def iiif_dir?
+  # rubocop:disable Naming/PredicateName
+  def has_iiif_dir?
     return false unless iiif_dir
-    return false unless File.exist?(iiif_dir) && File.directory?(iiif_dir)
-    return false if Dir.empty?(iiif_dir)
+
+    File.exist?(iiif_dir) && File.directory?(iiif_dir)
+  end
+  # rubocop:enable Naming/PredicateName
+
+  # rubocop:disable Naming/PredicateName
+  def has_page_images?
+    return false unless iiif_dir
 
     Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
   end
+  # rubocop:enable Naming/PredicateName
 
   # ------------------------------------------------------------
   # Custom validators
@@ -211,10 +236,10 @@ class LendingItem < ActiveRecord::Base
     errors.add(:base, MSG_ZERO_COPIES)
   end
 
-  def active_items_are_processed
-    return if inactive? || processed?
+  def active_items_are_complete
+    return if inactive? || complete?
 
-    errors.add(:base, MSG_UNPROCESSED)
+    errors.add(:base, item.reason_incomplete)
   end
 
   def active_loans
@@ -225,6 +250,18 @@ class LendingItem < ActiveRecord::Base
   # Private methods
 
   private
+
+  # rubocop:disable Naming/PredicateName
+  def has_marc_record?
+    marc_path&.file?
+  end
+  # rubocop:enable Naming/PredicateName
+
+  # rubocop:disable Naming/PredicateName
+  def has_manifest_template?
+    iiif_manifest.has_template?
+  end
+  # rubocop:enable Naming/PredicateName
 
   def return_loans_if_inactive
     return if active?

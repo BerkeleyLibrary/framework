@@ -6,6 +6,8 @@ describe LendingController, type: :system do
   # ------------------------------------------------------------
   # Fixture
 
+  let(:states) { %i[active inactive incomplete] }
+
   before(:each) do
     allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/samples/final')
   end
@@ -47,11 +49,11 @@ describe LendingController, type: :system do
   attr_reader :item
 
   def processed
-    items.select(&:processed?)
+    items.select(&:complete?)
   end
 
-  def invalid
-    items.reject(&:processed?)
+  def incomplete
+    items.reject(&:complete?)
   end
 
   def active
@@ -106,8 +108,6 @@ describe LendingController, type: :system do
         end
 
         it 'categorizes the items by state' do
-          states = %i[active inactive invalid]
-
           states.each do |state|
             expect(page).to have_xpath("//h2[@id='#{state}']"), "No <h2> found for state #{state}"
           end
@@ -118,7 +118,7 @@ describe LendingController, type: :system do
 
           states.each do |state|
             items_for_state = send(state)
-            expect(items_for_state).not_to be_empty, "No items for state #{state}"
+            expect(items_for_state).not_to be_empty, "No items for state #{state}" # just to be sure
 
             table = tables_by_state[state]
             item_rows = table.all(:xpath, ".//tr[@class='item-row']")
@@ -129,8 +129,57 @@ describe LendingController, type: :system do
             items_for_state.each do |item|
               item_row = table.find(:xpath, ".//tr[td[contains(text(), '#{item.title}')]]")
               show_path = lending_show_path(directory: item.directory)
-              # show_link = item_row.find_link('Show', href: /#{Regexp.escape(show_path)}/)
               expect(item_row).to have_link('Show', href: /#{Regexp.escape(show_path)}/)
+            end
+          end
+        end
+
+        it 'has show and edit buttons for all items' do
+          items.each do |item|
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            show_path = lending_show_path(directory: item.directory)
+            expect(item_row).to have_link('Show', href: show_path)
+
+            edit_path = lending_edit_path(directory: item.directory)
+            expect(item_row).to have_link('Edit', href: edit_path)
+          end
+        end
+
+        it 'has "make active" only for processed, inactive items' do
+          items.each do |item|
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            activate_path = lending_activate_path(directory: item.directory)
+
+            if item.active? || item.incomplete?
+              expect(item_row).not_to have_link('Make Active', href: activate_path)
+            else
+              expect(item_row).to have_link('Make Active', href: activate_path)
+            end
+          end
+        end
+
+        it 'has "make inactive" only for processed, active items' do
+          items.each do |item|
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            deactivate_path = lending_deactivate_path(directory: item.directory)
+            if item.incomplete? || !item.active?
+              expect(item_row).not_to have_link('Make Inactive', href: deactivate_path)
+            else
+              expect(item_row).to have_link('Make Inactive', href: deactivate_path)
+            end
+          end
+        end
+
+        it 'has "delete" only for incomplete items' do
+          items.each do |item|
+            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            delete_path = lending_destroy_path(directory: item.directory)
+            if item.incomplete?
+              delete_form = item_row.find(:xpath, ".//form[@action='#{delete_path}']")
+              expect(delete_form).to have_button('Delete')
+            else
+              expect(item_row).not_to have_xpath(".//form[@action='#{delete_path}']")
+              expect(item_row).not_to have_button('Delete')
             end
           end
         end

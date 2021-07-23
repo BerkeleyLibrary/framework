@@ -32,9 +32,9 @@ class LendingItemShowPresenter < LendingItemPresenterBase
   end
 
   def add_processing_metadata(ff)
-    ff['Processed?'] = to_yes_or_no(item.processed?)
+    ff['Complete?'] = to_yes_or_no(item.complete?)
 
-    if item.processed?
+    if item.complete?
       ff['IIIF directory'] = item.iiif_dir
     else
       ff['Directory'] = directory

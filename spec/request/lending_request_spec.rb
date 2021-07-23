@@ -39,11 +39,11 @@ describe LendingController, type: :request do
   end
 
   def processed
-    items.select(&:processed?)
+    items.select(&:complete?)
   end
 
-  def unprocessed
-    items.reject(&:processed?)
+  def incomplete
+    items.reject(&:complete?)
   end
 
   after(:each) { logout! }
@@ -189,7 +189,7 @@ describe LendingController, type: :request do
         end
 
         xit 'only shows the viewer for processed items'
-        xit 'shows a message for unprocessed items'
+        xit 'shows a message for incomplete items'
       end
 
       describe :edit do
@@ -317,8 +317,8 @@ describe LendingController, type: :request do
       end
 
       describe :destroy do
-        it 'destroys an unprocessed item' do
-          item = unprocessed.first
+        it 'destroys an incomplete item' do
+          item = incomplete.first
           expect(item).not_to be_processed # just to be sure
 
           delete lending_destroy_path(directory: item.directory)
@@ -355,7 +355,7 @@ describe LendingController, type: :request do
       @items = valid_item_attributes.map do |item_attributes|
         LendingItem.create!(**item_attributes)
       end
-      @item = items.find(&:processed?)
+      @item = items.find(&:complete?)
     end
 
     describe :show do
