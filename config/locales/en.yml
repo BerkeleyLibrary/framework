@@ -39,13 +39,13 @@ en:
         phone: Telephone
         main_stack: Is the item in the Main (Gardner) Stacks?
         pass_date: On which day do you need access to the Main (Gardner) Stacks?
-        local_id: What is the call number or direct link URL to the OskiCat record of an item of interest?
+        local_id: What is the call number or direct link URL to the UC Library Search record of an item of interest?
       reference_card_form:
         name: Full Name
         email: Email Address
         affiliation: Institutional Affiliation
         research_desc: Brief description of research materials in Main (Gardner) Stacks that are of interest
-        local_id: OskiCat record link or call number for an item of interest
+        local_id: UC Library Search record link or call number for an item of interest
         pass_date: Requested access start date
         pass_date_end: Requested access end date
     errors:
