@@ -239,7 +239,7 @@ class LendingItem < ActiveRecord::Base
   def active_items_are_complete
     return if inactive? || complete?
 
-    errors.add(:base, item.reason_incomplete)
+    errors.add(:base, reason_incomplete)
   end
 
   def active_loans

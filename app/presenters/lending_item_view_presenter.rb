@@ -18,10 +18,7 @@ class LendingItemViewPresenter < LendingItemPresenterBase
     return action_return if loan.active?
     return action_check_out if item.available?
 
-    tag.a(
-      class: 'btn btn-primary disabled',
-      'data-disable-with' => item.reason_unavailable
-    ) { 'Check out' }.html_safe
+    tag.a(class: 'btn btn-primary disabled') { 'Check out' }.html_safe
   end
 
   def additional_fields

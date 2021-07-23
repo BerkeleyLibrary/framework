@@ -32,7 +32,7 @@ describe LendingController, type: :system do
         active: false
       },
       {
-        title: 'Pamhlet.',
+        title: 'Pamphlet.',
         author: 'Canada. Department of Agriculture.',
         directory: 'b11996535_B 3 106 704',
         copies: 0,
@@ -147,22 +147,30 @@ describe LendingController, type: :system do
           items.each do |item|
             item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
             show_path = lending_show_path(directory: item.directory)
-            expect(item_row).to have_link('Show', href: show_path)
+            show_link = item_row.find_link('Show')
+            expect(URI.parse(show_link['href']).path).to eq(show_path)
 
             edit_path = lending_edit_path(directory: item.directory)
-            expect(item_row).to have_link('Edit', href: edit_path)
+            edit_link = item_row.find_link('Edit')
+            expect(URI.parse(edit_link['href']).path).to eq(edit_path)
           end
         end
 
-        it 'has "make active" only for processed, inactive items' do
+        it 'has "make active" only for processed, inactive items with copies' do
           items.each do |item|
             item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
             activate_path = lending_activate_path(directory: item.directory)
 
             if item.active? || item.incomplete?
-              expect(item_row).not_to have_link('Make Active', href: activate_path)
+              expect(item_row).not_to have_link('Make Active')
             else
-              expect(item_row).to have_link('Make Active', href: activate_path)
+              activate_link = item_row.find_link('Make Active')
+              if item.copies > 0
+                expect(URI.parse(activate_link['href']).path).to eq(activate_path)
+              else
+                expect(activate_link['href']).to be_nil
+                expect(activate_link['class']).to include('disabled')
+              end
             end
           end
         end
@@ -172,9 +180,10 @@ describe LendingController, type: :system do
             item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
             deactivate_path = lending_deactivate_path(directory: item.directory)
             if item.incomplete? || !item.active?
-              expect(item_row).not_to have_link('Make Inactive', href: deactivate_path)
+              expect(item_row).not_to have_link('Make Inactive')
             else
-              expect(item_row).to have_link('Make Inactive', href: deactivate_path)
+              link = item_row.find_link('Make Inactive')
+              expect(URI.parse(link['href']).path).to eq(deactivate_path)
             end
           end
         end
@@ -199,7 +208,8 @@ describe LendingController, type: :system do
             item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
 
             show_path = lending_show_path(directory: item.directory)
-            show_link = item_row.find_link('Show', href: show_path)
+            show_link = item_row.find_link('Show')
+            expect(URI.parse(show_link['href']).path).to eq(show_path)
             show_link.click
 
             expect_no_alerts
@@ -213,7 +223,8 @@ describe LendingController, type: :system do
             item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
 
             edit_path = lending_edit_path(directory: item.directory)
-            edit_link = item_row.find_link('Edit', href: edit_path)
+            edit_link = item_row.find_link('Edit')
+            expect(URI.parse(edit_link['href']).path).to eq(edit_path)
             edit_link.click
 
             expect_no_alerts
@@ -227,17 +238,18 @@ describe LendingController, type: :system do
             item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
 
             activate_path = lending_activate_path(directory: item.directory)
-            activate_link = item_row.find_link('Make Active', href: activate_path)
+            activate_link = item_row.find_link('Make Active')
+            expect(URI.parse(activate_link['href']).path).to eq(activate_path)
             activate_link.click
-
-            item.reload
-            expect(item).to be_active
 
             active_table = find(:xpath, "//table[@id='lending-active']")
             expect(active_table).to have_xpath(".//tr[td[contains(text(), '#{item.title}')]]")
 
             alert = page.find('.alert-success')
             expect(alert).to have_text('Item now active.')
+
+            item.reload
+            expect(item).to be_active
           end
         end
       end
