@@ -46,12 +46,16 @@ class LendingItemLoan < ActiveRecord::Base
     due_date && due_date.utc <= Time.current.utc
   end
 
+  def ok_to_check_out?
+    lending_item.available? && !(active? || duplicate_checkout || checkout_limit_reached)
+  end
+
   # ------------------------------------------------------------
   # Custom validation methods
 
   def patron_can_check_out
     errors.add(:base, LendingItem::MSG_CHECKED_OUT) if duplicate_checkout
-    return if other_checkouts.count < LendingItem::MAX_CHECKOUTS_PER_PATRON
+    return if checkout_limit_reached
 
     errors.add(:base, LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
   end
@@ -71,6 +75,10 @@ class LendingItemLoan < ActiveRecord::Base
   end
 
   private
+
+  def checkout_limit_reached
+    other_checkouts.count < LendingItem::MAX_CHECKOUTS_PER_PATRON
+  end
 
   def other_checkouts
     conditions = <<~SQL

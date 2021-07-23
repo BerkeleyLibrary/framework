@@ -38,7 +38,7 @@ describe LendingController, type: :request do
     items.select(&:active?)
   end
 
-  def processed
+  def complete
     items.select(&:complete?)
   end
 
@@ -188,7 +188,7 @@ describe LendingController, type: :request do
           end
         end
 
-        xit 'only shows the viewer for processed items'
+        xit 'only shows the viewer for complete items'
         xit 'shows a message for incomplete items'
       end
 
@@ -204,8 +204,8 @@ describe LendingController, type: :request do
       end
 
       describe :manifest do
-        it 'shows the manifest for processed items' do
-          processed.each do |item|
+        it 'shows the manifest for complete items' do
+          complete.each do |item|
             get lending_manifest_path(directory: item.directory)
             expect(response).to be_successful
 
@@ -319,7 +319,7 @@ describe LendingController, type: :request do
       describe :destroy do
         it 'destroys an incomplete item' do
           item = incomplete.first
-          expect(item).not_to be_processed # just to be sure
+          expect(item).not_to be_complete # just to be sure
 
           delete lending_destroy_path(directory: item.directory)
 
@@ -331,14 +331,14 @@ describe LendingController, type: :request do
           expect { LendingItem.find(item.id) }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
-        it 'does not destroy a processed item' do
-          expect(item).to be_processed # just to be sure
+        it 'does not destroy a complete item' do
+          expect(item).to be_complete # just to be sure
 
           delete lending_destroy_path(directory: item.directory)
           expect(response).to redirect_to lending_path
 
           follow_redirect!
-          expect(response.body).to include('Processed items cannot be deleted.')
+          expect(response.body).to include('Only incomplete items can be deleted.')
 
           expect(LendingItem.find(item.id)).to eq(item)
         end
