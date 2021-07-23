@@ -6,7 +6,7 @@
   </thead>
   <tbody>
   <tr>
-    <% if @lending_item.processed? %>
+    <% if @lending_item.complete? %>
       <td class="viewer">
         <div class="viewer">
           <%
@@ -49,7 +49,7 @@
       </td>
     <% else %>
       <td class="description">
-        <p><%= LendingItem::MSG_UNPROCESSED %></p>
+        <p><%= LendingItem::MSG_INCOMPLETE %></p>
       </td>
     <% end %>
   </tr>

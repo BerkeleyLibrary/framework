@@ -7,6 +7,7 @@
     <th scope="col"><%= sortable(:copies, 'Copies') %></th>
     <th scope="col"><%= sortable(:copies_available, 'Available') %></th>
     <th scope="col">Due</th>
+    <th scope="col">Issues</th>
     <th colspan="3">Actions</th>
   </tr>
   </thead>
@@ -26,10 +27,11 @@
           <% } %>
         <% end %>
       </td>
+      <td><%= item.reason_incomplete %></td>
       <td><%= link_to 'Show', lending_show_path(directory: directory), class: 'btn btn-secondary' %></td>
       <td><%= link_to 'Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary' %></td>
       <td>
-        <% if item.processed? %>
+        <% if item.complete? %>
           <% if item.inactive? %>
             <%= link_to 'Make Active', lending_activate_path(directory: directory), class: 'btn btn-primary' %>
           <% else %>

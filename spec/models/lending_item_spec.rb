@@ -5,7 +5,7 @@ describe LendingItem, type: :model do
     allow(Rails.application.config).to receive(:iiif_final_dir).and_return('spec/data/lending/samples/final')
   end
 
-  attr_reader :items, :processed, :unprocessed, :active
+  attr_reader :items, :processed, :incomplete, :active
 
   context 'without existing items' do
     describe :scan_for_new_items! do
@@ -48,26 +48,22 @@ describe LendingItem, type: :model do
         }
       ].map { |item_attributes| LendingItem.create!(**item_attributes) }
 
-      @processed = items.select(&:processed?)
-      @unprocessed = items.reject(&:processed?)
+      @processed = items.select(&:complete?)
+      @incomplete = items.reject(&:complete?)
       @active = @processed.select(&:active?)
     end
 
-    describe :iiif_dir? do
-      it 'returns true for items with populated image directories' do
-        items.each do |item|
-          iiif_dir = item.iiif_dir
-          expected = File.directory?(iiif_dir) && Dir.entries(iiif_dir).any? { |e| Lending::Page.page_number?(e) }
-          expect(item.iiif_dir?).to eq(expected)
-        end
-      end
-    end
-
-    describe :processed? do
+    describe :complete? do
       it 'returns true only items with manifest templates and populated image directories' do
         items.each do |item|
-          expected = item.iiif_dir? && item.iiif_manifest.has_template?
-          expect(item.processed?).to eq(expected)
+          should_be_complete = item.has_iiif_dir? && item.has_page_images? && item.iiif_manifest.has_template?
+          expect(item.complete?).to eq(should_be_complete)
+
+          if should_be_complete
+            expect(item.reason_incomplete).to be_nil
+          else
+            expect(item.reason_incomplete).not_to be_nil
+          end
         end
         expect(processed).not_to be_empty
       end
@@ -88,7 +84,7 @@ describe LendingItem, type: :model do
       end
 
       it 'returns false if the item has not been processed' do
-        unprocessed.each do |item|
+        incomplete.each do |item|
           expect(item.available?).to eq(false)
         end
       end
@@ -113,7 +109,7 @@ describe LendingItem, type: :model do
       end
 
       it 'raises RecordNotFound if the item has not been processed' do
-        unprocessed.each do |item|
+        incomplete.each do |item|
           expect { item.iiif_manifest }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end

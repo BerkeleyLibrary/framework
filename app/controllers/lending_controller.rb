@@ -115,7 +115,7 @@ class LendingController < ApplicationController
   end
 
   def destroy
-    if @lending_item.processed?
+    if @lending_item.complete?
       flash[:error] = 'Processed items cannot be deleted.'
     else
       @lending_item.destroy!
@@ -208,7 +208,7 @@ class LendingController < ApplicationController
     require_eligible_patron! unless lending_admin?
     item = ensure_lending_item!
 
-    raise ActiveRecord::RecordNotFound, LendingItem::MSG_UNPROCESSED unless item.processed?
+    raise ActiveRecord::RecordNotFound, item.reason_incomplete unless item.complete?
   end
 
   def require_lending_admin!
