@@ -1,4 +1,4 @@
-<table class="table table-bordered mt-5">
+<table id="<%= table_id %>" class="table table-bordered mt-5">
   <thead class="thead-light">
   <tr>
     <th scope="col"><%= sortable(:title, 'Title') %></th>
@@ -14,7 +14,7 @@
   <tbody>
   <% items.each do |item| %>
     <% directory = item.directory %>
-    <tr>
+    <tr class="item-row">
       <td><%= item.title %></td>
       <td><%= item.author %></td>
       <td><%= directory %></td>
