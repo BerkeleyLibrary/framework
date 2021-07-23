@@ -5,26 +5,27 @@
 <ul>
   <li><a href="#inactive">New or inactive items</a></li>
   <li><a href="#active">Active items</a></li>
-  <li><a href="#unprocessed">Invalid items</a></li>
+  <li><a href="#invalid">Invalid items</a></li>
 </ul>
 
-<hr/><%# TODO: just fix H2 styling %>
+<%# TODO: just fix H2 styling %>
+<hr/>
 
 <h2 id="inactive">New or Inactive Items</h2>
-<%= render(partial: 'item_table', locals: { items: LendingItem.inactive }) %>
+<%= render(partial: 'item_table', locals: { items: LendingItem.inactive, table_id: 'lending-inactive' }) %>
 
 <p><a href="#main">Return to top</a></p>
 
 <hr/><%# TODO: just fix H2 styling %>
 
 <h2 id="active">Active Items</h2>
-<%= render(partial: 'item_table', locals: { items: LendingItem.active }) %>
+<%= render(partial: 'item_table', locals: { items: LendingItem.active, table_id: 'lending-active' }) %>
 
 <p><a href="#main">Return to top</a></p>
 
 <hr/><%# TODO: just fix H2 styling %>
 
-<h2 id="active">Invalid Items</h2>
-<%= render(partial: 'item_table', locals: { items: LendingItem.invalid }) %>
+<h2 id="invalid">Invalid Items</h2>
+<%= render(partial: 'item_table', locals: { items: LendingItem.invalid, table_id: 'lending-invalid' }) %>
 
 <p><a href="#main">Return to top</a></p>
