@@ -75,7 +75,7 @@ class LendingController < ApplicationController
 
   def check_out
     @lending_item_loan = @lending_item.check_out_to(patron_identifier)
-    render_with_errors(:show, @lending_item_loan.errors) && return unless @lending_item_loan.persisted?
+    render_with_errors(:view, @lending_item_loan.errors) && return unless @lending_item_loan.persisted?
 
     flash[:success] = 'Checkout successful.'
     redirect_to lending_view_url(directory: directory)

@@ -112,6 +112,12 @@ class LendingItem < ActiveRecord::Base
     )
   end
 
+  def check_out_to!(patron_identifier)
+    check_out_to(patron_identifier).tap do |loan|
+      raise ArgumentError, loan.errors.full_messages.join(' ').to_s unless loan.persisted?
+    end
+  end
+
   def to_json_manifest(manifest_uri)
     iiif_manifest.to_json(manifest_uri, image_server_base_uri)
   end
