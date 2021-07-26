@@ -60,14 +60,14 @@ class LendingController < ApplicationController
 
   def create
     @lending_item = LendingItem.create(lending_item_params)
-    render_with_errors(:new, @lending_item.errors, locals: { item: @lending_item }) && return unless @lending_item.persisted?
+    return render_422(:new, @lending_item.errors, locals: { item: @lending_item }) unless @lending_item.persisted?
 
     flash[:success] = 'Item created.'
     redirect_to lending_show_url(directory: @lending_item.directory)
   end
 
   def update
-    render_with_errors(:edit, errors) && return unless @lending_item.update(lending_item_params)
+    return render_422(:edit, errors) unless @lending_item.update(lending_item_params)
 
     flash[:success] = 'Item updated.'
     redirect_to lending_show_url(directory: directory)
@@ -75,7 +75,7 @@ class LendingController < ApplicationController
 
   def check_out
     @lending_item_loan = @lending_item.check_out_to(patron_identifier)
-    render_with_errors(:view, @lending_item_loan.errors) && return unless @lending_item_loan.persisted?
+    return render_422(:view, @lending_item_loan.errors) unless @lending_item_loan.persisted?
 
     flash[:success] = 'Checkout successful.'
     redirect_to lending_view_url(directory: directory)
@@ -98,7 +98,7 @@ class LendingController < ApplicationController
     elsif @lending_item.update(active: true)
       flash[:success] = 'Item now active.'
     else
-      flash_errors(@lending_item.errors)
+      flash[:danger] = @lending_item.errors.full_messages
     end
 
     redirect_to(:lending)
@@ -140,6 +140,11 @@ class LendingController < ApplicationController
   # Private methods
 
   private
+
+  def render_422(view, errors, locals: {})
+    flash.now[:danger] = errors.full_messages
+    render(view, status: :unprocessable_entity, locals: locals)
+  end
 
   # ------------------------------
   # Private accessors

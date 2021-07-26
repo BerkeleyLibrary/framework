@@ -102,23 +102,4 @@ class ApplicationController < ActionController::Base
   def sign_out
     reset_session
   end
-
-  # Add the specified validation errors to the flash messages,
-  # and render the specified view with the specified status.
-  #
-  # @param view [Symbol] the view to render
-  # @param errors [ActiveModel::Errors] the errors
-  # @param status [Symbol] the name of the HTTP status to render
-  def render_with_errors(view, errors, status: :unprocessable_entity, locals: {})
-    flash_errors(errors)
-    render(view, status: status, locals: locals)
-  end
-
-  # Add the specified validation errors to the flash messages.
-  #
-  # @param errors [ActiveModel::Errors] the errors
-  def flash_errors(errors)
-    flash[:danger] ||= []
-    errors.full_messages.each { |msg| flash[:danger] << msg }
-  end
 end
