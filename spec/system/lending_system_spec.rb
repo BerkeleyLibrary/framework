@@ -254,6 +254,26 @@ describe LendingController, type: :system do
             expect(item).to be_active
           end
         end
+
+        describe 'Delete' do
+          it 'deletes an inactive item' do
+            item = incomplete.first
+            item_section = find_item_section(item)
+
+            delete_path = lending_destroy_path(directory: item.directory)
+            delete_form = item_section.find(:xpath, ".//form[@action='#{delete_path}']")
+            delete_button = delete_form.find_button('Delete')
+
+            delete_button.click
+
+            alert = page.find('.alert-success')
+            expect(alert).to have_text('Item deleted.')
+
+            expect(page).not_to have_content(item.title)
+
+            expect(LendingItem.exists?(item.id)).to eq(false)
+          end
+        end
       end
 
       describe :show do
