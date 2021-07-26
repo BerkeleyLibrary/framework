@@ -258,7 +258,6 @@ section {
       ul.actions {
         display: flex;
         padding: 0;
-        float: right;
 
         li.action {
           display: block;
@@ -371,6 +370,14 @@ section {
               background: none;
             }
           }
+        }
+      }
+    }
+
+    &.lending-index {
+      section.lending-item {
+        ul.actions {
+          float: right;
         }
       }
     }
