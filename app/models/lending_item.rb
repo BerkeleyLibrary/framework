@@ -141,6 +141,12 @@ class LendingItem < ActiveRecord::Base
     !active?
   end
 
+  def status
+    return 'Incomplete' if incomplete?
+
+    active? ? 'Active' : 'Inactive'
+  end
+
   def reason_unavailable
     return if available?
     return LendingItem::MSG_INACTIVE unless active?

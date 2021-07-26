@@ -23,9 +23,7 @@ class LendingItemPresenterBase
   end
 
   def fields
-    @fields ||= base_fields.tap do |ff|
-      ff.merge!(additional_fields) if respond_to?(:additional_fields)
-    end
+    @fields ||= build_fields
   end
 
   def directory
@@ -44,12 +42,12 @@ class LendingItemPresenterBase
     b ? 'Yes' : 'No'
   end
 
-  private
+  protected
 
-  def base_fields
-    return { 'Title': item.title, 'Author': item.author } unless (md = marc_metadata)
-
-    md.to_display_fields
+  def build_fields
+    base_fields.tap do |ff|
+      ff.merge!(additional_fields) if respond_to?(:additional_fields)
+    end
   end
 
   def marc_metadata
@@ -62,5 +60,13 @@ class LendingItemPresenterBase
         logger.warn(e)
         nil
       end
+  end
+
+  private
+
+  def base_fields
+    return { 'Title' => item.title, 'Author' => item.author } unless (md = marc_metadata)
+
+    md.to_display_fields
   end
 end

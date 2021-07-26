@@ -23,7 +23,6 @@
 }
 
 
-
 // ////////////////////////////////////////////////////////////
 // mini-reset
 
@@ -33,6 +32,7 @@ table {
 
   ul {
     padding-left: 0;
+
     li {
       list-style-type: none;
     }
@@ -124,11 +124,22 @@ nav {
   font-size: $font-size-large;
 }
 
-a.btn {
+.btn {
   color: white;
   box-shadow: none;
+  font-weight: bold;
 }
 
+.action {
+  input, a, a, a:link, a:visited {
+    box-shadow: none;
+
+    &.btn {
+      color: white;
+      font-weight: bold;
+    }
+  }
+}
 
 section {
   &.record {
@@ -174,6 +185,7 @@ section {
           th {
             border-bottom: none;
           }
+
           td {
             border-bottom: none;
           }
@@ -190,11 +202,6 @@ section {
           padding-right: 5px;
           text-align: left;
           white-space: normal;
-
-          a, input {
-            color: white;
-            font-weight: $font-weight-bold;
-          }
         }
       }
 
@@ -214,6 +221,90 @@ section {
         }
       }
     }
+  }
+
+  &.lending-index {
+    margin-top: $margin-xlarge;
+    padding-top: $margin-xlarge;
+    padding-bottom: $margin-xlarge;
+
+    h2 {
+      font-size: $font-size-large;
+      font-weight: $font-weight-book;
+      background: $color-reversed-background;
+      width: 100%;
+      color: white;
+      padding: $margin-small $margin;
+    }
+
+    section.lending-item {
+      margin-left: $margin;
+
+      &:not(:first-of-type) {
+        margin-top: $margin-xlarge;
+      }
+
+      &:not(:last-of-type) {
+        padding-bottom: $margin-xlarge;
+        border-bottom: 1px solid $color-row-divider;
+      }
+
+      h3 {
+        font-size: $font-size-large;
+        font-weight: $font-weight-bold;
+        width: 100%;
+      }
+
+      ul.actions {
+        display: flex;
+        padding: 0;
+        float: right;
+
+        li.action {
+          display: block;
+          margin-right: $margin;
+        }
+      }
+
+      h4 {
+        font-size: 1rem;
+        font-weight: $font-weight-bold;
+        margin-top: $margin-xlarge;
+        margin-bottom: $margin-xsmall;
+      }
+
+      p {
+        margin-bottom: $margin-xsmall;
+
+        &.problems {
+          font-size: $font-size-small;
+          font-weight: bold;
+          color: $color-south-hall;
+
+          &:before {
+            content: '⚠️';
+            margin-right: $margin-xsmall;
+          }
+        }
+      }
+
+      .author-name {
+        font-weight: $font-weight-bold;
+      }
+
+      table {
+        &.lending-metadata {
+          font-size: $font-size-xsmall;
+          margin-top: $margin;
+
+          th, td {
+            padding: 0 $margin-large 0 0;
+          }
+        }
+      }
+
+    }
+
   }
 }
 
