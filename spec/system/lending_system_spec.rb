@@ -167,12 +167,7 @@ describe LendingController, type: :system do
               expect(item_section).not_to have_link('Make Active'), "Item #{item.directory} (#{item.status}) should not have 'Make Active' link"
             else
               activate_link = item_section.find_link('Make Active')
-              if item.copies > 0
-                expect(URI.parse(activate_link['href']).path).to eq(activate_path)
-              else
-                expect(activate_link['href']).to be_nil
-                expect(activate_link['class']).to include('disabled')
-              end
+              expect(URI.parse(activate_link['href']).path).to eq(activate_path)
             end
           end
         end
