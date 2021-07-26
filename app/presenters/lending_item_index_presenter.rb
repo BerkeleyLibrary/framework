@@ -1,5 +1,5 @@
 class LendingItemIndexPresenter < LendingItemShowPresenter
-  LONG_FIELDS = ['IIIF directory', 'Direct link']
+  LONG_FIELDS = ['IIIF directory', 'Direct link'].freeze
 
   def initialize(view_context, item)
     super
