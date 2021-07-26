@@ -64,7 +64,7 @@ class LendingItemIndexPresenter < LendingItemShowPresenter
   end
 
   def delete_action
-    link_to('Delete', lending_destroy_path(directory: directory), method: :delete, class: 'btn btn-danger')
+    button_to('Delete', lending_destroy_path(directory: directory), method: :delete, class: 'btn btn-danger')
   end
 
   def author_label
