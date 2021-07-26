@@ -42,9 +42,7 @@ class LendingItemIndexPresenter < LendingItemShowPresenter
   def primary_action
     return delete_action if item.incomplete?
     return deactivate_action if item.active?
-    return activate_action if item.copies > 0
-
-    activate_action_disabled
+    return activate_action
   end
 
   def show_action
@@ -53,10 +51,6 @@ class LendingItemIndexPresenter < LendingItemShowPresenter
 
   def activate_action
     link_to('Make Active', lending_activate_path(directory: directory), class: 'btn btn-primary')
-  end
-
-  def activate_action_disabled
-    link_to('Make Active', nil, class: 'btn btn-primary disabled')
   end
 
   def deactivate_action

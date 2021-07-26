@@ -95,10 +95,13 @@ class LendingController < ApplicationController
   def activate
     if @lending_item.active?
       flash[:info] = 'Item already active.'
-    elsif @lending_item.update(active: true)
-      flash[:success] = 'Item now active.'
     else
-      flash[:danger] = @lending_item.errors.full_messages
+      @lending_item.copies = 1 if @lending_item.copies < 1
+      if @lending_item.update(active: true)
+        flash[:success] = 'Item now active.'
+      else
+        flash[:danger] = @lending_item.errors.full_messages
+      end
     end
 
     redirect_to(:lending)

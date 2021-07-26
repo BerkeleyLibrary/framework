@@ -262,17 +262,18 @@ describe LendingController, type: :request do
           expect(item.active?).to eq(true)
         end
 
-        it 'displays an error for an item with zero copies' do
+        it 'defaults to 1 copy for an item with zero copies' do
           item.update!(active: false, copies: 0)
 
           get lending_activate_path(directory: item.directory) # TODO: use PATCH
           expect(response).to redirect_to lending_path
 
           follow_redirect!
-          expect(response.body).to include(LendingItem::MSG_ZERO_COPIES)
+          expect(response.body).to include('Item now active.')
 
           item.reload
-          expect(item.active?).to eq(false)
+          expect(item.active?).to eq(true)
+          expect(item.copies).to eq(1)
         end
       end
 
