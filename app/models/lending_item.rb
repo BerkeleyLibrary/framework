@@ -120,7 +120,7 @@ class LendingItem < ActiveRecord::Base
   # Synthetic accessors
 
   def complete?
-    has_iiif_dir? && has_page_images? && has_manifest_template? && has_marc_record?
+    has_iiif_dir? && has_page_images? && has_marc_record? && has_manifest_template?
   end
 
   def incomplete?
@@ -149,8 +149,8 @@ class LendingItem < ActiveRecord::Base
     return if complete?
     return MSG_NO_IIIF_DIR unless has_iiif_dir?
     return MSG_NO_PAGE_IMAGES unless has_page_images?
-    return MSG_NO_MANIFEST_TEMPLATE unless has_manifest_template?
     return MSG_NO_MARC_XML unless has_marc_record?
+    return MSG_NO_MANIFEST_TEMPLATE unless has_manifest_template?
   end
 
   def copies_available
@@ -168,8 +168,7 @@ class LendingItem < ActiveRecord::Base
   end
 
   def iiif_manifest
-    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_NO_IIIF_DIR}" unless has_iiif_dir?
-    raise ActiveRecord::RecordNotFound, "Error loading manifest for #{citation}: #{MSG_NO_PAGE_IMAGES}" unless has_page_images?
+    return unless has_iiif_dir? && has_page_images?
 
     Lending::IIIFManifest.new(title: title, author: author, dir_path: iiif_dir)
   end
@@ -259,7 +258,7 @@ class LendingItem < ActiveRecord::Base
 
   # rubocop:disable Naming/PredicateName
   def has_manifest_template?
-    iiif_manifest.has_template?
+    iiif_manifest&.has_template?
   end
   # rubocop:enable Naming/PredicateName
 

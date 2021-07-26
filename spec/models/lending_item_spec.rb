@@ -108,10 +108,11 @@ describe LendingItem, type: :model do
         end
       end
 
-      it 'raises RecordNotFound if the item has not been processed' do
-        incomplete.each do |item|
-          expect { item.iiif_manifest }.to raise_error(ActiveRecord::RecordNotFound)
-        end
+      it 'returns nil if the item is has no IIIF directory or no page images' do
+        unmanifestable = items.reject { |item| item.has_iiif_dir? && item.has_page_images? }
+        expect(unmanifestable).not_to be_nil
+
+        unmanifestable.each { |item| expect(item.iiif_manifest).to be_nil }
       end
     end
 
