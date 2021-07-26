@@ -12,8 +12,8 @@ default: &default
   patron_url: <%= ENV["PATRON_API_URL"] || "https://dev-oskicatp.berkeley.edu:54620/PATRONAPI/" %>
   alma_api_url: <%= ENV["FRAMEWORK_ALMA_API_URL"] || 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/' %>
   alma_api_key: <%= ENV["FRAMEWORK_ALMA_API_KEY"] %>
-  paypal_payflow_url: <%= ENV["PAYPAL_PAYFLOW_URL"] || 'https://pilot-payflowlink.paypal.com' %>
-  paypal_payflow_login: <%= ENV["PAYPAL_PAYFLOW_LOGIN"] || 'sullivanLib' %>
+  paypal_payflow_url: <%= ENV["PAYPAL_PAYFLOW_URL"] || 'https://payflowlink.paypal.com' %>
+  paypal_payflow_login: <%= ENV["PAYPAL_PAYFLOW_LOGIN"] || 'ucblibrary' %>
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
   tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
 
