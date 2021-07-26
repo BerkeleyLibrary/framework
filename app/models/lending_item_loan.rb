@@ -55,9 +55,7 @@ class LendingItemLoan < ActiveRecord::Base
 
   def patron_can_check_out
     errors.add(:base, LendingItem::MSG_CHECKED_OUT) if duplicate_checkout
-    return if checkout_limit_reached
-
-    errors.add(:base, LendingItem::MSG_CHECKOUT_LIMIT_REACHED)
+    errors.add(:base, LendingItem::MSG_CHECKOUT_LIMIT_REACHED) if checkout_limit_reached
   end
 
   def item_available
@@ -77,7 +75,7 @@ class LendingItemLoan < ActiveRecord::Base
   private
 
   def checkout_limit_reached
-    other_checkouts.count < LendingItem::MAX_CHECKOUTS_PER_PATRON
+    other_checkouts.count >= LendingItem::MAX_CHECKOUTS_PER_PATRON
   end
 
   def other_checkouts

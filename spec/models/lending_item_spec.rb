@@ -91,7 +91,7 @@ describe LendingItem, type: :model do
 
       it 'returns false if all copies are checked out' do
         active.each do |item|
-          item.copies.times { |i| item.check_out_to("patron-#{i}") }
+          item.copies.times { |i| item.check_out_to!("patron-#{i}") }
           expect(item.available?).to eq(false)
         end
       end

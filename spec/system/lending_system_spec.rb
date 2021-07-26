@@ -257,4 +257,53 @@ describe LendingController, type: :system do
       xdescribe :show
     end
   end
+
+  context 'as patron' do
+    attr_reader :user, :item
+
+    before(:each) do
+      patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD)
+      @user = login_as_patron(patron_id)
+      @items = valid_item_attributes.map do |item_attributes|
+        LendingItem.create!(**item_attributes)
+      end
+      @item = items.find(&:available?)
+    end
+
+    describe :view do
+      it 'allows a checkout' do
+        expect(item).to be_available # just to be sure
+        expect(LendingItemLoan.where(patron_identifier: user.lending_id)).not_to exist # just to be sure
+
+        visit lending_view_path(directory: item.directory)
+        expect(page).not_to have_selector('div#iiif_viewer')
+
+        checkout_path = lending_check_out_path(directory: item.directory)
+        checkout_link = page.find_link('Check out')
+        expect(URI.parse(checkout_link['href']).path).to eq(checkout_path)
+        checkout_link.click
+
+        alert = page.find('.alert-success')
+        expect(alert).to have_text('Checkout successful.')
+
+        expect(page).to have_selector('div#iiif_viewer')
+      end
+
+      it 'allows a return' do
+        item.check_out_to(user.lending_id)
+
+        visit lending_view_path(directory: item.directory)
+
+        return_path = lending_return_path(directory: item.directory)
+        return_link = page.find_link('Return now')
+        expect(URI.parse(return_link['href']).path).to eq(return_path)
+        return_link.click
+
+        alert = page.find('.alert-success')
+        expect(alert).to have_text('Item returned.')
+
+        expect(page).not_to have_selector('div#iiif_viewer')
+      end
+    end
+  end
 end
