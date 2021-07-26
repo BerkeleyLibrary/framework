@@ -14,7 +14,7 @@ describe LendingController, type: :system do
         title: 'The Plan of St. Gall : a study of the architecture & economy of life in a paradigmatic Carolingian monastery',
         author: 'Horn, Walter',
         directory: 'b100523250_C044235662',
-        copies: 1,
+        copies: 3,
         active: true
       },
       {
@@ -254,7 +254,23 @@ describe LendingController, type: :system do
         end
       end
 
-      xdescribe :show
+      describe :show do
+        it 'displays all due dates' do
+          item = active.find { |it| it.copies > 1 }
+          loans = item.copies.times.with_object([]) do |i, ll|
+            loan = item.check_out_to!("patron-#{i}")
+            loan.due_date = loan.due_date + i.days # just to differentiate
+            loan.save!
+            ll << loan
+          end
+
+          visit lending_show_path(directory: item.directory)
+
+          loans.each do |loan|
+            expect(page).to have_content(loan.due_date.to_s(:short))
+          end
+        end
+      end
     end
   end
 
