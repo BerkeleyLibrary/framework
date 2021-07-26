@@ -42,6 +42,10 @@ module Lending
       @marc_record ||= MARC::XMLReader.read(marc_path.to_s, freeze: true).first
     end
 
+    def author_label
+      author_personal.nil? ? 'Corporate Author' : 'Author'
+    end
+
     # ------------------------------------------------------------
     # Public utility methods
 
@@ -50,7 +54,7 @@ module Lending
     # @return [Hash{String => String, Date, Numeric}]
     def to_display_fields
       fields = {
-        'Title': title,
+        'Title' => title,
         author_label => author
       }
       fields.tap do |ff|
@@ -66,10 +70,6 @@ module Lending
 
     # ------------------------------
     # Private accessors
-
-    def author_label
-      author_personal.nil? ? 'Corporate Author' : 'Author'
-    end
 
     def author_personal
       return @author_personal if instance_variable_defined?(:@author_personal)

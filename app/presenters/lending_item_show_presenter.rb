@@ -8,7 +8,7 @@ class LendingItemShowPresenter < LendingItemPresenterBase
   end
 
   def action
-    link_to('Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary')
+    edit_action
   end
 
   def additional_fields
@@ -19,21 +19,24 @@ class LendingItemShowPresenter < LendingItemPresenterBase
     end
   end
 
+  protected
+
+  def edit_action
+    link_to('Edit', lending_edit_path(directory: directory), class: 'btn btn-secondary')
+  end
+
   private
 
   def base_additional_fields
     {
       'Record ID' => item.record_id,
       'Barcode' => item.barcode,
-      'Copies' => item.copies,
-      'Copies available' => item.copies_available,
-      'Active' => to_yes_or_no(item.active?)
+      'Status' => item.status,
+      'Copies' => "#{item.copies_available} of #{item.copies} available"
     }
   end
 
   def add_processing_metadata(ff)
-    ff['Complete?'] = to_yes_or_no(item.complete?)
-
     if item.complete?
       ff['IIIF directory'] = item.iiif_dir
     else
@@ -47,7 +50,8 @@ class LendingItemShowPresenter < LendingItemPresenterBase
   end
 
   def add_due_dates(ff)
-    due_dates = item.due_dates.to_a
-    ff['Due dates for current checkouts'] = due_dates.empty? ? 'None' : due_dates
+    return if (due_dates = item.due_dates.to_a).empty?
+
+    ff['Due'] = due_dates
   end
 end

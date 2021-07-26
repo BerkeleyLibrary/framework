@@ -105,6 +105,10 @@ describe LendingController, type: :system do
           visit lending_path
         end
 
+        def find_item_section(item)
+          find(:xpath, "//section[@id='#{LendingHelper.format_html_id(item.directory)}']")
+        end
+
         it 'lists the items' do
           expect(page.title).to include('UC BEARS')
           expect_no_alerts
@@ -117,54 +121,52 @@ describe LendingController, type: :system do
         end
 
         it 'categorizes the items by state' do
-          states.each do |state|
-            expect(page).to have_xpath("//h2[@id='#{state}']"), "No <h2> found for state #{state}"
-          end
-
-          tables_by_state = states.map do |state|
-            [state, find(:xpath, "//table[@id='lending-#{state}']")]
+          sections_by_state = states.map do |state|
+            [state, find(:xpath, "//section[@id='lending-#{state}']")]
           end.to_h
 
           states.each do |state|
             items_for_state = send(state)
             expect(items_for_state).not_to be_empty, "No items for state #{state}" # just to be sure
 
-            table = tables_by_state[state]
-            item_rows = table.all(:xpath, ".//tr[@class='item-row']")
-            row_count = item_rows.size
+            section = sections_by_state[state]
+            item_sections = section.all(:xpath, ".//section[@class='lending-item']")
+            row_count = item_sections.size
             item_count = items_for_state.size
-            expect(row_count).to eq(item_count), "Expected #{item_count} rows for #{state}, got #{row_count}: #{item_rows.map(&:text).join(', ')}"
+            expect(row_count).to eq(item_count), "Expected #{item_count} rows for #{state}, got #{row_count}: #{item_sections.map(&:text).join(', ')}"
 
             items_for_state.each do |item|
-              item_row = table.find(:xpath, ".//tr[td[contains(text(), '#{item.title}')]]")
+              item_section = section.find(:xpath, ".//section[@class='lending-item' and h3[contains(text(), '#{item.title}')]]")
               show_path = lending_show_path(directory: item.directory)
-              expect(item_row).to have_link('Show', href: /#{Regexp.escape(show_path)}/)
+              expect(item_section).to have_link('Show', href: /#{Regexp.escape(show_path)}/)
             end
           end
         end
 
         it 'has show and edit buttons for all items' do
           items.each do |item|
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
             show_path = lending_show_path(directory: item.directory)
-            show_link = item_row.find_link('Show')
+            show_link = item_section.find_link('Show')
             expect(URI.parse(show_link['href']).path).to eq(show_path)
 
             edit_path = lending_edit_path(directory: item.directory)
-            edit_link = item_row.find_link('Edit')
+            edit_link = item_section.find_link('Edit')
             expect(URI.parse(edit_link['href']).path).to eq(edit_path)
           end
         end
 
         it 'has "make active" only for processed, inactive items with copies' do
           items.each do |item|
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
+            expect(item_section).to have_content(item.title)
+
             activate_path = lending_activate_path(directory: item.directory)
 
             if item.active? || item.incomplete?
-              expect(item_row).not_to have_link('Make Active')
+              expect(item_section).not_to have_link('Make Active'), "Item #{item.directory} (#{item.status}) should not have 'Make Active' link"
             else
-              activate_link = item_row.find_link('Make Active')
+              activate_link = item_section.find_link('Make Active')
               if item.copies > 0
                 expect(URI.parse(activate_link['href']).path).to eq(activate_path)
               else
@@ -177,12 +179,12 @@ describe LendingController, type: :system do
 
         it 'has "make inactive" only for processed, active items' do
           items.each do |item|
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
             deactivate_path = lending_deactivate_path(directory: item.directory)
             if item.incomplete? || !item.active?
-              expect(item_row).not_to have_link('Make Inactive')
+              expect(item_section).not_to have_link('Make Inactive'), "Item #{item.directory} should not have 'Make Inactive' link"
             else
-              link = item_row.find_link('Make Inactive')
+              link = item_section.find_link('Make Inactive')
               expect(URI.parse(link['href']).path).to eq(deactivate_path)
             end
           end
@@ -190,14 +192,14 @@ describe LendingController, type: :system do
 
         it 'has "delete" only for incomplete items' do
           items.each do |item|
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
             delete_path = lending_destroy_path(directory: item.directory)
             if item.incomplete?
-              delete_form = item_row.find(:xpath, ".//form[@action='#{delete_path}']")
+              delete_form = item_section.find(:xpath, ".//form[@action='#{delete_path}']")
               expect(delete_form).to have_button('Delete')
             else
-              expect(item_row).not_to have_xpath(".//form[@action='#{delete_path}']")
-              expect(item_row).not_to have_button('Delete')
+              expect(item_section).not_to have_xpath(".//form[@action='#{delete_path}']")
+              expect(item_section).not_to have_button('Delete'), "Item #{item.directory} should not have 'Delete' button"
             end
           end
         end
@@ -205,10 +207,10 @@ describe LendingController, type: :system do
         describe 'Show' do
           it 'shows the item preview' do
             item = items.first
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
 
             show_path = lending_show_path(directory: item.directory)
-            show_link = item_row.find_link('Show')
+            show_link = item_section.find_link('Show')
             expect(URI.parse(show_link['href']).path).to eq(show_path)
             show_link.click
 
@@ -220,10 +222,10 @@ describe LendingController, type: :system do
         describe 'Edit' do
           it 'shows the edit screen' do
             item = items.first
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
 
             edit_path = lending_edit_path(directory: item.directory)
-            edit_link = item_row.find_link('Edit')
+            edit_link = item_section.find_link('Edit')
             expect(URI.parse(edit_link['href']).path).to eq(edit_path)
             edit_link.click
 
@@ -235,15 +237,15 @@ describe LendingController, type: :system do
         describe 'Make Active' do
           it 'activates an item' do
             item = inactive.find { |it| it.copies > 0 }
-            item_row = find(:xpath, "//tr[td[contains(text(), '#{item.title}')]]")
+            item_section = find_item_section(item)
 
             activate_path = lending_activate_path(directory: item.directory)
-            activate_link = item_row.find_link('Make Active')
+            activate_link = item_section.find_link('Make Active')
             expect(URI.parse(activate_link['href']).path).to eq(activate_path)
             activate_link.click
 
-            active_table = find(:xpath, "//table[@id='lending-active']")
-            expect(active_table).to have_xpath(".//tr[td[contains(text(), '#{item.title}')]]")
+            active_section = find(:xpath, "//section[@id='lending-active']")
+            expect(active_section).to have_xpath(".//section[@class='lending-item' and h3[contains(text(), '#{item.title}')]]")
 
             alert = page.find('.alert-success')
             expect(alert).to have_text('Item now active.')
