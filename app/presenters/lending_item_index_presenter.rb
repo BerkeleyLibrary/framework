@@ -42,7 +42,8 @@ class LendingItemIndexPresenter < LendingItemShowPresenter
   def primary_action
     return delete_action if item.incomplete?
     return deactivate_action if item.active?
-    return activate_action
+
+    activate_action
   end
 
   def show_action
