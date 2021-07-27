@@ -97,13 +97,9 @@ class LendingController < ApplicationController
       flash[:info] = 'Item already active.'
     else
       @lending_item.copies = 1 if @lending_item.copies < 1
-      if @lending_item.update(active: true)
-        flash[:success] = 'Item now active.'
-      else
-        flash[:danger] = @lending_item.errors.full_messages
-      end
+      @lending_item.update!(active: true)
+      flash[:success] = 'Item now active.'
     end
-
     redirect_to(:lending)
   end
 
