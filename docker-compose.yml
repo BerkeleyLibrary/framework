@@ -30,12 +30,14 @@ services:
       context: .
       target: development
     environment:
-      LIT_LENDING_ROOT: spec/data/lending
+      LIT_LENDING_ROOT: /opt/app/spec/data/lending
       LIT_LENDING_COLLECTOR_INTERVAL: 5
       LIT_LENDING_COLLECTOR_STOP_FILE: collector-dev.stop
     ports: []
     command: bin/lending/collect.rb
     restart: "no"
+    volumes:
+      - ./:/opt/app
 
   db:
     environment:

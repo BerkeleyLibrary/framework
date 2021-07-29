@@ -12,21 +12,21 @@ module Lending
 
     STAGES = %i[ready processing final].freeze
     ENV_INTERVAL = 'LIT_LENDING_COLLECTOR_INTERVAL'.freeze
-    ENV_STOP_FILE = 'LIT_LENDING_COLLECTOR_STOP_FILE'.freeze
+    ENV_SLEEP_FILE = 'LIT_LENDING_COLLECTOR_sleep_file'.freeze
 
     # ------------------------------------------------------------
     # Fields
 
-    attr_reader :lending_root, :stage_roots, :interval, :stop_file_path
+    attr_reader :lending_root, :stage_roots, :interval, :sleep_file_path
 
     # ------------------------------------------------------------
     # Initializer
 
-    def initialize(lending_root, interval, stop_file)
+    def initialize(lending_root, interval, sleep_file)
       @interval = ensure_valid_interval(interval)
       @lending_root = PathUtils.ensure_dirpath(lending_root)
       @stage_roots = STAGES.each_with_object({}) { |stage, roots| roots[stage] = ensure_root(stage) }
-      @stop_file_path = @lending_root.join(stop_file)
+      @sleep_file_path = @lending_root.join(sleep_file)
     end
 
     # ------------------------------------------------------------
@@ -34,7 +34,7 @@ module Lending
 
     class << self
       def from_environment
-        args = [Lending::ENV_ROOT, ENV_INTERVAL, ENV_STOP_FILE].map(&method(:ensure_env))
+        args = [Lending::ENV_ROOT, ENV_INTERVAL, ENV_SLEEP_FILE].map(&method(:ensure_env))
         Collector.new(*args)
       end
 
@@ -53,11 +53,11 @@ module Lending
     end
 
     def stopped?
-      @stopped || stop_file_path.exist?
+      @stopped || false
     end
 
     def collect!
-      logger.info("#{self}: starting for lending_root: #{lending_root}, interval: #{interval}s, stop_file: #{stop_file_path}")
+      logger.info("#{self}: starting for lending_root: #{lending_root}, interval: #{interval}s, sleep_file: #{sleep_file_path}")
       loop do
         exit_if_stopped
         process_next_or_sleep
@@ -97,8 +97,7 @@ module Lending
     def exit_if_stopped
       return unless stopped?
 
-      stop_reason = stop_file_path.exist? ? "stop file #{stop_file_path} found; exiting" : 'stopped'
-      logger.info("#{self}: #{stop_reason}")
+      logger.info("#{self}: stopped")
       exit(true)
     end
 
@@ -106,13 +105,11 @@ module Lending
     # Processing logic
 
     def process_next_or_sleep
-      if (ready_dir = next_ready_dir)
-        processing_dir = ensure_stage_dir(ready_dir, :processing)
-        return process(ready_dir, processing_dir)
-      end
+      return sleep_with_msg("sleep file #{sleep_file_path} found") if sleep_file_path.exist?
+      return sleep_with_msg('nothing ready to process') unless (ready_dir = next_ready_dir)
 
-      logger.info("#{self}: nothing ready to process; sleeping for #{interval} seconds")
-      sleep(interval)
+      processing_dir = ensure_stage_dir(ready_dir, :processing)
+      process(ready_dir, processing_dir)
     end
 
     def process(ready_dir, processing_dir)
@@ -128,6 +125,11 @@ module Lending
       final_dir = stage_dir(processing_dir, :final)
       logger.info("#{self}: moving #{processing_dir} to #{final_dir}")
       processing_dir.rename(final_dir)
+    end
+
+    def sleep_with_msg(msg)
+      logger.info("#{self}: #{msg}; sleeping for #{interval} seconds")
+      sleep(interval)
     end
 
     # ------------------------------

@@ -30,8 +30,7 @@ module Lending
       let(:stop_file) { "#{stem}.stop" }
       attr_reader :collector
 
-      # rubocop:disable Metrics/AbcSize
-      def expect_to_process(item_dirname)
+      def ensure_dirs(item_dirname)
         ready_dir = lending_root.join('ready').join(item_dirname)
         ready_dir.mkdir
 
@@ -40,6 +39,12 @@ module Lending
 
         final_dir = lending_root.join('final').join(item_dirname)
         expect(final_dir.exist?).to eq(false)
+
+        [ready_dir, processing_dir, final_dir]
+      end
+
+      def expect_to_process(item_dirname)
+        ready_dir, processing_dir, final_dir = ensure_dirs(item_dirname)
 
         processor = instance_double(Processor)
         expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
@@ -53,7 +58,6 @@ module Lending
 
         [processing_dir, final_dir]
       end
-      # rubocop:enable Metrics/AbcSize
 
       def async_collect!
         Concurrent::CountDownLatch.new(1).tap do |latch|
@@ -85,15 +89,24 @@ module Lending
         end
       end
 
-      it 'stops if a stop file is present' do
-        stop_file_path = collector.stop_file_path
+      it 'sleeps if a sleeps file is present' do
+        stop_file_path = collector.sleep_file_path
         FileUtils.touch(stop_file_path.to_s)
 
-        Timeout.timeout(5) do
-          expect { collector.collect! }.to raise_error(SystemExit) do |err|
-            expect(err.success?).to eq(true)
-          end
-        end
+        %w[b12345678_c12345678 b86753090_c86753090].each { |d| ensure_dirs(d) }
+
+        expect(Processor).not_to receive(:new)
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/sleep file .* found; sleeping/).at_least(:once).ordered
+        latch = async_collect!
+
+        sleep(2 * sleep_interval)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
+        collector.stop!
+
+        latch.wait(5)
+        expect(collector.stopped?).to eq(true)
       end
 
       it 'processes files' do
@@ -188,7 +201,7 @@ module Lending
     end
 
     describe :from_environment do
-      let(:env_vars) { [Lending::ENV_ROOT, Collector::ENV_INTERVAL, Collector::ENV_STOP_FILE] }
+      let(:env_vars) { [Lending::ENV_ROOT, Collector::ENV_INTERVAL, Collector::ENV_SLEEP_FILE] }
 
       before(:each) do
         @env_vals = env_vars.each_with_object({}) { |var, vals| vals[var] = ENV[var] }
@@ -206,12 +219,12 @@ module Lending
 
           ENV[Lending::ENV_ROOT] = lending_root
           ENV[Collector::ENV_INTERVAL] = '60'
-          ENV[Collector::ENV_STOP_FILE] = 'stop.stop'
+          ENV[Collector::ENV_SLEEP_FILE] = 'stop.stop'
 
           collector = Collector.from_environment
           expect(collector.lending_root.to_s).to eq(lending_root)
           expect(collector.interval).to eq(60.0)
-          expect(collector.stop_file_path.to_s).to eq(File.join(lending_root, 'stop.stop'))
+          expect(collector.sleep_file_path.to_s).to eq(File.join(lending_root, 'stop.stop'))
         end
       end
     end
