@@ -1,6 +1,6 @@
 <% if @reference_card_form.denial_reason == 'Item listed at another library' %>
   <p>Denied - Item listed at other library</p>
-  <p>Your request for a Reference Card has been denied. The item that you have listed <%= @reference_card_form.local_id %> is not in the Main (Gardner) Stacks. Please recheck <%= link_to 'OskiCat', 'http://oskicat.berkeley.edu/' %> to see where it is located.</p>
+  <p>Your request for a Reference Card has been denied. The item that you have listed <%= @reference_card_form.local_id %> is not in the Main (Gardner) Stacks. Please recheck <%= link_to 'UC Library Search', 'https://search.library.berkeley.edu' %> to see where it is located.</p>
 <% elsif @reference_card_form.denial_reason == '3-month maximum exceeded' %>
   <p>Denied - 3-month maximum exceeded</p>
   <p>Your request for a Reference Card has been denied. The maximum allowed Reference Card term is 3 months in one year. You have exceeded the term limit.</p>

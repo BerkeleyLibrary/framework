@@ -1,6 +1,6 @@
 <% if @stackpass_form.denial_reason == 'Item listed at another library' %>
   Denied - Item listed at other library
-  Your request for a Stack Pass has been denied. The item that you have listed <%= @stackpass_form.local_id %> is not in the Main (Gardner) Stacks. Please recheck <%= link_to 'OskiCat', 'http://oskicat.berkeley.edu/' %> to see where it is located.
+  Your request for a Stack Pass has been denied. The item that you have listed <%= @stackpass_form.local_id %> is not in the Main (Gardner) Stacks. Please recheck <%= link_to 'UC Library Search', 'https://search.library.berkeley.edu' %> to see where it is located.
 <% elsif @stackpass_form.denial_reason == 'Too many passes requested' %>
   Denied - Too many passes requested
   Our records show that you have utilized more than our limit of ad hoc day passes to the Main (Gardner) Stacks. Please come in person to speak with a reference librarian regarding your project to see if a more long-term option is available to you. Please also see the <%= link_to 'Information for Alumni', 'https://www.lib.berkeley.edu/information/alumni'%> and <%= link_to 'Information for Visitors', 'https://www.lib.berkeley.edu/information/visitors' %> pages on the <%= link_to 'UC Berkeley Library website', 'https://www.lib.berkeley.edu/' %>.
