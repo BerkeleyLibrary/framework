@@ -25,6 +25,9 @@
     <div class="col">
       Administrators
     </div>
+    <div class="col">
+      User ID
+    </div>
     <div class="col text-center">
       Action
     </div>
@@ -33,11 +36,15 @@
 <div class="container">
   <% @users.each do |u| %>
     <div class="row pt-3 pb-3 border-top align-middle">
-      <!-- USER ID -->
+      <!-- FRAMEWORK USER ID -->
       <%= hidden_field( :FrameworkUsers, :id, :value => u.id ) %>
       <!-- USER NAME -->
       <div class="col user-col">
         <%= u.name %>
+      </div>
+      <!-- USER ID (FrameworkUsers.lcasid... not FrameworkUsers.id) -->
+      <div class="col user-col">
+        <%= u.lcasid %>
       </div>
       <!-- USER ACTIONS -->
       <div class="col action-col text-center">

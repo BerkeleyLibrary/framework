@@ -101,9 +101,14 @@ class User
   end
 
   def role?(role)
+    # First check if user is a hardcoded admin
     return true if FrameworkUsers.hardcoded_admin?(uid)
 
-    role.assignments.exists?(framework_users_id: uid)
+    # If user is not, then check if the user was added to the DB as an admin:
+    user = FrameworkUsers.find_by(lcasid: uid)
+    return unless user
+
+    user.assignments.exists?(role: role)
   end
 
   def ucb_faculty?

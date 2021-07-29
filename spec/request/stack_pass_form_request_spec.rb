@@ -146,4 +146,33 @@ describe 'Stack Pass Form', type: :request do
     end
   end
 
+  context 'specs with user created administrators' do
+    before(:each) do |_test|
+      # Create the role, user and assignment:
+      Role.create(id: 1, role: 'stackpass_admin')
+      admin_user = User.new(uid: '9999999', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      FrameworkUsers.create(id: 1, lcasid: '9999999', name: 'Test Dude', role: 'admin')
+      Assignment.create(id: 1, framework_users_id: 1, role_id: 1)
+
+      allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
+      allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
+    end
+
+    after(:each) do
+      Assignment.delete_all
+      Role.delete_all
+      FrameworkUsers.delete_all
+    end
+
+    it 'admin page renders' do
+      get forms_stack_pass_admin_path
+      expect(response.status).to eq 200
+    end
+
+    it 'index page includes admin link for admins' do
+      get stack_requests_path
+      expect(response.body).to include('Admin User')
+    end
+  end
+
 end
