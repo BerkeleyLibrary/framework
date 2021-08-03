@@ -95,7 +95,7 @@ module Lending
         stem = PathUtils.stem(p).downcase
         next true if stem == 'marc' || stem == record_id_lower
 
-        stem =~ MILLENNIUM_RECORD_RE && stem.start_with(record_id_lower)
+        stem =~ MILLENNIUM_RECORD_RE && stem.start_with?(record_id_lower)
       end
     end
 
