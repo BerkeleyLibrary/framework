@@ -100,6 +100,8 @@ module Lending
 
         processing_dir = ensure_stage_dir(ready_dir, :processing)
         process(ready_dir, processing_dir)
+      rescue ProcessingFailed => e
+        logger.error("#{self}: #{e}", e)
       end
     end
 

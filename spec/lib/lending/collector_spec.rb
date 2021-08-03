@@ -29,16 +29,16 @@ module Lending
         ready_dir.mkdir
 
         processing_dir = lending_root.join('processing').join(item_dirname)
-        expect(processing_dir.exist?).to eq(false)
+        expect(processing_dir).not_to exist
 
         final_dir = lending_root.join('final').join(item_dirname)
-        expect(final_dir.exist?).to eq(false)
+        expect(final_dir).not_to exist
 
         processor = instance_double(Processor)
         expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
 
         expect(processor).to receive(:process!) do
-          expect(processing_dir.exist?).to eq(true)
+          expect(processing_dir).to exist
         end
 
         expect(UCBLIT::Logging.logger).to receive(:info).with(/processing.*#{item_dirname}/).ordered
@@ -119,37 +119,46 @@ module Lending
         expect(collector.stopped?).to eq(false)
       end
 
-      it 'exits in the event of an error' do
-        item_dirname = 'b12345678_c12345678'
+      it 'skips single-item failures' do
+        bad_item_dir = 'b12345678_c12345678'
 
-        ready_dir = lending_root.join('ready').join(item_dirname)
-        ready_dir.mkdir
+        bad_ready_dir = lending_root.join('ready').join(bad_item_dir)
+        bad_ready_dir.mkdir
 
-        processing_dir = lending_root.join('processing').join(item_dirname)
-        expect(processing_dir.exist?).to eq(false)
+        bad_processing_dir = lending_root.join('processing').join(bad_item_dir)
+        expect(bad_processing_dir).not_to exist
 
-        processor = instance_double(Processor)
-        expect(Processor).to receive(:new).with(ready_dir, processing_dir).and_return(processor)
+        bad_final_dir = lending_root.join('final').join(bad_item_dir)
+
+        bad_processor = instance_double(Processor)
+        expect(Processor).to receive(:new).with(bad_ready_dir, bad_processing_dir).and_return(bad_processor)
 
         error_message = 'Oops'
-        expect(processor).to(receive(:process!)).and_raise(error_message)
+        expect(bad_processor).to(receive(:process!)).and_raise(error_message)
 
         expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
         expect(UCBLIT::Logging.logger).to receive(:info).with(/processing/).ordered
-        expect(UCBLIT::Logging.logger).to receive(:error).with(/exiting due to error/, an_object_satisfying do |obj|
+        expect(UCBLIT::Logging.logger).to receive(:error).with(/Processing.*failed/, an_object_satisfying do |obj|
           obj.is_a?(Lending::ProcessingFailed)
           obj.message.include?(error_message)
         end).ordered
 
+        good_item_dir = 'b86753090_c86753090'
+        good_processing_dir, good_final_dir = expect_to_process(good_item_dir)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing left to process/).ordered
+
         collector.collect!
 
-        expect(processing_dir.exist?).to eq(true)
+        expect(bad_processing_dir).to exist
+        expect(bad_final_dir).not_to exist
 
-        final_dir = lending_root.join('final').join(item_dirname)
-        expect(final_dir.exist?).to eq(false)
+        expect(good_processing_dir).not_to exist
+        expect(good_final_dir).to exist
 
         expect(collector.stopped?).to eq(false)
       end
+
     end
 
     describe :from_environment do
