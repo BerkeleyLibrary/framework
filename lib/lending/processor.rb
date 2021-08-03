@@ -95,9 +95,7 @@ module Lending
         stem = PathUtils.stem(p).downcase
         next true if stem == 'marc' || stem == record_id_lower
 
-        next false unless (md = MILLENNIUM_RECORD_RE.match(stem))
-
-        md[:bib] == record_id_lower
+        stem =~ MILLENNIUM_RECORD_RE && stem.start_with(record_id_lower)
       end
     end
 
