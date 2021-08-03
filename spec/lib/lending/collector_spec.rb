@@ -118,7 +118,7 @@ module Lending
         expect(collector.stopped?).to eq(false)
       end
 
-      it 'skips single-item failures' do
+      it 'skips single-item processing failures' do
         bad_item_dir = 'b12345678_c12345678'
 
         bad_ready_dir = lending_root.join('ready').join(bad_item_dir)
@@ -158,6 +158,13 @@ module Lending
         expect(collector.stopped?).to eq(false)
       end
 
+      it 'exits cleanly in the event of some random error' do
+        FileUtils.remove_dir(lending_root.to_s)
+
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:error).with(/exiting due to error/, a_kind_of(StandardError))
+        collector.collect!
+      end
     end
 
     describe :from_environment do
