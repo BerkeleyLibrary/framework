@@ -9,6 +9,7 @@ module Lending
     include UCBLIT::Logging
 
     MARC_XML_NAME = 'marc.xml'.freeze
+    MILLENNIUM_RECORD_RE = /^(?<bib>b[0-9]{8})(?<check>[0-9a-z])?$/.freeze
 
     attr_reader :indir, :outdir, :record_id, :barcode, :marc_path
 
@@ -86,11 +87,19 @@ module Lending
     end
 
     def find_marc_path
-      marc_stems = ['marc', record_id.downcase]
+      record_id_lower = record_id.downcase
 
       indir.children.find do |p|
-        PathUtils.xml_ext?(p) && marc_stems.include?(PathUtils.stem(p).downcase)
+        next false unless PathUtils.xml_ext?(p)
+
+        stem = PathUtils.stem(p).downcase
+        next true if stem == 'marc' || stem == record_id_lower
+
+        next false unless (md = MILLENNIUM_RECORD_RE.match(stem))
+
+        md[:bib] == record_id_lower
       end
     end
+
   end
 end
