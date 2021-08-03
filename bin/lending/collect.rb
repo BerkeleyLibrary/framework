@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# Don't buffer stdout or stderr
+$stdout.sync = true
+$stderr.sync = true
+
 # Require gems
 require 'bundler/setup'
 
