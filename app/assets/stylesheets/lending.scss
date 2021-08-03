@@ -302,6 +302,13 @@ section {
         }
       }
 
+      details {
+        summary {
+          display: list-item;
+          font-size: $font-size-xsmall;
+          line-height: $line-height;
+        }
+      }
     }
 
   }

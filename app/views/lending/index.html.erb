@@ -42,28 +42,34 @@
           <% end %>
         </p>
 
-        <table class="lending-metadata">
-          <% (tabular_fields = presenter.tabular_fields).each_with_index do |(l, v), i| %>
-            <% if i.even? %><tr><% end %>
-            <th class="lending-metadata"><%= l %>:</th>
-            <td><%= format_value(v) %></td>
-            <% if i.odd? || (i + 1 > tabular_fields.size) %></tr><% end %>
-          <% end %>
-        </table>
-
-        <table class="lending-metadata">
-          <% presenter.long_fields.each do |l, v| %>
-            <tr>
+        <details>
+          <summary>Details</summary>
+          <table class="lending-metadata">
+            <% (tabular_fields = presenter.tabular_fields).each_with_index do |(l, v), i| %>
+              <% if i.even? %>
+                <tr>
+              <% end %>
               <th class="lending-metadata"><%= l %>:</th>
               <td><%= format_value(v) %></td>
-            </tr>
-          <% end %>
-        </table>
+              <% if i.odd? || (i + 1 > tabular_fields.size) %></tr>
+              <% end %>
+            <% end %>
+          </table>
 
-        <% if (reason_incomplete = item.reason_incomplete) %>
-          <h4>Problems:</h4>
-          <p class="problems"><%= reason_incomplete %></p>
-        <% end %>
+          <table class="lending-metadata">
+            <% presenter.long_fields.each do |l, v| %>
+              <tr>
+                <th class="lending-metadata"><%= l %>:</th>
+                <td><%= format_value(v) %></td>
+              </tr>
+            <% end %>
+          </table>
+
+          <% if (reason_incomplete = item.reason_incomplete) %>
+            <h4>Problems:</h4>
+            <p class="problems"><%= reason_incomplete %></p>
+          <% end %>
+        </details>
 
       </section>
     <% end %>
