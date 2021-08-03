@@ -18,13 +18,6 @@ module Lending
       FileUtils.remove_dir(lending_root.to_s, true)
     end
 
-    describe(:new) do
-      let(:stop_file) { "#{stem}.stop" }
-      it 'requires a numeric interval' do
-        expect { Collector.new(lending_root, 'not a number', stop_file) }.to raise_error(ArgumentError)
-      end
-    end
-
     describe :collect do
       let(:sleep_interval) { 0.01 }
       let(:stop_file) { "#{stem}.stop" }
@@ -68,86 +61,62 @@ module Lending
       end
 
       before(:each) do
-        @collector = Collector.new(lending_root, sleep_interval, stop_file)
+        @collector = Collector.new(lending_root: lending_root, stop_file: stop_file)
 
         allow(UCBLIT::Logging.logger).to receive(:debug) do |msg|
           warn(msg)
         end
       end
 
-      it 'exits immediately if stopped' do
+      it 'processes nothing if stopped' do
         collector.stop!
 
-        Timeout.timeout(1) do
-          expect { collector.collect! }.to raise_error(SystemExit) do |err|
-            expect(err.success?).to eq(true)
-          end
-        end
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
+        expect(Processor).not_to receive(:new)
+        collector.collect!
       end
 
       it 'stops if a stop file is present' do
         stop_file_path = collector.stop_file_path
         FileUtils.touch(stop_file_path.to_s)
 
-        Timeout.timeout(5) do
-          expect { collector.collect! }.to raise_error(SystemExit) do |err|
-            expect(err.success?).to eq(true)
-          end
-        end
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/stop file .* found/).ordered
+        expect(Processor).not_to receive(:new)
+
+        collector.collect!
       end
 
       it 'processes files' do
         expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
-
-        item_dirname = 'b12345678_c12345678'
-        processing_dir, final_dir = expect_to_process(item_dirname)
-
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing ready to process; sleeping/).at_least(:once).ordered
-
-        latch = async_collect!
-
-        sleep(2 * sleep_interval)
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
-        collector.stop!
-
-        latch.wait(5)
+        processing_dir, final_dir = expect_to_process('b12345678_c12345678')
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing left to process/).ordered
+        collector.collect!
 
         expect(processing_dir).not_to exist
         expect(final_dir).to exist
-        expect(collector.stopped?).to eq(true)
+        expect(collector.stopped?).to eq(false)
       end
 
       it 'finds the next file' do
+        processing_dirs = []
+        final_dirs = []
+
         expect(UCBLIT::Logging.logger).to receive(:info).with(/starting/).ordered
 
-        item_dirs = %w[b12345678_c12345678 b86753090_c86753090].each_with_object({}) do |item, dirs|
-          dirs[item] = expect_to_process(item)
+        %w[b12345678_c12345678 b86753090_c86753090].each do |item_dir|
+          pdir, fdir = expect_to_process(item_dir)
+          processing_dirs << pdir
+          final_dirs << fdir
         end
 
-        latch = async_collect!
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing ready to process; sleeping/).at_least(:once).ordered
+        expect(UCBLIT::Logging.logger).to receive(:info).with(/nothing left to process/).ordered
+        collector.collect!
 
-        sleep(2 * sleep_interval)
-
-        'b05531212_c05531212'.tap { |item| item_dirs[item] = expect_to_process(item) }
-
-        ready_dirs = collector.instance_eval { ready_directories }
-        expect(ready_dirs.map(&:basename).map(&:to_s)).to contain_exactly(*item_dirs.keys)
-
-        sleep(2 * sleep_interval)
-
-        expect(UCBLIT::Logging.logger).to receive(:info).with(/stopped/).ordered
-        collector.stop!
-
-        latch.wait(5)
-
-        item_dirs.each_value do |dirs|
-          pdir, fdir = dirs
-          expect(pdir).not_to exist
-          expect(fdir).to exist
-        end
-
-        expect(collector.stopped?).to eq(true)
+        processing_dirs.each { |pdir| expect(pdir).not_to exist }
+        final_dirs.each { |fdir| expect(fdir).to exist }
+        expect(collector.stopped?).to eq(false)
       end
 
       it 'exits in the event of an error' do
@@ -172,11 +141,7 @@ module Lending
           obj.message.include?(error_message)
         end).ordered
 
-        Timeout.timeout(5) do
-          collector.collect!
-        rescue SystemExit => e
-          expect(e.success?).to eq(false)
-        end
+        collector.collect!
 
         expect(processing_dir.exist?).to eq(true)
 
@@ -188,7 +153,7 @@ module Lending
     end
 
     describe :from_environment do
-      let(:env_vars) { [Lending::ENV_ROOT, Collector::ENV_INTERVAL, Collector::ENV_STOP_FILE] }
+      let(:env_vars) { [Lending::ENV_ROOT, Collector::ENV_STOP_FILE] }
 
       before(:each) do
         @env_vals = env_vars.each_with_object({}) { |var, vals| vals[var] = ENV[var] }
@@ -198,19 +163,17 @@ module Lending
         @env_vals.each { |var, val| ENV[var] = val }
       end
 
-      it 'reads the initialization info from the stop file' do
+      it 'reads the initialization info from the environment' do
         Dir.mktmpdir(File.basename(__FILE__, '.rb')) do |lending_root|
           Collector::STAGES.each do |stage|
             FileUtils.mkdir(File.join(lending_root, stage.to_s))
           end
 
           ENV[Lending::ENV_ROOT] = lending_root
-          ENV[Collector::ENV_INTERVAL] = '60'
           ENV[Collector::ENV_STOP_FILE] = 'stop.stop'
 
           collector = Collector.from_environment
           expect(collector.lending_root.to_s).to eq(lending_root)
-          expect(collector.interval).to eq(60.0)
           expect(collector.stop_file_path.to_s).to eq(File.join(lending_root, 'stop.stop'))
         end
       end

@@ -11,19 +11,17 @@ module Lending
     # Constants
 
     STAGES = %i[ready processing final].freeze
-    ENV_INTERVAL = 'LIT_LENDING_COLLECTOR_INTERVAL'.freeze
     ENV_STOP_FILE = 'LIT_LENDING_COLLECTOR_STOP_FILE'.freeze
 
     # ------------------------------------------------------------
     # Fields
 
-    attr_reader :lending_root, :stage_roots, :interval, :stop_file_path
+    attr_reader :lending_root, :stage_roots, :stop_file_path
 
     # ------------------------------------------------------------
     # Initializer
 
-    def initialize(lending_root, interval, stop_file)
-      @interval = ensure_valid_interval(interval)
+    def initialize(lending_root:, stop_file:)
       @lending_root = PathUtils.ensure_dirpath(lending_root)
       @stage_roots = STAGES.each_with_object({}) { |stage, roots| roots[stage] = ensure_root(stage) }
       @stop_file_path = @lending_root.join(stop_file)
@@ -34,8 +32,10 @@ module Lending
 
     class << self
       def from_environment
-        args = [Lending::ENV_ROOT, ENV_INTERVAL, ENV_STOP_FILE].map(&method(:ensure_env))
-        Collector.new(*args)
+        Collector.new(
+          lending_root: ensure_env(Lending::ENV_ROOT),
+          stop_file: ensure_env(ENV_STOP_FILE)
+        )
       end
 
       private
@@ -57,14 +57,11 @@ module Lending
     end
 
     def collect!
-      logger.info("#{self}: starting for lending_root: #{lending_root}, interval: #{interval}s, stop_file: #{stop_file_path}")
-      loop do
-        exit_if_stopped
-        process_next_or_sleep
-      rescue StandardError => e
-        logger.error("#{self}: exiting due to error", e)
-        exit(false)
-      end
+      logger.info("#{self}: starting for lending_root: #{lending_root}, stop_file: #{stop_file_path}")
+      process_until_stopped
+      logger.info("#{self}: #{exit_reason}")
+    rescue StandardError => e
+      logger.error("#{self}: exiting due to error", e)
     end
 
     def to_s
@@ -79,12 +76,6 @@ module Lending
     # ------------------------------
     # Initialization validators
 
-    def ensure_valid_interval(interval)
-      (interval.is_a?(Numeric) ? interval : Float(interval)).tap do |v|
-        raise ArgumentError, "Expected non-negative sleep interval in seconds, got #{interval.inspect}" unless v > 0
-      end
-    end
-
     # @return [Pathname]
     def ensure_root(stage)
       stage_dir_path = lending_root.join(stage.to_s)
@@ -94,25 +85,22 @@ module Lending
     # ------------------------------
     # Stop logic
 
-    def exit_if_stopped
-      return unless stopped?
+    def exit_reason
+      return 'nothing left to process' unless stopped?
 
-      stop_reason = stop_file_path.exist? ? "stop file #{stop_file_path} found; exiting" : 'stopped'
-      logger.info("#{self}: #{stop_reason}")
-      exit(true)
+      stop_file_path.exist? ? "stop file #{stop_file_path} found" : 'stopped'
     end
 
     # ------------------------------
     # Processing logic
 
-    def process_next_or_sleep
-      if (ready_dir = next_ready_dir)
-        processing_dir = ensure_stage_dir(ready_dir, :processing)
-        return process(ready_dir, processing_dir)
-      end
+    def process_until_stopped
+      ready_dirs.each do |ready_dir|
+        break if stopped?
 
-      logger.info("#{self}: nothing ready to process; sleeping for #{interval} seconds")
-      sleep(interval)
+        processing_dir = ensure_stage_dir(ready_dir, :processing)
+        process(ready_dir, processing_dir)
+      end
     end
 
     def process(ready_dir, processing_dir)
@@ -133,25 +121,15 @@ module Lending
     # ------------------------------
     # Directory lookups
 
-    # Returns the next ready directory with no corresponding processing or final
-    # directory
+    # Returns all ready directories with no corresponding processing or final
+    # directory, in order from oldest to newest
     #
-    # @return [Pathname, nil] the next ready directory, or nil if non exists
-    def next_ready_dir
+    # @return [Array<Pathname>] an array of all ready directories
+    def ready_dirs
       downstream_stages = %i[processing final]
-      ready_directories.find do |rdir|
-        downstream_stage = downstream_stages.find { |stage| stage_dir(rdir, stage).exist? }
-        downstream_stage.nil?.tap do |not_found|
-          msg = not_found ? "has no downstream directories; returning #{rdir}" : "#{downstream_stage} directory already exists; skipping #{rdir}"
-          logger.debug("#{self}: #{rdir.basename} " + msg)
-        end
-      end
-    end
-
-    # The ready directories, in order from oldest to newest
-    # @return [Array<Pathname>] the ready directories, in order from oldest to newest
-    def ready_directories
-      PathUtils.all_item_dirs(stage_root(:ready)).sort_by(&:mtime)
+      PathUtils.all_item_dirs(stage_root(:ready))
+        .reject { |rdir| downstream_stages.any? { |stage| stage_dir(rdir, stage).exist? } }
+        .sort_by(&:mtime)
     end
 
     # Returns the root directory for the specified stage
