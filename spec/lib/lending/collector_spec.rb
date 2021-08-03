@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'concurrent-ruby'
 require 'lending'
 
 module Lending
