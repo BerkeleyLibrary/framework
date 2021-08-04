@@ -49,7 +49,9 @@ module Lending
     private
 
     def marc_metadata
-      @marc_metadata ||= MarcMetadata.new(marc_path)
+      return @marc_metadata if instance_variable_defined?(:@marc_metadata)
+
+      @marc_metadata = MarcMetadata.from_file(marc_path)
     end
 
     def tileize_images!

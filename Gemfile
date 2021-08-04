@@ -28,6 +28,7 @@ gem 'prawn', '~> 2.3.0'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 6.0.3'
 gem 'recaptcha', '~> 4.13'
+gem 'ruby-prof', '~> 0.17.0' # TODO: move this back to dev/test
 gem 'ruby-vips', '~> 2.0'
 gem 'turbolinks', '~> 5'
 gem 'typesafe_enum', '~> 0.3'
@@ -49,7 +50,6 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec-support'
   gem 'rspec_junit_formatter'
-  gem 'ruby-prof', '~> 0.17.0'
   gem 'vcr'
   gem 'webmock'
 end

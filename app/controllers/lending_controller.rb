@@ -14,7 +14,7 @@ class LendingController < ApplicationController
   # ------------------------------------------------------------
   # Hooks
 
-  before_action(:ensure_lending_item!, except: %i[index new create])
+  before_action(:ensure_lending_item!, except: %i[index new create profile])
   before_action(:require_processed_item!, only: [:manifest])
   before_action(:require_lending_admin!, except: %i[view manifest check_out return])
   before_action(:authenticate!)
@@ -26,9 +26,19 @@ class LendingController < ApplicationController
   # UI actions
 
   def index
-    LendingItemLoan.overdue.find_each(&:return!)
-    LendingItem.scan_for_new_items!
-    @lending_items = LendingItem.order(sort_column + ' ' + sort_direction)
+    ensure_lending_items!
+  end
+
+  # Index page, but generate a profile result
+  def profile
+    RubyProf.start
+    ensure_lending_items!
+    render(:index)
+  ensure
+    result = RubyProf.stop
+    File.open(File.join(File.expand_path('../../public', __dir__), 'profile.html'), 'w') do |f|
+      RubyProf::GraphHtmlPrinter.new(result).print(f, min_percent: 2)
+    end
   end
 
   def new
@@ -36,11 +46,9 @@ class LendingController < ApplicationController
   end
 
   def edit; end
-  # TODO: is this necessary?
 
   # Admin view
   def show; end
-  # TODO: is this necessary?
 
   # Patron view
   def view
@@ -233,6 +241,12 @@ class LendingController < ApplicationController
     require_eligible_patron!
 
     raise Error::ForbiddenError, LendingItem::MSG_NOT_CHECKED_OUT unless active_loan
+  end
+
+  def ensure_lending_items!
+    LendingItemLoan.overdue.find_each(&:return!)
+    LendingItem.scan_for_new_items!
+    @lending_items = LendingItem.order(sort_column + ' ' + sort_direction)
   end
 
   def ensure_lending_item!

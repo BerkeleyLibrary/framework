@@ -80,7 +80,7 @@ class LendingItem < ActiveRecord::Base
       return unless (item_dir = Pathname.new(iiif_final_root).join(directory)).directory?
       return unless (marc_path = item_dir.join(Lending::Processor::MARC_XML_NAME)).exist?
 
-      metadata = Lending::MarcMetadata.new(marc_path)
+      metadata = Lending::MarcMetadata.from_file(marc_path)
       item = LendingItem.create(directory: directory, title: metadata.title, author: metadata.author, copies: 0)
       return item if item.persisted?
     end
@@ -186,11 +186,10 @@ class LendingItem < ActiveRecord::Base
   end
 
   def marc_metadata
-    @marc_metadata ||= begin
-      raise ActiveRecord::RecordNotFound, "Error loading MARC record for #{citation}: #{MSG_NO_MARC_XML}" unless has_marc_record?
+    return @marc_metadata if instance_variable_defined?(:@marc_metadata)
 
-      Lending::MarcMetadata.new(marc_path)
-    end
+    @marc_metadata = Lending::MarcMetadata.from_file(marc_path)
+    raise ActiveRecord::RecordNotFound, "Error loading MARC record for #{citation}: #{MSG_NO_MARC_XML}" unless @marc_metadata
   end
 
   def iiif_dir

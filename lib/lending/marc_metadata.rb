@@ -6,13 +6,26 @@ module Lending
     # ------------------------------------------------------------
     # Accessors
 
-    attr_reader :marc_path
+    attr_reader :marc_record
 
     # ------------------------------------------------------------
     # Initializer
 
-    def initialize(marc_path)
-      @marc_path = PathUtils.ensure_filepath(marc_path)
+    def initialize(marc_record)
+      @marc_record = marc_record
+    end
+
+    class << self
+      include UCBLIT::Logging
+
+      def from_file(marc_path)
+        marc_record = MARC::XMLReader.read(marc_path.to_s, freeze: true).first
+        return MarcMetadata.new(marc_record) if marc_record
+
+        logger.error("No MARC data in record: #{marc_path}")
+      rescue StandardError => e
+        logger.error(e)
+      end
     end
 
     # ------------------------------------------------------------
@@ -36,10 +49,6 @@ module Lending
       return @physical_desc if instance_variable_defined?(:@physical_desc)
 
       @physical_desc = find_physical_desc
-    end
-
-    def marc_record
-      @marc_record ||= MARC::XMLReader.read(marc_path.to_s, freeze: true).first
     end
 
     def author_label

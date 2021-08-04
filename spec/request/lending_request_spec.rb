@@ -180,6 +180,20 @@ describe LendingController, type: :request do
         end
       end
 
+      describe :profile do
+        let(:profile_path) { 'public/profile.html' }
+
+        it 'generates a profile' do
+          get lending_profile_path
+          expect(File.exist?(profile_path)).to eq(true)
+
+          get '/profile.html'
+          expect(response).to be_successful
+        ensure
+          FileUtils.rm_f(profile_path)
+        end
+      end
+
       describe :show do
         it 'shows an item' do
           items.each do |item|

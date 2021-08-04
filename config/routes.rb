@@ -42,6 +42,8 @@ Rails.application.routes.draw do
     get '/', to: 'lending#index', as: :lending
     post '/', to: 'lending#create'
 
+    get '/profile', to: 'lending#profile', as: :lending_profile
+
     get '/new', to: 'lending#new', as: :lending_new
     get '/:directory/edit', to: 'lending#edit', as: :lending_edit
     get '/:directory', to: 'lending#show', as: :lending_show
