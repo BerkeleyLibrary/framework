@@ -35,7 +35,7 @@ describe TindDownloadController, type: :system do
     # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
     #       (see CapybaraHelper::GridConfigurator#configure!)
     before(:each) { login_as_patron(Patron::Type.sample_id_for(Patron::Type::STAFF)) }
-    after(:each) { logout! }
+    after(:each) { clear_login_state! }
 
     before(:each) do
       stub_request(:get, UCBLIT::Util::URIs.append(tind_base_uri, 'api/v1/collections?depth=100')).to_return(
