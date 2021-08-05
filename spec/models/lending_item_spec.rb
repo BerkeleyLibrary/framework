@@ -117,4 +117,110 @@ describe LendingItem, type: :model do
     end
 
   end
+
+  describe :states do
+    attr_reader :items
+
+    before(:each) do
+      @items = [
+        {
+          title: 'The Plan of St. Gall : a study of the architecture & economy of life in a paradigmatic Carolingian monastery',
+          author: 'Horn, Walter',
+          directory: 'b100523250_C044235662',
+          copies: 3,
+          active: true
+        },
+        {
+          title: 'The great depression in Europe, 1929-1939',
+          author: 'Clavin, Patricia.',
+          directory: 'b135297126_C068087930',
+          copies: 1,
+          active: false
+        },
+        {
+          title: 'Villette',
+          author: 'Brontë, Charlotte',
+          directory: 'b155001346_C044219363',
+          copies: 0,
+          active: false
+        },
+        {
+          title: 'Pamphlet.',
+          author: 'Canada. Department of Agriculture.',
+          directory: 'b11996535_B 3 106 704',
+          copies: 0,
+          active: false
+        }
+      ].map { |item_attributes| LendingItem.create!(**item_attributes) }
+    end
+
+    def processed
+      items.select(&:complete?)
+    end
+
+    def incomplete
+      items.reject(&:complete?)
+    end
+
+    def active
+      processed.select(&:active?)
+    end
+
+    def inactive
+      processed.reject(&:active?)
+    end
+
+    describe :active do
+      it 'returns the active items' do
+        expect(active).not_to be_empty
+      end
+    end
+
+    describe :inactive do
+      it 'returns the active items' do
+        expect(inactive).not_to be_empty
+      end
+    end
+
+    describe :incomplete do
+      it 'returns the incomplete items' do
+        expect(incomplete).not_to be_empty
+      end
+    end
+
+    describe :marc_metadata do
+      attr_reader :items_with_marc
+      attr_reader :items_without_marc
+
+      before(:each) do
+        @items_with_marc = []
+        @items_without_marc = []
+        items.each do |item|
+          marc_xml = File.join(item.iiif_dir, 'marc.xml')
+          (File.exist?(marc_xml) ? @items_with_marc : @items_without_marc) << item
+        end
+      end
+      it 'returns the MARC metadata for items that have it' do
+        expect(items_with_marc).not_to be_empty # just to be sure
+
+        aggregate_failures :marc_metadata do
+          items_with_marc.each do |item|
+            md = item.marc_metadata
+            expect(md).to be_a(Lending::MarcMetadata), "Expected MARC metadata for item #{item.directory}, got #{md.inspect}"
+          end
+        end
+      end
+
+      it "returns nil for items that don't" do
+        expect(items_without_marc).not_to be_empty # just to be sure
+        aggregate_failures :marc_metadata do
+          items_without_marc.each do |item|
+            md = item.marc_metadata
+            expect(md).to be_nil, "Expected MARC metadata for item #{item.directory} to be nil, got #{md.inspect}"
+          end
+        end
+
+      end
+    end
+  end
 end

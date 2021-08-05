@@ -19,12 +19,18 @@ module Lending
       include UCBLIT::Logging
 
       def from_file(marc_path)
+        nil.tap do
+          return load_marc_record(marc_path)
+        rescue StandardError => e
+          logger.error(e)
+        end
+      end
+
+      private
+
+      def load_marc_record(marc_path)
         marc_record = MARC::XMLReader.read(marc_path.to_s, freeze: true).first
         return MarcMetadata.new(marc_record) if marc_record
-
-        logger.error("No MARC data in record: #{marc_path}")
-      rescue StandardError => e
-        logger.error(e)
       end
     end
 

@@ -188,8 +188,7 @@ class LendingItem < ActiveRecord::Base
   def marc_metadata
     return @marc_metadata if instance_variable_defined?(:@marc_metadata)
 
-    @marc_metadata = Lending::MarcMetadata.from_file(marc_path)
-    raise ActiveRecord::RecordNotFound, "Error loading MARC record for #{citation}: #{MSG_NO_MARC_XML}" unless @marc_metadata
+    @marc_metadata = load_marc_metadata
   end
 
   def iiif_dir
@@ -199,10 +198,6 @@ class LendingItem < ActiveRecord::Base
       iiif_dir_relative = File.join(iiif_final_root, directory)
       File.absolute_path(iiif_dir_relative)
     end
-  end
-
-  def citation
-    "#{author}, #{title} (#{directory})"
   end
 
   def record_id
@@ -260,6 +255,12 @@ class LendingItem < ActiveRecord::Base
   # Private methods
 
   private
+
+  def load_marc_metadata
+    Lending::MarcMetadata.from_file(marc_path).tap do |md|
+      Rails.logger.warn("No MARC metadata found in #{marc_path}") unless md
+    end
+  end
 
   # rubocop:disable Naming/PredicateName
   def has_marc_record?
