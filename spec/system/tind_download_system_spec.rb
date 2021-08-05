@@ -3,6 +3,10 @@ require 'calnet_helper'
 require 'roo'
 
 describe TindDownloadController, type: :system do
+  before(:each) do
+    allow(UCBLIT::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
+  end
+
   describe 'unauthenticated user' do
     it 'redirects to login' do
       visit tind_download_path
