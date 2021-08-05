@@ -74,8 +74,7 @@ describe TindDownloadController, type: :system do
             page.click_button('Download Metadata')
 
             # Wait for "Your download should start" to appear
-            expected_msg = 'Your download should start momentarily'
-            expect(page).to have_selector('p', text: expected_msg, visible: true)
+            expect(page).to have_content('Your download should start momentarily', wait: 10)
 
             # TODO: verify download, cf. https://www.gridlastic.com/selenium-grid-download-file.html ?
           end
