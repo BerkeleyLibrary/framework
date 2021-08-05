@@ -18,7 +18,6 @@ module Lending
     attr_reader :title
     attr_reader :author
     attr_reader :dir_path
-    attr_reader :pages
     attr_reader :record_id
     attr_reader :barcode
 
@@ -27,7 +26,10 @@ module Lending
       @author = author
       @dir_path = PathUtils.ensure_dirpath(dir_path)
       @record_id, @barcode = PathUtils.decompose_dirname(@dir_path)
-      @pages = Page.all_from_directory(dir_path)
+    end
+
+    def pages
+      @pages ||= Page.all_from_directory(dir_path)
     end
 
     def dir_basename
