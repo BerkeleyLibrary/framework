@@ -61,11 +61,6 @@ module Lending
       tiff_ext?(p) || jpeg_ext?(p)
     end
 
-    def tiff?(p)
-      pathname = ensure_pathname(p)
-      pathname.file? && tiff_ext?(pathname)
-    end
-
     def xml_ext?(p)
       pathname = ensure_pathname(p)
       pathname.extname.downcase == '.xml'

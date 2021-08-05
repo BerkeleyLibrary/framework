@@ -37,7 +37,7 @@ module Lending
       def all_from_directory(dir)
         dirpath = PathUtils.ensure_dirpath(dir)
         dirpath.children.filter_map do |f|
-          next unless PathUtils.tiff?(f) && Page.page_number?(f)
+          next unless PathUtils.tiff_ext?(f) && Page.page_number?(f)
 
           Page.new(f)
         end.sort
@@ -106,7 +106,7 @@ module Lending
 
     def ensure_page_tiff_path(path)
       PathUtils.ensure_filepath(path).tap do |tiff_path|
-        raise ArgumentError, "Not a TIFF file: #{tiff_path}" unless PathUtils.tiff?(tiff_path)
+        raise ArgumentError, "Not a TIFF file: #{tiff_path}" unless PathUtils.tiff_ext?(tiff_path)
         raise ArgumentError, "Not a numeric page number: #{tiff_path}" unless Page.page_number?(tiff_path)
       end
     end
