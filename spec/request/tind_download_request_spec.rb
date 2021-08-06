@@ -1,6 +1,10 @@
 require 'forms_helper'
 
 describe TindDownloadController, type: :request do
+  before(:each) do
+    allow(UCBLIT::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
+  end
+
   let(:collection_name) { 'Abraham Lincoln Papers' }
 
   attr_reader :patron_id
