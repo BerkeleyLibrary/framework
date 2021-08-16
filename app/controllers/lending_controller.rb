@@ -51,10 +51,14 @@ class LendingController < ApplicationController
   def show; end
 
   # Patron view
+  # rubocop:disable Metrics/AbcSize
   def view
     ensure_lending_item_loan!
-    flash.now[:danger] = reason_unavailable unless available?
+    flash.now[:danger] ||= []
+    flash.now[:danger] << 'Your loan term has expired.' if most_recent_loan&.auto_returned? # TODO: something less awkward
+    flash.now[:danger] << reason_unavailable unless available?
   end
+  # rubocop:enable Metrics/AbcSize
 
   def manifest
     require_active_loan! unless lending_admin?

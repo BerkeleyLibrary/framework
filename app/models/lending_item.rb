@@ -29,7 +29,7 @@ class LendingItem < ActiveRecord::Base
   # ------------------------------------------------------------
   # Constants
 
-  LOAN_DURATION_HOURS = 2 # TODO: make this configurable
+  LOAN_DURATION_SECONDS = 2 * 3600 # TODO: make this configurable
 
   # TODO: Use Rails i18n
   MSG_CHECKED_OUT = 'You have already checked out this item.'.freeze
@@ -101,7 +101,7 @@ class LendingItem < ActiveRecord::Base
   # @return [LendingItemLoan] the created loan
   def check_out_to(patron_identifier)
     loan_date = Time.now.utc
-    due_date = loan_date + LOAN_DURATION_HOURS.hours
+    due_date = loan_date + LOAN_DURATION_SECONDS.seconds
 
     LendingItemLoan.create(
       lending_item_id: id,

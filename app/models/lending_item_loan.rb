@@ -42,12 +42,22 @@ class LendingItemLoan < ActiveRecord::Base
     save(validate: false)
   end
 
+  # TODO: this should probably be "due?" or "overdue?"
   def expired?
-    due_date && due_date.utc <= Time.current.utc
+    seconds_remaining <= 0
   end
 
   def ok_to_check_out?
     lending_item.available? && !(active? || duplicate_checkout || checkout_limit_reached)
+  end
+
+  def seconds_remaining
+    due_date ? due_date.utc - Time.current.utc : 0
+  end
+
+  # TODO: this should probably be "expired?"
+  def auto_returned?
+    expired? && return_date >= due_date
   end
 
   # ------------------------------------------------------------

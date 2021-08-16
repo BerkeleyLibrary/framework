@@ -342,6 +342,46 @@ describe LendingController, type: :system do
 
           expect(page).not_to have_selector('div#iiif_viewer')
         end
+
+        it 'displays a warning when loan has expired' do
+          loan_date = Time.current.utc - 3.weeks
+          due_date = loan_date + LendingItem::LOAN_DURATION_SECONDS.seconds
+          loan = LendingItemLoan.create(
+            lending_item_id: item.id,
+            patron_identifier: user.lending_id,
+            loan_status: :active,
+            loan_date: loan_date,
+            due_date: due_date
+          )
+          loan.reload
+
+          visit lending_view_path(directory: item.directory)
+
+          alert = page.find('.alert-danger')
+          expect(alert).to have_text('Your loan term has expired.')
+
+          expect(page).not_to have_selector('div#iiif_viewer')
+        end
+
+        it 'redirects when loan expires' do
+          loan_date = Time.current.utc
+          LendingItemLoan.create!(
+            lending_item_id: item.id,
+            patron_identifier: user.lending_id,
+            loan_status: :active,
+            loan_date: loan_date,
+            due_date: (loan_date + 5.seconds)
+          )
+
+          # Capybara doesn't seem to respect the meta-refresh, so we'll just
+          # make sure it's there
+          visit lending_view_path(directory: item.directory)
+          meta_refresh = page.find(:xpath, '/html/head/meta[@http-equiv="Refresh"]', visible: false)
+
+          md = /([0-9]+); URL=(.*)/.match(meta_refresh[:content])
+          redirect_uri = URI.parse(md[2])
+          expect(redirect_uri.path).to eq(lending_return_path(directory: item.directory))
+        end
       end
     end
 
