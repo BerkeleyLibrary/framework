@@ -137,6 +137,10 @@ class LendingItem < ActiveRecord::Base
     active? && complete? && copies_available > 0
   end
 
+  def unavailable?
+    !available?
+  end
+
   def inactive?
     !active?
   end
