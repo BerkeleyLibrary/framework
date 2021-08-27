@@ -53,7 +53,7 @@ class RequestMailer < ApplicationMailer
     @patron_name = patron.name
     @patron_email = patron.email
 
-    mail(to: email)
+    mail(to: [email, admin_to])
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
@@ -104,7 +104,7 @@ class RequestMailer < ApplicationMailer
 
   # Send ScanRequest confirmation email to the opted-in user
   def scan_request_opt_in_confirmation_email(email)
-    mail(to: email)
+    mail(to: [email, admin_to])
   end
 
   def scan_request_opt_out_staff(empid, displayname)
@@ -115,7 +115,7 @@ class RequestMailer < ApplicationMailer
   end
 
   def scan_request_opt_out_faculty(email)
-    mail(to: email)
+    mail(to: [email, admin_to])
   end
 
   # Send Proxy-Borrower Card Request Instructions to user
