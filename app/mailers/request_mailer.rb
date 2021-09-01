@@ -53,7 +53,7 @@ class RequestMailer < ApplicationMailer
     @patron_name = patron.name
     @patron_email = patron.email
 
-    mail(to: [email, admin_to])
+    mail(to: email)
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
