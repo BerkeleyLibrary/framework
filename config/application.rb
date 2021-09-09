@@ -16,6 +16,9 @@ module Framework
     # inject those configs like we do with the Patron class.
     config.altmedia = config_for(:altmedia)
 
+    # configs for libproxy validations
+    config.libproxy = config_for(:libproxy)
+
     # TODO: Switch to a persistent backend store like delayed_job
     #       (but make sure to update async logging tests in jobs_helper.rb)
     config.active_job.queue_adapter = :async
@@ -28,6 +31,9 @@ module Framework
     # Alma API for handling Fees/Fines:
     config.alma_api_url = config.altmedia['alma_api_url']
     config.alma_api_key = config.altmedia['alma_api_key']
+
+    # Valid groups for libproxy access based on Alma groups
+    config.libproxy_groups = config.libproxy['valid_groups']
 
     # Setup paypal payflow link:
     config.paypal_payflow_url = config.altmedia['paypal_payflow_url']

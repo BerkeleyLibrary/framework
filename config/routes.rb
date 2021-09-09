@@ -22,6 +22,9 @@ Rails.application.routes.draw do
     resources :reference_card_forms, path: 'reference-card'
   end
 
+  # Alma patron validation for proxy
+  post '/validate_proxy_patron', to: 'validate_proxy_patron#index'
+
   # Fines/Fees Routes:
   get '/fines', to: 'fines#index'
   get '/fines/transaction_fail', to: 'fines#transaction_fail'

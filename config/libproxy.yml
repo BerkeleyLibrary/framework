@@ -1,0 +1,28 @@
+default: &default
+
+  valid_groups:
+    - UNDERGRADSLE
+    - GRADSTUD
+    - UCBVISSCHOL
+    - FACULTY
+    - NONACAD
+    - UCOP
+    - UNDERGRAD
+    - EXECUTIVE
+    - UCEXT
+    - UCEXTSTUD
+    - UCB POST
+    - LIBSTAFF
+    - UCBAFFILI
+    - ICSI_MSRI
+    - HHI
+    - UCBALUMSTF
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

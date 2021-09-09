@@ -1,0 +1,273 @@
+{
+  "record_type": {
+    "value": "PUBLIC",
+    "desc": "Public"
+  },
+  "primary_id": "10335026",
+  "first_name": "STEVEN",
+  "middle_name": "M",
+  "last_name": "SULLIVAN",
+  "full_name": "STEVEN M SULLIVAN",
+  "user_title": {
+    "value": "",
+    "desc": ""
+  },
+  "job_category": {
+    "value": "",
+    "desc": ""
+  },
+  "job_description": "",
+  "gender": {
+    "value": "",
+    "desc": ""
+  },
+  "user_group": {
+    "value": "LIBSTAFF",
+    "desc": "Library Staff"
+  },
+  "campus_code": {
+    "value": null,
+    "desc": ""
+  },
+  "web_site_url": "",
+  "cataloger_level": {
+    "value": "00",
+    "desc": "[00] Default Level"
+  },
+  "preferred_language": {
+    "value": "en",
+    "desc": "English"
+  },
+  "expiry_date": "2023-10-31Z",
+  "purge_date": "2023-10-31Z",
+  "account_type": {
+    "value": "EXTERNAL",
+    "desc": "External"
+  },
+  "external_id": "SIS",
+  "password": "",
+  "force_password_change": "",
+  "status": {
+    "value": "ACTIVE",
+    "desc": "Active"
+  },
+  "status_date": "2021-07-25Z",
+  "requests": null,
+  "loans": null,
+  "fees": {
+    "value": 0.0,
+    "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees"
+  },
+  "contact_info": {
+    "address": [
+      {
+        "line1": "Library Administration",
+        "line2": "Bancroft Lib (Doe Anx)-F01-94720",
+        "line3": null,
+        "line4": null,
+        "line5": null,
+        "city": "",
+        "state_province": "",
+        "postal_code": "",
+        "country": {
+          "value": "",
+          "desc": ""
+        },
+        "address_note": "",
+        "preferred": true,
+        "segment_type": "External",
+        "address_type": [
+          {
+            "value": "home",
+            "desc": "Home"
+          }
+        ]
+      }
+    ],
+    "email": [
+      {
+        "email_address": "steve.sullivan@berkeley.edu",
+        "description": null,
+        "preferred": true,
+        "segment_type": "External",
+        "email_type": [
+          {
+            "value": "school",
+            "desc": "School"
+          }
+        ]
+      }
+    ],
+    "phone": [
+      {
+        "phone_number": "925-234-0409",
+        "preferred": true,
+        "preferred_sms": false,
+        "segment_type": "External",
+        "phone_type": [
+          {
+            "value": "home",
+            "desc": "Home"
+          }
+        ]
+      }
+    ]
+  },
+  "pref_first_name": "",
+  "pref_middle_name": "",
+  "pref_last_name": "",
+  "pref_name_suffix": "",
+  "is_researcher": false,
+  "researcher": null,
+  "link": null,
+  "user_identifier": [
+    {
+      "value": "e10335026",
+      "id_type": {
+        "value": "BARCODE",
+        "desc": "Barcode"
+      },
+      "note": null,
+      "status": "ACTIVE",
+      "segment_type": "External"
+    },
+    {
+      "value": "1707532",
+      "id_type": {
+        "value": "BARCODE",
+        "desc": "Barcode"
+      },
+      "note": null,
+      "status": "ACTIVE",
+      "segment_type": "External"
+    }
+  ],
+  "user_role": [
+    {
+      "status": {
+        "value": "ACTIVE",
+        "desc": "Active"
+      },
+      "scope": {
+        "value": "01UCS_BER",
+        "desc": "University of California Berkeley"
+      },
+      "role_type": {
+        "value": "200",
+        "desc": "Patron"
+      },
+      "parameter": []
+    }
+  ],
+  "user_block": [],
+  "user_note": [
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Note: 20210618 library book scan eligible [litscript]",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    },
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Record Source: U",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    },
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Total Checkout: 0",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    },
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Current Checkout: 0",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    },
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Claims Returned: 0",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    },
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Updated Date: 07-21-2021",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    },
+    {
+      "note_type": {
+        "value": "LIBRARY",
+        "desc": "Library"
+      },
+      "note_text": "Message Note: -",
+      "user_viewable": false,
+      "popup_note": false,
+      "created_by": "System",
+      "created_date": "2020-03-05T10:59:00Z",
+      "segment_type": "Internal"
+    }
+  ],
+  "user_statistic": [
+    {
+      "statistic_category": {
+        "value": "LibrStaff",
+        "desc": "Library Staff"
+      },
+      "segment_type": "External"
+    },
+    {
+      "statistic_category": {
+        "value": "UCB",
+        "desc": "UC BERKELEY"
+      },
+      "segment_type": "External"
+    },
+    {
+      "statistic_category": {
+        "value": "SACP",
+        "desc": "STAFF"
+      },
+      "segment_type": "External"
+    }
+  ],
+  "proxy_for_user": []
+}
