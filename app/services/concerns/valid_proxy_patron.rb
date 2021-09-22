@@ -7,7 +7,6 @@ module ValidProxyPatron
       patron['status']['value'] == 'ACTIVE' &&
       patron['user_block'].empty? &&
       fees_less_than?(patron['fees']['value'].to_f, 50) &&
-      patron['expiry_date'].to_datetime.to_date.future? &&
       valid_group?(patron['user_group']['value'])
     end
     # rubocop:enable Metrics/AbcSize
