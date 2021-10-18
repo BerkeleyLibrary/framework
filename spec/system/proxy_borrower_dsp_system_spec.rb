@@ -1,12 +1,13 @@
 require 'capybara_helper'
 require 'calnet_helper'
-require 'capybara_helper'
 require 'time'
 
 describe :forms_proxy_borrower_dsp, type: :system do
   attr_reader :patron_id
   attr_reader :patron
   attr_reader :user
+
+  let(:alma_api_key) { 'totally-fake-key' }
 
   before(:all) do
     # Calculate and define the max date and an invalid date:
@@ -22,9 +23,17 @@ describe :forms_proxy_borrower_dsp, type: :system do
   end
 
   before(:each) do
-    @patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD_SLE)
+    @patron_id = Alma::Type.sample_id_for(Alma::Type::UNDERGRAD_SLE)
     @user = login_as_patron(patron_id)
-    @patron = Patron::Record.find(patron_id)
+    allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
+    req_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key&expand=fees&view=full"
+
+    stub_request(:get, req_url)
+      .with(headers: { 'Accept' => 'application/json' })
+      .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{patron_id}.json"))
+
+    @patron = Alma::User.find(patron_id)
 
     visit forms_proxy_borrower_dsp_path
   end

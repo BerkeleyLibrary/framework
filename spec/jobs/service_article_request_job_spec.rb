@@ -4,11 +4,14 @@ describe ServiceArticleRequestJob do
   attr_reader :patron
   attr_reader :email
   attr_reader :publication
+  let(:alma_api_key) { 'totally-fake-key' }
 
   before(:each) do
-    patron_id = '013191304'
+    allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
+    patron_id = '013191305'
     stub_patron_dump(patron_id)
-    @patron = Patron::Record.find(patron_id)
+    @patron = Alma::User.find(patron_id)
 
     @email = 'requests@library.berkeley.edu'
     @publication = {

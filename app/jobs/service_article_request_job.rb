@@ -4,7 +4,7 @@ class ServiceArticleRequestJob < ApplicationJob
   queue_as :default
 
   def perform(email, publication, patron_id)
-    patron = Patron::Record.find(patron_id)
+    patron = Alma::User.find(patron_id)
     send_patron_email(email, publication, patron)
   rescue StandardError
     send_failure_email(patron)

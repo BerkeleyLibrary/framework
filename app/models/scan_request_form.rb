@@ -2,16 +2,12 @@
 #
 # This is commonly referred to as the "AltMedia" form.
 class ScanRequestForm < Form
-  ALLOWED_PATRON_AFFILIATIONS = [
-    Patron::Affiliation::UC_BERKELEY
-  ].freeze
-
   ALLOWED_PATRON_TYPES = [
-    Patron::Type::FACULTY,
-    Patron::Type::STAFF,
-    Patron::Type::LIBRARY_STAFF,
-    Patron::Type::MANAGER,
-    Patron::Type::VISITING_SCHOLAR
+    Alma::Type::FACULTY,
+    Alma::Type::STAFF,
+    Alma::Type::LIBRARY_STAFF,
+    Alma::Type::MANAGER,
+    Alma::Type::VISITING_SCHOLAR
   ].freeze
 
   # Whether the user has opted in or out of the scanning service
@@ -46,7 +42,6 @@ class ScanRequestForm < Form
 
   validates :patron,
             patron: {
-              affiliations: ALLOWED_PATRON_AFFILIATIONS,
               types: ALLOWED_PATRON_TYPES
             },
             strict: true
@@ -59,8 +54,7 @@ class ScanRequestForm < Form
             presence: true
 
   def self.patron_eligible?(patron)
-    ALLOWED_PATRON_TYPES.include?(patron.type) &&
-      ALLOWED_PATRON_AFFILIATIONS.include?(patron.affiliation)
+    ALLOWED_PATRON_TYPES.include?(patron.type)
   end
 
   def opted_in?

@@ -47,7 +47,7 @@ module Health
     end
 
     def try_find_patron
-      Patron::Record.find(TEST_PATRON_ID)
+      Alma::User.find(TEST_PATRON_ID)
       Result.pass
     rescue StandardError => e
       Result.warn(e.class.name)

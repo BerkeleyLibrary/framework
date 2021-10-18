@@ -52,7 +52,7 @@ describe TindDownloadController, type: :request do
 
   context 'specs for non-staff user' do
     around(:each) do |example|
-      patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       with_patron_login(patron_id) { example.run }
     end
 
@@ -85,7 +85,7 @@ describe TindDownloadController, type: :request do
 
   context 'specs for staff user' do
     around(:each) do |example|
-      patron_id = Patron::Type.sample_id_for(Patron::Type::STAFF)
+      patron_id = Alma::Type.sample_id_for(Alma::Type::STAFF)
       with_patron_login(patron_id) { example.run }
     end
 

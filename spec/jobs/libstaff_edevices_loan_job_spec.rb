@@ -9,6 +9,7 @@ describe LibstaffEdevicesLoanJob do
 
   it_behaves_like(
     'an email job',
+    note_text: 'Library Staff Electronic Devices eligible',
     email_subject_success: 'Libdevice confirmation email'
   )
 end

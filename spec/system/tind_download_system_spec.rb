@@ -18,7 +18,7 @@ describe TindDownloadController, type: :system do
   describe 'authenticated non-staff user' do
     # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
     #       (see CapybaraHelper::GridConfigurator#configure!)
-    before(:each) { login_as_patron(Patron::Type.sample_id_for(Patron::Type::FACULTY)) }
+    before(:each) { login_as_patron(Alma::Type.sample_id_for(Alma::Type::FACULTY)) }
     after(:each) { logout! }
 
     it 'returns 403 unauthorized' do
@@ -30,7 +30,7 @@ describe TindDownloadController, type: :system do
   describe 'authenticated staff user' do
     # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
     #       (see CapybaraHelper::GridConfigurator#configure!)
-    before(:each) { login_as_patron(Patron::Type.sample_id_for(Patron::Type::STAFF)) }
+    before(:each) { login_as_patron(Alma::Type.sample_id_for(Alma::Type::STAFF)) }
     after(:each) { logout! }
 
     before(:each) do

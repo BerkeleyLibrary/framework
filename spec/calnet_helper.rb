@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'patron_helper'
+require 'alma_helper'
 
 module CalNet
   # Lisa Weber's UID, hard-coded in FrameworkUsers
@@ -38,7 +38,7 @@ end
 
 # Mocks a calnet login as the specified patron
 def mock_calnet_login(uid_or_patron_number)
-  calnet_yml_file = "spec/data/calnet/#{Patron::Dump.escape_patron_id(uid_or_patron_number)}.yml"
+  calnet_yml_file = "spec/data/calnet/#{uid_or_patron_number}.yml"
   raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
 
   auth_hash = YAML.load_file(calnet_yml_file)

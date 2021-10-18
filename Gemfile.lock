@@ -132,6 +132,13 @@ GEM
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
     childprocess (3.0.0)
+    coffee-rails (5.0.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 5.2.0)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.12.2)
     colorize (0.8.1)
     concurrent-ruby (1.1.8)
     crack (0.4.5)
@@ -388,6 +395,7 @@ DEPENDENCIES
   bundle-audit
   byebug
   capybara
+  coffee-rails (~> 5.0)
   colorize
   concurrent-ruby (~> 1.1)
   database_cleaner-active_record (~> 2.0)

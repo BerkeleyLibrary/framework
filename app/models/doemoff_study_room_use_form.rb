@@ -1,21 +1,16 @@
 class DoemoffStudyRoomUseForm < Form
-  ALLOWED_PATRON_AFFILIATIONS = [
-    Patron::Affiliation::UC_BERKELEY
-    # Patron::Affiliation::COMMUNITY_COLLEGE, #including this option for when testing
-  ].freeze
-
   # TODO(JS): There's got to be a better way to set all of the Patron::Type
   # items to ALLOWED_PATRON_TYPES
   ALLOWED_PATRON_TYPES = [
-    Patron::Type::UNDERGRAD,
-    Patron::Type::UNDERGRAD_SLE,
-    Patron::Type::GRAD_STUDENT,
-    Patron::Type::FACULTY,
-    Patron::Type::MANAGER,
-    Patron::Type::LIBRARY_STAFF,
-    Patron::Type::STAFF,
-    Patron::Type::POST_DOC,
-    Patron::Type::VISITING_SCHOLAR
+    Alma::Type::UNDERGRAD,
+    Alma::Type::UNDERGRAD_SLE,
+    Alma::Type::GRAD_STUDENT,
+    Alma::Type::FACULTY,
+    Alma::Type::MANAGER,
+    Alma::Type::LIBRARY_STAFF,
+    Alma::Type::STAFF,
+    Alma::Type::POST_DOC,
+    Alma::Type::VISITING_SCHOLAR
   ].freeze
 
   # Users must explicitly opt-in to each clause of the form.
@@ -37,7 +32,6 @@ class DoemoffStudyRoomUseForm < Form
 
   validates :patron,
             patron: {
-              affiliations: ALLOWED_PATRON_AFFILIATIONS,
               types: ALLOWED_PATRON_TYPES
             },
             strict: true

@@ -5,11 +5,14 @@ describe 'Proxy Borrower Forms', type: :request do
   attr_reader :patron
   attr_reader :user
 
+  let(:alma_api_key) { 'totally-fake-key' }
+
   context 'specs without admin privledges' do
     before(:each) do
-      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+      @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       @user = login_as_patron(patron_id)
-      @patron = Patron::Record.find(patron_id)
+      @patron = Alma::User.find(patron_id)
     end
 
     after(:each) do
@@ -29,6 +32,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
   context 'specs with created admin privledges' do
     before(:each) do
+      allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
       # Need to create a request for search!!!
       @req = ProxyBorrowerRequests.new(
         faculty_name: 'Test Search User',
@@ -56,9 +61,9 @@ describe 'Proxy Borrower Forms', type: :request do
       # Create an assignment:
       Assignment.create(framework_users: framework_user, role: Role.proxyborrow_admin)
 
-      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       @user = login_as_patron(patron_id)
-      @patron = Patron::Record.find(patron_id)
+      @patron = Alma::User.find(patron_id)
 
       admin_user = User.new(uid: '333333', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ProxyBorrowerFormsController).to receive(:current_user).and_return(admin_user)
@@ -78,6 +83,8 @@ describe 'Proxy Borrower Forms', type: :request do
 
   context 'specs with hard-coded admin privledges' do
     before(:each) do
+      allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
       # Need to create a request for search!!!
       @req = ProxyBorrowerRequests.create(
         faculty_name: 'Test Search User',
@@ -94,9 +101,9 @@ describe 'Proxy Borrower Forms', type: :request do
         status: nil
       )
 
-      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       @user = login_as_patron(patron_id)
-      @patron = Patron::Record.find(patron_id)
+      @patron = Alma::User.find(patron_id)
 
       admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ProxyBorrowerAdminController).to receive(:current_user).and_return(admin_user)

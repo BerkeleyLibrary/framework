@@ -5,9 +5,9 @@ describe :student_edevices_loan_form, type: :request do
     'an authenticated form',
     form_class: StudentEdevicesLoanForm,
     allowed_patron_types: [
-      Patron::Type::UNDERGRAD,
-      Patron::Type::UNDERGRAD_SLE,
-      Patron::Type::GRAD_STUDENT
+      Alma::Type::UNDERGRAD,
+      Alma::Type::UNDERGRAD_SLE,
+      Alma::Type::GRAD_STUDENT
     ],
     submit_path: '/forms/student_edevices_loan',
     success_path: '/forms/student_edevices_loan/all_checked',

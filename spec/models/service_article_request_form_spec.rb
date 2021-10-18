@@ -5,11 +5,12 @@ describe ServiceArticleRequestForm do
   attr_reader :patron
 
   before(:each) do
-    @patron = Patron::Record.new(
-      id: 111_111,
-      name: 'test-111111',
-      type: Patron::Type::FACULTY
-    )
+    @patron = Alma::User.new
+    @patron.user_obj = { 'user_note' => [] }
+    @patron.id = '111_111'
+    @patron.name = 'test-111111'
+    @patron.type = 'FACULTY'
+
     @form = ServiceArticleRequestForm.new(
       display_name: 'Chris Sharma',
       patron: patron,
@@ -21,12 +22,12 @@ describe ServiceArticleRequestForm do
   end
 
   it 'validates the form' do
-    patron.notes = ['book scan eligible']
+    @patron.add_note('book scan eligible')
     expect(form.valid?).to eq(true)
   end
 
   it 'checks patron eligibility' do
-    patron.notes = ['some other note']
+    patron.add_note('some other note')
     expect { form.valid? }.to raise_error(Error::PatronNotEligibleError)
   end
 
@@ -48,7 +49,7 @@ describe ServiceArticleRequestForm do
       citation: nil,
       pub_notes: nil
     }
-    patron.notes = ['book scan eligible']
+    patron.add_note('book scan eligible')
     expect { form.submit! }.to have_enqueued_job(ServiceArticleRequestJob)
       .with(expected_submit_email, expected_publication, patron.id)
   end

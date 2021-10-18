@@ -9,6 +9,7 @@ describe GalcRequestJob do
 
   it_behaves_like(
     'an email job',
+    note_text: 'GALC eligible',
     email_subject_success: 'GALC confirmation email'
   )
 end

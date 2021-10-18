@@ -1,0 +1,13 @@
+{
+  "errorsExist": true,
+  "errorList": {
+    "error": [
+      {
+        "errorCode": "401861",
+        "errorMessage": "User with identifier does-not-exist was not found.",
+        "trackingId": "E01-0510215437-ZAEZP-AWAE376692603"
+      }
+    ]
+  },
+  "result": null
+}

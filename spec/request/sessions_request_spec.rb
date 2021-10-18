@@ -14,7 +14,7 @@ describe SessionsController, type: :request do
     logger = UCBLIT::Logging::Loggers.new_json_logger(logdev)
     allow_any_instance_of(SessionsController).to receive(:logger).and_return(logger)
 
-    patron_id = Patron::FRAMEWORK_ADMIN_ID
+    patron_id = Alma::FRAMEWORK_ADMIN_ID
     with_patron_login(patron_id) { get admin_path }
     lines = logdev.string.lines
 

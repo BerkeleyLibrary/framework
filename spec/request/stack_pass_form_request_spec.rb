@@ -5,9 +5,11 @@ describe 'Stack Pass Form', type: :request do
   attr_reader :patron
   attr_reader :user
 
+  let(:alma_api_key) { 'totally-fake-key' }
+
   context 'specs without admin privledges' do
     before(:each) do
-      login_as_patron(5_551_212)
+      login_as_patron('5551212')
     end
 
     it 'index page does not include admin link for non admins' do
@@ -135,9 +137,11 @@ describe 'Stack Pass Form', type: :request do
   context 'specs with non-admin user logged in' do
 
     before(:each) do
-      @patron_id = Patron::Type.sample_id_for(Patron::Type::FACULTY)
+      allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
+      @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       @user = login_as_patron(patron_id)
-      @patron = Patron::Record.find(patron_id)
+      @patron = Alma::User.find(patron_id)
     end
 
     it 'Admin page redirects to if user is non-admin', :non_admin do

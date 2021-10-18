@@ -7,7 +7,7 @@ info:
   email: jlsilva@berkeley.edu
 extra:
   displayName: Jackie Silva
-  employeeNumber: '012065197'
-  uid: '00000009'
+  employeeNumber: "012065197"
+  uid: "012065197"
   berkeleyEduIsMemberOf:
-  - cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu
+    - cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu

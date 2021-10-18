@@ -6,12 +6,11 @@ describe LibstaffEdevicesLoanForm do
     attr_reader :form
 
     before(:each) do
-      @patron = Patron::Record.new(
-        id: 12_345,
-        email: 'jdoe@berkeley.test',
-        affiliation: Patron::Affiliation::UC_BERKELEY,
-        type: Patron::Type::LIBRARY_STAFF
-      )
+      @patron = Alma::User.new
+      @patron.id = 12_345
+      @patron.email = 'jdoe@berkeley.test'
+      @patron.type = Alma::Type::LIBRARY_STAFF
+
       @form = LibstaffEdevicesLoanForm.new(
         patron: patron,
         display_name: 'Jane Doe',
@@ -26,18 +25,6 @@ describe LibstaffEdevicesLoanForm do
       expect { form.submit! }.to have_enqueued_job(LibstaffEdevicesLoanJob).with(patron.id)
     end
 
-    describe :affiliation do
-      it 'requires an affiliation' do
-        patron.affiliation = nil
-        expect { form.submit! }.to raise_error(Error::ForbiddenError)
-      end
-
-      it 'requires a Berkeley affiliation' do
-        patron.affiliation = Patron::Affiliation::COMMUNITY_COLLEGE
-        expect { form.submit! }.to raise_error(Error::ForbiddenError)
-      end
-    end
-
     describe :patron_type do
       it 'requires a patron type' do
         patron.type = nil
@@ -45,7 +32,7 @@ describe LibstaffEdevicesLoanForm do
       end
 
       it 'requires the patron type to be LIBRARY_STAFF' do
-        invalid_types = Patron::Type.all.reject { |t| t == Patron::Type::LIBRARY_STAFF }
+        invalid_types = Alma::Type.all.reject { |t| t == Alma::Type::LIBRARY_STAFF }
         aggregate_failures 'patron type validation' do
           invalid_types.each do |t|
             patron.type = t

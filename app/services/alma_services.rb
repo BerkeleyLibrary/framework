@@ -21,6 +21,14 @@ module AlmaServices
       ValidProxyPatron.valid?(JSON.parse(res.body))
     end
 
+    def self.save(alma_id, user)
+      req = "#{Config.alma_api_url}users/#{alma_id}?apikey=#{Config.alma_api_key}"
+      res = Faraday.put(req, user.to_json, { 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
+      raise ActiveRecord::RecordNotFound, 'Failed to save.' unless res.status == 200
+
+      'Saved user.'
+    end
+
   end
 
   class Fines
@@ -51,4 +59,5 @@ module AlmaServices
       Rails.application.config.alma_api_key
     end
   end
+
 end

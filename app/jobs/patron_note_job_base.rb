@@ -23,14 +23,17 @@ class PatronNoteJobBase < ApplicationJob
   private
 
   def find_patron(patron_id)
-    Patron::Record.find(patron_id)
+    Alma::User.find_if_active patron_id
   rescue StandardError => e
     log_error(e)
     raise
   end
 
   def add_note_and_notify(patron)
+    # Delete original note to keep users notes clean
+    patron.delete_note(@note_txt)
     patron.add_note(note)
+    patron.save
     send_patron_email(patron)
   rescue StandardError => e
     log_error(e)

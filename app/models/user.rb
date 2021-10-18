@@ -121,35 +121,12 @@ class User
 
   private
 
-  # The user's employee patron record
-  # @return [Patron::Record, nil]
-  def employee_patron_record
-    @employee_patron_record ||= Patron::Record.find_if_active(employee_id)
-  end
-
-  # The user's student patron record (if they have a student ID)
-  # @return [Patron::Record, nil]
-  def student_patron_record
-    @student_patron_record ||= Patron::Record.find_if_active(student_id)
-  end
-
-  # The user's Campus Solutions patron record (if they have a Campus Solutions ID)
-  # @return [Patron::Record, nil]
-  def csid_patron_record
-    @csid_patron_record ||= Patron::Record.find_if_active(cs_id)
-  end
-
-  # The user's UC Path patron record (if they have a UC Path ID)
-  # @return [Patron::Record, nil]
-  def ucpath_patron_record
-    @ucpath_patron_record ||= Patron::Record.find_if_active(ucpath_id)
+  # @return [Alma::User, nil]
+  def uid_patron_record
+    @uid_patron_record ||= Alma::User.find_if_active(uid)
   end
 
   def find_primary_record
-    return student_patron_record if student_patron_record
-    return csid_patron_record if csid_patron_record
-    return ucpath_patron_record if ucpath_patron_record
-
-    employee_patron_record
+    uid_patron_record
   end
 end

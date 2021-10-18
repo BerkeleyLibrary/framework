@@ -7,17 +7,17 @@ credentials:
   ticket: ST-453090-8B81zHCvlBWPbINqOyTSXqtiyyYauth-p2
 extra:
   user: rachel.roe
-  isFromNewLogin: 'true'
-  bypassMultifactorAuthentication: 'false'
+  isFromNewLogin: "true"
+  bypassMultifactorAuthentication: "false"
   authenticationDate: 2019-08-14T10:34:37.587-07:00[America/Los_Angeles]
   authnContextClass: mfa-duo
   displayName: Rachel J Roe
   givenName: Rachel
   successfulAuthenticationHandlers: mfa-duo
-  employeeNumber: '5551212'
+  employeeNumber: "5551212"
   samlAuthenticationStatementAuthMethod: urn:oasis:names:tc:SAML:1.0:am:unspecified
   credentialType: DuoCredential
-  uid: '5555551212'
+  uid: "5551212"
   authenticationMethod: mfa-duo
   surname: Roe
   departmentNumber: KPADM
@@ -25,4 +25,4 @@ extra:
     - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
   berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
   berkeleyEduOfficialEmail: rjroe@berkeley.edu
-  longTermAuthenticationRequestTokenUsed: 'false'
+  longTermAuthenticationRequestTokenUsed: "false"

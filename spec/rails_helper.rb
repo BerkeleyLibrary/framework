@@ -4,7 +4,7 @@ require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 
 require 'ssh_helper'
-require 'patron_helper'
+require 'alma_helper'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false

@@ -7,6 +7,7 @@ ruby '2.7.2'
 gem 'awesome_print', '>=1.8.0'
 gem 'bootsnap', '~> 1.7', '>= 1.7.4', require: false
 gem 'bootstrap'
+gem 'coffee-rails', '~> 5.0'
 gem 'faraday'
 gem 'ipaddress'
 gem 'jaro_winkler', '~> 1.5.4'

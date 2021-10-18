@@ -1,12 +1,8 @@
 class StudentEdevicesLoanForm < Form
-  ALLOWED_PATRON_AFFILIATIONS = [
-    Patron::Affiliation::UC_BERKELEY
-  ].freeze
-
   ALLOWED_PATRON_TYPES = [
-    Patron::Type::UNDERGRAD,
-    Patron::Type::UNDERGRAD_SLE,
-    Patron::Type::GRAD_STUDENT
+    Alma::Type::UNDERGRAD,
+    Alma::Type::UNDERGRAD_SLE,
+    Alma::Type::GRAD_STUDENT
   ].freeze
 
   attr_accessor :borrow_check
@@ -30,7 +26,6 @@ class StudentEdevicesLoanForm < Form
 
   validates :patron,
             patron: {
-              affiliations: ALLOWED_PATRON_AFFILIATIONS,
               types: ALLOWED_PATRON_TYPES
             },
             strict: true

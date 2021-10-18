@@ -5,11 +5,11 @@ describe :scan_request_forms, type: :request do
     'an authenticated form',
     form_class: ScanRequestForm,
     allowed_patron_types: [
-      Patron::Type::FACULTY,
-      Patron::Type::STAFF,
-      Patron::Type::LIBRARY_STAFF,
-      Patron::Type::MANAGER,
-      Patron::Type::VISITING_SCHOLAR
+      Alma::Type::FACULTY,
+      Alma::Type::STAFF,
+      Alma::Type::LIBRARY_STAFF,
+      Alma::Type::MANAGER,
+      Alma::Type::VISITING_SCHOLAR
     ],
     submit_path: '/forms/altmedia',
     success_path: '/forms/altmedia/optin',

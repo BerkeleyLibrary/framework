@@ -1,10 +1,6 @@
 class LibstaffEdevicesLoanForm < Form
-  ALLOWED_PATRON_AFFILIATIONS = [
-    Patron::Affiliation::UC_BERKELEY
-  ].freeze
-
   ALLOWED_PATRON_TYPES = [
-    Patron::Type::LIBRARY_STAFF
+    Alma::Type::LIBRARY_STAFF
   ].freeze
 
   attr_accessor :borrow_check
@@ -26,7 +22,6 @@ class LibstaffEdevicesLoanForm < Form
 
   validates :patron,
             patron: {
-              affiliations: ALLOWED_PATRON_AFFILIATIONS,
               types: ALLOWED_PATRON_TYPES
             },
             strict: true

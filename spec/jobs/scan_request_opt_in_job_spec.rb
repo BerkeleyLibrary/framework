@@ -12,6 +12,7 @@ describe ScanRequestOptInJob do
 
   it_behaves_like(
     'an email job',
+    note_text: 'library book scan eligible',
     email_subject_success: email_subject_success
   )
 end

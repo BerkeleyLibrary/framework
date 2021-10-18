@@ -6,9 +6,9 @@ info:
   email: danschmidt5189@berkeley.edu
 extra:
   displayName: Daniel C. Schmidt
-  employeeNumber: '18273645'
+  employeeNumber: "18273645"
   givenName: Daniel
   surname: Schmidt
-  uid: '00000005'
+  uid: "18273645"
   berkeleyEduIsMemberOf:
-  - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
+    - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu

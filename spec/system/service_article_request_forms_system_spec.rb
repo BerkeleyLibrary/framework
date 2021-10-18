@@ -7,12 +7,22 @@ describe :service_article_request_forms, type: :system do
     attr_reader :patron
     attr_reader :user
 
-    before(:each) do
-      @patron_id = Patron::Type.sample_id_for(Patron::Type::POST_DOC)
-      @user = login_as_patron(patron_id)
+    let(:alma_api_key) { 'totally-fake-key' }
 
-      @patron = Patron::Record.find(patron_id)
-      eligible = patron.notes.any? { |n| n =~ /book scan eligible/ }
+    before(:each) do
+      @patron_id = Alma::Type.sample_id_for(Alma::Type::POST_DOC)
+      @user = login_as_patron(patron_id)
+      allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
+      req_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key&expand=fees&view=full"
+
+      stub_request(:get, req_url)
+        .with(headers: { 'Accept' => 'application/json' })
+        .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{patron_id}.json"))
+
+      @patron = Alma::User.find(patron_id)
+      eligible = patron.find_note('book scan eligible') ? true : false
+
       expect(eligible).to eq(true) # just to be sure
 
       visit new_service_article_request_form_path
@@ -56,15 +66,25 @@ describe :service_article_request_forms, type: :system do
   end
 
   describe 'with an invalid patron type' do
+    let(:alma_api_key) { 'totally-fake-key' }
+
     it 'throws patron not eligible error' do
-      patron_id = Patron::Type.sample_id_for(Patron::Type::UNDERGRAD)
+      patron_id = Alma::Type.sample_id_for(Alma::Type::UNDERGRAD)
       login_as_patron(patron_id)
-      patron = Patron::Record.find(patron_id)
-      patron.notes = nil
+      allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
+      req_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key&expand=fees&view=full"
+
+      stub_request(:get, req_url)
+        .with(headers: { 'Accept' => 'application/json' })
+        .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{patron_id}.json"))
+
+      patron = Alma::User.find(patron_id)
+      patron.delete_note('book scan eligible')
 
       visit new_service_article_request_form_path
 
-      expect(page).to have_content('you are not eligible')
+      expect(page).to have_content('This article request form is for patrons who are eligible')
     end
   end
 end

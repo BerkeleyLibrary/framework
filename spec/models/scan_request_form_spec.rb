@@ -7,23 +7,21 @@ describe ScanRequestForm do
 
   describe 'allowed' do
     allowed_patron_types = [
-      Patron::Type::FACULTY,
-      Patron::Type::STAFF,
-      Patron::Type::LIBRARY_STAFF,
-      Patron::Type::MANAGER,
-      Patron::Type::VISITING_SCHOLAR
+      Alma::Type::FACULTY,
+      Alma::Type::STAFF,
+      Alma::Type::LIBRARY_STAFF,
+      Alma::Type::MANAGER,
+      Alma::Type::VISITING_SCHOLAR
     ]
 
     allowed_patron_types.each do |type|
-      describe Patron::Type.name_of(type) do
+      describe Alma::Type.name_of(type) do
         before(:each) do
-          @patron = Patron::Record.new(
-            affiliation: Patron::Affiliation::UC_BERKELEY,
-            email: 'winner@civil-war.com',
-            id: '1865',
-            name: 'Ulysses S. Grant',
-            type: type
-          )
+          @patron = Alma::User.new
+          @patron.email = 'winner@civil-war.com'
+          @patron.id = '1865'
+          @patron.name = 'Ulysses S. Grant'
+          @patron.type = type
 
           @form = ScanRequestForm.new(
             opt_in: 'true',
@@ -47,11 +45,6 @@ describe ScanRequestForm do
           expect { form.submit! }.to raise_error(Error::ForbiddenError)
         end
 
-        it 'checks patron affiliation' do
-          form.patron.affiliation = Patron::Affiliation::COMMUNITY_COLLEGE
-          expect { form.submit! }.to raise_error(Error::ForbiddenError)
-        end
-
         it 'checks opt-in flag' do
           form.opt_in = 'maybe'
           expect(form.valid?).to eq(false)
@@ -72,21 +65,20 @@ describe ScanRequestForm do
 
   describe 'forbidden' do
     forbidden_patron_types = [
-      Patron::Type::UNDERGRAD,
-      Patron::Type::UNDERGRAD_SLE,
-      Patron::Type::GRAD_STUDENT,
-      Patron::Type::POST_DOC
+      Alma::Type::UNDERGRAD,
+      Alma::Type::UNDERGRAD_SLE,
+      Alma::Type::GRAD_STUDENT,
+      Alma::Type::POST_DOC
     ]
 
     forbidden_patron_types.each do |type|
-      describe Patron::Type.name_of(type) do
+      describe Alma::Type.name_of(type) do
         before(:each) do
-          @patron = Patron::Record.new(
-            affiliation: Patron::Affiliation::UC_BERKELEY,
-            email: 'winner@civil-war.com',
-            id: '1865',
-            type: type
-          )
+          @patron = Alma::User.new
+          @patron.email = 'winner@civil-war.com'
+          @patron.id = '1865'
+          @patron.type = type
+
           @form = ScanRequestForm.new(
             opt_in: 'true',
             patron: patron,

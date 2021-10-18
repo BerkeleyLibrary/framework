@@ -7,6 +7,6 @@ info:
 extra:
   displayName: Prof. Emeritus
   employeeNumber: "12345678"
-  uid: "123545"
+  uid: "12345678"
   berkeleyEduIsMemberOf:
     - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu

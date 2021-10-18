@@ -3,11 +3,14 @@ require 'calnet_helper'
 RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_types:, submit_path:, success_path:, valid_form_params:|
   attr_reader :form_name
 
-  forbidden_patron_types = Patron::Type.all.reject { |t| allowed_patron_types.include?(t) }
+  let(:alma_api_key) { 'totally-fake-key' }
+
+  forbidden_patron_types = Alma::Type.all.reject { |t| allowed_patron_types.include?(t) }
 
   missing_field_params = valid_form_params.map { |k, v| [k, v.is_a?(Hash) ? {} : nil] }.to_h
 
   before(:each) do
+    allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
     @form_name = form_class.to_s.underscore
   end
 
@@ -30,8 +33,8 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
   end
 
   allowed_patron_types.each do |type|
-    it "allows #{Patron::Type.name_of(type)}" do
-      patron_id = Patron::Type.sample_id_for(type)
+    it "allows #{Alma::Type.name_of(type)}" do
+      patron_id = Alma::Type.sample_id_for(type)
       with_patron_login(patron_id) do
         get new_form_path
         expect(response).to have_http_status(:ok)
@@ -40,8 +43,8 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
   end
 
   forbidden_patron_types.each do |type|
-    it "forbids #{Patron::Type.name_of(type)}" do
-      patron_id = Patron::Type.sample_id_for(type)
+    it "forbids #{Alma::Type.name_of(type)}" do
+      patron_id = Alma::Type.sample_id_for(type)
       with_patron_login(patron_id) do
         get new_form_path
         expect(response).to have_http_status(:forbidden)
@@ -50,7 +53,7 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
   end
 
   it 'forbids users without patron records' do
-    patron_id = 'does not exist'
+    patron_id = 'does_not_exist'
     with_patron_login(patron_id) do
       get new_form_path
       expect(response).to have_http_status(:forbidden)
@@ -65,10 +68,10 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
     attr_reader :user
 
     before(:each) do
-      @patron_id = Patron::Type.sample_id_for(allowed_patron_types.first)
+      @patron_id = Alma::Type.sample_id_for(allowed_patron_types.first)
       @user = login_as_patron(patron_id)
 
-      @patron = Patron::Record.find(patron_id)
+      @patron = Alma::User.find(patron_id)
     end
 
     after(:each) do
@@ -76,13 +79,13 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
     end
 
     it 'handles patron API errors' do
-      expect(Patron::Record).to receive(:find).with(patron_id).and_raise(Error::PatronApiError)
+      expect(Alma::User).to receive(:find).with(patron_id).and_raise(Error::PatronApiError)
       get new_form_path
       expect(response).to have_http_status(:service_unavailable)
     end
 
     it 'respects patron blocks' do
-      expect(Patron::Record).to receive(:find).with(patron_id).and_return(patron)
+      expect(Alma::User).to receive(:find).with(patron_id).and_return(patron)
       expect(patron).to receive(:blocks).and_return('block all the things')
       get new_form_path
       expect(response).to have_http_status(:forbidden)

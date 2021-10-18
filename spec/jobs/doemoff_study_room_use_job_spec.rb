@@ -9,6 +9,7 @@ describe DoemoffStudyRoomUseJob do
 
   it_behaves_like(
     'an email job',
+    note_text: 'Doe/Moffitt study room eligible',
     email_subject_success: 'Doemoff room confirmation email'
   )
 end
