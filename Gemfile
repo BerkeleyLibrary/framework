@@ -61,9 +61,9 @@ group :development do
 end
 
 group :test do
-  gem 'capybara'
+  gem 'capybara', '~> 3.36'
   gem 'concurrent-ruby', '~> 1.1'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '~> 4.0'
   gem 'simplecov', '~> 0.16.1', require: false
   gem 'simplecov-rcov', require: false
 end

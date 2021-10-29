@@ -18,14 +18,12 @@ class SessionsController < ApplicationController
 
   # Generate a new user session using data returned from a valid Calnet login
   def callback
-    logger.debug({
-                   msg: 'Received omniauth callback',
-                   omniauth: auth_params
-                 })
+    logger.debug({ msg: 'Received omniauth callback', omniauth: auth_params })
 
-    @user = User.from_omniauth(auth_params)
-
-    sign_in @user
+    @user = User.from_omniauth(auth_params).tap do |user|
+      sign_in(user)
+      log_signin(user)
+    end
 
     redirect_to request.env['omniauth.origin'] || home_path
   end
@@ -33,13 +31,18 @@ class SessionsController < ApplicationController
   # Logout the user by redirecting to CAS logout screen
   def destroy
     sign_out
-    end_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
-    redirect_to end_url
+
+    # TODO: configure this more elegantly and make it play better with Selenium tests
+    redirect_to "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
   end
 
   private
 
   def auth_params
     request.env['omniauth.auth']
+  end
+
+  def log_signin(user)
+    logger.debug({ msg: 'Signed in user', user: user })
   end
 end

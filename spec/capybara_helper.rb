@@ -39,6 +39,22 @@ module CapybaraHelper
       File.join(browser_project_root, SAVE_PATH)
     end
 
+    def delete_all_cookies
+      browser.tap do |b|
+        next unless b.respond_to?(:manage)
+        next unless (manager = b.manage).respond_to?(:delete_all_cookies)
+
+        manager.delete_all_cookies
+      end
+    end
+
+    def active_element
+      return unless browser
+      return unless browser.respond_to?(:switch_to)
+
+      browser.switch_to.active_element
+    end
+
     private
 
     def browser
@@ -71,12 +87,14 @@ module CapybaraHelper
     attr_reader :chrome_args
     attr_reader :chrome_prefs
     attr_reader :webmock_options
+    attr_reader :driver_opts
 
-    def initialize(driver_name, chrome_args: [], chrome_prefs: {}, webmock_options: {})
+    def initialize(driver_name, chrome_args: [], chrome_prefs: {}, webmock_options: {}, driver_opts: {})
       @driver_name = driver_name
       @chrome_args = DEFAULT_CHROME_ARGS + chrome_args
       @chrome_prefs = Configurator.default_chrome_prefs.merge(chrome_prefs)
-      @webmock_options = DEFAULT_WEBMOCK_OPTIONS.merge(webmock_options)
+      @webmock_options = merge_webmock_options(webmock_options)
+      @driver_opts = driver_opts
     end
 
     def configure!
@@ -94,18 +112,35 @@ module CapybaraHelper
       end
     end
 
-    private
-
     def configure_capybara!
       Capybara.save_path = CapybaraHelper.local_save_path.tap do |p|
         FileUtils.mkdir_p(p)
       end
 
       Capybara.register_driver(driver_name) do |app|
-        new_driver(app, chrome_args)
+        capabilities = [
+          ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args, prefs: chrome_prefs),
+          ::Selenium::WebDriver::Remote::Capabilities.chrome(
+            'goog:loggingPrefs' => {
+              browser: 'ALL', driver: 'ALL'
+            }
+          )
+        ]
+        options = { capabilities: capabilities }.merge(driver_opts)
+        Capybara::Selenium::Driver.new(app, options)
       end
 
       Capybara.javascript_driver = driver_name
+    end
+
+    private
+
+    def merge_webmock_options(webmock_options)
+      DEFAULT_WEBMOCK_OPTIONS.dup.tap do |opts|
+        webmock_options.each do |opt, val|
+          opts[opt] = val.is_a?(Array) ? ((opts[opt] || []) + val).uniq : val
+        end
+      end
     end
 
     def configure_rspec!
@@ -114,7 +149,7 @@ module CapybaraHelper
       driver_name = self.driver_name
       webmock_options = self.webmock_options
 
-      # TODO: replace with around(:each) once we're on Rails 6.1
+      # TODO: replace with around(:each)
       #       (see CapybaraHelper::GridConfigurator#configure!)
       RSpec.configure do |config|
         config.before(:each, type: :system) do
@@ -144,61 +179,27 @@ module CapybaraHelper
       '--disable-gpu'
     ].freeze
 
+    GRID_DRIVER_OPTS = {
+      browser: :remote,
+      url: "http://#{SELENIUM_HOSTNAME}:4444/wd/hub"
+    }.freeze
+
     def initialize
-      super(:selenium_grid, webmock_options: { allow: [SELENIUM_HOSTNAME] }, chrome_args: GRID_CHROME_ARGS)
+      super(:selenium_grid, webmock_options: { allow: [SELENIUM_HOSTNAME] }, chrome_args: GRID_CHROME_ARGS, driver_opts: GRID_DRIVER_OPTS)
     end
 
-    def new_driver(app, chrome_args)
-      Capybara::Selenium::Driver.new(
-        app,
-        browser: :remote,
-        url: "http://#{SELENIUM_HOSTNAME}:4444/wd/hub",
-        desired_capabilities: ::Selenium::WebDriver::Remote::Capabilities.chrome(
-          chromeOptions: {
-            args: chrome_args,
-            prefs: chrome_prefs
-          },
-          'goog:loggingPrefs' => {
-            browser: 'ALL', client: 'ALL', driver: 'ALL', server: 'ALL'
-          }
-        )
-      )
-    end
-
-    def configure!
+    def configure_capybara!
       super
 
-      RSpec.configure do |config|
-        # Note: this *has* to be done in a before(:each) hook, or it'll get clobbered
-        # by ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown#before_setup
-        #
-        # TODO: this is fixed in Rails 6.1
-        config.before(:each, type: :system) do
-          Capybara.server_port = ENV['CAPYBARA_SERVER_PORT'] if ENV['CAPYBARA_SERVER_PORT']
-          Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
-          Capybara.server_host = '0.0.0.0'
-          Capybara.always_include_port = true
-        end
-      end
+      Capybara.server_port = ENV['CAPYBARA_SERVER_PORT'] if ENV['CAPYBARA_SERVER_PORT']
+      Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
+      Capybara.server_host = '0.0.0.0'
     end
   end
 
   class LocalConfigurator < Configurator
     def initialize
-      super(:selenium_headless, chrome_args: ['--headless'])
-    end
-
-    def new_driver(app, chrome_args)
-      Capybara::Selenium::Driver.new(
-        app,
-        browser: :chrome,
-        options: ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args, prefs: chrome_prefs),
-        desired_capabilities: {
-          'goog:loggingPrefs' => {
-            browser: 'ALL', client: 'ALL', driver: 'ALL', server: 'ALL'
-          }
-        }
-      )
+      super(:selenium_headless, chrome_args: ['--headless'], driver_opts: { browser: :chrome })
     end
   end
 end

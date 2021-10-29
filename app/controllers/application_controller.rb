@@ -89,11 +89,6 @@ class ApplicationController < ActionController::Base
   # @return [void]
   def sign_in(user)
     session[:user] = user
-
-    logger.debug({
-                   msg: 'Signed in user',
-                   user: session[:user]
-                 })
   end
 
   # Sign out the current user by clearing all session data

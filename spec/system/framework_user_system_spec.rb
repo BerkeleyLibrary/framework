@@ -10,7 +10,7 @@ describe :forms_proxy_borrower_admin, type: :system do
       @assignment = Assignment.create(framework_users_id: user.id, role_id: Role.proxyborrow_admin.id)
 
       # These functions require admin privledges:
-      mock_calnet_login(CalNet::STACK_REQUEST_ADMIN_UID)
+      mock_login(CalnetHelper::STACK_REQUEST_ADMIN_UID)
 
       # Go to the Admin Users View Page:
       visit forms_proxy_borrower_admin_users_path
@@ -43,7 +43,7 @@ describe :forms_stack_pass_admin, type: :system do
       Assignment.create(framework_users_id: user.id, role_id: Role.stackpass_admin.id)
 
       # These functions require admin privledges:
-      mock_calnet_login(CalNet::STACK_REQUEST_ADMIN_UID)
+      mock_login(CalnetHelper::STACK_REQUEST_ADMIN_UID)
 
       # Go to the Admin Users View Page:
       visit forms_stack_pass_admin_users_path
