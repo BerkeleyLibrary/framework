@@ -191,9 +191,18 @@ module CapybaraHelper
     def configure_capybara!
       super
 
-      Capybara.server_port = ENV['CAPYBARA_SERVER_PORT'] if ENV['CAPYBARA_SERVER_PORT']
-      Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
-      Capybara.server_host = '0.0.0.0'
+      RSpec.configure do |config|
+        # Note: this *has* to be done in a before(:each) hook, or it'll get clobbered
+        # by ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown#before_setup
+        #
+        # TODO: this is fixed in Rails 6.1
+        config.before(:each, type: :system) do
+          Capybara.server_port = ENV['CAPYBARA_SERVER_PORT'] if ENV['CAPYBARA_SERVER_PORT']
+          Capybara.app_host = "http://#{CAPYBARA_APP_HOSTNAME}"
+          Capybara.server_host = '0.0.0.0'
+          Capybara.always_include_port = true
+        end
+      end
     end
   end
 
