@@ -51,9 +51,13 @@ describe TindDownloadController, type: :request do
   end
 
   context 'specs for non-staff user' do
-    around(:each) do |example|
+    before(:each) do
       patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
-      with_patron_login(patron_id) { example.run }
+      login_as_patron(patron_id)
+    end
+
+    after(:each) do
+      logout!
     end
 
     describe 'form' do
@@ -84,9 +88,13 @@ describe TindDownloadController, type: :request do
   end
 
   context 'specs for staff user' do
-    around(:each) do |example|
+    before(:each) do
       patron_id = Alma::Type.sample_id_for(Alma::Type::STAFF)
-      with_patron_login(patron_id) { example.run }
+      login_as_patron(patron_id)
+    end
+
+    after(:each) do
+      logout!
     end
 
     before(:each) do

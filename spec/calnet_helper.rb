@@ -7,9 +7,13 @@ module CalnetHelper
 
   # Mocks a calnet login as the specified patron, and stubs the corresponding
   # Millennium patron dump file. Suitable for calling from a before() block.
+  # Should be paired with {CalnetHelper#logout!}
   #
-  # @return [User] A user object created from the specified mock data (not the
-  #                actual object from the session)
+  # NOTE: because this relies on an RSpec partial double, it can't be called
+  #       from an around:each hook or a before:suite hook, only from a before:each
+  #       hook or inside an individual test case.
+  #
+  # @return [User] the User object created by the SessionsController.
   def login_as_patron(patron_id)
     stub_patron_dump(patron_id)
     mock_login(patron_id)
@@ -17,7 +21,12 @@ module CalnetHelper
 
   # Wraps the provided block in login_as() / logout!() calls. Useful when it's
   # not possible to know the patron ID in a before() block.
-  # @@yield [User] A user object created from the specified mock data
+  #
+  # NOTE: because this relies on an RSpec partial double, it can't be called
+  #       from an around:each hook or a before:suite hook, only from a
+  #       before:each hook or inside an individual test case.
+  #
+  # @@yield [User] the User object created by the SessionsController.
   def with_patron_login(patron_id)
     user = login_as_patron(patron_id)
     yield user
@@ -28,7 +37,14 @@ module CalnetHelper
     logout!
   end
 
-  # Mocks a calnet login as the specified patron
+  # Mocks a calnet login as the specified patron, returning the user object
+  # created by the SessionsController.
+  #
+  # NOTE: because this relies on an RSpec partial double, it can't be called
+  #       from an around:each hook or a before:suite hook, only from a before:each
+  #       hook or inside an individual test case.
+  #
+  # @return [User] the User object created by the SessionsController.
   def mock_login(uid)
     auth_hash = auth_hash_for(uid)
     mock_omniauth_login(auth_hash)
@@ -57,6 +73,14 @@ module CalnetHelper
     CapybaraHelper.delete_all_cookies if defined?(CapybaraHelper)
   end
 
+  # Mocks an OmniAuth login with the specified hash, returning the user object
+  # created by the SessionsController.
+  #
+  # NOTE: because this relies on an RSpec partial double, it can't be called
+  #       from an around:each hook or a before:suite hook, only from a before:each
+  #       hook or inside an individual test case.
+  #
+  # @return [User] the User object created by the SessionsController.
   def mock_omniauth_login(auth_hash)
     last_signed_in_user = nil
 
