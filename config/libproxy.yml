@@ -14,7 +14,8 @@ default: &default
     - UCB POST
     - LIBSTAFF
     - UCBAFFILI
-    - ICSI_MSRI
+    - LIBSTAFFRS 
+    - NONACADRS 
     - HHI
     - UCBALUMSTF
 
