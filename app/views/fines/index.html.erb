@@ -1,7 +1,7 @@
 <h1>List of Fines + Fees</h1>
 <!-- Need descriptive text-->
 <% if @fines.fines.length > 0 %>
-  <p>Please select the fees you plan to pay. You will be asked to confirm before you are taken to the PayPal payment page. If you have any questions about the listed fees, please contact the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/using-the-libraries/privileges-desk' %>.</p>
+  <p>Please select the fees you plan to pay. You will be asked to confirm before you are taken to the PayPal payment page. If you have any questions about the listed fees, please contact the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/find/privileges-desk' %>.</p>
   <!-- Payment Form -->
   <%= form_with url: "/fines/payment", method: :post, local:true do |form| %>
     <%= form.hidden_field :alma_id, :value => @fines.alma_id %>
