@@ -18,6 +18,8 @@ default: &default
     - NONACADRS 
     - HHI
     - UCBALUMSTF
+    - UCEXTESL
+    - UCEXTNON-CON
 
 development:
   <<: *default
