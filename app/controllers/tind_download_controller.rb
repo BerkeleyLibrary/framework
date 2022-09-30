@@ -68,19 +68,21 @@ class TindDownloadController < ApplicationController
   end
 
   def collections_by_name
-    Rails.cache.fetch(:tind_collections_by_name, expires_in: CACHE_EXPIRY) do
-      {}.tap do |coll_by_name|
-        root_collections.each do |root|
-          root.each_descendant(include_self: true) do |coll|
-            coll_by_name[coll.name] = coll
-          end
-        end
-      end
-    end
+    Rails.cache.fetch(:tind_collections_by_name, expires_in: CACHE_EXPIRY, &method(:arrange_collections_by_name))
   end
 
   def collection_names
     Rails.cache.fetch(:tind_collection_names, expires_in: CACHE_EXPIRY) { collections_by_name.keys.sort }
+  end
+
+  def arrange_collections_by_name(_cache_key)
+    {}.tap do |coll_by_name|
+      root_collections.each do |root|
+        root.each_descendant(include_self: true) do |coll|
+          coll_by_name[coll.name] = coll
+        end
+      end
+    end
   end
 
   def find_nearest(partial_name)
