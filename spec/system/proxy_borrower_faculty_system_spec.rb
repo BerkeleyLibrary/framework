@@ -1,6 +1,5 @@
 require 'capybara_helper'
 require 'calnet_helper'
-require 'capybara_helper'
 require 'time'
 
 describe :forms_proxy_borrower_faculty, type: :system do
@@ -108,7 +107,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
 
   it 'accepts a valid request' do
     fill_in('faculty_name', with: 'Brooks Hatlen')
-    fill_in('department', with: 'LIB')
+    fill_in('department', with: 'KPADM')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
     fill_in('term', with: "#{@max_date_str}\t") # \t to tab off date field
@@ -132,7 +131,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     @short_year = "6/30/#{yr_str[2..3]}"
 
     fill_in('faculty_name', with: 'Brooks Hatlen')
-    fill_in('department', with: 'LIB')
+    fill_in('department', with: 'KPADM')
     fill_in('research_last', with: 'Doe')
     fill_in('research_first', with: 'John')
     fill_in('term', with: "#{@short_year}\t") # \t to tab off date field
