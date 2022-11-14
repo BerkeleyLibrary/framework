@@ -1,7 +1,3 @@
-# Read Docker secrets into the environment. Must be before 'rails/all'.
-require_relative '../lib/docker'
-Docker::Secret.setup_environment!
-
 require_relative 'boot'
 require 'rails/all'
 Bundler.require(*Rails.groups)

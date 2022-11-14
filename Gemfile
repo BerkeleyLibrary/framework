@@ -2,9 +2,10 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.2'
+ruby File.read('.ruby-version').strip
 
 gem 'awesome_print', '>=1.8.0'
+gem 'berkeley_library-docker', '~> 0.1.1'
 gem 'bootsnap', '~> 1.7', '>= 1.7.4', require: false
 gem 'bootstrap'
 gem 'coffee-rails', '~> 5.0'

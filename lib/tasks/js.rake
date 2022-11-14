@@ -1,5 +1,5 @@
 require 'rspec/core/rake_task'
-require 'docker'
+require 'berkeley_library/docker'
 
 module UCBLIT
   class ESLintRunner
@@ -37,7 +37,7 @@ module UCBLIT
       end
 
       def default_err_stream
-        Docker.running_in_container? ? $stdout : nil
+        BerkeleyLibrary::Docker.running_in_container? ? $stdout : nil
       end
     end
 
