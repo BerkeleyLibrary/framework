@@ -1,6 +1,7 @@
 require_relative 'boot'
 require 'rails/all'
 Bundler.require(*Rails.groups)
+require 'berkeley_library/docker/railtie'
 
 module Framework
   class Application < Rails::Application
