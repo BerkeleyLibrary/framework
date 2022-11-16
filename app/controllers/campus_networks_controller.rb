@@ -3,7 +3,7 @@ class CampusNetworksController < ApplicationController
 
   def index
     @generated = CampusNetwork.ipv6_ranges(org_param)
-    render template: 'campus_networks/index.txt', locals: {
+    render locals: {
       networks: CampusNetwork.all(organization: org_param)
     }
   end

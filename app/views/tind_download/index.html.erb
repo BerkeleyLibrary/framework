@@ -22,7 +22,7 @@
     <div class="form-input">
       <ul>
         <% radio_button_id = :export_format %>
-        <% UCBLIT::TIND::Export::ExportFormat.each do |fmt| %>
+        <% BerkeleyLibrary::TIND::Export::ExportFormat.each do |fmt| %>
           <% val = fmt.value.downcase %>
           <li>
             <%= f.radio_button(radio_button_id, fmt.value, checked: fmt.default?) %>

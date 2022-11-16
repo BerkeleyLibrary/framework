@@ -20,9 +20,10 @@ class CampusNetwork < IPAddr
 
   class_attribute :visitor_ips, default: ['2001:400:613:: - 2001:400:613:FFFF:FFFF:FFFF:FFFF:FFFF']
 
-  def initialize(range, organization)
+  def initialize(raw_addr, format = Socket::AF_INET, organization:)
+    @raw_addr = raw_addr
     @organization = organization
-    super(range)
+    super(raw_addr, format)
   end
 
   class << self
@@ -56,7 +57,7 @@ class CampusNetwork < IPAddr
       Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
         next unless node.search('sup').empty?
 
-        new(node.text, :ucb) unless IPAddr.new(node.text).private?
+        new(node.text, organization: :ucb) unless IPAddr.new(node.text).private?
       end
     end
 
@@ -100,7 +101,7 @@ class CampusNetwork < IPAddr
     def parse_lbl_addresses(raw_html)
       Nokogiri::HTML(raw_html).css('td:nth-child(n+2)').map do |node|
         range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
-        new(convert_to_cidrs(range), :lbl) unless IPAddr.new(range[1]).private? || IPAddress.valid_ipv6?(range[1])
+        new(convert_to_cidrs(range), organization: :lbl) unless IPAddr.new(range[1]).private? || IPAddress.valid_ipv6?(range[1])
       end
     end
 
@@ -133,6 +134,11 @@ class CampusNetwork < IPAddr
   # @return [String]
   def to_vendor_range_format
     "#{to_range.first}-#{to_range.last}"
+  end
+
+  def to_range
+    raw_ipaddr = IPAddr.new(@raw_addr, family)
+    @range_val ||= raw_ipaddr.to_range
   end
 
 end

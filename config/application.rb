@@ -4,8 +4,7 @@ Bundler.require(*Rails.groups)
 
 module Framework
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 7.0
 
     # Load our custom config. This is implicitly consumed in a few remaining
     # places (e.g. RequestMailer). A good development improvement would be to
@@ -35,7 +34,7 @@ module Framework
     config.paypal_payflow_url = config.altmedia['paypal_payflow_url']
     config.paypal_payflow_login = config.altmedia['paypal_payflow_login']
 
-    # Setup ucblit-tind for TIND Downloader:
+    # Setup berkeley_library-tind for TIND Downloader:
     config.tind_base_uri = config.altmedia['tind_base_uri']
     config.tind_api_key = config.altmedia['tind_api_key']
   end

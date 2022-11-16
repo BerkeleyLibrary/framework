@@ -9,7 +9,7 @@ describe 'Valid Alma Proxy Patron', type: :request do
   end
 
   it 'alerts user of invalid parameters' do
-    expect { post('/validate_proxy_patron', {}) }.to raise_error ActionController::ParameterMissing
+    expect { post('/validate_proxy_patron') }.to raise_error ActionController::ParameterMissing
   end
 
   it 'alerts user if they failed to authenticate' do

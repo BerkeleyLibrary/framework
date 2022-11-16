@@ -33,7 +33,8 @@ class SessionsController < ApplicationController
     sign_out
 
     # TODO: configure this more elegantly and make it play better with Selenium tests
-    redirect_to "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
+    logout_url = "https://auth#{'-test' unless Rails.env.production?}.berkeley.edu/cas/logout"
+    redirect_to logout_url, allow_other_host: true
   end
 
   private

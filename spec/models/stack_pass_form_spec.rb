@@ -40,7 +40,8 @@ describe StackRequest do
         errors: {}
       }
     ]
-    tests.each do |attributes:, errors:, valid:|
+    tests.each do |args|
+      args => { attributes:, errors:, valid: }
       form = StackRequest.new(attributes)
       expect(form.valid?).to eq valid
       next if valid

@@ -4,7 +4,7 @@ require 'roo'
 
 describe TindDownloadController, type: :system do
   before(:each) do
-    allow(UCBLIT::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
+    allow(BerkeleyLibrary::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
   end
 
   describe 'unauthenticated user' do
@@ -70,7 +70,7 @@ describe TindDownloadController, type: :system do
           fill_in('collection_name', with: 'Abraham Lincoln Papers')
         end
 
-        UCBLIT::TIND::Export::ExportFormat.each do |fmt|
+        BerkeleyLibrary::TIND::Export::ExportFormat.each do |fmt|
           it "downloads #{fmt}" do
             format = fmt.value.downcase
 

@@ -2,7 +2,7 @@ require 'forms_helper'
 
 describe TindDownloadController, type: :request do
   before(:each) do
-    allow(UCBLIT::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
+    allow(BerkeleyLibrary::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
   end
 
   let(:collection_name) { 'Abraham Lincoln Papers' }
@@ -192,7 +192,7 @@ describe TindDownloadController, type: :request do
           expect(actual_value).to eq(expected_value), msg
         end
 
-        UCBLIT::TIND::Export::ExportFormat.each do |fmt|
+        BerkeleyLibrary::TIND::Export::ExportFormat.each do |fmt|
           describe fmt do
             let(:ext) { fmt.value.downcase }
             let(:expected_filename) { "abraham-lincoln-papers.#{ext}" }
@@ -228,7 +228,7 @@ describe TindDownloadController, type: :request do
             .to_return(status: 500, body: body, headers: { 'Content-Type' => 'applicaton/json' })
         end
 
-        UCBLIT::TIND::Export::ExportFormat.each do |fmt|
+        BerkeleyLibrary::TIND::Export::ExportFormat.each do |fmt|
           let(:ext) { fmt.value.downcase }
           let(:params) { { collection_name: invalid_collection, export_format: ext } }
 

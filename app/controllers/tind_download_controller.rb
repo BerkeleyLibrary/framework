@@ -29,7 +29,7 @@ class TindDownloadController < ApplicationController
 
   # TODO: prompt w/collection name & number of records
   def download
-    exporter = UCBLIT::TIND::Export.exporter_for(collection_name, export_format)
+    exporter = BerkeleyLibrary::TIND::Export.exporter_for(collection_name, export_format)
     raise ActiveRecord::RecordNotFound, "No such collection: #{collection_name}" unless exporter.any_results?
 
     content_type = export_format.mime_type
@@ -42,7 +42,7 @@ class TindDownloadController < ApplicationController
     )
 
     # TODO: something that doesn't require building the whole spreadsheet
-    #       in memory -- make ucblit-tind use zip_tricks instead of rubyzip?
+    #       in memory -- make berkeley_library-tind use zip_tricks instead of rubyzip?
     render(body: exporter.export, content_type: content_type)
   end
 
@@ -62,9 +62,9 @@ class TindDownloadController < ApplicationController
     raise Error::ForbiddenError unless current_user.ucb_staff?
   end
 
-  # @return [Array<UCBLIT::TIND::API::Collection>] the root collections
+  # @return [Array<BerkeleyLibrary::TIND::API::Collection>] the root collections
   def root_collections
-    Rails.cache.fetch(:tind_root_collections, expires_in: CACHE_EXPIRY) { UCBLIT::TIND::API::Collection.all }
+    Rails.cache.fetch(:tind_root_collections, expires_in: CACHE_EXPIRY) { BerkeleyLibrary::TIND::API::Collection.all }
   end
 
   def collections_by_name
@@ -124,12 +124,12 @@ class TindDownloadController < ApplicationController
     download_params[:collection_name]
   end
 
-  # @return [UCBLIT::TIND::Export::ExportFormat] the selected format
+  # @return [BerkeleyLibrary::TIND::Export::ExportFormat] the selected format
   def export_format
     # TODO: use proper content negotiation
-    return UCBLIT::TIND::Export::ExportFormat::DEFAULT unless (fmt_param = download_params[:export_format])
+    return BerkeleyLibrary::TIND::Export::ExportFormat::DEFAULT unless (fmt_param = download_params[:export_format])
 
-    UCBLIT::TIND::Export::ExportFormat.ensure_format(fmt_param)
+    BerkeleyLibrary::TIND::Export::ExportFormat.ensure_format(fmt_param)
   end
 
 end

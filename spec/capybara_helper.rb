@@ -2,19 +2,13 @@ require 'active_support/inflector'
 require 'berkeley_library/docker'
 require 'capybara/rspec'
 require 'selenium-webdriver'
-require 'ucblit/logging'
+require 'berkeley_library/logging'
 
 require 'rails_helper'
 
 module CapybaraHelper
   # Capybara artifact path
   # (see https://www.rubydoc.info/github/jnicklas/capybara/Capybara.configure)
-  #
-  # NOTE: Rails' system test helpers insist on writing screenshots to
-  #       `tmp/screenshots` regardless of Capybara configuration:
-  #       see https://github.com/rails/rails/issues/41828.
-  #
-  #       In the Docker image we symlink that to `artifacts/screenshots`.
   SAVE_PATH = 'artifacts/capybara'.freeze
 
   class << self
@@ -62,7 +56,7 @@ module CapybaraHelper
     end
 
     def formatted_javascript_log(indent = '  ')
-      logs = browser.manage.logs.get(:browser)
+      logs = browser.logs.get(:browser)
       return 'No entries logged to JavaScript console' if logs.nil? || logs.empty?
 
       StringIO.new.tap do |out|
@@ -73,7 +67,7 @@ module CapybaraHelper
   end
 
   class Configurator
-    include UCBLIT::Logging
+    include BerkeleyLibrary::Logging
 
     DEFAULT_CHROME_ARGS = ['--window-size=2560,1344'].freeze
 
@@ -123,11 +117,11 @@ module CapybaraHelper
           ::Selenium::WebDriver::Remote::Capabilities.chrome(
             'goog:loggingPrefs' => {
               browser: 'ALL', driver: 'ALL'
-            }
+            },
           )
         ]
         options = { capabilities: capabilities }.merge(driver_opts)
-        Capybara::Selenium::Driver.new(app, options)
+        Capybara::Selenium::Driver.new(app, **options)
       end
 
       Capybara.javascript_driver = driver_name

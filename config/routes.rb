@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   get 'health', to: 'home#health'
   get 'home', to: 'home#index'
 
-  resources :campus_networks, path: 'campus-networks'
-  resources :lbl_networks, path: 'lbl-networks'
+  defaults format: :text do
+    resources :campus_networks, path: 'campus-networks', only: :index
+    resources :lbl_networks, path: 'lbl-networks', only: :index # TODO: is this used?
+  end
 
   scope(:forms) do
     resources :doemoff_study_room_use_forms, path: 'doemoff-study-room-use'

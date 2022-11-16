@@ -43,7 +43,10 @@ Rails.application.configure do
   config.active_job.queue_adapter = :test
 
   # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
+  # config.active_support.deprecation = :stderr
+
+  # Raise error for deprecation warnings
+  config.active_support.deprecation = :raise
 
   # Test mode short-circuits the entire auth flow
   OmniAuth.config.test_mode = true

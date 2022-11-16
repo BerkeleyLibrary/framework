@@ -9,7 +9,7 @@
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
     <h5 class="alert-heading">The following errors have been found. Please correct them before submitting the form again:</h5>
     <ul>
-      <% @request_form.errors.each do |attr, msg| %>
+      <% @request_form.errors.messages.each do |_attr, msg| %>
         <li><%= msg %></li>
       <% end %>
     </ul>
