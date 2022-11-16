@@ -24,7 +24,7 @@ class TindDownloadController < ApplicationController
   # Actions
 
   def index
-    render locals: { root_collections: root_collections }
+    render locals: { root_collections: }
   end
 
   # TODO: prompt w/collection name & number of records
@@ -43,7 +43,7 @@ class TindDownloadController < ApplicationController
 
     # TODO: something that doesn't require building the whole spreadsheet
     #       in memory -- make berkeley_library-tind use zip_tricks instead of rubyzip?
-    render(body: exporter.export, content_type: content_type)
+    render(body: exporter.export, content_type:)
   end
 
   def find_collection

@@ -6,7 +6,7 @@ describe 'Reference Card Form', type: :request do
   attr_reader :user
 
   context 'specs without admin privledges' do
-    before(:each) do
+    before do
       login_as_patron(5_551_212)
     end
 
@@ -18,7 +18,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'redirects to login if if user is not a stack pass admin' do
       form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                                      pass_date: Date.today, pass_date_end: Date.today + 1)
+                                      pass_date: Date.current, pass_date_end: Date.current + 1)
       get(form_path = reference_card_form_path(id: form.id))
       expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
     end
@@ -36,8 +36,8 @@ describe 'Reference Card Form', type: :request do
           local_id: '123456789'
         }
       }
-      post('/forms/reference-card', params: params)
-      expect(response).to redirect_to(action: :new, params: params)
+      post('/forms/reference-card', params:)
+      expect(response).to redirect_to(action: :new, params:)
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
     end
@@ -45,7 +45,7 @@ describe 'Reference Card Form', type: :request do
   end
 
   context 'specs with admin privledges' do
-    before(:each) do
+    before do
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ReferenceCardFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
@@ -53,7 +53,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'renders process form for unprocessed request' do
       form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
-                                      pass_date: Date.today, pass_date_end: Date.today + 1,
+                                      pass_date: Date.current, pass_date_end: Date.current + 1,
                                       research_desc: 'This is research', affiliation: 'Affiliation 1',
                                       local_id: '8675309')
       get "/forms/reference-card/#{form.id}"
@@ -63,7 +63,7 @@ describe 'Reference Card Form', type: :request do
     it 'renders processed page for processed request' do
       form = ReferenceCardForm.create(
         email: 'closedreq@test.com', name: 'Jane Doe',
-        pass_date: Date.today, pass_date_end: Date.today + 1,
+        pass_date: Date.current, pass_date_end: Date.current + 1,
         research_desc: 'This is research', affiliation: 'Affiliation 1',
         local_id: '8675309',
         approvedeny: true, processed_by: 'Test Admin'
@@ -80,14 +80,14 @@ describe 'Reference Card Form', type: :request do
 
     it 'allows an admin to deny a request' do
       form = ReferenceCardForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                      affiliation: 'Red Bull', pass_date: Date.today, pass_date_end: Date.today + 1, local_id: '8675309')
+                                      affiliation: 'Red Bull', pass_date: Date.current, pass_date_end: Date.current + 1, local_id: '8675309')
 
       params = {
         'stack_pass_[approve_deny]' => false,
         'processed_by' => 'ADMIN USER',
         'denial_reason' => 'Item listed at another library'
       }
-      patch("/forms/reference-card/#{form.id}", params: params)
+      patch("/forms/reference-card/#{form.id}", params:)
       expect(response).to redirect_to(action: :show, id: 1)
 
       get(response.headers['Location'])

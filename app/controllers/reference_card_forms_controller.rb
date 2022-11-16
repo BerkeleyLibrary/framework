@@ -25,12 +25,12 @@ class ReferenceCardFormsController < ApplicationController
     validate_recaptcha!
 
     # Need to grab and convert the date:
-    @form.pass_date = datestr_to_date(params[:reference_card_form][:pass_date]) unless params[:reference_card_form][:pass_date].blank?
-    @form.pass_date_end = datestr_to_date(params[:reference_card_form][:pass_date_end]) unless params[:reference_card_form][:pass_date_end].blank?
+    @form.pass_date = datestr_to_date(params[:reference_card_form][:pass_date]) if params[:reference_card_form][:pass_date].present?
+    @form.pass_date_end = datestr_to_date(params[:reference_card_form][:pass_date_end]) if params[:reference_card_form][:pass_date_end].present?
 
     if @form.save
       @form.submit!
-      render 'result', status: 201
+      render 'result', status: :created
     else
       flash[:danger] = @form.errors.to_a
       redirect_with_params(action: :new)
@@ -71,7 +71,7 @@ class ReferenceCardFormsController < ApplicationController
 
     # Try to handle mm/dd/yy:
     if (date_param = str.match(%r{^(\d+/\d+/)(\d{2})$}))
-      str = date_param[1] + '20' + date_param[2]
+      str = "#{date_param[1]}20#{date_param[2]}"
     end
 
     begin

@@ -13,14 +13,14 @@ describe StudentEdevicesLoanForm do
     attr_reader :patron
     attr_reader :form
 
-    before(:each) do
+    before do
       @patron = Alma::User.new
       @patron.id = 12_345
       @patron.email = 'jdoe@berkeley.test'
       @patron.type = allowed_patron_types.first
 
       @form = StudentEdevicesLoanForm.new(
-        patron: patron,
+        patron:,
         given_name: 'Jane',
         surname: 'Doe',
         display_name: 'Jane Doe',

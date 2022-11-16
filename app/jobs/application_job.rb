@@ -1,6 +1,6 @@
 class ApplicationJob < ActiveJob::Base
   def today
-    @today ||= Time.now.strftime('%Y%m%d')
+    @today ||= Time.zone.now.strftime('%Y%m%d')
   end
 
   # Log an exception

@@ -36,7 +36,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     if @request_form.save
       # Sends an email to the user with instructions:
       @request_form.submit!
-      render 'result', status: 201
+      render 'result', status: :created
     else
       @current_user = current_user
       render 'dsp_form'
@@ -50,7 +50,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     if @request_form.save
       # Sends an email to the user with instructions:
       @request_form.submit!
-      render 'result', status: 201
+      render 'result', status: :created
     else
       # Failed to save - rerender the faculty form:
       @current_user = current_user
@@ -87,7 +87,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
       request['date_term'] = nil
     else
       if (date_param = params['term'].match(%r{^(\d+/\d+/)(\d{2})$}))
-        params['term'] = date_param[1] + '20' + date_param[2]
+        params['term'] = "#{date_param[1]}20#{date_param[2]}"
       end
 
       begin

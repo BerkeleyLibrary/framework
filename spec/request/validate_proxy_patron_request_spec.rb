@@ -4,7 +4,7 @@ describe 'Valid Alma Proxy Patron', type: :request do
   let(:alma_api_key) { 'Config.alma_api_key' }
 
   # To fake it, we need to override it in the config:
-  before(:each) do
+  before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
   end
 

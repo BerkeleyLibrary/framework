@@ -3,7 +3,7 @@ require 'forms_helper'
 describe 'Fines', type: :request do
   let(:alma_api_key) { 'totally-fake-key' }
 
-  before(:each) do
+  before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
   end
 

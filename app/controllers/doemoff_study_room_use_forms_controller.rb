@@ -16,7 +16,7 @@ class DoemoffStudyRoomUseFormsController < AuthenticatedFormController
       patron: current_user.primary_patron_record
     )
     @form.authorize!
-    @form.validate unless @form.assign_attributes(form_params).blank?
+    @form.validate if @form.assign_attributes(form_params).present?
   end
 
   # Make sure only specified attributes are allowed as params
@@ -24,7 +24,7 @@ class DoemoffStudyRoomUseFormsController < AuthenticatedFormController
     params.require(:doemoff_study_room_use_form).permit(
       :borrow_check,
       :fines_check,
-      :roomUse_check
+      :room_use_check
     )
   rescue ActionController::ParameterMissing
     {}

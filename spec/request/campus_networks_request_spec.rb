@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe :campus_networks, type: :request do
-  before(:each) do
+  before do
     stub_request(:get, CampusNetwork.ucb_url).to_return(
       status: 200,
       body: File.new('spec/data/campusnetworks.html')
@@ -98,7 +98,7 @@ describe :campus_networks, type: :request do
     end
 
     describe 'filtering' do
-      before(:each) do
+      before do
         # TODO: NetAddr performance: find something faster
 
         # NetAddr.merge wastes a lot of time sorting lists we happen to know

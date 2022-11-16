@@ -7,11 +7,11 @@ class StackPassAdminController < AuthenticatedFormController
   def admin; end
 
   def stackpasses
-    @requests = StackPassForm.where('pass_date > ?', start_school_year).order(sort_column + ' ' + sort_direction)
+    @requests = StackPassForm.where('pass_date > ?', start_school_year).order("#{sort_column} #{sort_direction}")
   end
 
   def refcards
-    @requests = ReferenceCardForm.where('pass_date_end > ?', start_calendar_year).order(sort_column + ' ' + sort_direction)
+    @requests = ReferenceCardForm.where('pass_date_end > ?', start_calendar_year).order("#{sort_column} #{sort_direction}")
   end
 
   def users
@@ -66,7 +66,7 @@ class StackPassAdminController < AuthenticatedFormController
   end
 
   def start_school_year
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr -= 1 if mo < 7
@@ -74,7 +74,7 @@ class StackPassAdminController < AuthenticatedFormController
   end
 
   def start_calendar_year
-    today = Date.today
+    today = Date.current
     yr = today.year
     Date.new(yr, 1, 1)
   end

@@ -18,7 +18,7 @@ class User
       raise Error::InvalidAuthProviderError, auth['provider'] \
         if auth['provider'].to_sym != :calnet
 
-      # Note: berkeleyEduCSID should be same as berkeleyEduStuID for students
+      # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       new(
         affiliations: auth['extra']['berkeleyEduAffiliations'],
         cs_id: auth['extra']['berkeleyEduCSID'],
@@ -108,7 +108,7 @@ class User
     user = FrameworkUsers.find_by(lcasid: uid)
     return unless user
 
-    user.assignments.exists?(role: role)
+    user.assignments.exists?(role:)
   end
 
   def ucb_faculty?

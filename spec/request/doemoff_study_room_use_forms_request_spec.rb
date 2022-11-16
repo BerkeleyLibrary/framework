@@ -20,7 +20,7 @@ describe :doemoff_study_room_use_forms, type: :request do
     valid_form_params: {
       doemoff_study_room_use_form: {
         borrow_check: 'checked',
-        roomUse_check: 'checked',
+        room_use_check: 'checked',
         fines_check: 'checked'
       }
     }

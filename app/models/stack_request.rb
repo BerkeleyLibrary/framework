@@ -17,7 +17,7 @@ class StackRequest < ActiveRecord::Base
   # for the moment.... So if it's August, then July 1st of the current year
   # but if it's April, then I'd want July 1st of LAST year....
   def start_school_year
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr -= 1 if mo < 7
@@ -28,7 +28,7 @@ class StackRequest < ActiveRecord::Base
   # RC does not "reset" on a fiscal year schedule; instead
   # it resets yearly on January 1st.
   def start_calendar_year
-    today = Date.today
+    today = Date.current
     yr = today.year
     Date.new(yr, 1, 1)
   end

@@ -7,9 +7,9 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
 
   forbidden_patron_types = Alma::Type.all.reject { |t| allowed_patron_types.include?(t) }
 
-  missing_field_params = valid_form_params.map { |k, v| [k, v.is_a?(Hash) ? {} : nil] }.to_h
+  missing_field_params = valid_form_params.transform_values { |v| v.is_a?(Hash) ? {} : nil }
 
-  before(:each) do
+  before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
     @form_name = form_class.to_s.underscore
   end
@@ -67,14 +67,14 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
     attr_reader :patron
     attr_reader :user
 
-    before(:each) do
+    before do
       @patron_id = Alma::Type.sample_id_for(allowed_patron_types.first)
       @user = login_as_patron(patron_id)
 
       @patron = Alma::User.find(patron_id)
     end
 
-    after(:each) do
+    after do
       logout!
     end
 

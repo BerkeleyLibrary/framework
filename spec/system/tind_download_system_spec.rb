@@ -3,7 +3,7 @@ require 'calnet_helper'
 require 'roo'
 
 describe TindDownloadController, type: :system do
-  before(:each) do
+  before do
     allow(BerkeleyLibrary::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
   end
 
@@ -18,8 +18,9 @@ describe TindDownloadController, type: :system do
   describe 'authenticated non-staff user' do
     # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
     #       (see CapybaraHelper::GridConfigurator#configure!)
-    before(:each) { login_as_patron(Alma::Type.sample_id_for(Alma::Type::FACULTY)) }
-    after(:each) { logout! }
+    before { login_as_patron(Alma::Type.sample_id_for(Alma::Type::FACULTY)) }
+
+    after { logout! }
 
     it 'returns 403 unauthorized' do
       visit tind_download_path
@@ -30,10 +31,9 @@ describe TindDownloadController, type: :system do
   describe 'authenticated staff user' do
     # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
     #       (see CapybaraHelper::GridConfigurator#configure!)
-    before(:each) { login_as_patron(Alma::Type.sample_id_for(Alma::Type::STAFF)) }
-    after(:each) { logout! }
+    before do
+      login_as_patron(Alma::Type.sample_id_for(Alma::Type::STAFF))
 
-    before(:each) do
       stub_request(:get, 'https://digicoll.lib.berkeley.edu/api/v1/collections?depth=100').to_return(
         status: 200,
         body: File.new('spec/data/tind_download/collections.json')
@@ -41,6 +41,8 @@ describe TindDownloadController, type: :system do
 
       visit tind_download_path
     end
+
+    after { logout! }
 
     it 'displays the form' do
       expect(page).to have_content('TIND Metadata Download')
@@ -57,11 +59,11 @@ describe TindDownloadController, type: :system do
       end
 
       describe 'downloads' do
-        before(:each) do
+        before do
           search_id = 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY'
           search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
           search_params = { c: 'Abraham Lincoln Papers', format: 'xml' }
-          search_params_with_search_id = search_params.merge(search_id: search_id)
+          search_params_with_search_id = search_params.merge(search_id:)
           result_1 = File.read('spec/data/tind_download/tind-abraham-lincoln-1.xml')
           result_2 = File.read('spec/data/tind_download/tind-abraham-lincoln-2.xml')
           stub_request(:get, search_url).with(query: search_params).to_return(status: 200, body: result_1)

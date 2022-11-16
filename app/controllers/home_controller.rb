@@ -15,11 +15,11 @@ class HomeController < ApplicationController
 
   def admin
     authenticate!
-    if !current_user.framework_admin
+    if current_user.framework_admin
+      render :admin
+    else
       raise Error::ForbiddenError,
             "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
-    else
-      render :admin
     end
   end
 end

@@ -31,7 +31,7 @@ class ReferenceCardForm < StackRequest
     date_start = pass_date || nil
     date_end = pass_date_end || nil
 
-    min_date = Date.today
+    min_date = Date.current
     min_date = created_at.to_date if created_at
 
     if date_start && date_end

@@ -8,7 +8,7 @@ describe 'Stack Pass Form', type: :request do
   let(:alma_api_key) { 'totally-fake-key' }
 
   context 'specs without admin privledges' do
-    before(:each) do
+    before do
       login_as_patron('5551212')
     end
 
@@ -24,7 +24,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'redirects to login if if user is not a stack pass admin' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true)
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true)
 
       get((form_path = stack_pass_form_path(id: form.id)))
       expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
@@ -43,8 +43,8 @@ describe 'Stack Pass Form', type: :request do
           local_id: '123456789'
         }
       }
-      post('/forms/stack-pass', params: params)
-      expect(response).to redirect_to(action: :new, params: params)
+      post('/forms/stack-pass', params:)
+      expect(response).to redirect_to(action: :new, params:)
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
     end
@@ -52,7 +52,7 @@ describe 'Stack Pass Form', type: :request do
   end
 
   context 'specs with admin privledges' do
-    before(:each) do
+    before do
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
@@ -66,14 +66,14 @@ describe 'Stack Pass Form', type: :request do
 
     it 'renders process form for unprocessed request' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
       get "/forms/stack-pass/#{form.id}"
       expect(response.body).to include('<h3>This request needs to be processed.</h3>')
     end
 
     it 'renders processed page for processed request' do
       form = StackPassForm.create(email: 'closedreq@test.com', name: 'Jane Doe',
-                                  phone: '925-555-5678', pass_date: Date.today, main_stack: true, local_id: '8675309',
+                                  phone: '925-555-5678', pass_date: Date.current, main_stack: true, local_id: '8675309',
                                   approvedeny: true, processed_by: 'Test Admin')
       get "/forms/stack-pass/#{form.id}"
       expect(response.body).to include('<h2>This request has been processed</h2>')
@@ -87,14 +87,14 @@ describe 'Stack Pass Form', type: :request do
 
     it 'allows an admin to deny a request' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.today, main_stack: true, local_id: '8675309')
+                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
 
       params = {
         'stack_pass_[approve_deny]' => false,
         'processed_by' => 'ADMIN USER',
         'denial_reason' => 'Item listed at another library'
       }
-      patch("/forms/stack-pass/#{form.id}", params: params)
+      patch("/forms/stack-pass/#{form.id}", params:)
       expect(response).to redirect_to(action: :show, id: 1)
 
       get(response.headers['Location'])
@@ -106,7 +106,7 @@ describe 'Stack Pass Form', type: :request do
 
   context 'specs with hard-coded admin privledges' do
 
-    before(:each) do |_test|
+    before do |_test|
       admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
@@ -136,7 +136,7 @@ describe 'Stack Pass Form', type: :request do
 
   context 'specs with non-admin user logged in' do
 
-    before(:each) do
+    before do
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
       @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
@@ -151,7 +151,7 @@ describe 'Stack Pass Form', type: :request do
   end
 
   context 'specs with user created administrators' do
-    before(:each) do |_test|
+    before do |_test|
       # Create the role, user and assignment:
       Role.create(id: 1, role: 'stackpass_admin')
       admin_user = User.new(uid: '9999999', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
@@ -162,7 +162,7 @@ describe 'Stack Pass Form', type: :request do
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
     end
 
-    after(:each) do
+    after do
       Assignment.delete_all
       Role.delete_all
       FrameworkUsers.delete_all

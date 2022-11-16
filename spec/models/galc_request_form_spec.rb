@@ -17,7 +17,7 @@ describe GalcRequestForm do
       tests.each do |patron_type, authorized|
         patron = Alma::User.new
         patron.type = patron_type
-        form = GalcRequestForm.new(patron: patron)
+        form = GalcRequestForm.new(patron:)
         if authorized
           expect { form.authorize! }.not_to raise_error
         else
@@ -31,7 +31,7 @@ describe GalcRequestForm do
     it 'has a default value' do
       patron = Alma::User.new
       patron.type = Alma::Type::LIBRARY_STAFF
-      form = GalcRequestForm.new(patron: patron)
+      form = GalcRequestForm.new(patron:)
       expect(form.support_email).to eq('eref@library.berkeley.edu')
     end
   end
@@ -41,7 +41,7 @@ describe GalcRequestForm do
       patron = Alma::User.new
       patron.type = Alma::Type::LIBRARY_STAFF
       patron.email = 'pince@library.berkeley.edu'
-      form = GalcRequestForm.new(patron: patron)
+      form = GalcRequestForm.new(patron:)
       expect(form.patron_email).to eq('pince@library.berkeley.edu')
     end
   end
@@ -55,7 +55,7 @@ describe GalcRequestForm do
       patron.id = 123_456
 
       form = GalcRequestForm.new(
-        patron: patron,
+        patron:,
         borrow_check: 'checked',
         fine_check: 'checked'
       )

@@ -2,7 +2,7 @@ require 'forms_helper'
 
 describe :forms_proxy_borrower_admin, type: :request do
   context 'specs with hardcoded admin' do
-    before(:each) do
+    before do
       mock_login(CalnetHelper::STACK_REQUEST_ADMIN_UID)
     end
 

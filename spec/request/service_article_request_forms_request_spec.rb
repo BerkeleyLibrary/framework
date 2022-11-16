@@ -3,7 +3,7 @@ require 'forms_helper'
 describe :service_article_request_forms, type: :request do
 
   describe 'with a "book scan eligible" note' do
-    before(:each) do
+    before do
       eligible_notes = ['20190101 library book scan eligible [litscript]']
       allow_any_instance_of(Alma::User).to receive(:notes).and_return(eligible_notes)
     end

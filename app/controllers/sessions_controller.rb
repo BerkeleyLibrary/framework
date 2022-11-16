@@ -44,6 +44,6 @@ class SessionsController < ApplicationController
   end
 
   def log_signin(user)
-    logger.debug({ msg: 'Signed in user', user: user })
+    logger.debug({ msg: 'Signed in user', user: })
   end
 end

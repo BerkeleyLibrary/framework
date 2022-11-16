@@ -64,9 +64,7 @@ class CampusNetwork < IPAddr
     def parse_campus_ipv6_ranges(raw_html)
       generated = []
       Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
-        unless node.search('sup').empty?
-          generated.concat(generate_from_network(node.text.chop)) if node.search('sup').text == '2'
-        end
+        generated.concat(generate_from_network(node.text.chop)) if !node.search('sup').empty? && (node.search('sup').text == '2')
       end
       generated
     end
@@ -95,7 +93,7 @@ class CampusNetwork < IPAddr
       range = ip.to_range
       first_ip = range.first
       last_ip = range.last
-      [first_ip.to_s + ' - ' + omit[1], omit[2] + ' - ' + last_ip.to_s]
+      ["#{first_ip} - #{omit[1]}", "#{omit[2]} - #{last_ip}"]
     end
 
     def parse_lbl_addresses(raw_html)

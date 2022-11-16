@@ -151,7 +151,10 @@
     <orderEntry type="library" scope="PROVIDED" name="rspec-rails (v5.1.2, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-support (v3.12.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec_junit_formatter (v0.6.0, RVM: ruby-3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rubocop (v0.74.0, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop (v1.26.1, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-ast (v1.23.0, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-rails (v2.13.2, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-rspec (v2.4.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-marc-spec (v0.1.3, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-prof (v0.17.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.11.0, RVM: ruby-3.1.2) [gem]" level="application" />
@@ -177,7 +180,7 @@
     <orderEntry type="library" scope="PROVIDED" name="uglifier (v4.2.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unf (v0.1.4, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unf_ext (v0.0.8.2, RVM: ruby-3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v1.6.1, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v2.3.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="vcr (v6.1.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="web-console (v4.2.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="webmock (v3.18.1, RVM: ruby-3.1.2) [gem]" level="application" />
@@ -537,15 +540,16 @@
                 <subtasks>
                   <RakeTaskImpl description="Run specs in affiliate_borrow_request_forms_system_spec.rb" fullCommand="spec:system:affiliate_borrow_request_forms" id="affiliate_borrow_request_forms" />
                   <RakeTaskImpl description="Run specs in doemoff_study_room_user_forms_system_spec.rb" fullCommand="spec:system:doemoff_study_room_user_forms" id="doemoff_study_room_user_forms" />
-                  <RakeTaskImpl description="Run specs in framework_user_system_spec.rb" fullCommand="spec:system:framework_user" id="framework_user" />
                   <RakeTaskImpl description="Run specs in galc_request_forms_system_spec.rb" fullCommand="spec:system:galc_request_forms" id="galc_request_forms" />
                   <RakeTaskImpl description="Run specs in home_system_spec.rb" fullCommand="spec:system:home" id="home" />
                   <RakeTaskImpl description="Run specs in libstaff_edevices_loan_forms_system_spec.rb" fullCommand="spec:system:libstaff_edevices_loan_forms" id="libstaff_edevices_loan_forms" />
+                  <RakeTaskImpl description="Run specs in proxy_borrower_admin_system_spec.rb" fullCommand="spec:system:proxy_borrower_admin" id="proxy_borrower_admin" />
                   <RakeTaskImpl description="Run specs in proxy_borrower_dsp_system_spec.rb" fullCommand="spec:system:proxy_borrower_dsp" id="proxy_borrower_dsp" />
                   <RakeTaskImpl description="Run specs in proxy_borrower_faculty_system_spec.rb" fullCommand="spec:system:proxy_borrower_faculty" id="proxy_borrower_faculty" />
                   <RakeTaskImpl description="Run specs in reference_card_forms_system_spec.rb" fullCommand="spec:system:reference_card_forms" id="reference_card_forms" />
                   <RakeTaskImpl description="Run specs in scan_request_forms_system_spec.rb" fullCommand="spec:system:scan_request_forms" id="scan_request_forms" />
                   <RakeTaskImpl description="Run specs in service_article_request_forms_system_spec.rb" fullCommand="spec:system:service_article_request_forms" id="service_article_request_forms" />
+                  <RakeTaskImpl description="Run specs in stack_pass_admin_system_spec.rb" fullCommand="spec:system:stack_pass_admin" id="stack_pass_admin" />
                   <RakeTaskImpl description="Run specs in stack_pass_forms_system_spec.rb" fullCommand="spec:system:stack_pass_forms" id="stack_pass_forms" />
                   <RakeTaskImpl description="Run specs in student_edevices_loan_forms_system_spec.rb" fullCommand="spec:system:student_edevices_loan_forms" id="student_edevices_loan_forms" />
                   <RakeTaskImpl description="Run specs in tind_download_system_spec.rb" fullCommand="spec:system:tind_download" id="tind_download" />

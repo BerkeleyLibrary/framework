@@ -4,9 +4,10 @@ describe ServiceArticleRequestJob do
   attr_reader :patron
   attr_reader :email
   attr_reader :publication
+
   let(:alma_api_key) { 'totally-fake-key' }
 
-  before(:each) do
+  before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
     patron_id = '013191305'

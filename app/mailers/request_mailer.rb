@@ -38,7 +38,7 @@ class RequestMailer < ApplicationMailer
   end
 
   # Send ServiceArticleRequest confirmation email to user
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength
   def service_article_confirmation_email(email, publication, patron)
     @pub_title = publication[:pub_title]
     @pub_location = publication[:pub_location]
@@ -55,7 +55,7 @@ class RequestMailer < ApplicationMailer
 
     mail(to: email)
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength
 
   # Send email describing a failure of the ServiceArticleRequest job
   def service_article_failure_email(empid, displayname)

@@ -1,4 +1,5 @@
 module ApplicationHelper
+  # rubocop:disable Rails/OutputSafety
   def alerts
     content_tag(:div, class: 'alerts mt-4') do
       flash.each do |lvl, msgs|
@@ -9,6 +10,7 @@ module ApplicationHelper
       end
     end
   end
+  # rubocop:enable Rails/OutputSafety
 
   def questions_link
     mail_to support_email, 'Questions?', class: 'support-email'
@@ -37,11 +39,11 @@ module ApplicationHelper
   def field_for(builder, attribute, type: :text_field, required: false, readonly: false)
     field_builder = FieldBuilder.new(
       tag_helper: self,
-      builder: builder,
-      attribute: attribute,
-      type: type,
-      required: required,
-      readonly: readonly
+      builder:,
+      attribute:,
+      type:,
+      required:,
+      readonly:
     )
     field_builder.build
   end
@@ -50,6 +52,6 @@ module ApplicationHelper
     title ||= column.titleize
     css_class = column == sort_column ? "current #{sort_direction} no-link-style" : 'no-link-style'
     direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
-    link_to title, { sort: column, direction: direction, param: param }, { class: css_class }
+    link_to title, { sort: column, direction:, param: }, { class: css_class }
   end
 end

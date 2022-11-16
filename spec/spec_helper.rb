@@ -19,7 +19,7 @@ RSpec.configure do |config|
   config.tty = true
   config.formatter = :documentation
 
-  config.around(:each) do |example|
+  config.around do |example|
     WebMock.disable_net_connect!(
       allow_localhost: true,
       # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas

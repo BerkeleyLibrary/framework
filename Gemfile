@@ -18,8 +18,8 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jwt', '~> 1.5', '>= 1.5.4'
 gem 'lograge', '>=0.11.2'
-gem 'net-ssh'
 gem 'netaddr', '~> 1.5', '>= 1.5.1'
+gem 'net-ssh'
 gem 'omniauth', '~> 1.9', '>= 1.9.2'
 gem 'omniauth-cas', '~> 2.0'
 gem 'pg', '~> 1.2'
@@ -50,7 +50,9 @@ end
 
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
-  gem 'rubocop', '~> 0.74.0'
+  gem 'rubocop', '~> 1.26.0'
+  gem 'rubocop-rails', '~> 2.13.2', require: false
+  gem 'rubocop-rspec', '~> 2.4.0', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'

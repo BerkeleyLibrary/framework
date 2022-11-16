@@ -16,7 +16,7 @@ describe ScanRequestForm do
 
     allowed_patron_types.each do |type|
       describe Alma::Type.name_of(type) do
-        before(:each) do
+        before do
           @patron = Alma::User.new
           @patron.email = 'winner@civil-war.com'
           @patron.id = '1865'
@@ -25,7 +25,7 @@ describe ScanRequestForm do
 
           @form = ScanRequestForm.new(
             opt_in: 'true',
-            patron: patron,
+            patron:,
             patron_name: 'Ulysses S. Grant'
           )
         end
@@ -73,7 +73,7 @@ describe ScanRequestForm do
 
     forbidden_patron_types.each do |type|
       describe Alma::Type.name_of(type) do
-        before(:each) do
+        before do
           @patron = Alma::User.new
           @patron.email = 'winner@civil-war.com'
           @patron.id = '1865'
@@ -81,7 +81,7 @@ describe ScanRequestForm do
 
           @form = ScanRequestForm.new(
             opt_in: 'true',
-            patron: patron,
+            patron:,
             patron_name: 'Ulysses S. Grant'
           )
         end

@@ -4,7 +4,7 @@ require 'time'
 describe ProxyBorrowerRequests do
   before(:all) do
     # Calculate and define the max date and an invalid date:
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr += 1 if mo >= 4
@@ -39,7 +39,7 @@ describe ProxyBorrowerRequests do
       {
         valid: false,
         attributes: {
-          date_term: Date.today.next_day(720)
+          date_term: Date.current.next_day(720)
         },
         errors: {
           date_term: ["The term of the Proxy Card must not be greater than #{@max_date_err_str}"]
@@ -50,7 +50,7 @@ describe ProxyBorrowerRequests do
         attributes: {
           research_last: 'Doe',
           research_first: 'Jane',
-          date_term: Date.today.next_day(0)
+          date_term: Date.current.next_day(0)
         },
         errors: {
           research_last: [],
@@ -75,7 +75,7 @@ describe ProxyBorrowerRequests do
     attributes = {
       research_last: 'Doe',
       research_first: 'Jane',
-      date_term: Date.today.next_day(0)
+      date_term: Date.current.next_day(0)
     }
 
     form = ProxyBorrowerRequests.new(attributes)

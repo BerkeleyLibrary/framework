@@ -42,7 +42,7 @@ class ProxyBorrowerRequests < ActiveRecord::Base
     CSV.generate(headers: true) do |csv|
       csv << attributes
 
-      all.each do |request|
+      all.find_each do |request|
         csv << attributes.map { |attr| request.send(attr) }
       end
     end
@@ -62,13 +62,13 @@ class ProxyBorrowerRequests < ActiveRecord::Base
   end
 
   def date_limit
-    return errors.add(:date_term, :missing) unless date_term.present?
-    return errors.add(:date_term, :expired) if date_term < Date.today
+    return errors.add(:date_term, :missing) if date_term.blank?
+    return errors.add(:date_term, :expired) if date_term < Date.current
     return errors.add(:date_term, :too_long, max_term: max_term.strftime('%B %e, %Y')) if date_term > max_term
   end
 
   def max_term
-    today = Date.today
+    today = Date.current
 
     # If month is Jan - March, then max date is June 30th of the current year
     # else, if month is April - December, max date is June 30th of the following year

@@ -57,7 +57,7 @@ module CapybaraHelper
 
     def formatted_javascript_log(indent = '  ')
       logs = browser.logs.get(:browser)
-      return 'No entries logged to JavaScript console' if logs.nil? || logs.empty?
+      return 'No entries logged to JavaScript console' if logs.blank?
 
       StringIO.new.tap do |out|
         out.write("#{logs.size} entries logged to JavaScript console:\n")
@@ -117,10 +117,10 @@ module CapybaraHelper
           ::Selenium::WebDriver::Remote::Capabilities.chrome(
             'goog:loggingPrefs' => {
               browser: 'ALL', driver: 'ALL'
-            },
+            }
           )
         ]
-        options = { capabilities: capabilities }.merge(driver_opts)
+        options = { capabilities: }.merge(driver_opts)
         Capybara::Selenium::Driver.new(app, **options)
       end
 
@@ -186,7 +186,7 @@ module CapybaraHelper
       super
 
       RSpec.configure do |config|
-        # Note: this *has* to be done in a before(:each) hook, or it'll get clobbered
+        # NOTE: this *has* to be done in a before(:each) hook, or it'll get clobbered
         # by ActionDispatch::SystemTesting::TestHelpers::SetupAndTeardown#before_setup
         #
         # TODO: this is fixed in Rails 6.1

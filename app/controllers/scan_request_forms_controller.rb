@@ -22,7 +22,7 @@ class ScanRequestFormsController < AuthenticatedFormController
 
     @form.authorize!
 
-    @form.validate unless @form.assign_attributes(form_params).blank?
+    @form.validate if @form.assign_attributes(form_params).present?
   end
 
   def form_params

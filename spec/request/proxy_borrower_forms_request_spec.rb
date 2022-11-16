@@ -8,14 +8,14 @@ describe 'Proxy Borrower Forms', type: :request do
   let(:alma_api_key) { 'totally-fake-key' }
 
   context 'specs without admin privledges' do
-    before(:each) do
+    before do
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
       @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       @user = login_as_patron(patron_id)
       @patron = Alma::User.find(patron_id)
     end
 
-    after(:each) do
+    after do
       logout!
     end
 
@@ -31,7 +31,7 @@ describe 'Proxy Borrower Forms', type: :request do
   end
 
   context 'specs with created admin privledges' do
-    before(:each) do
+    before do
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
       # Need to create a request for search!!!
@@ -82,7 +82,7 @@ describe 'Proxy Borrower Forms', type: :request do
   end
 
   context 'specs with hard-coded admin privledges' do
-    before(:each) do
+    before do
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
       # Need to create a request for search!!!

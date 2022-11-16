@@ -14,7 +14,7 @@ class DoemoffStudyRoomUseForm < Form
   ].freeze
 
   # Users must explicitly opt-in to each clause of the form.
-  attr_accessor :borrow_check, :fines_check, :roomUse_check
+  attr_accessor :borrow_check, :fines_check, :room_use_check
   attr_accessor :display_name
   attr_accessor :patron
 
@@ -24,7 +24,7 @@ class DoemoffStudyRoomUseForm < Form
 
   validates :borrow_check,
             :fines_check,
-            :roomUse_check,
+            :room_use_check,
             inclusion: { in: %w[checked] }
 
   validates :display_name,

@@ -12,7 +12,7 @@ RSpec.shared_examples 'an email job' do |note_text:, email_subject_success:, con
 
   attr_reader :patron
 
-  before(:each) do
+  before do
     patron_id = '013191305'
 
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
@@ -54,7 +54,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
 
   attr_reader :patron
 
-  before(:each) do
+  before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
     stub_patron_dump(patron_id)
@@ -115,31 +115,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
   end
 
   describe 'failure' do
-    it 'sends a failure email in the event of an SSH error' do
-      allow(Faraday).to receive(:put).and_raise(StandardError)
-      expect { job.perform_now(patron.id) }.to(
-        raise_error(StandardError).and(
-          (change { ActionMailer::Base.deliveries.count }).by(1)
-        )
-      )
-      last_email = ActionMailer::Base.deliveries.last
-      expect(last_email.subject).to eq(email_subject_failure)
-      expect(last_email.to).to include(ADMIN_EMAIL)
-    end
-
-    it 'sends a failure email in the event of an SSH error' do
-      allow(Faraday).to receive(:put).and_raise(StandardError)
-      expect { job.perform_now(patron.id) }.to(
-        raise_error(StandardError).and(
-          (change { ActionMailer::Base.deliveries.count }).by(1)
-        )
-      )
-      last_email = ActionMailer::Base.deliveries.last
-      expect(last_email.subject).to eq(email_subject_failure)
-      expect(last_email.to).to include(ADMIN_EMAIL)
-    end
-
-    it 'sends a failure email in the event of a script error' do
+    it 'sends a failure email in the event of an error' do
       allow(Faraday).to receive(:put).and_raise(StandardError)
       expect { job.perform_now(patron.id) }.to(
         raise_error(StandardError).and(

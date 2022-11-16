@@ -5,14 +5,14 @@ describe LibstaffEdevicesLoanForm do
     attr_reader :patron
     attr_reader :form
 
-    before(:each) do
+    before do
       @patron = Alma::User.new
       @patron.id = 12_345
       @patron.email = 'jdoe@berkeley.test'
       @patron.type = Alma::Type::LIBRARY_STAFF
 
       @form = LibstaffEdevicesLoanForm.new(
-        patron: patron,
+        patron:,
         display_name: 'Jane Doe',
         borrow_check: 'checked',
         edevices_check: 'checked',

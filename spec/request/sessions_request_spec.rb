@@ -1,11 +1,11 @@
 require 'calnet_helper'
 
 describe SessionsController, type: :request do
-  before(:each) do
+  before do
     @logger_orig = Rails.logger
   end
 
-  after(:each) do
+  after do
     Rails.logger = @logger_orig
   end
 

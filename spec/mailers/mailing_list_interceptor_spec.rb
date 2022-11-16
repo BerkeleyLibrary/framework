@@ -6,11 +6,11 @@ describe Interceptor::MailingListInterceptor do
 
   attr_reader :interceptor
 
-  before(:each) do
+  before do
     @interceptor = Interceptor::MailingListInterceptor.new(mailing_list)
   end
 
-  it 'should respond to :delivering_email' do
+  it 'responds to :delivering_email' do
     expect(interceptor).to respond_to(:delivering_email)
   end
 

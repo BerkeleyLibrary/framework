@@ -22,7 +22,7 @@ class PatronValidator < ActiveModel::EachValidator
   def wrong_type?(patron, types)
     return if types.blank?
 
-    !types.include?(patron.type)
+    types.exclude?(patron.type)
   end
 
   def note_missing?(patron, note_pattern)

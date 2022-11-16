@@ -11,7 +11,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
 
   before(:all) do
     # Calculate and define the max date and an invalid date:
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr += 1 if mo >= 4
@@ -22,7 +22,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     @max_date_str = max_date.strftime('%m/%d/%Y')
   end
 
-  before(:each) do
+  before do
     @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
     @user = login_as_patron(patron_id)
 
@@ -46,7 +46,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     visit forms_proxy_borrower_faculty_path
   end
 
-  after(:each) do
+  after do
     logout!
   end
 
@@ -98,7 +98,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
 
-    today = Date.today
+    today = Date.current
     year = today.month >= 4 ? today.year + 1 : today.year
     expected_max = Date.new(year, 6, 30).strftime('%B %e, %Y')
 
@@ -115,13 +115,13 @@ describe :forms_proxy_borrower_faculty, type: :system do
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
 
-    expect(page.current_path).to eq(forms_proxy_borrower_request_faculty_path)
+    expect(page).to have_current_path(forms_proxy_borrower_request_faculty_path, ignore_query: true)
     expect(page).to have_content('The form has been submitted')
   end
 
   it 'accepts a valid request with a 2 digit year' do
 
-    today = Date.today
+    today = Date.current
     mo = today.month
     yr = today.year
     yr += 1 if mo >= 4
@@ -139,7 +139,7 @@ describe :forms_proxy_borrower_faculty, type: :system do
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
 
-    expect(page.current_path).to eq(forms_proxy_borrower_request_faculty_path)
+    expect(page).to have_current_path(forms_proxy_borrower_request_faculty_path, ignore_query: true)
     expect(page).to have_content('The form has been submitted')
   end
 end

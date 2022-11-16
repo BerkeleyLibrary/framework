@@ -18,7 +18,7 @@ class ServiceArticleRequestFormsController < AuthenticatedFormController
       patron: current_user.primary_patron_record
     )
     @form.authorize!
-    @form.validate unless @form.assign_attributes(form_params).blank?
+    @form.validate if @form.assign_attributes(form_params).present?
   end
 
   # Make sure only specified attributes are allowed as params

@@ -11,7 +11,7 @@
 
 # TODO: rename to FrameworkUser (singular)
 class FrameworkUsers < ActiveRecord::Base
-  has_many :assignments
+  has_many :assignments, dependent: :destroy
   has_many :roles, through: :assignments
 
   validates :lcasid,

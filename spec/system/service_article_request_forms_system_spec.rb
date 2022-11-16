@@ -9,7 +9,7 @@ describe :service_article_request_forms, type: :system do
 
     let(:alma_api_key) { 'totally-fake-key' }
 
-    before(:each) do
+    before do
       @patron_id = Alma::Type.sample_id_for(Alma::Type::POST_DOC)
       @user = login_as_patron(patron_id)
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
@@ -28,7 +28,7 @@ describe :service_article_request_forms, type: :system do
       visit new_service_article_request_form_path
     end
 
-    after(:each) do
+    after do
       logout!
     end
 
@@ -61,7 +61,7 @@ describe :service_article_request_forms, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page.current_path).to eq('/forms/altmedia-articles/confirmed')
+      expect(page).to have_current_path('/forms/altmedia-articles/confirmed')
     end
   end
 

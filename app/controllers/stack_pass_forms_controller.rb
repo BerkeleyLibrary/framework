@@ -17,13 +17,13 @@ class StackPassFormsController < ApplicationController
     validate_recaptcha!
 
     # Need to gab and convert the date:
-    unless params[:stack_pass_form][:pass_date].blank?
+    if params[:stack_pass_form][:pass_date].present?
       @form.pass_date = (convert_date_param if params[:stack_pass_form][:pass_date].split('/').length == 3)
     end
 
     if @form.save
       @form.submit!
-      render 'result', status: 201
+      render 'result', status: :created
     else
       flash[:danger] = @form.errors.to_a
       redirect_with_params(action: :new)
@@ -73,7 +73,7 @@ class StackPassFormsController < ApplicationController
   def convert_date_param
     # Try to handle mm/dd/yy:
     if (date_param = params[:stack_pass_form][:pass_date].match(%r{^(\d+/\d+/)(\d{2})$}))
-      params[:stack_pass_form][:pass_date] = date_param[1] + '20' + date_param[2]
+      params[:stack_pass_form][:pass_date] = "#{date_param[1]}20#{date_param[2]}"
     end
 
     begin

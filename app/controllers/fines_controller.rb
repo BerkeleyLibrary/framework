@@ -34,7 +34,8 @@ class FinesController < ApplicationController
 
   def transaction_complete
     log_info('TRANSACTION_COMPLETE', params)
-    render(plain: 'Failed', status: 500) && return unless params['RESULT'] == '0'
+    render(plain: 'Failed', status: :internal_server_error) && return unless params['RESULT'] == '0'
+
     @fines = FinesPayment.new(alma_id: params[:USER1], fine_ids: params[:USER2])
     @fines.pp_ref_number = params[:PNREF]
     @fines.credit

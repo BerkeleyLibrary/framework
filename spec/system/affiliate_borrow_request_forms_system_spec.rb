@@ -1,7 +1,7 @@
 require 'capybara_helper'
 
 describe :affiliate_borrow_request_forms, type: :system do
-  before(:each) do
+  before do
     visit new_affiliate_borrow_request_form_path
   end
 
@@ -54,7 +54,7 @@ describe :affiliate_borrow_request_forms, type: :system do
 
     submission_url = "#{new_affiliate_borrow_request_form_path}?#{query_params.to_query}"
     visit submission_url
-    expect(page.current_path).to eq(new_affiliate_borrow_request_form_path)
+    expect(page).to have_current_path(new_affiliate_borrow_request_form_path, ignore_query: true)
     expect(page).not_to have_content('Request successfully submitted')
     expect(page).to have_content('not a valid email address')
     query_params[:affiliate_borrow_request_form].each do |field_name, expected_value|
@@ -77,7 +77,7 @@ describe :affiliate_borrow_request_forms, type: :system do
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
 
-    expect(page.current_path).to eq(new_affiliate_borrow_request_form_path)
+    expect(page).to have_current_path(new_affiliate_borrow_request_form_path, ignore_query: true)
     expect(page).to have_content('Request successfully submitted')
   end
 end

@@ -11,7 +11,7 @@ describe User do
   attr_reader :ucpath_record
   attr_reader :uid
 
-  before(:each) do
+  before do
     allow(Alma::User).to receive(:find).and_raise(Error::PatronNotFoundError)
   end
 

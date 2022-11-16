@@ -63,15 +63,15 @@ class ServiceArticleRequestForm < Form
   # rubocop:disable Metrics/MethodLength
   def publication
     @publication ||= {
-      pub_title: pub_title,
-      pub_location: pub_location,
-      issn: issn,
-      vol: vol,
-      article_title: article_title,
-      author: author,
-      pages: pages,
-      citation: citation,
-      pub_notes: pub_notes
+      pub_title:,
+      pub_location:,
+      issn:,
+      vol:,
+      article_title:,
+      author:,
+      pages:,
+      citation:,
+      pub_notes:
     }
   end
   # rubocop:enable Metrics/MethodLength

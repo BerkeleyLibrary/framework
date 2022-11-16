@@ -9,7 +9,7 @@ describe :scan_request_forms, type: :system do
 
     let(:alma_api_key) { 'totally-fake-key' }
 
-    before(:each) do
+    before do
       @patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       @user = login_as_patron(patron_id)
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
@@ -24,7 +24,7 @@ describe :scan_request_forms, type: :system do
       visit new_scan_request_form_path
     end
 
-    after(:each) do
+    after do
       logout!
     end
 
@@ -47,7 +47,7 @@ describe :scan_request_forms, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page.current_path).to eq('/forms/altmedia/optin')
+      expect(page).to have_current_path('/forms/altmedia/optin')
     end
 
     it 'accepts opt-out' do
@@ -56,7 +56,7 @@ describe :scan_request_forms, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page.current_path).to eq('/forms/altmedia/optout')
+      expect(page).to have_current_path('/forms/altmedia/optout')
     end
   end
 end

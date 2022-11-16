@@ -4,7 +4,7 @@ describe ServiceArticleRequestForm do
   attr_reader :form
   attr_reader :patron
 
-  before(:each) do
+  before do
     @patron = Alma::User.new
     @patron.user_obj = { 'user_note' => [] }
     @patron.id = '111_111'
@@ -13,7 +13,7 @@ describe ServiceArticleRequestForm do
 
     @form = ServiceArticleRequestForm.new(
       display_name: 'Chris Sharma',
-      patron: patron,
+      patron:,
       patron_email: 'chris@sharma.com',
       article_title: 'Es Pontas (9a+)',
       pub_title: 'King Lines',

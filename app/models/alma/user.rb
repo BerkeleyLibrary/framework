@@ -71,7 +71,7 @@ module Alma
     def expired?
       return true unless expiration_date
 
-      expiration_date < Date.today
+      expiration_date < Date.current
     end
 
     # Don't think this is needed:
@@ -94,7 +94,7 @@ module Alma
     # Types: Library, Address, Barcode, Circulation, ERP, General, Other, Registrar
     # rubocop:disable Metrics/MethodLength
     def add_note(text)
-      Rails.logger.debug "Setting note #{text} for patron #{id}"
+      Rails.logger.debug("Setting note #{text} for patron #{id}")
 
       new_note = {
         'note_type' => { 'value' => 'LIBRARY', 'desc' => 'Library' },
@@ -102,7 +102,7 @@ module Alma
         'user_viewable' => false,
         'popup_note' => false,
         'created_by' => 'Framework',
-        'created_date' => Time.now.strftime('%Y-%m-%dT%H:%M:00Z'),
+        'created_date' => Time.zone.now.strftime('%Y-%m-%dT%H:%M:00Z'),
         'segment_type' => 'Internal'
       }
       user_obj['user_note'].push(new_note)

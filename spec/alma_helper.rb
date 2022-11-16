@@ -1,11 +1,11 @@
 require 'webmock'
 
 def stub_patron_dump(patron_id, status: 200, body: nil)
-  # Note : totally-fake-key is set in forms_helper.rb
+  # NOTE: totally-fake-key is set in forms_helper.rb
   patron_dump_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key&expand=fees&view=full"
 
   stub_request(:get, patron_dump_url).to_return(
-    status: status,
+    status:,
     body: body || begin
       body_file = "spec/data/alma_patrons/#{patron_id}.json"
       raise IOError, "No such file: #{body_file}" unless File.file?(body_file)
@@ -23,7 +23,7 @@ def stub_patron_save(patron_id, updated_patron)
 end
 
 def all_alma_ids
-  Dir.entries('spec/data/alma_patrons').select { |f| f =~ /[0-9]+\.json/ }.map { |f| f.match(/([0-9]+)/)[0] }
+  Dir.entries('spec/data/alma_patrons').grep(/[0-9]+\.json/).map { |f| f.match(/([0-9]+)/)[0] }
 end
 
 # Extension methods for Patron module and Alma::Type class, used only in test

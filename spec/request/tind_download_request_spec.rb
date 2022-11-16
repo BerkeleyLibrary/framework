@@ -1,7 +1,7 @@
 require 'forms_helper'
 
 describe TindDownloadController, type: :request do
-  before(:each) do
+  before do
     allow(BerkeleyLibrary::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
   end
 
@@ -12,7 +12,7 @@ describe TindDownloadController, type: :request do
   attr_reader :user
 
   context 'specs for unauthenticated user' do
-    before(:each) do
+    before do
       logout! # just to be sure
     end
 
@@ -34,13 +34,13 @@ describe TindDownloadController, type: :request do
 
     describe 'download' do
       it 'POST redirects to login' do
-        post tind_download_download_path, params: { collection_name: collection_name, export_format: 'csv' }
+        post tind_download_download_path, params: { collection_name:, export_format: 'csv' }
         login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: tind_download_download_path)}"
         expect(response).to redirect_to(login_with_callback_url)
       end
 
       it 'GET redirects to login' do
-        params = { collection_name: collection_name, export_format: 'csv' }
+        params = { collection_name:, export_format: 'csv' }
         get tind_download_download_path, params: params
 
         callback_url = "#{tind_download_download_path}?#{URI.encode_www_form(params)}"
@@ -51,12 +51,12 @@ describe TindDownloadController, type: :request do
   end
 
   context 'specs for non-staff user' do
-    before(:each) do
+    before do
       patron_id = Alma::Type.sample_id_for(Alma::Type::FACULTY)
       login_as_patron(patron_id)
     end
 
-    after(:each) do
+    after do
       logout!
     end
 
@@ -76,32 +76,30 @@ describe TindDownloadController, type: :request do
 
     describe 'download' do
       it 'returns 403 for a POST' do
-        post tind_download_download_path, params: { collection_name: collection_name, export_format: 'csv' }
+        post tind_download_download_path, params: { collection_name:, export_format: 'csv' }
         expect(response.status).to eq(403)
       end
 
       it 'returns 403 for a GET' do
-        get tind_download_download_path, params: { collection_name: collection_name, export_format: 'csv' }
+        get tind_download_download_path, params: { collection_name:, export_format: 'csv' }
         expect(response.status).to eq(403)
       end
     end
   end
 
   context 'specs for staff user' do
-    before(:each) do
+    before do
       patron_id = Alma::Type.sample_id_for(Alma::Type::STAFF)
       login_as_patron(patron_id)
-    end
 
-    after(:each) do
-      logout!
-    end
-
-    before(:each) do
       stub_request(:get, 'https://digicoll.lib.berkeley.edu/api/v1/collections?depth=100').to_return(
         status: 200,
         body: File.new('spec/data/tind_download/collections.json')
       )
+    end
+
+    after do
+      logout!
     end
 
     describe 'form' do
@@ -137,7 +135,7 @@ describe TindDownloadController, type: :request do
     describe 'download' do
       describe 'valid collection' do
 
-        before(:each) do
+        before do
           search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
           search_params = { c: collection_name, format: 'xml' }
           search_params_with_search_id = search_params.merge(search_id: 'DnF1ZXJ5VGhlbkZldGNoBQAAAAABsY')
@@ -200,14 +198,14 @@ describe TindDownloadController, type: :request do
             let(:verify_method) { "verify_#{ext}".to_sym }
 
             it 'supports POST' do
-              post tind_download_download_path, params: { collection_name: collection_name, export_format: ext }
+              post tind_download_download_path, params: { collection_name:, export_format: ext }
               expect(response.status).to eq(200)
 
               send(verify_method, expected_path, body)
             end
 
             it 'supports GET' do
-              get tind_download_download_path, params: { collection_name: collection_name, export_format: ext }
+              get tind_download_download_path, params: { collection_name:, export_format: ext }
               expect(response.status).to eq(200)
 
               send(verify_method, expected_path, body)
@@ -220,12 +218,12 @@ describe TindDownloadController, type: :request do
       describe 'invalid collection' do
         let(:invalid_collection) { 'Not a collection' }
 
-        before(:each) do
+        before do
           search_url = 'https://digicoll.lib.berkeley.edu/api/v1/search'
           search_params = { c: invalid_collection, format: 'xml' }
           body = File.read('spec/data/tind_download/tind-not-a-collection.json')
           stub_request(:get, search_url).with(query: search_params)
-            .to_return(status: 500, body: body, headers: { 'Content-Type' => 'applicaton/json' })
+            .to_return(status: 500, body:, headers: { 'Content-Type' => 'applicaton/json' })
         end
 
         BerkeleyLibrary::TIND::Export::ExportFormat.each do |fmt|

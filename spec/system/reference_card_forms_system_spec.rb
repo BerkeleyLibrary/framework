@@ -85,10 +85,10 @@ describe :reference_card_form, type: :system do
 
   context 'approve/deny specs' do
 
-    before(:each) do
+    before do
       # Create some requests:
       form = ReferenceCardForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                      affiliation: 'Red Bull', pass_date: Date.today, pass_date_end: Date.today + 1, local_id: '8675309')
+                                      affiliation: 'Red Bull', pass_date: Date.current, pass_date_end: Date.current + 1, local_id: '8675309')
 
       # These functions require admin privledges:
       admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])

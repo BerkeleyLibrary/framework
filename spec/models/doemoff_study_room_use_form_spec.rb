@@ -13,10 +13,10 @@ describe DoemoffStudyRoomUseForm do
 
       form = DoemoffStudyRoomUseForm.new(
         display_name: 'Test1',
-        patron: patron,
+        patron:,
         borrow_check: 'checked',
         fines_check: 'checked',
-        roomUse_check: 'checked'
+        room_use_check: 'checked'
       )
 
       expect(form.validate!).to eq(true)
@@ -31,10 +31,10 @@ describe DoemoffStudyRoomUseForm do
 
       form = DoemoffStudyRoomUseForm.new(
         display_name: 'Test3',
-        patron: patron,
+        patron:,
         borrow_check: 'checked',
         fines_check: 'checked',
-        roomUse_check: 'checked'
+        room_use_check: 'checked'
       )
 
       expect(form.validate!).to eq(true)
@@ -47,10 +47,10 @@ describe DoemoffStudyRoomUseForm do
       patron = nil
       form = DoemoffStudyRoomUseForm.new(
         display_name: 'Test3',
-        patron: patron,
+        patron:,
         borrow_check: 'checked',
         fines_check: 'checked',
-        roomUse_check: 'checked'
+        room_use_check: 'checked'
       )
 
       expect { form.authorize! }.to raise_error(Error::PatronNotFoundError)
@@ -67,10 +67,10 @@ describe DoemoffStudyRoomUseForm do
 
       form = DoemoffStudyRoomUseForm.new(
         display_name: 'Test1',
-        patron: patron,
+        patron:,
         borrow_check: 'checked',
         fines_check: 'checked',
-        roomUse_check: 'checked'
+        room_use_check: 'checked'
       )
       expect { form.submit! }.to have_enqueued_job(DoemoffStudyRoomUseJob).with(patron.id)
     end

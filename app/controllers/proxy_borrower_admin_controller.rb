@@ -12,17 +12,17 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   def admin_view
     # Hey, let's look at all these glorious requests!!!
     # @requests = ProxyBorrowerRequests.all.order(sort_column + ' ' + sort_direction)
-    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.today).order(sort_column + ' ' + sort_direction)
+    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.current).order("#{sort_column} #{sort_direction}")
   end
 
   def admin_export
     # Let's give this admin all of the records in a file
     # @requests = ProxyBorrowerRequests.all.order(created_at: :desc)
-    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.today).order(created_at: :desc)
+    @requests = ProxyBorrowerRequests.where('date_term > ?', Date.current).order(created_at: :desc)
 
     respond_to do |format|
       format.html { redirect_to forms_proxy_borrower_admin_path }
-      format.csv { send_data @requests.to_csv, filename: "ProxyRequests-#{Date.today}.csv" }
+      format.csv { send_data @requests.to_csv, filename: "ProxyRequests-#{Date.current}.csv" }
     end
   end
 
@@ -30,7 +30,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
   def admin_search
     # Search page...yay
     search_parameter = params[:search_term] || params[:param]
-    return unless search_parameter.present?
+    return if search_parameter.blank?
 
     # Need to send the search term back with the results so if
     # the user wants to sort differently, we can send back the
@@ -43,12 +43,12 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
       search_date = Date.strptime(search_parameter, '%m/%d/%Y')
 
       # create a time range for the entire day:
-      time_range = (search_date.beginning_of_day..search_date.end_of_day)
+      time_range = search_date.all_day
 
       # search both created_at and date_term fields:
       @requests = ProxyBorrowerRequests.where(created_at: time_range)
         .or(ProxyBorrowerRequests.where(date_term: time_range))
-        .order(sort_column + ' ' + sort_direction)
+        .order("#{sort_column} #{sort_direction}")
     rescue ArgumentError
       # Not really an ArgumentError - but rubocop wants me to specify
       # what I'm rescuing here.
@@ -60,13 +60,13 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
       unfiltered_requests = ProxyBorrowerRequests.where('faculty_name ILIKE :search
           OR student_name ILIKE :search OR dsp_rep ILIKE :search
           OR research_last ILIKE :search OR research_first ILIKE :search',
-                                                        search: "%#{search_parameter}%").order(sort_column + ' ' + sort_direction)
+                                                        search: "%#{search_parameter}%").order("#{sort_column} #{sort_direction}")
 
       # I could not figure out how to add the date term condition to the above query
       # so filtering the results into an array to be passed back to the view:
       @requests = []
       unfiltered_requests.each do |r|
-        @requests.push(r) if r.date_term > Date.today
+        @requests.push(r) if r.date_term > Date.current
       end
     end
   end
