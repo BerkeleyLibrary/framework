@@ -2,9 +2,6 @@ require_relative 'boot'
 require 'rails/all'
 Bundler.require(*Rails.groups)
 
-require 'berkeley_library/docker'
-BerkeleyLibrary::Docker::Secret.load_secrets!
-
 module Framework
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

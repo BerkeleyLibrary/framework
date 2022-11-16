@@ -108,7 +108,7 @@ GEM
     autoprefixer-rails (10.2.4.0)
       execjs
     awesome_print (1.9.2)
-    berkeley_library-docker (0.1.1)
+    berkeley_library-docker (0.2.0)
     bindex (0.8.1)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
@@ -394,7 +394,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print (>= 1.8.0)
-  berkeley_library-docker (~> 0.1.1)
+  berkeley_library-docker (~> 0.2.0)
   bootsnap (~> 1.7, >= 1.7.4)
   bootstrap
   brakeman
