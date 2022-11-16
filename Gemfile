@@ -24,7 +24,7 @@ gem 'omniauth-cas',
     ref: '7087bda829e14c0f7cab2aece5045ad7015669b1'
 gem 'ougai', '>=1.8.2'
 gem 'pg', '~> 1.2'
-gem 'prawn', '~> 2.3.0'
+gem 'prawn', '~> 2.4'
 gem 'puma', '~> 4.3', '>= 4.3.12'
 gem 'rails', '~> 6.0.3'
 gem 'recaptcha', '~> 4.13'
