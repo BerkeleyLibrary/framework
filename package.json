@@ -1,7 +1,6 @@
 {
     "name": "ucblib-framework",
     "private": true,
-    "dependencies": {},
     "devDependencies": {
         "eslint": "^7.12.1",
         "eslint-config-standard": "^16.0.2",

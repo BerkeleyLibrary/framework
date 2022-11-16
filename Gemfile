@@ -6,9 +6,10 @@ ruby File.read('.ruby-version').strip
 
 gem 'awesome_print', '>=1.8.0'
 gem 'berkeley_library-docker', '~> 0.2.0'
-gem 'bootsnap', '~> 1.7', '>= 1.7.4', require: false
+gem 'berkeley_library-logging', '~> 0.2', '>= 0.2.7'
+gem 'berkeley_library-marc', '~> 0.3.1'
+gem 'berkeley_library-tind', '~> 0.7.0'
 gem 'bootstrap'
-gem 'coffee-rails', '~> 5.0'
 gem 'faraday'
 gem 'ipaddress'
 gem 'jaro_winkler', '~> 1.5.4'
@@ -19,21 +20,16 @@ gem 'jwt', '~> 1.5', '>= 1.5.4'
 gem 'lograge', '>=0.11.2'
 gem 'net-ssh'
 gem 'netaddr', '~> 1.5', '>= 1.5.1'
-gem 'omniauth-cas',
-    git: 'https://github.com/dlindahl/omniauth-cas.git',
-    ref: '7087bda829e14c0f7cab2aece5045ad7015669b1'
-gem 'ougai', '>=1.8.2'
+gem 'omniauth', '~> 1.9', '>= 1.9.2'
+gem 'omniauth-cas', '~> 2.0'
 gem 'pg', '~> 1.2'
 gem 'prawn', '~> 2.4'
 gem 'puma', '~> 4.3', '>= 4.3.12'
-gem 'rails', '~> 6.0.3'
+gem 'rails', '~> 7.0.4'
 gem 'recaptcha', '~> 4.13'
-gem 'turbolinks', '~> 5'
+gem 'sprockets', '~> 4.0'
 gem 'typesafe_enum', '~> 0.3'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-gem 'ucblit-logging', git: 'https://git.lib.berkeley.edu/lap/ucblit-logging.git', branch: 'main'
-gem 'ucblit-marc', git: 'https://git.lib.berkeley.edu/lap/ucblit-marc.git', branch: 'main'
-gem 'ucblit-tind', '>= 0.3.3', git: 'https://git.lib.berkeley.edu/lap/ucblit-tind.git', branch: 'main'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
@@ -44,10 +40,9 @@ group :development, :test do
   gem 'database_cleaner-active_record', '~> 2.0'
   gem 'dotenv', '~> 2.7'
   gem 'roo', '~> 2.8'
-  gem 'rspec'
-  gem 'rspec-rails'
-  gem 'rspec-support'
-  gem 'rspec_junit_formatter'
+  gem 'rspec', '~> 3.10'
+  gem 'rspec_junit_formatter', '~> 0.5'
+  gem 'rspec-rails', '~> 5.0'
   gem 'ruby-prof', '~> 0.17.0'
   gem 'vcr'
   gem 'webmock'
@@ -65,6 +60,6 @@ group :test do
   gem 'capybara', '~> 3.36'
   gem 'concurrent-ruby', '~> 1.1'
   gem 'selenium-webdriver', '~> 4.0'
-  gem 'simplecov', '~> 0.16.1', require: false
-  gem 'simplecov-rcov', require: false
+  gem 'simplecov', '~> 0.21', require: false
+  gem 'simplecov-rcov', '~> 0.2', require: false
 end
