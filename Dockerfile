@@ -115,8 +115,18 @@ RUN gem install bundler --version 2.3.25
 COPY --chown=$APP_USER:$APP_USER Gemfile* .ruby-version ./
 RUN bundle install
 
-# Copy the rest of the codebase. We do this after bundle-install so that
-# changes unrelated to the gemset don't invalidate the cache and force a slow
+# ------------------------------------------------------------
+# Install JS packages
+
+# Install JS packages
+COPY --chown=$APP_USER:$APP_USER package.json yarn.lock ./
+RUN yarn install
+
+# ------------------------------------------------------------
+# Copy codebase
+
+# Copy the rest of the codebase. We do this after installing packages so that
+# changes unrelated to the packages don't invalidate the cache and force a slow
 # re-install.
 COPY --chown=$APP_USER:$APP_USER . .
 
@@ -146,14 +156,16 @@ COPY --from=development --chown=$APP_USER /usr/local/bundle /usr/local/bundle
 RUN bundle config set frozen 'true'
 RUN bundle install --local
 
+# Ensure JS modules are installed and yarn.lock is synced
+RUN yarn install --immutable
+
 # ------------------------------------------------------------
 # Precompile production assets
 
 # Pre-compile assets so we don't have to do it after deployment.
 # NOTE: dummy SECRET_KEY_BASE to prevent spurious initializer issues
 #       -- see https://github.com/rails/rails/issues/32947
-RUN SECRET_KEY_BASE=1 rails assets:precompile --trace \
-    && rm -rf .yarn/cache
+RUN SECRET_KEY_BASE=1 rails assets:precompile --trace
 
 # ------------------------------------------------------------
 # Preserve build arguments
