@@ -45,6 +45,10 @@ RSpec/BeforeAfterAll:
 RSpec/ContextWording:
   Enabled: false
 
+# not everything we test is a class
+RSpec/DescribeClass:
+  Enabled: false
+
 # explicit >>> implicit
 RSpec/DescribedClass:
   Enabled: false

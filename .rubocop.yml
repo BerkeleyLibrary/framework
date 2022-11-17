@@ -253,6 +253,10 @@ Rails/Delegate:
 Rails/DurationArithmetic: # new in 2.13
   Enabled: false
 
+# when we want cheap messages we'll ask for them
+Rails/EagerEvaluationLogMessage: # new in 2.11
+  Enabled: false
+
 # readable >>> consistent
 Rails/FilePath:
   Enabled: false
@@ -313,8 +317,6 @@ Rails/WhereEquals: # new in 2.9
 Rails/TimeZoneAssignment: # new in 2.10
   Enabled: true
 Rails/AddColumnIndex: # new in 2.11
-  Enabled: true
-Rails/EagerEvaluationLogMessage: # new in 2.11
   Enabled: true
 Rails/ExpandedDateRange: # new in 2.11
   Enabled: true
