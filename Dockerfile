@@ -153,7 +153,7 @@ RUN bundle install --local
 # NOTE: dummy SECRET_KEY_BASE to prevent spurious initializer issues
 #       -- see https://github.com/rails/rails/issues/32947
 RUN SECRET_KEY_BASE=1 rails assets:precompile --trace \
-    && rm -r .cache/yarn
+    && rm -rf .yarn/cache
 
 # ------------------------------------------------------------
 # Preserve build arguments
