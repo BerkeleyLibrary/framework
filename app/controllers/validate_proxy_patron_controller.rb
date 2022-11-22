@@ -1,17 +1,12 @@
 class ValidateProxyPatronController < ApplicationController
-  protect_from_forgery with: :null_session
-  before_action :alma_id, :alma_password, only: [:index]
+  skip_forgery_protection
 
   def index
-    if AlmaServices::Patron.authenticate_alma_patron(alma_id, alma_password)
-      if AlmaServices::Patron.valid_proxy_patron?(alma_id)
-        render plain: 'Success'
-      else
-        render plain: 'Fail', status: :forbidden
-      end
-    else
-      render plain: 'Fail', status: :forbidden
-    end
+    authenticate_alma_patron!
+    check_proxy_privileges!
+    render plain: 'Success'
+  rescue Error::PatronApiError
+    render plain: 'Fail', status: :forbidden
   end
 
   private
@@ -24,4 +19,17 @@ class ValidateProxyPatronController < ApplicationController
     params.require(:alma_password)
   end
 
+  def authenticate_alma_patron!
+    return if AlmaServices::Patron.authenticate_alma_patron(alma_id, alma_password)
+
+    logger.warn("Unable to authenticate Alma patron #{alma_id.inspect}")
+    raise Error::PatronNotFoundError
+  end
+
+  def check_proxy_privileges!
+    return if AlmaServices::Patron.valid_proxy_patron?(alma_id)
+
+    logger.warn("Alma patron #{alma_id} is not a valid proxy user")
+    raise Error::PatronNotProxyUserError
+  end
 end

@@ -1,24 +1,27 @@
 require 'webmock'
 
-def stub_patron_dump(patron_id, status: 200, body: nil)
-  # NOTE: totally-fake-key is set in forms_helper.rb
-  patron_dump_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key&expand=fees&view=full"
+# NOTE: totally-fake-key is set in forms_helper.rb
+def stub_patron_dump(patron_id, status: 200, alma_api_key: 'totally-fake-key', body: nil)
+  patron_dump_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?&expand=fees&view=full"
 
-  stub_request(:get, patron_dump_url).to_return(
-    status:,
-    body: body || begin
-      body_file = "spec/data/alma_patrons/#{patron_id}.json"
-      raise IOError, "No such file: #{body_file}" unless File.file?(body_file)
+  stub_request(:get, patron_dump_url)
+    .with(headers: { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" })
+    .to_return(
+      status:,
+      body: body || begin
+        body_file = "spec/data/alma_patrons/#{patron_id}.json"
+        raise IOError, "No such file: #{body_file}" unless File.file?(body_file)
 
-      File.new(body_file)
-    end
-  )
+        File.new(body_file)
+      end
+    )
 end
 
-def stub_patron_save(patron_id, updated_patron)
-  patron_save_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key"
+def stub_patron_save(patron_id, updated_patron, alma_api_key: 'totally-fake-key')
+  patron_save_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}"
   stub_request(:put, patron_save_url)
     .with(body: /#{Regexp.escape(updated_patron)}/)
+    .with(headers: { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" })
     .to_return(status: 200, body: '', headers: {})
 end
 

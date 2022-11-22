@@ -1,7 +1,12 @@
 require 'forms_helper'
 
 describe 'Fines', type: :request do
+  def base_url_for(user_id)
+    "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{user_id}"
+  end
+
   let(:alma_api_key) { 'totally-fake-key' }
+  let(:request_headers) { { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" } }
 
   before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
@@ -12,8 +17,9 @@ describe 'Fines', type: :request do
   end
 
   it 'redirects to error page if request has a non-existant alma id' do
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/00000/fees?apikey=#{alma_api_key}")
-      .with(headers: { 'Accept' => 'application/json' })
+    user_id = '00000'
+    stub_request(:get, "#{base_url_for(user_id)}/fees")
+      .with(headers: request_headers)
       .to_return(status: 404, body: '')
 
     get '/fines?&jwt=totallyfakejwt'
@@ -23,8 +29,9 @@ describe 'Fines', type: :request do
   end
 
   it 'list page with an existing alma id routes to index page' do
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees?apikey=#{alma_api_key}")
-      .with(headers: { 'Accept' => 'application/json' })
+    user_id = '10335026'
+    stub_request(:get, "#{base_url_for(user_id)}/fees")
+      .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/alma-fees-list.json'))
 
     get "/fines?&jwt=#{File.read('spec/data/fines/alma-fees-jwt.txt')}"
@@ -33,11 +40,12 @@ describe 'Fines', type: :request do
   end
 
   it 'payments page lists fees to confirm payment' do
-    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users//fees?apikey=totally-fake-key')
-      .with(headers: { 'Accept' => 'application/json' })
+    user_id = '10335026'
+    stub_request(:get, "#{base_url_for(user_id)}/fees")
+      .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/alma-fees-list.json'))
 
-    post '/fines/payment', params: { user_id: '10335026', fine: { payment: ['3260566220006532'] } }
+    post '/fines/payment', params: { alma_id: user_id, fine: { payment: ['3260566220006532'] } }
     expect(response.status).to eq(200)
     expect(response.body).to include('<h1>Confirm Fees to Pay</h1>')
     expect(response.body).to include('Lost item process fee')
@@ -51,15 +59,19 @@ describe 'Fines', type: :request do
   end
 
   it 'successful transaction_complete returns status 200' do
-    stub_request(:post, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees/3260566220006532?amount=10.00%0A%20%20%20%20%20%20&apikey=totally-fake-key&external_transaction_id=&method=ONLINE&op=pay')
-      .with(headers: { 'Accept' => 'application/json' })
+    user_id = '10335026'
+    stub_request(:post, "#{base_url_for(user_id)}/fees/3260566220006532")
+      .with(
+        headers: request_headers,
+        query: { amount: '10.00', external_transaction_id: nil, method: 'ONLINE', op: 'pay' }
+      )
       .to_return(status: 200, body: '', headers: {})
 
-    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees?apikey=totally-fake-key')
-      .with(headers: { 'Accept' => 'application/json' })
+    stub_request(:get, "#{base_url_for(user_id)}/fees")
+      .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/alma-fees-list.json'))
 
-    post '/fines/transaction_complete', params: { RESULT: '0', USER1: '10335026', USER2: ['3260566220006532'] }
+    post '/fines/transaction_complete', params: { RESULT: '0', USER1: user_id, USER2: ['3260566220006532'] }
     expect(response.status).to eq(200)
   end
 

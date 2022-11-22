@@ -116,7 +116,9 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
 
   describe 'failure' do
     it 'sends a failure email in the event of an error' do
-      allow(Faraday).to receive(:put).and_raise(StandardError)
+      stub_request(:put, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/013191305')
+        .to_raise(StandardError)
+
       expect { job.perform_now(patron.id) }.to(
         raise_error(StandardError).and(
           (change { ActionMailer::Base.deliveries.count }).by(1)
@@ -152,42 +154,31 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       end.at_least(:once) # TODO: avoid double-logging
 
       # Can't just use raise_error here; see https://github.com/rspec/rspec-expectations/issues/1293
-      begin
+      ex = begin
         job.perform_now(bad_patron_id)
       rescue StandardError => e
-        raise if e.class.name.start_with?('RSpec')
-
-        ex = e
+        e.tap { raise if e.class.name.start_with?('RSpec') }
       end
       expect(ex).to be_a(Error::PatronApiError)
     end
 
-    # it 'logs an error in the event of an SSH error' do
-    #   allow(ssh).to receive(:exec!).and_raise(Net::SSH::Exception)
-    #   expect(Rails.logger).to receive(:error) do |msg|
-    #     expect(msg).to be_a(Hash)
-    #     expect(msg[:error]).to include(Net::SSH::Exception.to_s)
-    #   end.ordered
-    #   expect(Rails.logger).to receive(:error) do |msg, &block|
-    #     expect(msg).to be_nil
-    #     msg_actual = block.call
-    #     expect(msg_actual).to include(job.name)
-    #     expect(msg_actual).to include(Net::SSH::Exception.to_s)
-    #   end.ordered
-    #   expect { job.perform_now(patron.id) }.to raise_error(Net::SSH::Exception)
-    # end
-
     it 'logs an error in the event of a script error' do
-      allow(Faraday).to receive(:put).and_raise(StandardError)
+      err_msg = 'something bad'
+
+      stub_request(:put, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/013191305')
+        .to_raise(err_msg)
+
       expect(Rails.logger).to receive(:error) do |msg|
-        expect(msg).to be_a(Hash)
+        expect(msg).to include(msg: err_msg, backtrace: an_instance_of(Array))
       end.ordered
+
       expect(Rails.logger).to receive(:error) do |msg, &block|
         expect(msg).to be_nil
         msg_actual = block.call
         expect(msg_actual).to include(job.name)
-        expect(msg_actual).to include('StandardError (StandardError)')
+        expect(msg_actual).to include(err_msg)
       end.ordered
+
       expect { job.perform_now(patron.id) }.to raise_error(StandardError)
     end
   end

@@ -48,7 +48,7 @@
     <orderEntry type="library" scope="PROVIDED" name="autoprefixer-rails (v10.4.7.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="awesome_print (v1.9.2, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-alma (v0.0.7.1, RVM: ruby-3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="berkeley_library-docker (v0.1.1, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="berkeley_library-docker (v0.2.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-logging (v0.2.7, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-marc (v0.3.1, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-tind (v0.7.0, RVM: ruby-3.1.2) [gem]" level="application" />
@@ -552,6 +552,7 @@
                   <RakeTaskImpl description="Run specs in stack_pass_forms_system_spec.rb" fullCommand="spec:system:stack_pass_forms" id="stack_pass_forms" />
                   <RakeTaskImpl description="Run specs in student_edevices_loan_forms_system_spec.rb" fullCommand="spec:system:student_edevices_loan_forms" id="student_edevices_loan_forms" />
                   <RakeTaskImpl description="Run specs in tind_download_system_spec.rb" fullCommand="spec:system:tind_download" id="tind_download" />
+                  <RakeTaskImpl description="Run specs in validate_proxy_patron_system_spec.rb" fullCommand="spec:system:validate_proxy_patron" id="validate_proxy_patron" />
                 </subtasks>
               </RakeTaskImpl>
               <RakeTaskImpl description="" fullCommand="spec:prepare" id="prepare" />

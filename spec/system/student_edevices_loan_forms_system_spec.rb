@@ -14,9 +14,10 @@ describe :student_edevices_loan_forms, type: :system do
       @user = login_as_patron(patron_id)
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
-      req_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?apikey=totally-fake-key&expand=fees&view=full"
+      req_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?expand=fees&view=full"
 
       stub_request(:get, req_url)
+        .with(headers: { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" })
         .with(headers: { 'Accept' => 'application/json' })
         .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{patron_id}.json"))
 

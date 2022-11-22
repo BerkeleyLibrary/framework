@@ -1,63 +1,105 @@
 module AlmaServices
-  class Patron
 
-    def self.authenticate_alma_patron(alma_id, alma_password)
-      req = "#{Config.alma_api_url}users/#{alma_id}?op=auth&password=#{alma_password}&view=full&apikey=#{Config.alma_api_key}"
-      res = Faraday.post(req, {}, 'Accept' => 'application/json')
-      res.success?
-    end
+  module Base
+    include BerkeleyLibrary::Util
 
-    # expand=fees is added since the default response is nil for fees
-    def self.get_user(alma_id)
-      req = "#{Config.alma_api_url}users/#{alma_id}?view=full&expand=fees&apikey=#{Config.alma_api_key}"
-      res = Faraday.get(req, {}, 'Accept' => 'application/json')
-      raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
-
-      res
-    end
-
-    def self.valid_proxy_patron?(alma_id)
-      res = get_user(alma_id)
-      ValidProxyPatron.valid?(JSON.parse(res.body))
-    end
-
-    def self.save(alma_id, user)
-      req = "#{Config.alma_api_url}users/#{alma_id}?apikey=#{Config.alma_api_key}"
-      res = Faraday.put(req, user.to_json, { 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
-      raise ActiveRecord::RecordNotFound, 'Failed to save.' unless res.status == 200
-
-      'Saved user.'
-    end
-
-  end
-
-  class Fines
-    def self.fetch_all(alma_user_id)
-      req = "#{Config.alma_api_url}users/#{alma_user_id}/fees?apikey=#{Config.alma_api_key}"
-      res = Faraday.get(req, {}, 'Accept' => 'application/json')
-      raise ActiveRecord::RecordNotFound, 'No fees could be found.' unless res.status == 200
-
-      JSON.parse(res.body)
-    end
-
-    def self.credit(alma_user_id, pp_ref_number, fine)
-      # If you pay the full amount owed for a fee, it automatically changes the status to "CLOSED"
-      req = "#{Config.alma_api_url}users/#{alma_user_id}/fees/#{fine.id}?apikey=#{Config.alma_api_key}&op=pay&amount=#{fine.balance}
-      &method=ONLINE&external_transaction_id=#{pp_ref_number}"
-
-      res = Faraday.post(req, {}, 'Accept' => 'application/json')
-      raise ActiveRecord::RecordNotFound, "Failed to credit fee #{fee_id}" unless res.status == 200
-    end
-  end
-
-  class Config
-    def self.alma_api_url
+    def alma_api_url
       Rails.application.config.alma_api_url
     end
 
-    def self.alma_api_key
+    def alma_api_key
       Rails.application.config.alma_api_key
+    end
+
+    def user_uri_for(alma_user_id)
+      URIs.append(alma_api_url, 'users', alma_user_id)
+    end
+
+    def connection
+      Faraday.new do |faraday|
+        faraday.request(:url_encoded)
+        faraday.headers['Accept'] = 'application/json'
+        faraday.headers['Authorization'] = "apikey #{alma_api_key}"
+
+        inject_log_middleware(faraday) unless Rails.env.production?
+      end
+    end
+
+    private
+
+    def inject_log_middleware(f)
+      f.response(:logger, Rails.logger, { headers: true, bodies: true, errors: true })
+    end
+
+  end
+
+  class Patron
+    class << self
+      include Base
+
+      def authenticate_alma_patron(alma_user_id, alma_password)
+        # Alma requires these params to be in the query string
+        params = { op: 'auth', view: 'full', password: alma_password }
+        auth_uri = URIs.append(user_uri_for(alma_user_id), '?', URI.encode_www_form(params))
+
+        res = connection.post(auth_uri, params)
+        res.success?
+      end
+
+      # expand=fees is added since the default response is nil for fees
+      def get_user(alma_user_id)
+        params = { view: 'full', expand: 'fees' }
+        connection.get(user_uri_for(alma_user_id), params).tap do |res|
+          raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
+        end
+      end
+
+      def save(alma_user_id, user)
+        # noinspection RubyArgCount
+        connection.put(user_uri_for(alma_user_id), user.to_json, { 'Content-Type' => 'application/json' }).tap do |res|
+          raise ActiveRecord::RecordNotFound, 'Failed to save.' unless res.status == 200
+        end
+
+        'Saved user.' # TODO: what is this for?
+      end
+
+      def valid_proxy_patron?(alma_id)
+        res = get_user(alma_id)
+        ValidProxyPatron.valid?(JSON.parse(res.body))
+      end
+
     end
   end
 
+  class Fines
+    class << self
+      include Base
+
+      def fees_uri_for(alma_id)
+        URIs.append(user_uri_for(alma_id), 'fees')
+      end
+
+      def fee_uri_for(alma_id, fee_id)
+        URIs.append(fees_uri_for(alma_id), fee_id)
+      end
+
+      def fetch_all(alma_user_id)
+        res = connection.get(fees_uri_for(alma_user_id))
+        raise ActiveRecord::RecordNotFound, 'No fees could be found.' unless res.status == 200
+
+        JSON.parse(res.body)
+      end
+
+      # If you pay the full amount owed for a fee, it automatically changes the status to "CLOSED"
+      def credit(alma_user_id, pp_ref_number, fine)
+        # Alma requires these params to be in the query string
+        params = { op: 'pay', method: 'ONLINE', amount: fine.balance, external_transaction_id: pp_ref_number }
+        payment_uri = URIs.append(fee_uri_for(alma_user_id, fine.id), '?', URI.encode_www_form(params))
+
+        connection.post(payment_uri).tap do |res|
+          raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
+        end
+      end
+    end
+  end
 end
