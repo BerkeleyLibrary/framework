@@ -16,7 +16,7 @@ module Framework
 
     # TODO: Switch to a persistent backend store like delayed_job
     #       (but make sure to update async logging tests in jobs_helper.rb)
-    config.active_job.queue_adapter = :async
+    config.active_job.queue_adapter = :good_job
 
     # @note By default, Rails wraps fields that contain a validation error with
     #   a div classed "field_with_errors". This messes up Bootstrap's styling

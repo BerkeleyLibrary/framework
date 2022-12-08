@@ -69,4 +69,6 @@ Rails.application.configure do
   # back to the application (directly to the approval form for an pass request):
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
+  config.good_job.execution_mode = :async
+
 end

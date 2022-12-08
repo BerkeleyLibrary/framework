@@ -73,4 +73,9 @@ Rails.application.routes.draw do
   get '/tind-download/find_collection', to: 'tind_download#find_collection'
   get '/tind-download/download', to: 'tind_download#download'
   post '/tind-download/download', to: 'tind_download#download'
+
+  # http://example.com/good_job
+  mount GoodJob::Engine => 'good_job'
+  get 'jobs', to: 'good_job/jobs#index'
+  
 end

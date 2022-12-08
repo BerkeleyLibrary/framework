@@ -64,3 +64,5 @@ group :test do
   gem 'simplecov', '~> 0.21', require: false
   gem 'simplecov-rcov', '~> 0.2', require: false
 end
+
+gem "good_job", "~> 3.6"
