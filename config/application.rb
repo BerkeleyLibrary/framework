@@ -37,5 +37,24 @@ module Framework
     # Setup berkeley_library-tind for TIND Downloader:
     config.tind_base_uri = config.altmedia['tind_base_uri']
     config.tind_api_key = config.altmedia['tind_api_key']
+
+    config.to_prepare do
+      GoodJob::JobsController.class_eval do
+        include AuthenticationHandling
+        include ExceptionHandling
+        before_action :require_framework_admin!
+
+        rescue_from Error::UnauthorizedError do |error|
+          # this isn't really an error condition, it just means the user's
+          # not logged in, so we don't need the full stack trace etc.
+          logger.info(error)
+
+          # redirect_to user_calnet_omniauth_authorize_path(url: redirect_to)
+          redirect_to main_app.login_path
+        end
+
+      end
+    end
+    
   end
 end

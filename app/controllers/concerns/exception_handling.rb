@@ -47,7 +47,7 @@ module ExceptionHandling
       # this isn't really an error condition, it just means the user's
       # not logged in, so we don't need the full stack trace etc.
       logger.info(error)
-      redirect_to login_path(url: request.fullpath)
+      redirect_to main_app.login_path(url: request.fullpath)
     end
   end
   # rubocop:enable Metrics/BlockLength

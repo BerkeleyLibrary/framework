@@ -1,5 +1,6 @@
 # Base class for all controllers
 class ApplicationController < ActionController::Base
+  include AuthenticationHandling
   include ExceptionHandling
 
   # @!group Class Attributes
@@ -18,33 +19,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Require that the current user be authenticated
-  #
-  # @return [void]
-  # @raise [Error::UnauthorizedError] If the user is not
-  #   authenticated
-  def authenticate!
-    raise Error::UnauthorizedError, "Endpoint #{controller_name}/#{action_name} requires authentication" unless authenticated?
-  end
-
-  # Return whether the current user is authenticated
-  #
-  # @return [Boolean]
-  def authenticated?
-    current_user.authenticated?
-  end
   helper_method :authenticated?
-
-  # Return the current user
-  #
-  # This always returns a user object, even if the user isn't authenticated.
-  # Call {User#authenticated?} to determine if they were actually auth'd, or
-  # use the shortcut {#authenticated?} to see if the current user is auth'd.
-  #
-  # @return [User]
-  def current_user
-    @current_user ||= User.new(session[:user] || {})
-  end
 
   # Log an exception
   def log_error(error)
@@ -81,20 +56,5 @@ class ApplicationController < ActionController::Base
   # This is a workaround for not being able to redirect a POST/PUT request.
   def redirect_with_params(opts = {})
     redirect_to request.parameters.update(opts)
-  end
-
-  # Sign in the user by storing their data in the session
-  #
-  # @param [User]
-  # @return [void]
-  def sign_in(user)
-    session[:user] = user
-  end
-
-  # Sign out the current user by clearing all session data
-  #
-  # @return [void]
-  def sign_out
-    reset_session
   end
 end
