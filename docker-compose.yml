@@ -17,6 +17,10 @@ services:
     ports:
       - 3000:3000
     restart: always
+    environment: 
+      RAILS_MAX_THREADS: 6
+      GOOD_JOB_MAX_THREADS: 4
+
 
   db:
     environment:
@@ -34,22 +38,27 @@ services:
       - ./:/build:rw
 
   selenium:
-    image: selenium/hub
-    networks:
-      default:
-        aliases:
-          - selenium.test
-    ports:
-      - 4444:4444
-    volumes:
-      - ./:/build:rw
-
+      image: selenium/hub
+      networks:
+        default:
+          aliases:
+            - selenium.test
+      ports:
+        - 4442:4442
+        - 4443:4443
+        - 4444:4444
+      volumes:
+        - ./:/build:rw
+  
   selenium-chrome:
+    image: selenium/node-chrome
+    # shm_size: 2gb
     depends_on:
       - selenium
     environment:
-      HUB_HOST: selenium
-    image: selenium/node-chrome-debug
+      - SE_EVENT_BUS_HOST=selenium
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     ports:
       # @note Use `open vnc://localhost:55900` to view the chrome session.
       #       Doesn't work if you pass the "headless" option via Capybara.
@@ -58,6 +67,31 @@ services:
     volumes:
       - /dev/shm:/dev/shm:rw
       - ./:/build:rw
+  # selenium:
+  #   image: selenium/hub
+  #   networks:
+  #     default:
+  #       aliases:
+  #         - selenium.test
+  #   ports:
+  #     - 4444:4444
+  #   volumes:
+  #     - ./:/build:rw
+
+  # selenium-chrome:
+  #   depends_on:
+  #     - selenium
+  #   environment:
+  #     HUB_HOST: selenium
+  #   image: selenium/node-chrome-debug
+  #   ports:
+  #     # @note Use `open vnc://localhost:55900` to view the chrome session.
+  #     #       Doesn't work if you pass the "headless" option via Capybara.
+  #     #       Password = "secret"
+  #     - 55900:5900
+  #   volumes:
+  #     - /dev/shm:/dev/shm:rw
+  #     - ./:/build:rw
 
   adminer:
     image: adminer

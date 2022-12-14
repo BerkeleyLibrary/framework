@@ -119,6 +119,9 @@ yarn-debug.log*
 # Ignore Byebug command history file.
 .byebug_history
 
+# Ignore bash history file
+.bash_history
+
 ## Specific to RubyMotion:
 .dat*
 .repl_history
