@@ -1,3 +1,4 @@
+require 'active_support/testing/time_helpers'
 # ------------------------------------------------------------
 # Rails
 
@@ -15,6 +16,7 @@ require 'simplecov' if ENV['COVERAGE']
 # RSpec configuration
 
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
   config.color = true
   config.tty = true
   config.formatter = :documentation
