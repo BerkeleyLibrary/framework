@@ -85,7 +85,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       expected_msg = "Setting note #{expected_note} for patron #{patron_id}"
       allow(Rails.logger).to receive(:debug)
       expect(Rails.logger).to receive(:debug).with(expected_msg)
-      
+
       latch = Concurrent::CountDownLatch.new(1)
       original_queue_adapter = job.queue_adapter
       callback_proc = -> { latch.count_down }

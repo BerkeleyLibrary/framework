@@ -77,5 +77,5 @@ Rails.application.routes.draw do
   # http://example.com/good_job
   mount GoodJob::Engine => 'good_job'
   get 'jobs', to: 'good_job/jobs#index'
-  
+
 end

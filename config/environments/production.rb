@@ -107,5 +107,5 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'framework.lib.berkeley.edu' }
 
   config.good_job.execution_mode = :async
-  
+
 end
