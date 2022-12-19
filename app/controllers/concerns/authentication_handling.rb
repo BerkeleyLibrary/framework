@@ -47,10 +47,10 @@ module AuthenticationHandling
 
   def require_framework_admin!
     authenticate!
-    # raise Error::ForbiddenError,
-    #         "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup" unless current_user.framework_admin
+    return true if current_user.framework_admin
 
-    redirect_to login_path(url: redirect_to) unless current_user.framework_admin
+    raise Error::ForbiddenError,
+          "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
   end
 
 end

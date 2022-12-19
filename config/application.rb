@@ -49,7 +49,7 @@ module Framework
           # not logged in, so we don't need the full stack trace etc.
           logger.info(error)
 
-          # redirect_to user_calnet_omniauth_authorize_path(url: redirect_to)
+          # redirect_to main page
           redirect_to main_app.login_path
         end
 
