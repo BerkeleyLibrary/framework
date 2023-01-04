@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'
+  get 'framework_admin', to: 'home#framework_admin'
   get 'health', to: 'home#health'
   get 'home', to: 'home#index'
 
