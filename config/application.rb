@@ -40,7 +40,7 @@ module Framework
 
     config.to_prepare do
       GoodJob::JobsController.class_eval do
-        include AuthenticationHandling
+        include AuthSupport
         include ExceptionHandling
         before_action :require_framework_admin!
 

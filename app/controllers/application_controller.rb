@@ -1,6 +1,6 @@
 # Base class for all controllers
 class ApplicationController < ActionController::Base
-  include AuthenticationHandling
+  include AuthSupport
   include ExceptionHandling
 
   # @!group Class Attributes

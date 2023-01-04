@@ -1,4 +1,4 @@
-module AuthenticationHandling
+module AuthSupport
   extend ActiveSupport::Concern
 
   private
