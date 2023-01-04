@@ -43,16 +43,6 @@ module Framework
         include AuthSupport
         include ExceptionHandling
         before_action :require_framework_admin!
-
-        rescue_from Error::UnauthorizedError do |error|
-          # this isn't really an error condition, it just means the user's
-          # not logged in, so we don't need the full stack trace etc.
-          logger.info(error)
-
-          # redirect_to main page
-          redirect_to main_app.login_path
-        end
-
       end
     end
 
