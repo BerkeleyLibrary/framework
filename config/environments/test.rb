@@ -57,5 +57,5 @@ Rails.application.configure do
 
   config.good_job.inline_execution_respects_schedule = true
   config.good_job.execution_mode = :inline
-  
+
 end

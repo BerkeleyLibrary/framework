@@ -68,6 +68,5 @@ describe HomeController, type: :request do
   describe :framework_admin do
     it_behaves_like('allow admin', page: 'framework_admin')
   end
- 
-end
 
+end
