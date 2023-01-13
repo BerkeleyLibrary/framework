@@ -79,4 +79,7 @@ Rails.application.routes.draw do
   mount GoodJob::Engine => 'good_job'
   get 'jobs', to: 'good_job/jobs#index'
 
+  # Alma Item Set Routes
+  get '/alma-item-set', to: 'alma_item_set#index'
+  post '/alma-item-set', to: 'alma_item_set#update'
 end

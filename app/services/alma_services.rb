@@ -7,19 +7,19 @@ module AlmaServices
       Rails.application.config.alma_api_url
     end
 
-    def alma_api_key
-      Rails.application.config.alma_api_key
+    def alma_api_key(env = 'production')
+      env == 'production' ? Rails.application.config.alma_api_key : Rails.application.config.alma_sandbox_key
     end
 
     def user_uri_for(alma_user_id)
       URIs.append(alma_api_url, 'users', alma_user_id)
     end
 
-    def connection
+    def connection(env = 'production')
       Faraday.new do |faraday|
         faraday.request(:url_encoded)
         faraday.headers['Accept'] = 'application/json'
-        faraday.headers['Authorization'] = "apikey #{alma_api_key}"
+        faraday.headers['Authorization'] = "apikey #{alma_api_key(env)}"
 
         inject_log_middleware(faraday) unless Rails.env.production?
       end
@@ -97,6 +97,52 @@ module AlmaServices
         payment_uri = URIs.append(fee_uri_for(alma_user_id, fine.id), '?', URI.encode_www_form(params))
 
         connection.post(payment_uri).tap do |res|
+          raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
+        end
+      end
+    end
+  end
+
+  # An "ItemSet" is a collection of members, which are references to items.
+  class ItemSet
+
+    class << self
+      include Base
+
+      def fetch_sets(env, offset = 0)
+        params = {
+          view: 'full',
+          expand: 'none',
+          limit: 100,
+          content_type: 'ITEM',
+          offset:
+        }
+
+        res = connection(env).get(URIs.append(alma_api_url, 'conf/sets'), params)
+        raise ActiveRecord::RecordNotFound, 'No item sets could be found..' unless res.status == 200
+
+        JSON.parse(res.body)
+      end
+
+      def fetch_members(set_id, env, offset = 0)
+        params = { offset: }
+        res = connection(env).get(URIs.append(alma_api_url, "conf/sets/#{set_id}/members"), params)
+        raise ActiveRecord::RecordNotFound, 'No item sets could be found.' unless res.status == 200
+
+        JSON.parse(res.body)
+      end
+
+      def fetch_item(env, mms_id, holding_id, item_pid)
+        uri = URIs.append(alma_api_url, "bibs/#{mms_id}/holdings/#{holding_id}/items/#{item_pid}")
+        res = connection(env).get(uri)
+        raise ActiveRecord::RecordNotFound, 'Item could be found.' unless res.status == 200
+
+        JSON.parse(res.body)
+      end
+
+      def save_item(item)
+        uri = URIs.append(alma_api_url, "bibs/#{item.mms_id}/holdings/#{item.holding_id}/items/#{item.item_pid}")
+        connection(item.env).put(uri, item.to_json, { 'Content-Type' => 'application/json' }).tap do |res|
           raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
         end
       end

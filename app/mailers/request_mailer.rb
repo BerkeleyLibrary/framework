@@ -172,6 +172,12 @@ class RequestMailer < ApplicationMailer
     mail(to: reference_card_form.email, subject: 'Reference Card Request - Approved')
   end
 
+  # Send Item Set notes job update
+  def item_notes_update_email(email, message)
+    @email_message = message
+    mail(to: email, subject: 'Item set internal notes updated')
+  end
+
   private
 
   # Create the Stack Pass approved PDF file

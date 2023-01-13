@@ -1,0 +1,85 @@
+<div id="form-view">
+  <%= form_with(url: '', id: 'set-form', local: false, target: '_blank') do |f| %>
+    <h1>Item Record Internal Note Prepender</h1>
+    <p>This form allows you to prepend notes to items in Alma item sets.</p>
+    <section id="item-set-form">
+      <p class="required-note">Required</p>
+      <%# Alma Environment %>
+      <div class="form-label mt-4">
+        <%= f.label(:alma_env, 'Alma Environment') %>:
+      </div>
+      <div class="form-input">
+        <% rb_alma_env = :alma_env %>
+        <%= f.radio_button(rb_alma_env, "production", checked: true) %>
+        <%= f.label("#{rb_alma_env}_production".to_sym, "Production") %>
+        <br />
+        <%= f.radio_button(rb_alma_env, "sandbox", checked: false) %>
+        <%= f.label("#{rb_alma_env}_sandbox".to_sym, "Sandbox") %>
+      </div>
+      <%# Set Name %>
+      <div class="form-label form-group required mt-4">
+        <%= label_tag(:alma_set_id, 'Alma Set Name:', class: 'control-label') %>
+      </div>
+      <div class="form-input required">
+        <%# f.text_field(:alma_set_name, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+        <%= f.select(:alma_set_id, @production_sets, {}, {:class => 'form-control', :id => 'prod-drop-down'}) %>
+        <%= f.select(:alma_set_id, @sandbox_sets, {}, {:class => 'form-control', :id => 'sand-drop-down'}) %>
+      </div>
+      <%# Note Number %>
+      <div class="form-label form-group mt-4">
+        <%= f.label(:note_num, 'Internal Note Destination (note 1, 2 or 3)') %>:
+        <div class="form-input">
+          <% rb_note_num = :note_num %>
+          <%= f.radio_button(rb_note_num, "1", checked: true) %>
+          <%= f.label("#{rb_note_num}_1".to_sym, "Note 1") %>
+          <br />
+          <%= f.radio_button(rb_note_num, "2", checked: false) %>
+          <%= f.label("#{rb_note_num}_2", "Note 2") %>
+          <br />
+          <%= f.radio_button(rb_note_num, "3", checked: false) %>
+          <%= f.label("#{rb_note_num}_3", "Note 3") %>
+        </div>
+      </div>
+      <%# Note Input %>
+      <div class="form-label form-group required">
+        <%= label_tag(:note_value, 'Note Value', class: 'control-label') %>
+      </div>
+      <div class="form-input required mb-4">
+        <%= f.text_field(:note_value, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      </div>
+      <%# Initials Input %>
+      <div class="form-label form-group required">
+        <%= label_tag(:initials, 'Initials', class: 'control-label') %>
+      </div>
+      <div class="form-input required mb-4">
+        <%= f.text_field(:initials, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      </div>
+      <div class="form-input">
+        <p><input type="submit" id='submit-btn' class='btn btn-primary' value="Append Note"></p>
+      </div>
+    </section>
+  <% end %>
+</div>
+<%# Display this until we start the job.... %>
+<div id="processing-view">
+  <h1>Preparing....</h1>
+  <h3 class="d-flex justify-content-center">This might take a few minutes</h3>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-warning" style="width: 7rem; height: 7rem;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+</div>
+<%# We'll display this once the request is submitted %>
+<div id="results-view">
+  <h1>Your request has been submitted</h1>
+  <p>Once the job has been completed you should receive an email at: <span id="email_addr">missing email address</span><p>
+  <p>Depending on the number of items being updated, this may take hours or days.</p>
+</div>
+<%# Only display this if the ajax submission fails %>
+<div id="errors-view">
+  <h1>Error</h1>
+  <%# TODO: add help email address %>
+  <p>Something went wrong. If this persists please email <a href = "mailto: helpbox@berkeley.edu">HelpBox</a> for assistance.</p>
+</div>
