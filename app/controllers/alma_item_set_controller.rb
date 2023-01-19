@@ -3,7 +3,7 @@ require 'date'
 class AlmaItemSetController < ApplicationController
 
   # TODO: - Need to make sure only certain staff access this page
-  # before_action :authorize!
+  before_action :authorize!
 
   def index
     # Lookup of all sets for drop-boxes:
@@ -35,8 +35,10 @@ class AlmaItemSetController < ApplicationController
   def authorize!
     return if Rails.env.development?
 
+    # TODO - Setup calgroup once Jackie has that configured!
+    
     authenticate!
-    raise Error::ForbiddenError unless current_user.ucb_staff?
+    raise Error::ForbiddenError unless current_user.framework_admin
   end
 
   def new_note(text, initials)
