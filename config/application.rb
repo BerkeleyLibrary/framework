@@ -24,6 +24,7 @@ module Framework
     # Alma API for handling Fees/Fines:
     config.alma_api_url = config.altmedia['alma_api_url']
     config.alma_api_key = config.altmedia['alma_api_key']
+    config.alma_sandbox_key = config.altmedia['alma_sandbox_key']
 
     # Valid groups for libproxy access based on Alma groups
     config.libproxy_groups = config.libproxy['valid_groups']
