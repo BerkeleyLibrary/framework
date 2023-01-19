@@ -1,0 +1,161 @@
+{
+	"set": [
+		{
+			"id": "10043265300006532",
+			"name": "AH-C to MAIN transfers",
+			"type": {
+				"value": "ITEMIZED",
+				"desc": "Itemized"
+			},
+			"content": {
+				"value": "ITEM",
+				"desc": "Physical items"
+			},
+			"status": {
+				"value": "ACTIVE",
+				"desc": "Active"
+			},
+			"origin": {
+				"value": "UI",
+				"desc": "Institution only"
+			},
+			"private": {
+				"value": "false",
+				"desc": "No"
+			},
+			"status_date": "2021-09-15T19:01:51.607Z",
+			"created_by": {
+				"value": "10163413",
+				"desc": "Bayley, Nina"
+			},
+			"created_date": "2021-09-15T19:01:51.607Z",
+			"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/10043265300006532"
+		},
+		{
+			"id": "10043977500006532",
+			"name": "AH-C to MAIN transfers 2",
+			"type": {
+				"value": "ITEMIZED",
+				"desc": "Itemized"
+			},
+			"content": {
+				"value": "ITEM",
+				"desc": "Physical items"
+			},
+			"status": {
+				"value": "ACTIVE",
+				"desc": "Active"
+			},
+			"origin": {
+				"value": "UI",
+				"desc": "Institution only"
+			},
+			"private": {
+				"value": "false",
+				"desc": "No"
+			},
+			"status_date": "2021-09-15T21:06:43.240Z",
+			"created_by": {
+				"value": "10269109",
+				"desc": "Teremi, Samantha"
+			},
+			"created_date": "2021-09-15T21:06:43.240Z",
+			"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/10043977500006532"
+		},
+		{
+			"id": "13434761800006532",
+			"name": "Tims_spreadsheet_item_call_number_same_column_T",
+			"description": "Tims_spreadsheet_item_call_number_same_column_T",
+			"type": {
+				"value": "ITEMIZED",
+				"desc": "Itemized"
+			},
+			"content": {
+				"value": "ITEM",
+				"desc": "Physical items"
+			},
+			"status": {
+				"value": "ACTIVE",
+				"desc": "Active"
+			},
+			"origin": {
+				"value": "UI",
+				"desc": "Institution only"
+			},
+			"private": {
+				"value": "false",
+				"desc": "No"
+			},
+			"status_date": "2022-06-09T20:37:54.717Z",
+			"created_by": {
+				"value": "10145675",
+				"desc": "Pinto, Eileen"
+			},
+			"created_date": "2022-06-09T20:37:54.717Z",
+			"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/13434761800006532"
+		},
+		{
+			"id": "10077444230006532",
+			"name": "AH-C to MAIN transfers 3",
+			"type": {
+				"value": "ITEMIZED",
+				"desc": "Itemized"
+			},
+			"content": {
+				"value": "ITEM",
+				"desc": "Physical items"
+			},
+			"status": {
+				"value": "ACTIVE",
+				"desc": "Active"
+			},
+			"origin": {
+				"value": "UI",
+				"desc": "Institution only"
+			},
+			"private": {
+				"value": "false",
+				"desc": "No"
+			},
+			"status_date": "2021-09-21T22:21:55.434Z",
+			"created_by": {
+				"value": "10269109",
+				"desc": "Teremi, Samantha"
+			},
+			"created_date": "2021-09-21T22:21:55.434Z",
+			"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/10077444230006532"
+		},
+		{
+			"id": "10117929560006532",
+			"name": "AH-C to MAIN transfers 4",
+			"type": {
+				"value": "ITEMIZED",
+				"desc": "Itemized"
+			},
+			"content": {
+				"value": "ITEM",
+				"desc": "Physical items"
+			},
+			"status": {
+				"value": "ACTIVE",
+				"desc": "Active"
+			},
+			"origin": {
+				"value": "UI",
+				"desc": "Institution only"
+			},
+			"private": {
+				"value": "false",
+				"desc": "No"
+			},
+			"status_date": "2021-09-23T00:15:40.770Z",
+			"created_by": {
+				"value": "10269109",
+				"desc": "Teremi, Samantha"
+			},
+			"created_date": "2021-09-23T00:15:40.770Z",
+			"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/10117929560006532"
+		}
+	],
+	"total_record_count": 147
+}
