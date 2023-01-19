@@ -89,7 +89,7 @@ GEM
       marc (~> 1.0)
       parslet (~> 2.0)
       ruby-marc-spec (~> 0.1)
-    berkeley_library-tind (0.7.0)
+    berkeley_library-tind (0.7.1)
       berkeley_library-alma (~> 0.0.1)
       berkeley_library-logging (~> 0.2)
       berkeley_library-marc (~> 0.3.0, >= 0.3.1)
@@ -98,7 +98,7 @@ GEM
       marc (~> 1.0)
       rchardet (~> 1.8)
       rest-client (~> 2.1)
-      rubyzip (~> 2.3)
+      rubyzip (~> 2.3, < 3.0)
       typesafe_enum (~> 0.3)
     berkeley_library-util (0.1.5)
       berkeley_library-logging (~> 0.2)
@@ -431,7 +431,7 @@ DEPENDENCIES
   berkeley_library-docker (~> 0.2.0)
   berkeley_library-logging (~> 0.2, >= 0.2.7)
   berkeley_library-marc (~> 0.3.1)
-  berkeley_library-tind (~> 0.7.0)
+  berkeley_library-tind (~> 0.7.1)
   bootstrap
   brakeman
   bundle-audit
