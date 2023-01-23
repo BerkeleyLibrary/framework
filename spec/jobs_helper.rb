@@ -99,7 +99,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       end
 
       after do
-        job.queue_adapter.shutdown(timeout: 0)
+        job.queue_adapter.shutdown(timeout: 5)
         job.queue_adapter = queue_adapter
 
         callback_chain = job.__callbacks[:perform].instance_variable_get(:@chain)
