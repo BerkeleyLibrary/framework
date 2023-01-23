@@ -1,10 +1,10 @@
+require 'rails_helper'
+
 require 'active_support/inflector'
 require 'berkeley_library/docker'
 require 'capybara/rspec'
 require 'selenium-webdriver'
 require 'berkeley_library/logging'
-
-require 'rails_helper'
 
 module CapybaraHelper
   # Capybara artifact path
