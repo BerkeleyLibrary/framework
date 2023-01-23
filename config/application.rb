@@ -15,8 +15,6 @@ module Framework
     config.libproxy = config_for(:libproxy)
 
     config.active_job.queue_adapter = :good_job
-    # TODO: switch to :external in production
-    config.good_job.execution_mode = :async
 
     # @note By default, Rails wraps fields that contain a validation error with
     #   a div classed "field_with_errors". This messes up Bootstrap's styling
@@ -57,7 +55,7 @@ module Framework
         [attr, GoodJob.configuration.send(attr)]
       end
 
-      Rails.logger.info('GoodJob configured', gj_config)
+      Rails.logger.info('GoodJob configured', { config: gj_config })
     end
 
   end

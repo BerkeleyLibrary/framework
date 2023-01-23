@@ -1,6 +1,7 @@
 Rails.application.configure do
   config.good_job = {
-    # queues: '*',
+    # TODO: use :async in test, :external in production
+    execution_mode: :async,
     on_thread_error: ->(exception) { Rails.logger.error(exception) }, # default
     max_threads: ENV.fetch('GOOD_JOB_MAX_THREADS', 5),
     poll_interval: 30,
