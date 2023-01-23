@@ -14,9 +14,8 @@ module Framework
     # configs for libproxy validations
     config.libproxy = config_for(:libproxy)
 
-    # TODO: Switch to a persistent backend store like delayed_job
-    #       (but make sure to update async logging tests in jobs_helper.rb)
     config.active_job.queue_adapter = :good_job
+    # TODO: switch to :external in production
     config.good_job.execution_mode = :async
 
     # @note By default, Rails wraps fields that contain a validation error with
@@ -45,6 +44,20 @@ module Framework
         include ExceptionHandling
         before_action :require_framework_admin!
       end
+    end
+
+    config.after_initialize do
+      gj_config = %i[
+        execution_mode queue_string max_threads poll_interval
+        max_cache shutdown_timeout enable_cron? cron
+        cleanup_discarded_jobs? cleanup_preserved_jobs_before_seconds_ago
+        cleanup_interval_jobs cleanup_interval_seconds
+        inline_execution_respects_schedule?
+      ].to_h do |attr|
+        [attr, GoodJob.configuration.send(attr)]
+      end
+
+      Rails.logger.info('GoodJob configured', gj_config)
     end
 
   end
