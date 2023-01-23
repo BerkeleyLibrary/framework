@@ -79,30 +79,47 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
       job.perform_now(patron.id)
     end
 
-    it 'logs to the Rails logger even when running in the background' do
-      stub_patron_save(patron_id, expected_note)
+    describe 'async execution' do
+      attr_reader :queue_adapter, :latch, :callback_proc
 
-      expected_msg = "Setting note #{expected_note} for patron #{patron_id}"
-      allow(Rails.logger).to receive(:debug)
-      expect(Rails.logger).to receive(:debug).with(expected_msg)
+      before do
+        @queue_adapter = job.queue_adapter
 
-      latch = Concurrent::CountDownLatch.new(1)
-      original_queue_adapter = job.queue_adapter
-      callback_proc = -> { latch.count_down }
-
-      # Thanks, ActiveSupport, for putting all this stuff on the job class rather
-      # than the instance, so it pollutes all the other tests if we don't
-      # clean it up
-      begin
         job.queue_adapter = :good_job
+        job.queue_adapter.instance_variable_set(:@_in_server_process, true)
+        job.queue_adapter.start_async
+
+        # noinspection RubyArgCount
+        @latch = Concurrent::CountDownLatch.new(1).tap do |latch|
+          # Note `latch` is only captured in the lambda if it's a local variable
+          @callback_proc = -> { latch.count_down }
+        end
+
         job.after_perform(&callback_proc)
-        job.perform_later(patron.id)
-        latch.wait(5)
-      ensure
-        job.queue_adapter = original_queue_adapter
+      end
+
+      after do
+        job.queue_adapter.shutdown(timeout: 0)
+        job.queue_adapter = queue_adapter
+
         callback_chain = job.__callbacks[:perform].instance_variable_get(:@chain)
         callback = callback_chain.find { |cb| cb.instance_variable_get(:@filter) == callback_proc }
         callback_chain.delete(callback)
+      end
+
+      # TODO: More async examples
+
+      it 'logs to the Rails logger even when running in the background' do
+        stub_patron_save(patron_id, expected_note)
+
+        expected_msg = "Setting note #{expected_note} for patron #{patron_id}"
+        allow(Rails.logger).to receive(:debug)
+        expect(Rails.logger).to receive(:debug).with(expected_msg)
+
+        job.perform_later(patron_id)
+
+        latch.wait(3)
+        expect(latch.count).to eq(0) # just to be sure
       end
     end
 
