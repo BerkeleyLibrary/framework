@@ -35,8 +35,8 @@ class AlmaItemSetController < ApplicationController
   def authorize!
     return if Rails.env.development?
 
-    # TODO - Setup calgroup once Jackie has that configured!
-    
+    # TODO: - Setup calgroup once Jackie has that configured!
+
     authenticate!
     raise Error::ForbiddenError unless current_user.framework_admin
   end

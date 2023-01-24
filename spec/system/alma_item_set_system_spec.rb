@@ -23,7 +23,7 @@ describe :alma_item_set, type: :system do
         status: 200,
         body: File.new('spec/data/alma_items/item_set_1.json')
       )
-  
+
       stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets?content_type=ITEM&expand=none&limit=100&offset=100&view=full').to_return(
         status: 200,
         body: File.new('spec/data/alma_items/item_set_1.json')
@@ -32,15 +32,14 @@ describe :alma_item_set, type: :system do
 
     after { logout! }
 
-    
     it 'displays the form' do
       visit alma_item_set_path
       expect(page).to have_content('Item Record Internal Note Prepender')
     end
-    
+
     it 'marks required fields as required' do
       visit alma_item_set_path
-      
+
       required_fields = %w[
         note_value
         initials
@@ -56,7 +55,7 @@ describe :alma_item_set, type: :system do
         visit alma_item_set_path
         expect(find(:xpath, "//input[@type='submit']")).to be_disabled
       end
-      
+
       it 'is enabled when required fields are populated' do
         visit alma_item_set_path
         fill_in('note_value', with: 'Test Note Value')
@@ -64,7 +63,7 @@ describe :alma_item_set, type: :system do
         expect(find(:xpath, "//input[@type='submit']")).not_to be_disabled
       end
     end
-    
+
     describe 'the form' do
       it 'accepts a valid request' do
         visit alma_item_set_path
@@ -75,7 +74,6 @@ describe :alma_item_set, type: :system do
         expect(page).to have_content('Preparing....')
       end
 
-      
     end
 
   end

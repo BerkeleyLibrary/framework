@@ -1,0 +1,1 @@
+{"bib_data":{"mms_id":"2222"},"item_data":{"pid":"3333","internal_note_1":"Fake Note | note1","internal_note_2":"note2","internal_note_3":"note3"},"link":"https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/1111/holdings/2222/items/3333"}

@@ -20,7 +20,9 @@ module Alma
       offset = 0
       count = 0
 
-      # These sets can be ridiculously huge - for now set to max 100
+      # These sets can be ridiculously huge - for now set to max 200
+      max_records = 200
+
       loop do
         members = AlmaServices::ItemSet.fetch_members(id, env, offset)
         bibs_regex = %r{^.*/bibs/(\d+)/holdings/(\d+)/items/(\d+)$}
@@ -33,7 +35,7 @@ module Alma
         end
 
         offset += 50
-        break if count >= 200
+        break if offset >= members['total_record_count'] || offset >= max_records
       end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
