@@ -8,7 +8,6 @@
 /* exported toggleAlmaEnvironment */
 /* exported checkFormInputs */
 
-
 function toggleAlmaEnvironment (env) {
   // const feeCheckboxes = document.getElementsByName('fine[payment][]')
   // feeCheckboxes.forEach(fee => { fee.checked = true })
@@ -24,17 +23,15 @@ function toggleAlmaEnvironment (env) {
   }
 }
 
-function checkFormInputs() {
-  
-  note_val = document.getElementById('note_value').value
-  initials_val = document.getElementById('initials').value
-  
-  if (note_val == '' || initials_val == '') {
+function checkFormInputs () {
+  const noteVal = document.getElementById('note_value').value
+  const initialsVal = document.getElementById('initials').value
+
+  if (noteVal === '' || initialsVal === '') {
     disableElement('submit-btn')
   } else {
     enableElement('submit-btn')
   }
-
 }
 
 function updateItemNotes (e) {
@@ -45,27 +42,24 @@ function updateItemNotes (e) {
   displayView('processing-view')
 
   // Listen for the ajax response!
-  document.body.addEventListener('ajax:success', function(event) {
-    var detail = event.detail
-    var data = detail[0]
-    // var status = detail[1]
-    // var xhr = detail[2];
+  document.body.addEventListener('ajax:success', function (event) {
+    const detail = event.detail
+    const data = detail[0]
 
     // Let the user know how many records were updated!
     document.getElementById('email_addr').innerText = data
 
     displayView('results-view')
   })
-  
-  document.body.addEventListener('ajax:error', function(event) {
+
+  document.body.addEventListener('ajax:error', function (event) {
     // var detail = event.detail;
     // var data = detail[0], status = detail[1], xhr = detail[2];
     displayView('errors-view')
   })
-
 }
 
-function displayView(view) {
+function displayView (view) {
   // Hide all blocks
   hideBlock('form-view')
   hideBlock('processing-view')
@@ -75,42 +69,24 @@ function displayView(view) {
   showBlock(view)
 }
 
-
-
 // Listen for the submit button!
 $(document).ready(function () {
-  
   const submitButton = $('#submit-btn')
   const envRadioProd = $('#alma_env_production')
   const envRadioSand = $('#alma_env_sandbox')
-
-  const notesInput = $('#note_value')
-  const initialsInput = $('#initials')
 
   disableElement('submit-btn')
 
   // Hide the sandbox drop down on inital load
   hideBlock('sand-drop-down')
-  
+
   // And only show the form view initally
   displayView('form-view')
 
-  // document.getElementById('element_id').onchange = function() {
-  //   // your logic
-  // };
-
-  // Because of the JS hack job I'm doing here I need to check
-  // values to enable the submit button only if all fields are
-  // populated. Probably much better way of doing this.
-  // notesInput.keypress((e) => {checkFormInputs()})
-  // initialsInput.keypress((e) => {checkFormInputs()})
-
-  
   // Listen for the environment radios
-  envRadioProd.click((e) => {toggleAlmaEnvironment('prod')})
-  envRadioSand.click((e) => {toggleAlmaEnvironment('sand')})
+  envRadioProd.click((e) => { toggleAlmaEnvironment('prod') })
+  envRadioSand.click((e) => { toggleAlmaEnvironment('sand') })
 
   // And we'll handle the form submission via JS
-  submitButton.click((e) => {updateItemNotes(e)})
+  submitButton.click((e) => { updateItemNotes(e) })
 })
-
