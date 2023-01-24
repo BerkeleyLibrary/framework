@@ -71,7 +71,7 @@ describe :alma_item_set, type: :system do
         fill_in('initials', with: 'SMS')
         button = find(:xpath, "//input[@type='submit']")
         button.click
-        expect(page).to have_content('Preparing....')
+        expect(page).to have_content('Your request has been submitted')
       end
 
     end
