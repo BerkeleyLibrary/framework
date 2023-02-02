@@ -35,10 +35,9 @@ class AlmaItemSetController < ApplicationController
   def authorize!
     return if Rails.env.development?
 
-    # TODO: - Setup calgroup once Jackie has that configured!
-
     authenticate!
-    raise Error::ForbiddenError unless current_user.framework_admin
+    # raise Error::ForbiddenError unless current_user.framework_admin
+    raise Error::ForbiddenError unless current_user.alma_admin
   end
 
   def new_note(text, initials)

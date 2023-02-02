@@ -5,6 +5,7 @@ class User
   include ActiveModel::Model
 
   FRAMEWORK_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
+  ALMA_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
 
   class << self
     # Returns a new user object from the given "omniauth.auth" hash. That's a
@@ -32,7 +33,8 @@ class User
         ucpath_id: auth['extra']['berkeleyEduUCPathID'],
         uid: auth['extra']['uid'] || auth['uid'],
         # TODO: Consider replacing this with a DB-based role, now that we have DB-based roles
-        framework_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(FRAMEWORK_ADMIN_GROUP)
+        framework_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(FRAMEWORK_ADMIN_GROUP),
+        alma_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(ALMA_ADMIN_GROUP)
       )
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -84,6 +86,7 @@ class User
 
   # @return [Boolean]
   attr_accessor :framework_admin
+  attr_accessor :alma_admin
 
   # Whether the user was authenticated
   #
