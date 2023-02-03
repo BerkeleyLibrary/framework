@@ -125,7 +125,10 @@ module AlmaServices
       end
 
       def fetch_members(set_id, env, offset = 0)
-        params = { offset: }
+        params = {
+          offset:,
+          limit: 50
+        }
         res = connection(env).get(URIs.append(alma_api_url, "conf/sets/#{set_id}/members"), params)
         raise ActiveRecord::RecordNotFound, 'No item sets could be found.' unless res.status == 200
 

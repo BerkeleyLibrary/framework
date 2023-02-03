@@ -5,7 +5,7 @@ describe ItemNoteJob do
   let(:alma_api_key) { 'totally-fake-key' }
 
   it 'executes item note job and send an email' do
-    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/123/members?offset=0').to_return(
+    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/123/members?limit=50&offset=0').to_return(
       status: 200,
       body: File.new('spec/data/alma_items/item_members_1.json')
     )

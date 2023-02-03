@@ -20,8 +20,8 @@ module Alma
       offset = 0
       count = 0
 
-      # These sets can be ridiculously huge - for now set to max 200
-      max_records = 200
+      # These sets can be ridiculously huge - for now set to max 2000 items
+      max_records = 2000
 
       loop do
         members = AlmaServices::ItemSet.fetch_members(id, env, offset)

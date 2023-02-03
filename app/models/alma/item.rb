@@ -29,6 +29,10 @@ module Alma
       item['item_data']["internal_note_#{num}"]
     end
 
+    def barcode
+      @item['item_data']['barcode']
+    end
+
     def prepend_note(num, note)
       existing_note = note(num)
       note += " | #{existing_note}" if existing_note.present?
