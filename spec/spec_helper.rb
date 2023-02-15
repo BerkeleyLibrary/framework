@@ -23,7 +23,7 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!(
       allow_localhost: true,
       # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
-      net_http_connect_on_start: true
+      net_http_connect_on_start: %w[0.0.0.0 127.0.0.1 localhost]
     )
     example.run
   ensure

@@ -71,11 +71,8 @@ module CapybaraHelper
 
     DEFAULT_CHROME_ARGS = ['--window-size=2560,1344'].freeze
 
-    DEFAULT_WEBMOCK_OPTIONS = {
-      allow_localhost: true,
-      # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
-      net_http_connect_on_start: true
-    }.freeze
+    DEFAULT_WEBMOCK_OPTIONS = { allow_localhost: true }.freeze
+    LOCALHOST_NAMES = %w[0.0.0.0 127.0.0.1 localhost].freeze
 
     attr_reader :driver_name
     attr_reader :chrome_args
@@ -133,6 +130,20 @@ module CapybaraHelper
       DEFAULT_WEBMOCK_OPTIONS.dup.tap do |opts|
         webmock_options.each do |opt, val|
           opts[opt] = val.is_a?(Array) ? ((opts[opt] || []) + val).uniq : val
+        end
+
+        unless webmock_options.key?(:net_http_connect_on_start)
+          connect_on_start_list = opts[:net_http_connect_on_start] || []
+          if opts[:allow_localhost]
+            # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
+            connect_on_start_list.concat(LOCALHOST_NAMES)
+          end
+
+          if (allow_list = opts[:allow])
+            connect_on_start_list.concat(allow_list)
+          end
+
+          opts[:net_http_connect_on_start] = connect_on_start_list
         end
       end
     end
