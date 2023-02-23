@@ -25,27 +25,37 @@ module Alma
       @item_pid = item_pid
     end
 
-    def note(num)
-      item['item_data']["internal_note_#{num}"]
-    end
-
-    def barcode
-      @item['item_data']['barcode']
-    end
-
-    def prepend_note(num, note)
-      existing_note = note(num)
-      note += " | #{existing_note}" if existing_note.present?
-      @item['item_data']["internal_note_#{num}"] = note
-    end
-
-    def save
-      AlmaServices::ItemSet.save_item self
+    def add_note(num, note_text)
+      prepend_note(num, note_text)
+      save
     end
 
     def to_json(*_args)
       item.to_json
     end
 
+    private
+
+    def prepend_note(num, note)
+      # Get the existing note from this item
+      existing_note = note(num)
+
+      # Don't add if the note already exists
+      return if existing_note.include? note
+
+      # Add the pre-existing note (w/pipe) if it exists
+      note += " | #{existing_note}" if existing_note.present?
+
+      # Add it to the item's internal note field
+      @item['item_data']["internal_note_#{num}"] = note
+    end
+
+    def note(num)
+      item['item_data']["internal_note_#{num}"]
+    end
+
+    def save
+      AlmaServices::ItemSet.save_item self
+    end
   end
 end

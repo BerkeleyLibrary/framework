@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_08_193908) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_17_202356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -69,6 +69,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_08_193908) do
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
+  end
+
+  create_table "item_note_tasks", force: :cascade do |t|
+    t.string "job_id", null: false
+    t.boolean "completed", default: false
+    t.boolean "started_email_sent", default: false
+    t.boolean "completed_email_sent", default: false
+    t.string "environment", null: false
+    t.string "set_id", null: false
+    t.string "note_text", null: false
+    t.integer "note_num", null: false
+    t.string "email", null: false
+    t.integer "offset", default: 0
+    t.integer "item_count"
+    t.datetime "job_completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "set_name"
   end
 
   create_table "proxy_borrower_requests", force: :cascade do |t|

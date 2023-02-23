@@ -4,8 +4,13 @@ require 'jobs_helper'
 describe ItemNoteJob do
   let(:alma_api_key) { 'totally-fake-key' }
 
-  it 'executes item note job and send an email' do
-    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/123/members?limit=50&offset=0').to_return(
+  it 'executes item note job and sends an email' do
+    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/123').to_return(
+      status: 200,
+      body: File.new('spec/data/alma_items/item_set_info.json')
+    )
+
+    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/123/members?limit=100&offset=0').to_return(
       status: 200,
       body: File.new('spec/data/alma_items/item_members_1.json')
     )
@@ -14,6 +19,12 @@ describe ItemNoteJob do
       status: 200,
       body: File.new('spec/data/alma_items/item_bibdata_1.json')
     )
+
+    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/123/members?limit=100&offset=1')
+      .to_return(
+        status: 200,
+        body: File.new('spec/data/alma_items/item_members_1.json')
+      )
 
     stub_request(:put, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/2222/holdings/22667730250006532/items/3333')
       .with(

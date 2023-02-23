@@ -1,0 +1,39 @@
+{
+	"id": "8768111200006532",
+	"name": "ECollections proxy enabled is no and is not free",
+	"type": {
+		"value": "LOGICAL",
+		"desc": "Logical"
+	},
+	"content": {
+		"value": "IEPA",
+		"desc": "Electronic collections"
+	},
+	"status": {
+		"value": "ACTIVE",
+		"desc": "Active"
+	},
+	"query": {
+		"value": "IEPA where PORTFOLIO ((isFree OUTER_EQUAL \"0\") AND PORTFOLIO (service_proxyEnabled OUTER_EQUAL \"false\"))",
+		"desc": "where (Free (Service) equals \"Not Free\" AND Proxy Enabled (Service) equals \"No\")"
+	},
+	"origin": {
+		"value": "UI",
+		"desc": "Institution only"
+	},
+	"private": {
+		"value": "false",
+		"desc": "No"
+	},
+	"status_date": "2021-07-22T13:04:15.672Z",
+	"created_by": {
+		"value": "exl_impl",
+		"desc": "Staff, Ex Libris"
+	},
+	"created_date": "2021-07-22T13:04:15.672Z",
+	"number_of_members": {
+		"value": 59,
+		"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/8768111200006532/members"
+	},
+	"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/8768111200006532"
+}

@@ -124,10 +124,17 @@ module AlmaServices
         JSON.parse(res.body)
       end
 
+      def fetch_set(env, id)
+        res = connection(env).get(URIs.append(alma_api_url, "conf/sets/#{id}"))
+        raise ActiveRecord::RecordNotFound, "No set with ID #{id} found..." unless res.status == 200
+
+        JSON.parse(res.body)
+      end
+
       def fetch_members(set_id, env, offset = 0)
         params = {
           offset:,
-          limit: 50
+          limit: 100
         }
         res = connection(env).get(URIs.append(alma_api_url, "conf/sets/#{set_id}/members"), params)
         raise ActiveRecord::RecordNotFound, 'No item sets could be found.' unless res.status == 200

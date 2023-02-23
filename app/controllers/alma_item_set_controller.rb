@@ -17,12 +17,9 @@ class AlmaItemSetController < ApplicationController
     alma_set_id = params[:alma_set_id]
     num = params[:note_num]
 
-    # Format a new note
     note = new_note(params[:note_value], params[:initials])
 
     Alma::ItemSet.prepend_note_to_set(env, alma_set_id, note, num, current_user.email)
-
-    # @email_address = current_user.email
 
     respond_to do |format|
       format.js { render json: current_user.email }
