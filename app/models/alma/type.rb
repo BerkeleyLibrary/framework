@@ -10,6 +10,6 @@ module Alma
     LIBRARY_STAFF       = 'LIBSTAFF'.freeze
     STAFF               = 'NONACAD'.freeze
     POST_DOC            = 'UCB POST'.freeze
-    VISITING_SCHOLAR    = 'UCVISITINGSCHOL'.freeze
+    VISITING_SCHOLAR    = 'UCBVISSCHOL'.freeze
   end
 end

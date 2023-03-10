@@ -45,6 +45,7 @@ module Alma
       end
     end
 
+    # rubocop:disable Metrics/AbcSize
     def initialize(raw_user = nil)
       return unless raw_user
 
@@ -52,9 +53,12 @@ module Alma
       @id = @user_obj['primary_id']
       @name = @user_obj['full_name']
       @email = @user_obj['contact_info']['email'][0]['email_address']
-      @type = @user_obj['user_group']['value']
-      @expiration_date = Date.strptime(@user_obj['expiry_date'], '%Y-%m-%d')
+
+      # Alma codes have a history of being mixed case so upcase user_group:
+      @type = @user_obj['user_group']['value'].upcase if @user_obj['user_group']['value']
+      @expiration_date = Date.strptime(@user_obj['expiry_date'], '%Y-%m-%d') if @user_obj['expiry_date']
     end
+    # rubocop:enable Metrics/AbcSize
 
     def to_json(*_args)
       user_obj.to_json
@@ -73,11 +77,6 @@ module Alma
 
       expiration_date < Date.current
     end
-
-    # Don't think this is needed:
-    # def notes
-    #   user_obj['user_note']
-    # end
 
     def notes_array
       user_obj['user_note'].map { |n| n['note_text'] }
