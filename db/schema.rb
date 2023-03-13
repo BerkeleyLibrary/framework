@@ -118,6 +118,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
+  create_table "holdings_tasks", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "filename", null: false
+    t.boolean "rlf", default: false, null: false
+    t.boolean "uc", default: false, null: false
+    t.boolean "hathi", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "host_bib_linked_bibs", force: :cascade do |t|
     t.bigint "host_bib_id", null: false
     t.bigint "linked_bib_id", null: false

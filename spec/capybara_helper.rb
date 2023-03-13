@@ -132,20 +132,21 @@ module CapybaraHelper
           opts[opt] = val.is_a?(Array) ? ((opts[opt] || []) + val).uniq : val
         end
 
-        unless webmock_options.key?(:net_http_connect_on_start)
-          connect_on_start_list = opts[:net_http_connect_on_start] || []
-          if opts[:allow_localhost]
-            # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
-            connect_on_start_list.concat(LOCALHOST_NAMES)
-          end
-
-          if (allow_list = opts[:allow])
-            connect_on_start_list.concat(allow_list)
-          end
-
-          opts[:net_http_connect_on_start] = connect_on_start_list
-        end
+        opts[:net_http_connect_on_start] = connect_on_start_list_from(opts) unless webmock_options.key?(:net_http_connect_on_start)
       end
+    end
+
+    def connect_on_start_list_from(webmock_opts)
+      connect_on_start_list = webmock_opts[:net_http_connect_on_start] || []
+
+      # prevent running out of file handles -- see https://github.com/teamcapybara/capybara#gotchas
+      connect_on_start_list.concat(LOCALHOST_NAMES) if webmock_opts[:allow_localhost]
+
+      if (allow_list = webmock_opts[:allow])
+        connect_on_start_list.concat(allow_list)
+      end
+
+      connect_on_start_list
     end
 
     def configure_rspec!
