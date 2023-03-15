@@ -1,14 +1,43 @@
 class HoldingsTask < ActiveRecord::Base
 
+  # ------------------------------------------------------------
+  # Constants
+
+  # Batch size for inserting HoldingsRecords
+  BATCH_SIZE = 10_000
+
+  # ------------------------------------------------------------
+  # Relations
+
   has_one_attached :input_file
   has_one_attached :output_file
 
-  has_many :holdings_world_cat_records, dependent: :destroy
-  has_many :holdings_hathi_trust_records, dependent: :destroy
+  has_many :holdings_world_cat_records, dependent: :delete_all
+  has_many :holdings_hathi_trust_records, dependent: :delete_all
+
+  # ------------------------------------------------------------
+  # Validations
 
   validates :email, presence: true
   validates :filename, presence: true
   validate :options_selected
+
+  # ------------------------------------------------------------
+  # Public instance methods
+
+  def ensure_holdings_records!
+    all_rows = each_input_oclc.map do |oclc_num|
+      { holdings_task_id: id, oclc_number: oclc_num }
+    end
+
+    # Insert in batches to prevent DB connection timeout on very large datasets
+    all_rows.each_slice(BATCH_SIZE) do |rows|
+      # rubocop:disable Rails/SkipsModelValidations
+      HoldingsWorldCatRecord.insert_all(rows) if rlf || uc
+      HoldingsHathiTrustRecord.insert_all(rows) if hathi
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
 
   def each_input_oclc(&)
     with_input_tmpfile do |tmpfile|
@@ -21,15 +50,8 @@ class HoldingsTask < ActiveRecord::Base
     input_file.open(&)
   end
 
-  def ensure_holdings_records!
-    # oclc_numbers = each_input_oclc.to_a
-    # attributes = oclc_numbers.map { |oclc_number| { holdings_task_id: id, oclc_number: oclc_number }}
-
-    each_input_oclc do |oclc_number|
-      HoldingsWorldCatRecord.find_or_create_by!(holdings_task: self, oclc_number:) if rlf || uc
-      HoldingsHathiTrustRecord.find_or_create_by!(holdings_task: self, oclc_number:) if hathi
-    end
-  end
+  # ------------------------------------------------------------
+  # Private methods
 
   private
 

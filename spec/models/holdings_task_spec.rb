@@ -251,7 +251,8 @@ RSpec.describe HoldingsTask, type: :model do
     end
 
     it 'handles large numbers of records' do
-      expected_count = 100000
+      # NOTE: tested with up to 1 million, but it's slow (~4 minutes)
+      expected_count = 15_000
       oclc_numbers = Array.new(expected_count) { |i| (expected_count + i).to_s }
       oclc_numbers.shuffle!
 
