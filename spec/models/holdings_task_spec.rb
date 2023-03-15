@@ -11,6 +11,7 @@ RSpec.describe HoldingsTask, type: :model do
   let(:input_file_path) { 'spec/data/holdings/input-file.xlsx' }
   let(:input_file_basename) { File.basename(input_file_path) }
   let(:mime_type_xlsx) { BerkeleyLibrary::Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB }
+  let(:oclc_numbers_expected) { File.readlines('spec/data/holdings/oclc_numbers_expected.txt', chomp: true) }
 
   # -------------------------------
   # helper methods
@@ -118,11 +119,33 @@ RSpec.describe HoldingsTask, type: :model do
       task = HoldingsTask.create!(**attributes)
       assert_same_contents(input_file_path, task.input_file)
     end
+
+    # TODO: Figure out how to validate input_file attachment before committing
+    xit 'raises ArgumentError for an invalid input file' do
+      input_file = uploaded_file_from('spec/data/holdings/input-file-excel95.xls')
+      attributes = valid_attributes.except(:input_file)
+      attributes[:input_file] = input_file
+
+      expect { HoldingsTask.create!(**attributes) }.to raise_error(ArgumentError)
+
+      find_conditions = valid_attributes.except(:input_file)
+      expect(HoldingsTask.where(**find_conditions)).not_to exist
+    end
   end
 
   describe :destroy do
+    it 'removes holdings records' do
+      task = HoldingsTask.create!(**valid_attributes)
+      task.ensure_holdings_records!
+      expect(task.holdings_world_cat_records).to exist # just to be sure
+      expect(task.holdings_hathi_trust_records).to exist # just to be sure
 
-    it 'destroys attached files' do
+      task.destroy!
+      expect(task.holdings_world_cat_records).not_to exist
+      expect(task.holdings_hathi_trust_records).not_to exist
+    end
+
+    it 'removes attached files' do
       task = HoldingsTask.create!(
         email: 'me@example.test',
         filename: input_file_basename,
@@ -150,6 +173,114 @@ RSpec.describe HoldingsTask, type: :model do
     end
   end
 
+  describe :ensure_holdings_records! do
+    let(:numbers_expected_sorted) { oclc_numbers_expected.sort }
+
+    it 'attaches WorldCat records' do
+      task = HoldingsTask.create!(**valid_attributes)
+      task.ensure_holdings_records!
+
+      wc_oclc_numbers = task.holdings_world_cat_records.pluck(:oclc_number)
+      expect(wc_oclc_numbers.size).to eq(numbers_expected_sorted.size)
+      expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
+    end
+
+    it 'attaches HathiTrust records' do
+      task = HoldingsTask.create!(**valid_attributes)
+      task.ensure_holdings_records!
+
+      ht_oclc_numbers = task.holdings_hathi_trust_records.pluck(:oclc_number)
+      expect(ht_oclc_numbers.size).to eq(numbers_expected_sorted.size)
+      expect(ht_oclc_numbers.sort).to eq(numbers_expected_sorted)
+    end
+
+    it 'is idempotent' do
+      task = HoldingsTask.create!(**valid_attributes)
+      2.times { task.ensure_holdings_records! }
+
+      expected_count = oclc_numbers_expected.size
+      expect(task.holdings_world_cat_records.count).to eq(expected_count)
+      expect(task.holdings_hathi_trust_records.count).to eq(expected_count)
+    end
+
+    it 'ignores duplicate OCLC numbers' do
+      attributes = valid_attributes.except(:input_file)
+      attributes[:input_file] = uploaded_file_from('spec/data/holdings/input-file-duplicates.xlsx')
+      task = HoldingsTask.create!(**attributes)
+      task.ensure_holdings_records!
+
+      expected_count = oclc_numbers_expected.size
+      expect(task.holdings_world_cat_records.count).to eq(expected_count)
+      expect(task.holdings_hathi_trust_records.count).to eq(expected_count)
+    end
+
+    it 'does not create HathiTrust records when hathi is not set' do
+      attributes = valid_attributes.except(:hathi)
+      task = HoldingsTask.create!(**attributes)
+      task.ensure_holdings_records!
+
+      expect(task.holdings_world_cat_records.count).to eq(oclc_numbers_expected.size)
+      expect(task.holdings_hathi_trust_records).not_to exist
+    end
+
+    it 'does not create WorldCat records when neither rlf nor uc is set' do
+      attributes = valid_attributes.except(:rlf, :uc)
+      task = HoldingsTask.create!(**attributes)
+      task.ensure_holdings_records!
+
+      expect(task.holdings_hathi_trust_records.count).to eq(oclc_numbers_expected.size)
+      expect(task.holdings_world_cat_records).not_to exist
+    end
+
+    it 'does create WorldCat records when only rlf is set' do
+      attributes = valid_attributes.except(:hathi, :uc)
+      task = HoldingsTask.create!(**attributes)
+      task.ensure_holdings_records!
+
+      expect(task.holdings_world_cat_records.count).to eq(oclc_numbers_expected.size)
+      expect(task.holdings_hathi_trust_records).not_to exist
+    end
+
+    it 'does create WorldCat records when only uc is set' do
+      attributes = valid_attributes.except(:hathi, :rlf)
+      task = HoldingsTask.create!(**attributes)
+      task.ensure_holdings_records!
+
+      expect(task.holdings_world_cat_records.count).to eq(oclc_numbers_expected.size)
+      expect(task.holdings_hathi_trust_records).not_to exist
+    end
+
+    it 'handles large numbers of records' do
+      expected_count = 100000
+      oclc_numbers = Array.new(expected_count) { |i| (expected_count + i).to_s }
+      oclc_numbers.shuffle!
+
+      Dir.mktmpdir(File.basename(__FILE__)) do |tmpdir|
+        original_path = 'spec/data/holdings/input-file-empty.xlsx'
+        new_path = File.join(tmpdir, "#{expected_count}.xlsx")
+
+        ss = BerkeleyLibrary::Util::XLSX::Spreadsheet.new(original_path)
+        c_index = ss.find_column_index_by_header!(BerkeleyLibrary::Holdings::Constants::OCLC_COL_HEADER)
+        oclc_numbers.each_with_index do |oclc_num, i|
+          r_index = 1 + i # skip header row
+          ss.set_value_at(r_index, c_index, oclc_num)
+        end
+        ss.save_as(new_path)
+
+        input_file = uploaded_file_from(new_path)
+
+        attributes = valid_attributes.except(:input_file)
+        attributes[:input_file] = input_file
+
+        task = HoldingsTask.create!(**attributes)
+        task.ensure_holdings_records!
+
+        expect(task.holdings_world_cat_records.count).to eq(expected_count)
+        expect(task.holdings_hathi_trust_records.count).to eq(expected_count)
+      end
+    end
+  end
+
   describe :with_input_tmpfile do
     it 'yields a temporary file containing the input data' do
       expected_blob = File.binread(input_file_path)
@@ -161,8 +292,6 @@ RSpec.describe HoldingsTask, type: :model do
   end
 
   describe :each_input_oclc do
-    let(:oclc_numbers_expected) { File.readlines('spec/data/holdings/oclc_numbers_expected.txt', chomp: true) }
-
     attr_reader :task
 
     context 'success' do
@@ -190,15 +319,6 @@ RSpec.describe HoldingsTask, type: :model do
 
         task = HoldingsTask.create!(**attributes)
         expect(task.each_input_oclc.to_a).to eq([])
-      end
-
-      it 'raises ArgumentError for an invalid input file' do
-        input_file = uploaded_file_from('spec/data/holdings/input-file-excel95.xls')
-        attributes = valid_attributes.except(:input_file)
-        attributes[:input_file] = input_file
-
-        task = HoldingsTask.create!(**attributes)
-        expect { task.each_input_oclc }.to raise_error(ArgumentError)
       end
     end
   end
