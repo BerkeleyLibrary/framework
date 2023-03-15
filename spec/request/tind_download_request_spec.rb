@@ -3,6 +3,8 @@ require 'forms_helper'
 describe TindDownloadController, type: :request do
   before do
     allow(BerkeleyLibrary::TIND::Config).to receive(:api_key).and_return('not-a-real-api-key')
+
+    Rails.cache.clear
   end
 
   let(:collection_name) { 'Abraham Lincoln Papers' }
