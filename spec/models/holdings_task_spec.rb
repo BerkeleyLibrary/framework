@@ -162,6 +162,41 @@ RSpec.describe HoldingsTask, type: :model do
     end
   end
 
+  describe :search_wc_symbols do
+    it 'returns the symbols' do
+      task = HoldingsTask.create!(**valid_attributes)
+      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::ALL
+      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+    end
+
+    it 'is not affected by the presence/absence of :hathi' do
+      attributes = valid_attributes.except(:hathi)
+      task = HoldingsTask.create!(**attributes)
+      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::ALL
+      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+    end
+
+    it 'returns nil for HathiTrust-only tasks' do
+      attributes = valid_attributes.except(:rlf, :uc)
+      task = HoldingsTask.create!(**attributes)
+      expect(task.search_wc_symbols).to be_nil
+    end
+
+    it 'returns RLF symbols for RLF tasks' do
+      attributes = valid_attributes.except(:uc)
+      task = HoldingsTask.create!(**attributes)
+      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF
+      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+    end
+
+    it 'returns UC symbols for UC tasks' do
+      attributes = valid_attributes.except(:rlf)
+      task = HoldingsTask.create!(**attributes)
+      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::UC
+      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+    end
+  end
+
   describe :ensure_holdings_records! do
     let(:numbers_expected_sorted) { oclc_numbers_expected.sort }
 

@@ -50,6 +50,15 @@ class HoldingsTask < ActiveRecord::Base
     input_file.open(&)
   end
 
+  def search_wc_symbols
+    return unless rlf || uc
+
+    [].tap do |symbols|
+      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF) if rlf
+      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::UC) if uc
+    end
+  end
+
   # ------------------------------------------------------------
   # Private methods
 
