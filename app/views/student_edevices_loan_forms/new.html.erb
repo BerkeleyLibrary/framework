@@ -43,7 +43,7 @@
     <li>14-day: Due 14 days from date of check out (or next operating day). Devices circulate with bag and charger.</li>
     <li>Semester (fixed-date) Data Science Chromebooks: Due on Friday during RRR week. *Only available at the Moffitt 4th floor service desk.</li>
   </ul>
-  <div class="check-heading" style="font-size: 1.5rem";>Student Lending Program Loan Period <span style="color: #ee0000">*</span></div>
+  <div class="check-heading" style="font-size: 1.5rem;">Student Lending Program Loan Period <span style="color: #ee0000">*</span></div>
   <p></p>
   <div> <%= f.check_box :lending_check, {required: true}, "checked", "unchecked" %> <%= f.label :lending_check, "I have read and I understand the student lending program loan periods." %> </div>
   <p></p>
@@ -59,7 +59,7 @@
     <li>Standard hourly inspection/repair rate: $75 (damage inspection cost begins at $75).</li>
     <li>All fines and fees, including replacement costs and overdue charges, will be assessed at the library’s discretion, are non-negotiable, and will not be waived under any circumstance.</li>
   </ul>
-  <div class="check-heading" style="font-size: 1.5rem";>Fines and Liability <span style="color: #ee0000">*</span></div>
+  <div class="check-heading" style="font-size: 1.5rem;">Fines and Liability <span style="color: #ee0000">*</span></div>
   <p></p>
   <div> <%= f.check_box :fines_check, {required: true}, "checked", "unchecked" %> <%= f.label :fines_check, "I have read and I understand the fines and liability." %> </div>
   <p></p>
@@ -68,7 +68,7 @@
   <%= f.hidden_field :patron_id %>
   <h2>Electronic Devices Loan Agreement</h2>
   <p>I have read the loan terms and conditions. When I check out a device, I have verified that it is in good working order. By signing below, I take full responsibility for any damage, repairs, or any replacement costs. I understand that any/all replacement costs, and overdue charges are non-negotiable. Failure to abide by Library policies regarding device use may result in the loss of electronic device borrowing privileges (blocks may be temporary or permanent).</p>
-  <div class="emphasis" style="font-size: 1.5rem";>By checking this box, I am submitting an electronic signature that I agree with, and will adhere to, the policies and procedures stated above.<span style="color: #ee0000">*</span></div>
+  <div class="emphasis" style="font-size: 1.5rem;">By checking this box, I am submitting an electronic signature that I agree with, and will adhere to, the policies and procedures stated above.<span style="color: #ee0000">*</span></div>
   <p></p>
   <div> <%= f.check_box :edevices_check, {required: true}, "checked", "unchecked" %> <%= f.label :edevices_check, "I agree to this Electronic Devices Loan Agreement." %> </div>
   <div class="btn-group" role="group">
