@@ -1,6 +1,8 @@
 require 'rails_helper'
+require 'uploaded_file_helper'
 
 RSpec.describe HoldingsTask, type: :model do
+  include UploadedFileHelper
 
   # ------------------------------------------------------------
   # Fixture
@@ -20,20 +22,7 @@ RSpec.describe HoldingsTask, type: :model do
     # Tempfile#path will return null if it's been unlinked (deleted)
     return @uploaded_file if @uploaded_file && @uploaded_file.path
 
-    @uploaded_file = uploaded_file_from(input_file_path)
-  end
-
-  def uploaded_file_from(source_file)
-    tmp = Tempfile.new.tap do |t|
-      File.open(source_file, 'rb') { |f| IO.copy_stream(f, t) }
-      t.rewind
-    end
-
-    ActionDispatch::Http::UploadedFile.new(
-      tempfile: tmp,
-      filename: File.basename(source_file),
-      type: mime_type_xlsx
-    )
+    @uploaded_file = uploaded_file_from(input_file_path, mime_type: mime_type_xlsx)
   end
 
   def assert_same_contents(expected_path, actual_attachment)
@@ -180,18 +169,26 @@ RSpec.describe HoldingsTask, type: :model do
       task = HoldingsTask.create!(**valid_attributes)
       task.ensure_holdings_records!
 
-      wc_oclc_numbers = task.holdings_world_cat_records.pluck(:oclc_number)
-      expect(wc_oclc_numbers.size).to eq(numbers_expected_sorted.size)
+      task_wc_records = task.holdings_world_cat_records
+      expect(task_wc_records.count).to eq(numbers_expected_sorted.size)
+
+      wc_oclc_numbers = task_wc_records.pluck(:oclc_number)
       expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
+
+      expect(task_wc_records.where(retrieved: true)).not_to exist
     end
 
     it 'attaches HathiTrust records' do
       task = HoldingsTask.create!(**valid_attributes)
       task.ensure_holdings_records!
 
-      ht_oclc_numbers = task.holdings_hathi_trust_records.pluck(:oclc_number)
-      expect(ht_oclc_numbers.size).to eq(numbers_expected_sorted.size)
+      task_ht_records = task.holdings_hathi_trust_records
+      expect(task_ht_records.count).to eq(numbers_expected_sorted.size)
+
+      ht_oclc_numbers = task_ht_records.pluck(:oclc_number)
       expect(ht_oclc_numbers.sort).to eq(numbers_expected_sorted)
+
+      expect(task_ht_records.where(retrieved: true)).not_to exist
     end
 
     it 'is idempotent' do
@@ -268,7 +265,7 @@ RSpec.describe HoldingsTask, type: :model do
         end
         ss.save_as(new_path)
 
-        input_file = uploaded_file_from(new_path)
+        input_file = uploaded_file_from(new_path, mime_type: mime_type_xlsx)
 
         attributes = valid_attributes.except(:input_file)
         attributes[:input_file] = input_file
