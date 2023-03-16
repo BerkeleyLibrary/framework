@@ -153,7 +153,7 @@ module Holdings
           end
         end
 
-        it 'handles errors' do
+        it 'handles network errors' do
           batch_uris.each_with_index do |batch_uri, i|
             batch_json_body = batch_json_bodies[i]
             if i.odd?
@@ -189,6 +189,49 @@ module Holdings
                 expect(ht_errors.uniq.size).to eq(1)
                 expect(ht_errors[0]).to eq('404 Not Found')
               end
+            end
+          end
+        end
+
+        it '"handles" being interrupted/killed and then resumed' do
+          # Simulate being killed while retrieving second batch
+          stub_request(:get, batch_uris[0]).to_return(body: batch_json_bodies[0])
+          stub_request(:get, batch_uris[1]).to_raise(SignalException.new(:KILL))
+
+          expect do
+            HathiTrustJob.perform_now(task)
+          end.to raise_error(SignalException)
+
+          task_ht_records = task.holdings_hathi_trust_records
+          expect(task_ht_records.where.not(ht_error: nil)).not_to exist
+
+          batch_ht_records = task_ht_records.where(oclc_number: batches[0])
+          expect(batch_ht_records.count).to eq(batches[0].size)
+          batch_ht_records.find_each do |ht_record|
+            oclc_num = ht_record.oclc_number
+            url_expected = record_urls_expected[oclc_num]
+            url_actual = ht_record.ht_record_url
+            expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
+          end
+
+          # Simulate retry after interrupt
+          [1, 2].each do |i|
+            stub_request(:get, batch_uris[i]).to_return(body: batch_json_bodies[i])
+          end
+
+          HathiTrustJob.perform_now(task)
+
+          expect(task_ht_records.where(ht_record_url: nil)).not_to exist
+          expect(task_ht_records.where.not(ht_error: nil)).not_to exist
+
+          [1, 2].each do |i|
+            batch_ht_records = task_ht_records.where(oclc_number: batches[i])
+            expect(batch_ht_records.count).to eq(batches[i].size)
+            batch_ht_records.find_each do |ht_record|
+              oclc_num = ht_record.oclc_number
+              url_expected = record_urls_expected[oclc_num]
+              url_actual = ht_record.ht_record_url
+              expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
             end
           end
         end

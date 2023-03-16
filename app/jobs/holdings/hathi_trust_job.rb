@@ -4,6 +4,8 @@ module Holdings
 
     # Finds unprocessed HathiTrust records for the specified task, retrieves
     # the record URLs for each, and updates the records accordingly.
+    #
+    # @param holdings_task [HoldingsTask] the task
     def perform(holdings_task)
       each_batch_for(holdings_task) do |batch|
         process_batch(batch)
@@ -12,6 +14,16 @@ module Holdings
 
     private
 
+    # Gets the pending HathiTrust records for the specified task
+    #
+    # @param holdings_task [HoldingsTask] the task
+    # @return ActiveRecord::Relation the records for which URLs have not yet been retrieved
+    def pending_ht_records(holdings_task)
+      holdings_task
+        .holdings_hathi_trust_records
+        .where(retrieved: false)
+    end
+
     # Finds unprocessed HathiTrust records for the specified task and yields them
     # in batches suitable for {{RecordUrlBatchRequest}}.
     #
@@ -19,9 +31,7 @@ module Holdings
     # @yield batch [Array<HoldingsHathiTrustRecord>] each batch of records to process.
     def each_batch_for(holdings_task, &)
       batch_size = RecordUrlBatchRequest::MAX_BATCH_SIZE
-      holdings_task
-        .holdings_hathi_trust_records
-        .where(retrieved: false)
+      pending_ht_records(holdings_task)
         .find_in_batches(batch_size:, &)
     end
 
@@ -32,6 +42,7 @@ module Holdings
       ht_record_urls = retrieve_record_urls(batch)
       update_ht_record_urls(batch, ht_record_urls)
     rescue StandardError => e
+      # TODO: Distinguish temporary (e.g. 503 Service Unavailable) and permanent errors
       log_error(e)
       update_ht_errors(batch, e.message)
     end
