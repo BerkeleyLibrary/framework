@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<holdings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.loc.gov/standards/iso20775/N121_ISOholdings_v4.xsd">
+<holding>
+<institutionIdentifier>
+<value>CLU</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>University of California, Los Angeles</physicalLocation>
+<physicalAddress>
+<text>Los Angeles, CA 90095 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/1183717747?page=frame&amp;url=https%3A%2F%2Fsearch.library.ucla.edu%2Fdiscovery%2Fsearch%3Ftab%3DArticles_books_more_slot%26search_scope%3DArticlesBooksMore%26vid%3D01UCS_LAL%3AUCLA%26query%3Disbn%2Cexact%2C0323636551%26checksum%3Da4fde579d703529e6241822b28ba80ef&amp;title=University+of+California%2C+Los+Angeles&amp;linktype=opac&amp;detail=CLU%3AUniversity+of+California%2C+Los+Angeles%3AAcademic Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+<holding>
+<institutionIdentifier>
+<value>CUY</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>UC Berkeley Libraries</physicalLocation>
+<physicalAddress>
+<text>Berkeley, CA 94720 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/1183717747?page=frame&amp;url=https%3A%2F%2Fsearch.library.berkeley.edu%2Fdiscovery%2Fsearch%3Fvid%3D01UCS_BER%3AUCB%26lang%3Den%26tab%3DEverything%26offset%3D0%26search_scope%3DMyInstitution%26query%3Disbn%2Ccontains%2C0323636551%26checksum%3De40e8f387ebf3b553b01f1badbd1b192&amp;title=UC+Berkeley+Libraries&amp;linktype=opac&amp;detail=CUY%3AUC+Berkeley+Libraries%3AAcademic Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+</holdings>

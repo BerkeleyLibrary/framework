@@ -17,7 +17,10 @@ module Holdings
 
     def update_record(wc_record, search_wc_symbols)
       holdings = retrieve_holdings(wc_record.oclc_number, search_wc_symbols)
-      wc_record.update(wc_symbols: holdings.join(','))
+      wc_record.update(retrieved: true, wc_symbols: holdings.join(','))
+    rescue StandardError => e
+      log_error(e)
+      wc_record.update(retrieved: true, wc_error: e.message)
     end
 
     def retrieve_holdings(oclc_number, search_wc_symbols)

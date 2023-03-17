@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<holdings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.loc.gov/standards/iso20775/N121_ISOholdings_v4.xsd">
+<holding>
+<institutionIdentifier>
+<value>CUI</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>University of California, Irvine</physicalLocation>
+<physicalAddress>
+<text>Irvine, CA 92697 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/43310158?page=frame&amp;url=https%3A%2F%2Fuci.primo.exlibrisgroup.com%2Fdiscovery%2Fsearch%3Ftab%3DLibraryCatalog%26search_scope%3DMyInstitution%26sortby%3Drank%26vid%3D01CDL_IRV_INST%3AUCI%26query%3Disbn%2Ccontains%2C0471368792%26checksum%3D41a5b8d1a924f2fe1ee8ff874d49f46f&amp;title=University+of+California%2C+Irvine&amp;linktype=opac&amp;detail=CUI%3AUniversity+of+California%2C+Irvine%3AARL Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+<holding>
+<institutionIdentifier>
+<value>CUY</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>UC Berkeley Libraries</physicalLocation>
+<physicalAddress>
+<text>Berkeley, CA 94720 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/43310158?page=frame&amp;url=https%3A%2F%2Fsearch.library.berkeley.edu%2Fdiscovery%2Fsearch%3Fvid%3D01UCS_BER%3AUCB%26lang%3Den%26tab%3DEverything%26offset%3D0%26search_scope%3DMyInstitution%26query%3Disbn%2Ccontains%2C0471368792%26checksum%3D8a3882e28749dcd9d27f5b21c1fb819c&amp;title=UC+Berkeley+Libraries&amp;linktype=opac&amp;detail=CUY%3AUC+Berkeley+Libraries%3AAcademic Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+</holdings>

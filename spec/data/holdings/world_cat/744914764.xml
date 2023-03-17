@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<holdings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.loc.gov/standards/iso20775/N121_ISOholdings_v4.xsd">
+<holding>
+<institutionIdentifier>
+<value>CLU</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>University of California, Los Angeles</physicalLocation>
+<physicalAddress>
+<text>Los Angeles, CA 90095 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/744914764?page=frame&amp;url=https%3A%2F%2Fsearch.library.ucla.edu%2Fdiscovery%2Fsearch%3Ftab%3DArticles_books_more_slot%26search_scope%3DArticlesBooksMore%26vid%3D01UCS_LAL%3AUCLA%26query%3Disbn%2Cexact%2C9780849339295%26checksum%3Da1da8ee7a8d5003a7469586f88c1f5cb&amp;title=University+of+California%2C+Los+Angeles&amp;linktype=opac&amp;detail=CLU%3AUniversity+of+California%2C+Los+Angeles%3AAcademic Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+<holding>
+<institutionIdentifier>
+<value>CUS</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>University of California, San Diego</physicalLocation>
+<physicalAddress>
+<text>La Jolla, CA 92093 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/744914764?page=frame&amp;url=https%3A%2F%2Fsearch-library.ucsd.edu%2Fdiscovery%2Fsearch%3Fvid%3D01UCS_SDI%3AUCSD%26tab%3DEverything%26query%3Disbn%2Ccontains%2C9780849339295%26checksum%3D3f05a92d87be19978f7809c43b8f7ca1&amp;title=University+of+California%2C+San+Diego&amp;linktype=opac&amp;detail=CUS%3AUniversity+of+California%2C+San+Diego%3AARL Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+<holding>
+<institutionIdentifier>
+<value>CUV</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>University of California, Davis</physicalLocation>
+<physicalAddress>
+<text>Davis, CA 95616 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/744914764?page=frame&amp;url=https%3A%2F%2Fsearch.library.ucdavis.edu%2Fdiscovery%2Fsearch%3Fvid%3D01UCD_INST%3AUCD%26tab%3DLibraryCatalog%26search_scope%3DMyInstitution%26offset%3D0%26query%3Dany%2Ccontains%2C9780849339295%26checksum%3D6c1781acbbdf7f272c05affca6fd9a81&amp;title=University+of+California%2C+Davis&amp;linktype=opac&amp;detail=CUV%3AUniversity+of+California%2C+Davis%3AARL Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+<holding>
+<institutionIdentifier>
+<value>CUY</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>UC Berkeley Libraries</physicalLocation>
+<physicalAddress>
+<text>Berkeley, CA 94720 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/744914764?page=frame&amp;url=https%3A%2F%2Fsearch.library.berkeley.edu%2Fdiscovery%2Fsearch%3Fvid%3D01UCS_BER%3AUCB%26lang%3Den%26tab%3DEverything%26offset%3D0%26search_scope%3DMyInstitution%26query%3Disbn%2Ccontains%2C9780849339295%26checksum%3D3151c782a575c1214e9b3de30dbe802e&amp;title=UC+Berkeley+Libraries&amp;linktype=opac&amp;detail=CUY%3AUC+Berkeley+Libraries%3AAcademic Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+<holding>
+<institutionIdentifier>
+<value>MERUC</value>
+<typeOrSource>
+<pointer>http://worldcat.org/registry/institutions/</pointer>
+</typeOrSource>
+</institutionIdentifier>
+<physicalLocation>University of California, Merced</physicalLocation>
+<physicalAddress>
+<text>Merced, CA 95343 United States</text>
+</physicalAddress>
+<electronicAddress>
+<text>https://www.worldcat.org/wcpa/oclc/744914764?page=frame&amp;url=https%3A%2F%2Fucmerced.primo.exlibrisgroup.com%2Fdiscovery%2Fsearch%3Fvid%3D01UCS_UCM%3AUCM%26tab%3DEverything%26search_scope%3DMyInst_and_CI%26offset%3D0%26query%3Disbn%2Ccontains%2C9780849339295%26checksum%3D5cff20014e90719fd509456893f59ddf&amp;title=University+of+California%2C+Merced&amp;linktype=opac&amp;detail=MERUC%3AUniversity+of+California%2C+Merced%3AAcademic Library&amp;app=wcapi&amp;id=</text>
+</electronicAddress>
+<holdingSimple>
+<copiesSummary>
+<copiesCount>1</copiesCount>
+</copiesSummary>
+</holdingSimple>
+</holding>
+</holdings>

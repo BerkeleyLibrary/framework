@@ -1,26 +1,11 @@
 require 'rails_helper'
-require 'uploaded_file_helper'
+require 'support/holdings_task_context'
 
 module Holdings
   describe HathiTrustJob, type: :job do
-    include UploadedFileHelper
-
-    before do
-      # ActiveStorage uses a background job to remove files
-      @queue_adapter = ActiveStorage::PurgeJob.queue_adapter
-      ActiveStorage::PurgeJob.queue_adapter = :inline
-    end
-
-    after do
-      # Explicitly purge ActiveStorage files
-      HoldingsTask.destroy_all
-      ActiveStorage::Blob.unattached.find_each(&:purge_later)
-      ActiveStorage::PurgeJob.queue_adapter = @queue_adapter
-    end
+    include_context('HoldingsTask')
 
     describe 'success' do
-      let(:input_file_path) { 'spec/data/holdings/input-file.xlsx' }
-      let(:oclc_numbers_expected) { File.readlines('spec/data/holdings/oclc_numbers_expected.txt', chomp: true) }
       let(:batch_size) { BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
       let(:record_urls_expected) do
         {
@@ -73,21 +58,11 @@ module Holdings
 
       let(:batches) { oclc_numbers_expected.each_slice(batch_size).to_a }
       let(:batch_uris) { batches.map { |batch| BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
-      let(:batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/holdings/ht-batch-#{i}.json") } }
-
-      attr_reader :task
+      let(:batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/holdings/hathi_trust/ht-batch-#{i}.json") } }
 
       before do
         @ht_queue_adapter = HathiTrustJob.queue_adapter
         HathiTrustJob.queue_adapter = :inline
-
-        @task = HoldingsTask.create(
-          email: 'dmoles@berkeley.edu',
-          filename: 'input-file.xlsx',
-          hathi: true,
-          input_file: uploaded_file_from(input_file_path)
-        )
-        task.ensure_holdings_records!
       end
 
       after do
@@ -105,7 +80,8 @@ module Holdings
           HathiTrustJob.perform_now(task)
 
           task_ht_records = task.holdings_hathi_trust_records
-          expect(task_ht_records.where(retrieved: true).count).to eq(record_urls_expected.size)
+          expected_count = record_urls_expected.size
+          expect(task_ht_records.where(retrieved: true).count).to eq(expected_count)
           expect(task_ht_records.where(retrieved: false)).not_to exist
           expect(task_ht_records.where.not(ht_error: nil)).not_to exist
 
@@ -159,7 +135,7 @@ module Holdings
             if i.odd?
               stub_request(:get, batch_uri).to_return(body: batch_json_body)
             else
-              stub_request(:get, batch_uri).to_return(status: 404)
+              stub_request(:get, batch_uri).to_return(status: 500)
             end
           end
 
@@ -187,7 +163,7 @@ module Holdings
                 expect(batch_ht_records.where.not(ht_record_url: nil)).not_to exist
                 ht_errors = batch_ht_records.pluck(:ht_error)
                 expect(ht_errors.uniq.size).to eq(1)
-                expect(ht_errors[0]).to eq('404 Not Found')
+                expect(ht_errors[0]).to eq('500 Internal Server Error')
               end
             end
           end
