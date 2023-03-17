@@ -19,6 +19,7 @@ module Holdings
       holdings = retrieve_holdings(wc_record.oclc_number, search_wc_symbols)
       wc_record.update(retrieved: true, wc_symbols: holdings.join(','))
     rescue StandardError => e
+      # TODO: Distinguish temporary (e.g. 503 Service Unavailable) and permanent errors
       log_error(e)
       wc_record.update(retrieved: true, wc_error: e.message)
     end
