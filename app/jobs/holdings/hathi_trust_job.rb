@@ -42,7 +42,6 @@ module Holdings
       ht_record_urls = retrieve_record_urls(batch)
       update_ht_record_urls(batch, ht_record_urls)
     rescue StandardError => e
-      # TODO: Distinguish temporary (e.g. 503 Service Unavailable) and permanent errors
       log_error(e)
       update_ht_errors(batch, e.message)
     end
