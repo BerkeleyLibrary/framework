@@ -110,7 +110,7 @@ module CapybaraHelper
 
       Capybara.register_driver(driver_name) do |app|
         capabilities = [
-          ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args, prefs: chrome_prefs),
+          chrome_options,
           ::Selenium::WebDriver::Remote::Capabilities.chrome(
             'goog:loggingPrefs' => {
               browser: 'ALL', driver: 'ALL'
@@ -125,6 +125,16 @@ module CapybaraHelper
     end
 
     private
+
+    def chrome_options
+      ::Selenium::WebDriver::Chrome::Options.new(args: chrome_args, prefs: chrome_prefs).tap do |options|
+        # NOTE: Different Selenium/Chrome versions set download directory differently -- see
+        #       https://github.com/teamcapybara/capybara/blob/3.38.0/spec/selenium_spec_chrome.rb#L15-L20
+        if (download_dir = chrome_prefs['download.default_directory'])
+          options.add_preference(:download, default_directory: download_dir)
+        end
+      end
+    end
 
     def merge_webmock_options(webmock_options)
       DEFAULT_WEBMOCK_OPTIONS.dup.tap do |opts|

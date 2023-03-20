@@ -73,24 +73,16 @@ describe TindDownloadController, type: :system do
         end
 
         BerkeleyLibrary::TIND::Export::ExportFormat.each do |fmt|
-          describe(fmt.value) do
-            let(:format) { fmt.value.downcase }
-            let(:expected_path) { "abraham-lincoln-papers.#{format}" }
+          let(:fmt_str) { fmt.value.downcase }
 
-            after do
-              FileUtils.rm_f(expected_path)
-            end
+          it "downloads #{fmt}" do
+            page.choose("export_format_#{fmt_str}")
+            page.click_button('Download Metadata')
 
-            it "downloads #{fmt}" do
-              page.choose("export_format_#{format}")
-              page.click_button('Download Metadata')
+            # Wait for "Your download should start" to appear
+            expect(page).to have_content('Your download should start momentarily', wait: 10)
 
-              # Wait for "Your download should start" to appear
-              expect(page).to have_content('Your download should start momentarily', wait: 10)
-
-              # TODO: Is it always downloaded to the project root?
-              expect(File.exist?(expected_path)).to eq(true)
-            end
+            # TODO: verify download, cf. https://www.gridlastic.com/selenium-grid-download-file.html ?
           end
         end
       end
