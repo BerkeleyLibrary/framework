@@ -126,12 +126,10 @@ RSpec.describe HoldingsTask, type: :model do
     it 'removes holdings records' do
       task = HoldingsTask.create!(**valid_attributes)
       task.ensure_holdings_records!
-      expect(task.holdings_world_cat_records).to exist # just to be sure
-      expect(task.holdings_hathi_trust_records).to exist # just to be sure
+      expect(task.holdings_records).to exist # just to be sure
 
       task.destroy!
-      expect(task.holdings_world_cat_records).not_to exist
-      expect(task.holdings_hathi_trust_records).not_to exist
+      expect(task.holdings_records).not_to exist
     end
 
     it 'removes attached files' do
@@ -200,30 +198,18 @@ RSpec.describe HoldingsTask, type: :model do
   describe :ensure_holdings_records! do
     let(:numbers_expected_sorted) { oclc_numbers_expected.sort }
 
-    it 'attaches WorldCat records' do
+    it 'attaches holdings records' do
       task = HoldingsTask.create!(**valid_attributes)
       task.ensure_holdings_records!
 
-      task_wc_records = task.holdings_world_cat_records
-      expect(task_wc_records.count).to eq(numbers_expected_sorted.size)
+      task_records = task.holdings_records
+      expect(task_records.count).to eq(numbers_expected_sorted.size)
 
-      wc_oclc_numbers = task_wc_records.pluck(:oclc_number)
+      wc_oclc_numbers = task_records.pluck(:oclc_number)
       expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
 
-      expect(task_wc_records.where(retrieved: true)).not_to exist
-    end
-
-    it 'attaches HathiTrust records' do
-      task = HoldingsTask.create!(**valid_attributes)
-      task.ensure_holdings_records!
-
-      task_ht_records = task.holdings_hathi_trust_records
-      expect(task_ht_records.count).to eq(numbers_expected_sorted.size)
-
-      ht_oclc_numbers = task_ht_records.pluck(:oclc_number)
-      expect(ht_oclc_numbers.sort).to eq(numbers_expected_sorted)
-
-      expect(task_ht_records.where(retrieved: true)).not_to exist
+      expect(task_records.where(wc_retrieved: true)).not_to exist
+      expect(task_records.where(ht_retrieved: true)).not_to exist
     end
 
     it 'is idempotent' do
@@ -231,8 +217,7 @@ RSpec.describe HoldingsTask, type: :model do
       2.times { task.ensure_holdings_records! }
 
       expected_count = oclc_numbers_expected.size
-      expect(task.holdings_world_cat_records.count).to eq(expected_count)
-      expect(task.holdings_hathi_trust_records.count).to eq(expected_count)
+      expect(task.holdings_records.count).to eq(expected_count)
     end
 
     it 'ignores duplicate OCLC numbers' do
@@ -242,44 +227,7 @@ RSpec.describe HoldingsTask, type: :model do
       task.ensure_holdings_records!
 
       expected_count = oclc_numbers_expected.size
-      expect(task.holdings_world_cat_records.count).to eq(expected_count)
-      expect(task.holdings_hathi_trust_records.count).to eq(expected_count)
-    end
-
-    it 'does not create HathiTrust records when hathi is not set' do
-      attributes = valid_attributes.except(:hathi)
-      task = HoldingsTask.create!(**attributes)
-      task.ensure_holdings_records!
-
-      expect(task.holdings_world_cat_records.count).to eq(oclc_numbers_expected.size)
-      expect(task.holdings_hathi_trust_records).not_to exist
-    end
-
-    it 'does not create WorldCat records when neither rlf nor uc is set' do
-      attributes = valid_attributes.except(:rlf, :uc)
-      task = HoldingsTask.create!(**attributes)
-      task.ensure_holdings_records!
-
-      expect(task.holdings_hathi_trust_records.count).to eq(oclc_numbers_expected.size)
-      expect(task.holdings_world_cat_records).not_to exist
-    end
-
-    it 'does create WorldCat records when only rlf is set' do
-      attributes = valid_attributes.except(:hathi, :uc)
-      task = HoldingsTask.create!(**attributes)
-      task.ensure_holdings_records!
-
-      expect(task.holdings_world_cat_records.count).to eq(oclc_numbers_expected.size)
-      expect(task.holdings_hathi_trust_records).not_to exist
-    end
-
-    it 'does create WorldCat records when only uc is set' do
-      attributes = valid_attributes.except(:hathi, :rlf)
-      task = HoldingsTask.create!(**attributes)
-      task.ensure_holdings_records!
-
-      expect(task.holdings_world_cat_records.count).to eq(oclc_numbers_expected.size)
-      expect(task.holdings_hathi_trust_records).not_to exist
+      expect(task.holdings_records.count).to eq(expected_count)
     end
 
     it 'handles large numbers of records' do
@@ -308,8 +256,7 @@ RSpec.describe HoldingsTask, type: :model do
         task = HoldingsTask.create!(**attributes)
         task.ensure_holdings_records!
 
-        expect(task.holdings_world_cat_records.count).to eq(expected_count)
-        expect(task.holdings_hathi_trust_records.count).to eq(expected_count)
+        expect(task.holdings_records.count).to eq(expected_count)
       end
     end
   end

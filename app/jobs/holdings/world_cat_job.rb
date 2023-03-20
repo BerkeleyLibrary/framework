@@ -7,6 +7,8 @@ module Holdings
     #
     # @param holdings_task [HoldingsTask] the task
     def perform(holdings_task)
+      raise ArgumentError, "Not a WorldCat holdings task: #{holdings_task.id}" unless holdings_task.world_cat?
+
       search_wc_symbols = holdings_task.search_wc_symbols
       pending_wc_records(holdings_task).find_each do |wc_record|
         update_record(wc_record, search_wc_symbols)
@@ -17,10 +19,10 @@ module Holdings
 
     def update_record(wc_record, search_wc_symbols)
       holdings = retrieve_holdings(wc_record.oclc_number, search_wc_symbols)
-      wc_record.update(retrieved: true, wc_symbols: holdings.join(','))
+      wc_record.update(wc_retrieved: true, wc_symbols: holdings.join(','))
     rescue StandardError => e
       log_error(e)
-      wc_record.update(retrieved: true, wc_error: e.message)
+      wc_record.update(wc_retrieved: true, wc_error: e.message)
     end
 
     def retrieve_holdings(oclc_number, search_wc_symbols)
@@ -34,8 +36,8 @@ module Holdings
     # @return ActiveRecord::Relation the records for which holdings have not yet been retrieved
     def pending_wc_records(holdings_task)
       holdings_task
-        .holdings_world_cat_records
-        .where(retrieved: false)
+        .holdings_records
+        .where(wc_retrieved: false)
     end
   end
 end

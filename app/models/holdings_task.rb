@@ -12,8 +12,7 @@ class HoldingsTask < ActiveRecord::Base
   has_one_attached :input_file
   has_one_attached :output_file
 
-  has_many :holdings_world_cat_records, dependent: :delete_all
-  has_many :holdings_hathi_trust_records, dependent: :delete_all
+  has_many :holdings_records, dependent: :delete_all
 
   # ------------------------------------------------------------
   # Validations
@@ -21,6 +20,13 @@ class HoldingsTask < ActiveRecord::Base
   validates :email, presence: true
   validates :filename, presence: true
   validate :options_selected
+
+  # ------------------------------------------------------------
+  # Synthetic accessors
+
+  def world_cat?
+    rlf? || uc?
+  end
 
   # ------------------------------------------------------------
   # Public instance methods
@@ -33,8 +39,7 @@ class HoldingsTask < ActiveRecord::Base
     # Insert in batches to prevent DB connection timeout on very large datasets
     all_rows.each_slice(BATCH_SIZE) do |rows|
       # rubocop:disable Rails/SkipsModelValidations
-      HoldingsWorldCatRecord.insert_all(rows) if rlf || uc
-      HoldingsHathiTrustRecord.insert_all(rows) if hathi
+      HoldingsRecord.insert_all(rows)
       # rubocop:enable Rails/SkipsModelValidations
     end
   end
@@ -51,11 +56,11 @@ class HoldingsTask < ActiveRecord::Base
   end
 
   def search_wc_symbols
-    return unless rlf || uc
+    return unless world_cat?
 
     [].tap do |symbols|
-      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF) if rlf
-      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::UC) if uc
+      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF) if rlf?
+      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::UC) if uc?
     end
   end
 
@@ -65,7 +70,7 @@ class HoldingsTask < ActiveRecord::Base
   private
 
   def options_selected
-    return if rlf || uc || hathi
+    return if world_cat? || hathi?
 
     errors.add(:base, 'At least one of RLF, Other UC, or HathiTrust must be selected')
   end

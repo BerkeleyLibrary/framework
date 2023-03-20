@@ -118,16 +118,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
-  create_table "holdings_hathi_trust_records", force: :cascade do |t|
+  create_table "holdings_records", force: :cascade do |t|
     t.bigint "holdings_task_id", null: false
     t.string "oclc_number", null: false
     t.string "ht_record_url"
     t.string "ht_error"
-    t.boolean "retrieved", default: false, null: false
+    t.boolean "ht_retrieved", default: false, null: false
+    t.string "wc_symbols"
+    t.string "wc_error"
+    t.boolean "wc_retrieved", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["holdings_task_id", "oclc_number"], name: "index_holdings_ht_on_task_id_and_oclc_number", unique: true
-    t.index ["holdings_task_id"], name: "index_holdings_hathi_trust_records_on_holdings_task_id"
+    t.index ["holdings_task_id", "oclc_number"], name: "index_holdings_records_on_holdings_task_id_and_oclc_number", unique: true
+    t.index ["holdings_task_id"], name: "index_holdings_records_on_holdings_task_id"
   end
 
   create_table "holdings_tasks", force: :cascade do |t|
@@ -138,18 +141,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
     t.boolean "hathi", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "holdings_world_cat_records", force: :cascade do |t|
-    t.bigint "holdings_task_id", null: false
-    t.string "oclc_number", null: false
-    t.string "wc_symbols"
-    t.string "wc_error"
-    t.boolean "retrieved", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["holdings_task_id", "oclc_number"], name: "index_holdings_wc_on_task_id_and_oclc_number", unique: true
-    t.index ["holdings_task_id"], name: "index_holdings_world_cat_records_on_holdings_task_id"
   end
 
   create_table "host_bib_linked_bibs", force: :cascade do |t|
@@ -247,8 +238,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assignments", "framework_users", column: "framework_users_id"
   add_foreign_key "assignments", "roles"
-  add_foreign_key "holdings_hathi_trust_records", "holdings_tasks"
-  add_foreign_key "holdings_world_cat_records", "holdings_tasks"
+  add_foreign_key "holdings_records", "holdings_tasks"
   add_foreign_key "host_bib_linked_bibs", "host_bibs"
   add_foreign_key "host_bib_linked_bibs", "linked_bibs"
   add_foreign_key "host_bibs", "host_bib_tasks"

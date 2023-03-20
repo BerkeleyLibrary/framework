@@ -7,6 +7,8 @@ module Holdings
     #
     # @param holdings_task [HoldingsTask] the task
     def perform(holdings_task)
+      raise ArgumentError, "Not a HathiTrust holdings task: #{holdings_task.id}" unless holdings_task.hathi?
+
       each_batch_for(holdings_task) do |batch|
         process_batch(batch)
       end
@@ -20,8 +22,8 @@ module Holdings
     # @return ActiveRecord::Relation the records for which URLs have not yet been retrieved
     def pending_ht_records(holdings_task)
       holdings_task
-        .holdings_hathi_trust_records
-        .where(retrieved: false)
+        .holdings_records
+        .where(ht_retrieved: false)
     end
 
     # Finds unprocessed HathiTrust records for the specified task and yields them
@@ -62,7 +64,7 @@ module Holdings
     # @param err_msg [String]
     def update_ht_errors(batch, err_msg)
       batch.each do |record|
-        record.update(retrieved: true, ht_error: err_msg)
+        record.update(ht_retrieved: true, ht_error: err_msg)
       end
     end
 
@@ -74,7 +76,7 @@ module Holdings
     def update_ht_record_urls(batch, ht_record_urls)
       batch.each do |record|
         ht_record_url = ht_record_urls[record.oclc_number]
-        record.update(retrieved: true, ht_record_url:)
+        record.update(ht_retrieved: true, ht_record_url:)
       end
     end
   end
