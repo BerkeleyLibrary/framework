@@ -80,6 +80,8 @@ module Holdings
         expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
         expect(task_records.where(wc_retrieved: false)).not_to exist
 
+        expect(task.wc_incomplete?).to eq(false)
+
         task_records.find_each do |wc_record|
           oclc_number = wc_record.oclc_number
           symbols_expected = holdings_by_oclc_num[oclc_number]
@@ -91,6 +93,7 @@ module Holdings
       it 'completes partially-completed jobs' do
         task_records = task.holdings_records
 
+        # Simulate previously-completed partial job
         oclc_numbers_expected.each_with_index do |oclc_number, i|
           if i.odd?
             stub_request_for(oclc_number)
@@ -101,11 +104,15 @@ module Holdings
           end
         end
 
+        expect(task.wc_incomplete?).to eq(true)
+
         WorldCatJob.perform_now(task)
 
         expected_count = holdings_by_oclc_num.size
         expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
         expect(task_records.where(wc_retrieved: false)).not_to exist
+
+        expect(task.wc_incomplete?).to eq(false)
 
         task_records.find_each do |wc_record|
           oclc_number = wc_record.oclc_number
@@ -128,6 +135,8 @@ module Holdings
         end
 
         WorldCatJob.perform_now(task)
+
+        expect(task.wc_incomplete?).to eq(false)
 
         expected_count = holdings_by_oclc_num.size
         expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
@@ -169,6 +178,8 @@ module Holdings
         expect(task_records.where(wc_retrieved: true).count).to eq(first_batch.size)
         expect(task_records.where.not(wc_error: nil)).not_to exist
 
+        expect(task.wc_incomplete?).to eq(true)
+
         # Simulate retry after interrupt
         second_batch.each do |oclc_number|
           stub_request_for(oclc_number)
@@ -179,6 +190,8 @@ module Holdings
         expected_count = holdings_by_oclc_num.size
         expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
         expect(task_records.where(wc_retrieved: false)).not_to exist
+
+        expect(task.wc_incomplete?).to eq(false)
 
         task_records.find_each do |wc_record|
           oclc_number = wc_record.oclc_number

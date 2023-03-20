@@ -1,4 +1,5 @@
 class HoldingsTask < ActiveRecord::Base
+  include BerkeleyLibrary::Holdings
 
   # ------------------------------------------------------------
   # Constants
@@ -26,6 +27,18 @@ class HoldingsTask < ActiveRecord::Base
 
   def world_cat?
     rlf? || uc?
+  end
+
+  def incomplete?
+    wc_incomplete? || hathi_incomplete?
+  end
+
+  def hathi_incomplete?
+    hathi? && holdings_records.exists?(ht_retrieved: false)
+  end
+
+  def wc_incomplete?
+    world_cat? && holdings_records.exists?(wc_retrieved: false)
   end
 
   # ------------------------------------------------------------
@@ -64,6 +77,17 @@ class HoldingsTask < ActiveRecord::Base
     end
   end
 
+  def write_output_file!
+    output_spreadsheet = input_spreadsheet.tap { |ss| write_results_to(ss) }
+
+    output_file.attach(
+      io: output_spreadsheet.stream,
+      filename: output_filename,
+      content_type: Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB,
+      identify: false
+    )
+  end
+
   # ------------------------------------------------------------
   # Private methods
 
@@ -74,4 +98,26 @@ class HoldingsTask < ActiveRecord::Base
 
     errors.add(:base, 'At least one of RLF, Other UC, or HathiTrust must be selected')
   end
+
+  def new_result(oclc_number, wc_sym_str, wc_error, ht_record_url, ht_error)
+    wc_symbols = (wc_sym_str ? wc_sym_str.split(',') : [])
+    HoldingsResult.new(oclc_number, wc_symbols:, wc_error:, ht_record_url:, ht_error:)
+  end
+
+  def write_results_to(ss)
+    writer = XLSXWriter.new(ss, rlf:, uc:, hathi_trust: hathi)
+    result_data = holdings_records.pluck(*RESULT_ARGS)
+    result_data.each { |row| writer << new_result(*row) }
+  end
+
+  def output_filename
+    "#{File.basename(filename, '.*')}-processed.xlsx"
+  end
+
+  def input_spreadsheet
+    with_input_tmpfile do |tmpfile|
+      Util::XLSX::Spreadsheet.new(tmpfile.path)
+    end
+  end
+
 end

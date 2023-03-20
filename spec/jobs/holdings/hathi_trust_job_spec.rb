@@ -91,6 +91,8 @@ module Holdings
           expect(task_records.where(ht_retrieved: false)).not_to exist
           expect(task_records.where.not(ht_error: nil)).not_to exist
 
+          expect(task.hathi_incomplete?).to eq(false)
+
           aggregate_failures do
             task_records.find_each do |ht_record|
               oclc_num = ht_record.oclc_number
@@ -118,12 +120,16 @@ module Holdings
             end
           end
 
+          expect(task.hathi_incomplete?).to eq(true)
+
           HathiTrustJob.perform_now(task)
 
           task_records = task.holdings_records
           expect(task_records.where(ht_retrieved: true).count).to eq(record_urls_expected.size)
           expect(task_records.where(ht_retrieved: false)).not_to exist
           expect(task_records.where.not(ht_error: nil)).not_to exist
+
+          expect(task.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
             task_records.find_each do |ht_record|
@@ -150,6 +156,8 @@ module Holdings
           task_records = task.holdings_records
           expect(task_records.where(ht_retrieved: true).count).to eq(record_urls_expected.size)
           expect(task_records.where(ht_retrieved: false)).not_to exist
+
+          expect(task.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
             batches.each_with_index do |batch, i|
@@ -196,6 +204,8 @@ module Holdings
             expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
           end
 
+          expect(task.hathi_incomplete?).to eq(true)
+
           # Simulate retry after interrupt
           [1, 2].each do |i|
             stub_request(:get, batch_uris[i]).to_return(body: batch_json_bodies[i])
@@ -205,6 +215,8 @@ module Holdings
 
           expect(task_records.where(ht_record_url: nil)).not_to exist
           expect(task_records.where.not(ht_error: nil)).not_to exist
+
+          expect(task.hathi_incomplete?).to eq(false)
 
           [1, 2].each do |i|
             batch_ht_records = task_records.where(oclc_number: batches[i])
