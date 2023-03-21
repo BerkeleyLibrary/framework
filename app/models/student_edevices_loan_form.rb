@@ -2,7 +2,8 @@ class StudentEdevicesLoanForm < Form
   ALLOWED_PATRON_TYPES = [
     Alma::Type::UNDERGRAD,
     Alma::Type::UNDERGRAD_SLE,
-    Alma::Type::GRAD_STUDENT
+    Alma::Type::GRAD_STUDENT,
+    Alma::Type::EXTENSION_STUDENT
   ].freeze
 
   attr_accessor :borrow_check

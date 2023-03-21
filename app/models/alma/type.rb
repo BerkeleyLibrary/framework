@@ -11,5 +11,6 @@ module Alma
     STAFF               = 'NONACAD'.freeze
     POST_DOC            = 'UCB POST'.freeze
     VISITING_SCHOLAR    = 'UCBVISSCHOL'.freeze
+    EXTENSION_STUDENT   = 'UCEXTSTUD'.freeze
   end
 end

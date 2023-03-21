@@ -1,0 +1,12 @@
+---
+provider: calnet
+uid: bruce
+info:
+  name: The Hulk
+  email: strongest_avenger@avengers.com
+extra:
+  displayName: The Hulk
+  employeeNumber: "12345679"
+  uid: "12345679"
+  berkeleyEduIsMemberOf:
+    - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu

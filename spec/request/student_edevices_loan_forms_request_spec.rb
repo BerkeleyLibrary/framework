@@ -7,7 +7,8 @@ describe :student_edevices_loan_form, type: :request do
     allowed_patron_types: [
       Alma::Type::UNDERGRAD,
       Alma::Type::UNDERGRAD_SLE,
-      Alma::Type::GRAD_STUDENT
+      Alma::Type::GRAD_STUDENT,
+      Alma::Type::EXTENSION_STUDENT
     ],
     submit_path: '/forms/student_edevices_loan',
     success_path: '/forms/student_edevices_loan/all_checked',

@@ -4,7 +4,8 @@ describe StudentEdevicesLoanForm do
   allowed_patron_types = [
     Alma::Type::UNDERGRAD,
     Alma::Type::UNDERGRAD_SLE,
-    Alma::Type::GRAD_STUDENT
+    Alma::Type::GRAD_STUDENT,
+    Alma::Type::EXTENSION_STUDENT
   ]
 
   forbidden_patron_types = Alma::Type.all.reject { |t| allowed_patron_types.include?(t) }

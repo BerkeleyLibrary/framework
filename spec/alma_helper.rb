@@ -42,7 +42,8 @@ module Alma
     Alma::Type::LIBRARY_STAFF => '013191304',
     Alma::Type::STAFF => '5551212',
     Alma::Type::POST_DOC => '99999891',
-    Alma::Type::VISITING_SCHOLAR => '87651234'
+    Alma::Type::VISITING_SCHOLAR => '87651234',
+    Alma::Type::EXTENSION_STUDENT => '12345679'
 
     # We don't need this one anymore:
     # Alma::Type::LBNL_ACADEMIC_STAFF => '1000001.json',
