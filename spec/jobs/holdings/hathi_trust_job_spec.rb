@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'support/holdings_task_context'
+require 'support/holdings_contexts'
 
 module Holdings
   describe HathiTrustJob, type: :job do
@@ -7,54 +7,6 @@ module Holdings
 
     describe 'success' do
       let(:batch_size) { BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
-      let(:record_urls_expected) do
-        {
-          '1097551039' => 'https://catalog.hathitrust.org/Record/102799570',
-          '1057635605' => 'https://catalog.hathitrust.org/Record/102799038',
-          '744914764' => 'https://catalog.hathitrust.org/Record/102799171',
-          '841051175' => 'https://catalog.hathitrust.org/Record/102798602',
-          '553365107' => 'https://catalog.hathitrust.org/Record/009544358',
-          '916723577' => 'https://catalog.hathitrust.org/Record/102797247',
-          '50478533' => 'https://catalog.hathitrust.org/Record/004310786',
-          '1037810804' => 'https://catalog.hathitrust.org/Record/102802328',
-          '1106476939' => 'https://catalog.hathitrust.org/Record/102859665',
-          '1019839414' => 'https://catalog.hathitrust.org/Record/102802377',
-          '1202732743' => 'https://catalog.hathitrust.org/Record/102862428',
-          '1232187285' => 'https://catalog.hathitrust.org/Record/102802512',
-          '43310158' => 'https://catalog.hathitrust.org/Record/102822817',
-          '786872103' => 'https://catalog.hathitrust.org/Record/102799040',
-          '17401297' => 'https://catalog.hathitrust.org/Record/000883404',
-          '39281966' => 'https://catalog.hathitrust.org/Record/003816675',
-          '1088664799' => 'https://catalog.hathitrust.org/Record/102802305',
-          '959808903' => 'https://catalog.hathitrust.org/Record/102798676',
-          '1183717747' => 'https://catalog.hathitrust.org/Record/102862558',
-          '840927703' => 'https://catalog.hathitrust.org/Record/102801650',
-          '52559229' => 'https://catalog.hathitrust.org/Record/004355036',
-          '1085156076' => 'https://catalog.hathitrust.org/Record/102802433',
-          '1029560997' => 'https://catalog.hathitrust.org/Record/102797429',
-          '942045029' => 'https://catalog.hathitrust.org/Record/102859735',
-          '42780471' => 'https://catalog.hathitrust.org/Record/004134120',
-          '1052450975' => 'https://catalog.hathitrust.org/Record/102805804',
-          '992798630' => 'https://catalog.hathitrust.org/Record/102802179',
-          '1243000176' => 'https://catalog.hathitrust.org/Record/102862468',
-          '1003209782' => 'https://catalog.hathitrust.org/Record/102862406',
-          '61332593' => 'https://catalog.hathitrust.org/Record/102799571',
-          '34150960' => 'https://catalog.hathitrust.org/Record/003966672',
-          '1081297655' => 'https://catalog.hathitrust.org/Record/102798906',
-          '268789401' => 'https://catalog.hathitrust.org/Record/011248535',
-          '1083300787' => 'https://catalog.hathitrust.org/Record/102798804',
-          '895650546' => 'https://catalog.hathitrust.org/Record/102859604',
-          '43903564' => 'https://catalog.hathitrust.org/Record/004136040',
-          '52937386' => 'https://catalog.hathitrust.org/Record/004363197',
-          '43845565' => 'https://catalog.hathitrust.org/Record/004135486',
-          '169455558' => 'https://catalog.hathitrust.org/Record/005678848',
-          '959373652' => 'https://catalog.hathitrust.org/Record/102797428',
-          '916140635' => 'https://catalog.hathitrust.org/Record/102801980',
-          '779577263' => 'https://catalog.hathitrust.org/Record/102801823',
-          '41531832' => 'https://catalog.hathitrust.org/Record/004054696',
-          '1233025104' => 'https://catalog.hathitrust.org/Record/102862415'
-        }
-      end
 
       let(:batches) { oclc_numbers_expected.each_slice(batch_size).to_a }
       let(:batch_uris) { batches.map { |batch| BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }

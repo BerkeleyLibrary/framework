@@ -6,6 +6,7 @@ class HoldingsTask < ActiveRecord::Base
 
   # Batch size for inserting HoldingsRecords
   BATCH_SIZE = 10_000
+  RESULT_ARGS = %i[oclc_number wc_symbols wc_error ht_record_url ht_error].freeze
 
   # ------------------------------------------------------------
   # Relations
@@ -77,15 +78,10 @@ class HoldingsTask < ActiveRecord::Base
     end
   end
 
-  def write_output_file!
-    output_spreadsheet = input_spreadsheet.tap { |ss| write_results_to(ss) }
+  def ensure_output_file!
+    return if output_file.attached?
 
-    output_file.attach(
-      io: output_spreadsheet.stream,
-      filename: output_filename,
-      content_type: Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB,
-      identify: false
-    )
+    write_output_file!
   end
 
   # ------------------------------------------------------------
@@ -104,6 +100,17 @@ class HoldingsTask < ActiveRecord::Base
     HoldingsResult.new(oclc_number, wc_symbols:, wc_error:, ht_record_url:, ht_error:)
   end
 
+  def write_output_file!
+    output_spreadsheet = input_spreadsheet.tap { |ss| write_results_to(ss) }
+
+    output_file.attach(
+      io: output_spreadsheet.stream,
+      filename: output_filename,
+      content_type: BerkeleyLibrary::Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB,
+      identify: false
+    )
+  end
+
   def write_results_to(ss)
     writer = XLSXWriter.new(ss, rlf:, uc:, hathi_trust: hathi)
     result_data = holdings_records.pluck(*RESULT_ARGS)
@@ -116,7 +123,7 @@ class HoldingsTask < ActiveRecord::Base
 
   def input_spreadsheet
     with_input_tmpfile do |tmpfile|
-      Util::XLSX::Spreadsheet.new(tmpfile.path)
+      BerkeleyLibrary::Util::XLSX::Spreadsheet.new(tmpfile.path)
     end
   end
 

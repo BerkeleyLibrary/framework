@@ -1,8 +1,11 @@
 require 'rails_helper'
-require 'uploaded_file_helper'
+require 'support/uploaded_file_context'
+require 'support/holdings_contexts'
 
 RSpec.describe HoldingsTask, type: :model do
-  include UploadedFileHelper
+  include_context('uploaded file')
+  include_context('holdings data')
+  include_context 'purge HoldingsTasks'
 
   # ------------------------------------------------------------
   # Fixture
@@ -12,7 +15,6 @@ RSpec.describe HoldingsTask, type: :model do
 
   let(:input_file_path) { 'spec/data/holdings/input-file.xlsx' }
   let(:input_file_basename) { File.basename(input_file_path) }
-  let(:mime_type_xlsx) { BerkeleyLibrary::Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB }
   let(:oclc_numbers_expected) { File.readlines('spec/data/holdings/oclc_numbers_expected.txt', chomp: true) }
 
   # -------------------------------
@@ -50,17 +52,6 @@ RSpec.describe HoldingsTask, type: :model do
       hathi: true,
       input_file: uploaded_file
     }
-
-    # ActiveStorage uses a background job to remove files
-    @queue_adapter = ActiveStorage::PurgeJob.queue_adapter
-    ActiveStorage::PurgeJob.queue_adapter = :inline
-  end
-
-  after do
-    # Explicitly purge ActiveStorage files
-    HoldingsTask.destroy_all
-    ActiveStorage::Blob.unattached.find_each(&:purge_later)
-    ActiveStorage::PurgeJob.queue_adapter = @queue_adapter
   end
 
   # ------------------------------------------------------------
@@ -303,4 +294,32 @@ RSpec.describe HoldingsTask, type: :model do
     end
   end
 
+  describe :ensure_output_file! do
+    include_context 'complete HoldingsTask'
+
+    it 'writes the output file' do
+      task.ensure_output_file!
+
+      expect(task.output_file).to be_attached
+
+      ss = task.output_file.open do |tmpfile|
+        BerkeleyLibrary::Util::XLSX::Spreadsheet.new(tmpfile.path)
+      end
+
+      assert_complete!(ss)
+    end
+
+    context 'with existing output' do
+      before do
+        task.send(:write_output_file!)
+      end
+
+      it 'does not re-create an existing output file' do
+        expect(BerkeleyLibrary::Holdings::XLSXWriter).not_to receive(:new)
+
+        task.ensure_output_file!
+        assert_output_complete!(task)
+      end
+    end
+  end
 end
