@@ -10,7 +10,8 @@ class DoemoffStudyRoomUseForm < Form
     Alma::Type::LIBRARY_STAFF,
     Alma::Type::STAFF,
     Alma::Type::POST_DOC,
-    Alma::Type::VISITING_SCHOLAR
+    Alma::Type::VISITING_SCHOLAR,
+    Alma::Type::UCB_ACAD_AFFILIATE
   ].freeze
 
   # Users must explicitly opt-in to each clause of the form.

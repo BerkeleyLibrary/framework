@@ -7,7 +7,8 @@ class ScanRequestForm < Form
     Alma::Type::STAFF,
     Alma::Type::LIBRARY_STAFF,
     Alma::Type::MANAGER,
-    Alma::Type::VISITING_SCHOLAR
+    Alma::Type::VISITING_SCHOLAR,
+    Alma::Type::UCB_ACAD_AFFILIATE
   ].freeze
 
   # Whether the user has opted in or out of the scanning service
