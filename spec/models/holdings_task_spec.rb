@@ -100,16 +100,30 @@ RSpec.describe HoldingsTask, type: :model do
       assert_same_contents(input_file_path, task.input_file)
     end
 
-    # TODO: Figure out how to validate input_file attachment before committing
-    xit 'raises ArgumentError for an invalid input file' do
-      input_file = uploaded_file_from('spec/data/holdings/input-file-excel95.xls')
-      attributes = valid_attributes.except(:input_file)
-      attributes[:input_file] = input_file
+    context 'with invalid input file' do
+      attr_reader :attributes
 
-      expect { HoldingsTask.create!(**attributes) }.to raise_error(ArgumentError)
+      before do
+        input_file = uploaded_file_from('spec/data/holdings/input-file-excel95.xls')
+        @attributes = valid_attributes.except(:input_file).merge(input_file:)
+      end
 
-      find_conditions = valid_attributes.except(:input_file)
-      expect(HoldingsTask.where(**find_conditions)).not_to exist
+      # TODO: Figure out how to validate input_file attachment before committing
+      xit 'raises ArgumentError for an invalid input file' do
+        expect { HoldingsTask.create!(**attributes) }.to raise_error(ArgumentError)
+
+        find_conditions = valid_attributes.except(:input_file)
+        expect(HoldingsTask.where(**find_conditions)).not_to exist
+      end
+
+      describe :ensure_holdings_records! do
+        it 'raises ArgumentError' do
+          task = HoldingsTask.create!(**attributes)
+          expect { task.ensure_holdings_records! }.to raise_error(ArgumentError)
+
+          expect(task.holdings_records).not_to exist
+        end
+      end
     end
   end
 

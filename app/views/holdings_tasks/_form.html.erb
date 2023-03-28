@@ -1,0 +1,46 @@
+<%= form_with(model: holdings_task) do |form| %>
+  <% if holdings_task.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(holdings_task.errors.count, "error") %> prohibited this holdings_task from being saved:</h2>
+
+      <ul>
+        <% holdings_task.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <ul>
+    <li>
+      <%= form.label :email %>
+      <%= form.text_field :email %>
+    </li>
+    <li>
+      <%= form.label :input_file %>
+      <%= form.file_field :input_file %>
+    </li>
+    <li>
+      <fieldset>
+        <legend>Include</legend>
+        <ul>
+          <li>
+            <%= form.label :rlf %>
+            <%= form.check_box :rlf %>
+          </li>
+          <li>
+            <%= form.label :uc %>
+            <%= form.check_box :uc %>
+          </li>
+          <li>
+            <%= form.label :hathi %>
+            <%= form.check_box :hathi %>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>
+      <%= form.submit %>
+    </li>
+  </ul>
+<% end %>

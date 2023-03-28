@@ -1,0 +1,54 @@
+form {
+
+  > ul > label {
+    &::after {
+      content: ':';
+    }
+  }
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: min-content min-content;
+  gap: 0.5rem;
+
+  li {
+    display: contents;
+
+    label {
+      grid-column: 1;
+      white-space: nowrap;
+    }
+
+    input {
+      grid-column: 2;
+
+      &[type="submit"] {
+        margin-top: 1rem;
+      }
+    }
+
+    fieldset {
+      display: contents;
+
+      legend {
+        grid-column: 1;
+
+        font-size: 1rem;
+        white-space: nowrap;
+
+        &::after {
+          content: ':';
+        }
+      }
+
+      ul {
+        grid-column: 2;
+      }
+    }
+  }
+}
+}

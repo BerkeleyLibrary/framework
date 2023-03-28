@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @holdings_task %>
+
+<div>
+  <%= link_to "Edit this holdings task", edit_holdings_task_path(@holdings_task) %> |
+  <%= link_to "Back to holdings tasks", holdings_tasks_path %>
+
+  <%= button_to "Destroy this holdings task", @holdings_task, method: :delete %>
+</div>

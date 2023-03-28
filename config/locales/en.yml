@@ -48,6 +48,12 @@ en:
         local_id: UC Library Search record link or call number for an item of interest
         pass_date: Requested access start date
         pass_date_end: Requested access end date
+      holdings_task:
+        email: Email address
+        input_file: File
+        rlf: NRLF/SRLF holdings
+        uc: UC campus library holdings
+        hathi: HathiTrust URLs
     errors:
       models:
         proxy_borrower_requests:
@@ -125,6 +131,8 @@ en:
         create: Submit
       reference_card_form:
         create: Submit
+      holdings_task:
+        create: Upload file
 
   libstaff_edevices_loan_forms:
     all_checked:

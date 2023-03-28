@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Holdings tasks</h1>
+
+<div id="holdings_tasks">
+  <% @holdings_tasks.each do |holdings_task| %>
+    <%= render holdings_task %>
+    <p>
+      <%= link_to "Show this holdings task", holdings_task %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New holdings task", new_holdings_task_path %>

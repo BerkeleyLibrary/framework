@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :holdings_tasks
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'
