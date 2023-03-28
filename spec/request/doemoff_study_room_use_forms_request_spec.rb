@@ -13,7 +13,8 @@ describe :doemoff_study_room_use_forms, type: :request do
       Alma::Type::LIBRARY_STAFF,
       Alma::Type::STAFF,
       Alma::Type::POST_DOC,
-      Alma::Type::VISITING_SCHOLAR
+      Alma::Type::VISITING_SCHOLAR,
+      Alma::Type::UCB_ACAD_AFFILIATE
     ],
     submit_path: '/forms/doemoff-study-room-use',
     success_path: '/forms/doemoff-study-room-use/all_checked',

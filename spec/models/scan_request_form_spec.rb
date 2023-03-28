@@ -11,7 +11,8 @@ describe ScanRequestForm do
       Alma::Type::STAFF,
       Alma::Type::LIBRARY_STAFF,
       Alma::Type::MANAGER,
-      Alma::Type::VISITING_SCHOLAR
+      Alma::Type::VISITING_SCHOLAR,
+      Alma::Type::UCB_ACAD_AFFILIATE
     ]
 
     allowed_patron_types.each do |type|

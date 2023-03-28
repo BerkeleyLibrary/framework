@@ -9,7 +9,8 @@ describe :scan_request_forms, type: :request do
       Alma::Type::STAFF,
       Alma::Type::LIBRARY_STAFF,
       Alma::Type::MANAGER,
-      Alma::Type::VISITING_SCHOLAR
+      Alma::Type::VISITING_SCHOLAR,
+      Alma::Type::UCB_ACAD_AFFILIATE
     ],
     submit_path: '/forms/altmedia',
     success_path: '/forms/altmedia/optin',

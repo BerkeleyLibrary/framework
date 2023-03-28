@@ -1,0 +1,12 @@
+---
+provider: calnet
+uid: hawkeye
+info:
+  name: Hawkeye
+  email: hawkeye@avengers.com
+extra:
+  displayName: Hawkeye
+  employeeNumber: "12345699"
+  uid: "12345699"
+  berkeleyEduIsMemberOf:
+    - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu

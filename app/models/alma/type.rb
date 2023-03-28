@@ -12,6 +12,6 @@ module Alma
     POST_DOC            = 'UCB POST'.freeze
     VISITING_SCHOLAR    = 'UCBVISSCHOL'.freeze
     EXTENSION_STUDENT   = 'UCEXTSTUD'.freeze
-    UCB_ACAD_AFFILIATE  = 'UCBVISSCHOL'.freeze
+    UCB_ACAD_AFFILIATE  = 'UCBAFFILI'.freeze
   end
 end

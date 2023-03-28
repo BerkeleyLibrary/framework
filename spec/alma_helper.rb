@@ -43,10 +43,8 @@ module Alma
     Alma::Type::STAFF => '5551212',
     Alma::Type::POST_DOC => '99999891',
     Alma::Type::VISITING_SCHOLAR => '87651234',
-    Alma::Type::EXTENSION_STUDENT => '12345679'
-
-    # We don't need this one anymore:
-    # Alma::Type::LBNL_ACADEMIC_STAFF => '1000001.json',
+    Alma::Type::EXTENSION_STUDENT => '12345679',
+    Alma::Type::UCB_ACAD_AFFILIATE => '12345699'
   }.freeze
 
   FRAMEWORK_ADMIN_ID = '013191304'.freeze
