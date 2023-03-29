@@ -17,18 +17,15 @@ class HoldingsTasksController < ApplicationController
 
   # POST /holdings_tasks
   def create
-    @holdings_task = HoldingsTask.create(holdings_task_params)
-    ensure_holdings_records(@holdings_task)
+    @holdings_task = HoldingsTask.create_from(**holdings_task_params)
 
     # TODO: schedule job(s)
 
-    redirect_to holdings_task_url(@holdings_task), notice: 'Holdings task was successfully created.'
-  rescue ActiveModel::ValidationError => e
-    # TODO: Figure out how to validate input_file attachment before committing
-    @holdings_task.delete if @holdings_task.persisted?
-
-    logger.warn('Error creating holdings task', e)
-    render :new, status: :unprocessable_entity
+    if @holdings_task.persisted?
+      redirect_to holdings_task_url(@holdings_task), notice: 'Holdings task was successfully created.'
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
   private

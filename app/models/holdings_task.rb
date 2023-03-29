@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+# TODO: Move some code out of this class
 class HoldingsTask < ActiveRecord::Base
   include BerkeleyLibrary::Holdings
 
@@ -22,6 +24,41 @@ class HoldingsTask < ActiveRecord::Base
   validates :email, presence: true
   validates :filename, presence: true
   validate :options_selected
+
+  # ------------------------------------------------------------
+  # Class methods
+
+  class << self
+    # Creates a new HoldingsTask, validates the attached input file, and
+    # creates holdings records for each OCLC number.
+    def create_from(email:, input_file:, rlf: false, uc: false, hathi: false)
+      task = nil
+      transaction do
+        task = create_with_records(email:, input_file:, rlf:, uc:, hathi:)
+        raise ActiveRecord::Rollback if task.errors.any?
+      end
+      task
+    end
+
+    private
+
+    def create_with_records(email:, input_file:, rlf:, uc:, hathi:)
+      filename = filename_from(input_file)
+
+      create(email:, input_file:, rlf:, uc:, hathi:, filename:).tap do |task|
+        task.ensure_holdings_records! if task.persisted?
+      rescue StandardError => e
+        logger.error("Error creating holdings records from input file #{filename}", e)
+        task.errors.add(:input_file, e.message) if task
+      end
+    end
+
+    def filename_from(input_file)
+      # input_file can be an UploadedFile, or a hash -- see https://guides.rubyonrails.org/active_storage_overview.html#attaching-file-io-objects
+      return input_file.original_filename if input_file.respond_to?(:original_filename)
+      return input_file[:filename] if input_file.is_a?(Hash)
+    end
+  end
 
   # ------------------------------------------------------------
   # Synthetic accessors
@@ -66,7 +103,7 @@ class HoldingsTask < ActiveRecord::Base
   end
 
   def with_input_tmpfile(&)
-    input_file.open(&)
+    input_file_uploaded? ? input_file.open(&) : with_uploaded_input_file(&)
   end
 
   def search_wc_symbols
@@ -88,6 +125,25 @@ class HoldingsTask < ActiveRecord::Base
   # Private methods
 
   private
+
+  def input_file_uploaded?
+    input_file.attached? && input_file.service.exist?(input_file.key)
+  end
+
+  # Hack that lets us work with a newly uploaded input file before it's
+  # been "uploaded" to ActiveStorage::Service::DiskService
+  def with_uploaded_input_file
+    return unless (uploaded_file = attachment_changes['input_file']&.attachable)
+
+    # input_file can be an UploadedFile, or a hash -- see https://guides.rubyonrails.org/active_storage_overview.html#attaching-file-io-objects
+    io = uploaded_file.is_a?(Hash) ? uploaded_file[:io] : uploaded_file
+
+    begin
+      yield io
+    ensure
+      io.rewind
+    end
+  end
 
   def options_selected
     return if world_cat? || hathi?
@@ -128,3 +184,4 @@ class HoldingsTask < ActiveRecord::Base
   end
 
 end
+# rubocop:enable Metrics/ClassLength

@@ -101,19 +101,52 @@ RSpec.describe HoldingsTask, type: :model do
     end
 
     context 'with invalid input file' do
+      let(:excel_95_path) { 'spec/data/holdings/input-file-excel95.xls' }
+
       attr_reader :attributes
 
       before do
-        input_file = uploaded_file_from('spec/data/holdings/input-file-excel95.xls')
+        input_file = uploaded_file_from(excel_95_path)
         @attributes = valid_attributes.except(:input_file).merge(input_file:)
       end
 
-      # TODO: Figure out how to validate input_file attachment before committing
-      xit 'raises ArgumentError for an invalid input file' do
-        expect { HoldingsTask.create!(**attributes) }.to raise_error(ArgumentError)
+      describe :create_from! do
+        context 'with an UploadedFile' do
+          it 'marks the record invalid' do
+            params = attributes.except(:filename)
+            task = HoldingsTask.create_from(**params)
+            expect(task).not_to be_persisted
+            expect(task.id).to be_nil
 
-        find_conditions = valid_attributes.except(:input_file)
-        expect(HoldingsTask.where(**find_conditions)).not_to exist
+            errors = task.errors[:input_file]
+            expect(errors.size).to eq(1)
+            expect(errors[0]).to match(%r{application/x-ole-storage})
+
+            expect(ActiveStorage::Blob).not_to exist
+          end
+        end
+
+        context 'with an IO' do
+          it 'marks the record invalid' do
+            attributes = valid_attributes.except(:input_file)
+            attributes[:input_file] = {
+              io: File.open(excel_95_path),
+              filename: input_file_basename,
+              content_type: mime_type_xlsx
+            }
+
+            params = attributes.except(:filename)
+            task = HoldingsTask.create_from(**params)
+            expect(task).not_to be_persisted
+            expect(task.id).to be_nil
+
+            errors = task.errors[:input_file]
+            expect(errors.size).to eq(1)
+            expect(errors[0]).to match(%r{application/x-ole-storage})
+
+            expect(ActiveStorage::Blob).not_to exist
+          end
+        end
       end
 
       describe :ensure_holdings_records! do
@@ -125,6 +158,52 @@ RSpec.describe HoldingsTask, type: :model do
         end
       end
     end
+  end
+
+  describe :create_from do
+    let(:cf_attributes) { valid_attributes.except(:filename) }
+    let(:numbers_expected_sorted) { oclc_numbers_expected.sort }
+
+    context 'with an UploadedFile' do
+      it 'attaches the file and creates holdings records' do
+        task = HoldingsTask.create_from(**cf_attributes)
+        expect(task).to be_persisted
+
+        input_file = task.input_file
+        expect(input_file).to be_attached
+        assert_same_contents(input_file_path, input_file)
+
+        task_records = task.holdings_records
+        expect(task_records.count).to eq(numbers_expected_sorted.size)
+
+        wc_oclc_numbers = task_records.pluck(:oclc_number)
+        expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
+      end
+    end
+
+    context 'with an IO' do
+      it 'attaches the file and creates holdings records' do
+        cf_attributes[:input_file] = {
+          io: File.open(input_file_path),
+          filename: input_file_basename,
+          content_type: mime_type_xlsx
+        }
+
+        task = HoldingsTask.create_from(**cf_attributes)
+        expect(task).to be_persisted
+
+        input_file = task.input_file
+        expect(input_file).to be_attached
+        assert_same_contents(input_file_path, input_file)
+
+        task_records = task.holdings_records
+        expect(task_records.count).to eq(numbers_expected_sorted.size)
+
+        wc_oclc_numbers = task_records.pluck(:oclc_number)
+        expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
+      end
+    end
+
   end
 
   describe :destroy do
@@ -267,12 +346,25 @@ RSpec.describe HoldingsTask, type: :model do
   end
 
   describe :with_input_tmpfile do
-    it 'yields a temporary file containing the input data' do
-      expected_blob = File.binread(input_file_path)
-      task = HoldingsTask.create!(**valid_attributes)
+    context 'with attachment uploaded' do
+      it 'yields a temporary file containing the input data' do
+        expected_blob = File.binread(input_file_path)
+        task = HoldingsTask.create!(**valid_attributes)
 
-      actual_blob = task.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
-      expect(actual_blob).to eq(expected_blob)
+        actual_blob = task.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
+        expect(actual_blob).to eq(expected_blob)
+      end
+    end
+
+    context 'before attachment uploaded' do
+      it 'yields a temporary file containing the input data' do
+        expected_blob = File.binread(input_file_path)
+        HoldingsTask.transaction do
+          task = HoldingsTask.create(**valid_attributes)
+          actual_blob = task.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
+          expect(actual_blob).to eq(expected_blob)
+        end
+      end
     end
   end
 
