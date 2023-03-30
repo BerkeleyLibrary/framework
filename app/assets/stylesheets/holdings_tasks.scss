@@ -1,54 +1,69 @@
 form {
 
-  > ul > label {
+  margin-top: 1rem;
+
+  label {
     &::after {
       content: ':';
     }
   }
 
-ul {
-  list-style-type: none;
-  padding-left: 0;
-  margin: 0;
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
 
-  display: grid;
-  grid-template-columns: min-content min-content;
-  gap: 0.5rem;
+    display: grid;
+    grid-template-columns: min-content min-content;
+    gap: 0.5rem;
 
-  li {
-    display: contents;
-
-    label {
-      grid-column: 1;
-      white-space: nowrap;
-    }
-
-    input {
-      grid-column: 2;
-
-      &[type="submit"] {
-        margin-top: 1rem;
-      }
-    }
-
-    fieldset {
+    li {
       display: contents;
 
-      legend {
+      label {
         grid-column: 1;
-
-        font-size: 1rem;
         white-space: nowrap;
+      }
 
-        &::after {
-          content: ':';
+      input {
+        grid-column: 2;
+
+        &[type="submit"] {
+          margin-top: 2rem;
+        }
+
+        &[type="file"] {
+          white-space: nowrap;
+          width: auto;
         }
       }
 
-      ul {
-        grid-column: 2;
+      fieldset {
+        display: contents;
+
+        legend {
+          grid-column: 1;
+
+          font-size: 1rem;
+          white-space: nowrap;
+
+          &::after {
+            content: ':';
+          }
+        }
+
+        ul {
+          grid-column: 2;
+
+          &::after {
+            content: none;
+          }
+        }
+
+        p {
+          grid-column: 2;
+        }
       }
     }
   }
-}
 }

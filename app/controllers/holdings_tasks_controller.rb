@@ -19,10 +19,9 @@ class HoldingsTasksController < ApplicationController
   def create
     @holdings_task = HoldingsTask.create_from(**holdings_task_params)
 
-    # TODO: schedule job(s)
-
     if @holdings_task.persisted?
-      redirect_to holdings_task_url(@holdings_task), notice: 'Holdings task was successfully created.'
+      schedule_jobs(@holdings_task)
+      redirect_to holdings_task_url(@holdings_task)
     else
       render :new, status: :unprocessable_entity
     end
@@ -30,8 +29,24 @@ class HoldingsTasksController < ApplicationController
 
   private
 
+  def schedule_jobs(task)
+    batch = GoodJob::Batch.add do
+      Holdings::WorldCatJob.perform_later(task) if task.world_cat?
+      Holdings::HathiTrustJob.perform_later(task) if task.hathi?
+    end
+    batch.enqueue(on_finish: Holdings::ResultsJob, task: task)
+  end
+
+  # TODO: handle missing parameters
   def holdings_task_params
-    params.require(:holdings_task).permit(:email, :rlf, :uc, :hathi, :input_file)
+    params.require(:holdings_task).tap do |pp|
+      required_params = [:email, :input_file]
+      required_params.each { |a| pp.require(a) }
+
+      optional_params = [:rlf, :uc, :hathi]
+      all_params = (required_params + optional_params)
+      pp.permit(*all_params)
+    end
   end
 
   def ensure_holdings_records(task)

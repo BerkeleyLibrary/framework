@@ -29,25 +29,25 @@ a, a:link, a:visited {
   text-decoration: none;
   color: black;
 
-    &.no-link-style {
-        box-shadow: none;
-    }
+  &.no-link-style {
+    box-shadow: none;
+  }
 
-    li & {
-        box-shadow: inset 0 -2px 0 #FDB515;
+  li & {
+    box-shadow: inset 0 -2px 0 #FDB515;
 
-        .navbar-nav & {
-            box-shadow: none;
-        }
+    .navbar-nav & {
+      box-shadow: none;
     }
+  }
 }
 
 a:hover, a:active, a:focus {
   background: #FDB515;
 
-    &.no-link-style {
-        background: none;
-    }
+  &.no-link-style {
+    background: none;
+  }
 }
 
 //Used for main page skip links per WebAIM recommendations
@@ -57,9 +57,9 @@ a:hover, a:active, a:focus {
   left: -9999px;
 }
 
-.tblheader	{
-  font-weight:bold;
-  color:blue;
+.tblheader {
+  font-weight: bold;
+  color: blue;
 }
 
 .btn-white-text {
@@ -118,8 +118,8 @@ th .desc::after {
 
 .btn-primary {
   color: #fff;
-  background-color:  #1310ff;
-  border-color: #0f0cd4 ;
+  background-color: #1310ff;
+  border-color: #0f0cd4;
 }
 
 section.exception-details {

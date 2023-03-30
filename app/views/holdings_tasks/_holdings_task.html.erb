@@ -1,2 +1,24 @@
+<%
+  attr_rows = [:email, :filename, :rlf, :uc, :hathi].to_h do |attr|
+    label = t("activerecord.attributes.holdings_task.#{attr}")
+    value = holdings_task.send(attr)
+
+    if [true, false].include?(value)
+      label = "Include #{label}?"
+      value = t("activerecord.attributes.holdings_task.include.#{value}")
+    end
+    [label, value]
+  end
+%>
 <div id="<%= dom_id holdings_task %>">
+  <table>
+    <tbody>
+      <tr>
+        <% attr_rows.each do |label, value| %>
+          <th scope="row"><%= label %></th>
+          <td><%= value %></td>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
 </div>
