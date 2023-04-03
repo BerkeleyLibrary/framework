@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'concurrent-ruby'
+require 'support/async_job_context'
 
 ADMIN_EMAIL = Rails.application.config.altmedia['mail_admin_email']
 
@@ -80,32 +81,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
     end
 
     describe 'async execution' do
-      attr_reader :queue_adapter, :latch, :callback_proc
-
-      before do
-        @queue_adapter = job.queue_adapter
-
-        job.queue_adapter = :good_job
-        job.queue_adapter.instance_variable_set(:@_in_server_process, true)
-        job.queue_adapter.start_async
-
-        # noinspection RubyArgCount
-        @latch = Concurrent::CountDownLatch.new(1).tap do |latch|
-          # Note `latch` is only captured in the lambda if it's a local variable
-          @callback_proc = -> { latch.count_down }
-        end
-
-        job.after_perform(&callback_proc)
-      end
-
-      after do
-        job.queue_adapter.shutdown(timeout: 5)
-        job.queue_adapter = queue_adapter
-
-        callback_chain = job.__callbacks[:perform].instance_variable_get(:@chain)
-        callback = callback_chain.find { |cb| cb.instance_variable_get(:@filter) == callback_proc }
-        callback_chain.delete(callback)
-      end
+      include_context('async execution', job_class: described_class)
 
       # TODO: More async examples
 
@@ -118,8 +94,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
 
         job.perform_later(patron_id)
 
-        latch.wait(3)
-        expect(latch.count).to eq(0) # just to be sure
+        await_performed(job)
       end
     end
 
