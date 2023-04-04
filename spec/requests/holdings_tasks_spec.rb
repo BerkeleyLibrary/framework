@@ -135,6 +135,12 @@ RSpec.describe HoldingsTasksController, type: :request do
           let(:invalid_attributes) { valid_attributes.except(:rlf, :uc, :hathi) }
         end
       end
+
+      context 'bad spreadsheet' do
+        it_behaves_like 'an invalid request' do
+          let(:invalid_attributes) { valid_attributes.merge(input_file: fixture_file_upload('spec/data/holdings/input-file-excel95.xls')) }
+        end
+      end
     end
   end
 
