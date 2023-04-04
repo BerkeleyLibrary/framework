@@ -81,13 +81,4 @@ class HoldingsTasksController < ApplicationController
       v.present? || v == false
     end
   end
-
-  def ensure_holdings_records(task)
-    task.ensure_holdings_records!
-  rescue StandardError => e
-    logger.error("Error creating holdings records for task #{task.id}", e)
-
-    task.errors.add(:input_file, e.message)
-    raise ActiveModel::ValidationError(task)
-  end
 end
