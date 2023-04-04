@@ -133,7 +133,7 @@ class RequestMailer < ApplicationMailer
   # Send Stack Pass Request Alert to privdesk
   def stack_pass_email(stackpass_form)
     @stackpass_form = stackpass_form
-    mail(to: [privdesk_to, 'mmarrow@library.berkeley.edu', 'nancylewis@berkeley.edu'], subject: 'Stack Pass Request')
+    mail(to: [privdesk_to, 'mamarrow@berkeley.edu'], subject: 'Stack Pass Request')
   end
 
   # Send Stack Pass Denial to requester
@@ -154,7 +154,7 @@ class RequestMailer < ApplicationMailer
   # Send Reference Card Request Alert to privdesk
   def reference_card_email(reference_card_form)
     @reference_card_form = reference_card_form
-    mail(to: [privdesk_to, 'mmarrow@library.berkeley.edu', 'nancylewis@berkeley.edu'], subject: 'Reference Card Request')
+    mail(to: [privdesk_to, 'mamarrow@berkeley.edu'], subject: 'Reference Card Request')
   end
 
   # Send Reference Card Denial to requester
