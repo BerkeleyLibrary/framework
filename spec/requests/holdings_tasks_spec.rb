@@ -136,9 +136,15 @@ RSpec.describe HoldingsTasksController, type: :request do
         end
       end
 
-      context 'bad spreadsheet' do
+      context 'wrong spreadsheet format' do
         it_behaves_like 'an invalid request' do
           let(:invalid_attributes) { valid_attributes.merge(input_file: fixture_file_upload('spec/data/holdings/input-file-excel95.xls')) }
+        end
+      end
+
+      context 'empty spreadsheet' do
+        it_behaves_like 'an invalid request' do
+          let(:invalid_attributes) { valid_attributes.merge(input_file: fixture_file_upload('spec/data/holdings/input-file-empty.xlsx')) }
         end
       end
     end

@@ -10,6 +10,8 @@ class HoldingsTask < ActiveRecord::Base
   BATCH_SIZE = 10_000
   RESULT_ARGS = %i[oclc_number wc_symbols wc_error ht_record_url ht_error].freeze
 
+  MSG_NO_OCLC_NUMBERS = 'No OCLC numbers found in input spreadsheet'.freeze
+
   # ------------------------------------------------------------
   # Relations
 
@@ -86,6 +88,7 @@ class HoldingsTask < ActiveRecord::Base
     all_rows = each_input_oclc.map do |oclc_num|
       { holdings_task_id: id, oclc_number: oclc_num }
     end
+    raise ArgumentError, MSG_NO_OCLC_NUMBERS if all_rows.empty?
 
     # Insert in batches to prevent DB connection timeout on very large datasets
     all_rows.each_slice(BATCH_SIZE) do |rows|
