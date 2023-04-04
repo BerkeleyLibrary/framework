@@ -57,16 +57,10 @@ class HoldingsTasksController < ApplicationController
     # TODO: make these run off-hours (wrapper job?)
     #       see https://github.com/bensheldon/good_job/blob/main/README.md#complex-batches
     #       see https://github.com/bensheldon/good_job/blob/main/README.md#cron-style-repeatingrecurring-jobs
-
-    batch = GoodJob::Batch.new
-    batch.add(Holdings::WorldCatJob.new(task)) if task.world_cat?
-    batch.add(Holdings::HathiTrustJob.new(task)) if task.hathi?
-    batch.enqueue(on_finish: Holdings::ResultsJob, task:)
-
-    # GoodJob::Batch.enqueue(on_finish: Holdings::ResultsJob, task:) do
-    #   Holdings::WorldCatJob.perform_later(task) if task.world_cat?
-    #   Holdings::HathiTrustJob.perform_later(task) if task.hathi?
-    # end
+    GoodJob::Batch.enqueue(on_finish: Holdings::ResultsJob, task:) do
+      Holdings::WorldCatJob.perform_later(task) if task.world_cat?
+      Holdings::HathiTrustJob.perform_later(task) if task.hathi?
+    end
   end
 
   def holdings_task_opts
