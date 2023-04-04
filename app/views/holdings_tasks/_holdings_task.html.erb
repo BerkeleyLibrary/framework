@@ -1,23 +1,43 @@
-<%
-  attr_rows = [:email, :filename, :rlf, :uc, :hathi].to_h do |attr|
-    label = t("activerecord.attributes.holdings_task.#{attr}")
-    value = holdings_task.send(attr)
-
-    if [true, false].include?(value)
-      label = "Include #{label}?"
-      value = t("activerecord.attributes.holdings_task.include.#{value}")
-    end
-    [label, value]
-  end
-%>
 <div id="<%= dom_id holdings_task %>">
-  <table>
+  <table class="holdings-task attributes">
     <tbody>
       <tr>
-        <% attr_rows.each do |label, value| %>
-          <th scope="row"><%= label %></th>
-          <td><%= value %></td>
-        <% end %>
+        <th scope="row"><%= t('activerecord.attributes.holdings_task.email') %></th>
+        <td><%= holdings_task.email %></td>
+      </tr>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.holdings_task.filename') %></th>
+        <td>
+          <%= link_to(holdings_task.filename, rails_blob_path(holdings_task.input_file, disposition: 'attachment')) %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Include</th>
+        <td>
+          <table class="options attributes">
+            <tbody>
+              <% [:rlf, :uc, :hathi].each do |opt| %>
+              <tr>
+                <th scope="row"><%= t("activerecord.attributes.holdings_task.#{opt}") %></th>
+                <td>
+                  <% value = holdings_task.send(opt) || false %>
+                  <%= t("activerecord.attributes.holdings_task.include.#{value}") %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.holdings_task.output_file') %></th>
+        <td>
+          <% if holdings_task.output_file.attached? %>
+            <%= link_to(holdings_task.output_filename, rails_blob_path(holdings_task.output_file, disposition: 'attachment')) %>
+          <% else %>
+            (none)
+          <% end %>
+        </td>
       </tr>
     </tbody>
   </table>

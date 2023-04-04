@@ -51,7 +51,7 @@ class HoldingsTask < ActiveRecord::Base
         task.ensure_holdings_records! if task.persisted?
       rescue StandardError => e
         logger.error("Error creating holdings records from input file #{filename}", e)
-        task.errors.add(:input_file, e.message) if task
+        task.errors.add(:input_file, clean_input_file_message(e.message, input_file)) if task
       end
     end
 
@@ -59,6 +59,14 @@ class HoldingsTask < ActiveRecord::Base
       # input_file can be an UploadedFile, or a hash -- see https://guides.rubyonrails.org/active_storage_overview.html#attaching-file-io-objects
       return input_file.original_filename if input_file.respond_to?(:original_filename)
       return input_file[:filename] if input_file.is_a?(Hash)
+    end
+
+    def clean_input_file_message(msg, input_file)
+      if input_file.respond_to?(:path)
+        msg.gsub(input_file.path, filename_from(input_file))
+      else
+        msg
+      end
     end
   end
 
@@ -79,6 +87,10 @@ class HoldingsTask < ActiveRecord::Base
 
   def wc_incomplete?
     world_cat? && holdings_records.exists?(wc_retrieved: false)
+  end
+
+  def output_filename
+    "#{File.basename(filename, '.*')}-processed.xlsx"
   end
 
   # ------------------------------------------------------------
@@ -174,10 +186,6 @@ class HoldingsTask < ActiveRecord::Base
     writer = XLSXWriter.new(ss, rlf:, uc:, hathi_trust: hathi)
     result_data = holdings_records.pluck(*RESULT_ARGS)
     result_data.each { |row| writer << new_result(*row) }
-  end
-
-  def output_filename
-    "#{File.basename(filename, '.*')}-processed.xlsx"
   end
 
   def input_spreadsheet

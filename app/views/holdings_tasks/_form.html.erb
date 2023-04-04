@@ -1,20 +1,20 @@
 <%# TODO: Form validation (cf. TIND) %>
 <section id="holdings-task-form">
-  <p class="required-note">Required</p>
+  <% if holdings_task.errors.any? %>
+    <div class="alert alert-danger fade show" role="alert">
+      <h5 class="alert-heading">The following errors have been found. Please correct them before submitting the form again:</h5>
+      <table class="errors">
+        <% holdings_task.errors.each do |error| %>
+          <tr>
+            <th scope="row"><%= t("activerecord.attributes.holdings_task.#{error.attribute}") %></th>
+            <td><%= error.message %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
 
   <%= form_with(model: holdings_task) do |form| %>
-    <% if holdings_task.errors.any? %>
-      <div style="color: red">
-        <h2><%= pluralize(holdings_task.errors.count, "error") %> prohibited this holdings_task from being saved:</h2>
-
-        <ul>
-          <% holdings_task.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
     <ul>
       <li>
         <div class="form-label form-group required">
@@ -52,8 +52,12 @@
         </fieldset>
       </li>
       <li>
+        <p class="required-note">Required</p>
+      </li>
+      <li>
         <%= form.submit(class: %w[btn btn-primary]) %>
       </li>
     </ul>
   <% end %>
+
 </section>

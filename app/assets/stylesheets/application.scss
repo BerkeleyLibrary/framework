@@ -7,7 +7,7 @@
 $required-color: #ee0000;
 $required-indicator: "*";
 
-.form-group.required .control-label:after {
+.form-group.required .control-label:after, fieldset.required legend:after {
   content: $required-indicator;
   color: $required-color;
   margin-left: 0.25em;
@@ -137,4 +137,33 @@ section.exception-details {
       text-indent: -14px;
     }
   }
+}
+
+table.attributes {
+  width: 100%;
+  margin-top: 1rem;
+
+  display: grid;
+  grid-template-columns: min-content minmax(0, 1fr);
+  gap: 0.5rem;
+
+  tbody, tr {
+    display: contents;
+  }
+
+  th {
+    grid-column: 1;
+
+    text-align: left;
+    width: min-content;
+    white-space: nowrap;
+  }
+
+  td {
+    grid-column: 2;
+  }
+}
+
+table.errors {
+  @extend table.attributes;
 }

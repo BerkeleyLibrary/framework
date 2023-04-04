@@ -50,8 +50,9 @@ en:
         pass_date_end: Requested access end date
       holdings_task:
         email: Email address
-        filename: File
-        input_file: File
+        filename: Input file
+        input_file: Input file
+        output_file: Output file
         rlf: NRLF/SRLF holdings
         uc: UC campus library holdings
         hathi: HathiTrust URLs
@@ -60,6 +61,10 @@ en:
           "false": "No"
     errors:
       models:
+        holdings_task:
+          attributes:
+            filename:
+              blank: must be provided
         proxy_borrower_requests:
           attributes:
             research_last:
