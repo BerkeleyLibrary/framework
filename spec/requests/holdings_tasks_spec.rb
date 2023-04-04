@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/async_job_context'
+require 'support/holdings_contexts'
 
 RSpec.describe HoldingsTasksController, type: :request do
   let(:valid_attributes) do
@@ -48,23 +49,54 @@ RSpec.describe HoldingsTasksController, type: :request do
   # end
 
   describe :create do
-    context 'success' do
-      include_context('async execution', job_class: Holdings::WorldCatJob)
-      include_context('async execution', job_class: Holdings::HathiTrustJob)
-      include_context('async execution', job_class: Holdings::ResultsJob)
+    include_context('HoldingsTask')
 
-      it 'creates a new HoldingsTask and schedules a job' do
+    job_classes = [Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob]
+    job_classes.each { |job_class| include_context('async execution', job_class:) }
+
+    context 'success' do
+      before do
+        oclc_numbers_expected.each { |oclc_number| stub_wc_request_for(oclc_number) }
+        ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
+
+        HoldingsTask.destroy_all # just to be sure
+        expect(HoldingsTask.exists?).to eq(false) # just to be sure
+
         expect do
           post holdings_tasks_url, params: { holdings_task: valid_attributes }
         end.to change(HoldingsTask, :count).by(1)
 
+        @task = HoldingsTask.take
+      end
+
+      it 'executes background jobs' do
         expect(GoodJob::BatchRecord.exists?).to eq(true)
 
-        # TODO: figure out why errors other than StandardError (e.g. WebMock) don't stop execution
-        [Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob].each do |jc|
-          await_performed(jc, timeout: 1000)
+        job_classes.each { |jc| await_performed(jc) }
+
+        aggregate_failures do
+          job_classes.each do |jc|
+            good_jobs = GoodJob::Job.job_class(jc.name)
+            expect(good_jobs.count).to eq(1)
+
+            good_job = good_jobs.take
+            expect(good_job.error).to be_nil
+            expect(good_job.finished_at).not_to be_nil
+          end
+        end
+
+        task_records = task.holdings_records
+        expect(task_records.count).to eq(oclc_numbers_expected.size)
+
+        aggregate_failures do
+          task_records.find_each do |record|
+            verify_ht_record_url(record)
+            verify_wc_symbols(record)
+          end
         end
       end
+
+      # TODO: test UI
     end
 
     context 'failure' do
@@ -72,14 +104,18 @@ RSpec.describe HoldingsTasksController, type: :request do
         it 'does not create a task or schedule a job' do
           expect(GoodJob::Batch).not_to receive(:enqueue)
 
-          [Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob].each do |jc|
+          job_classes.each do |jc|
             expect(jc).not_to receive(:perform)
           end
 
           expect do
             post holdings_tasks_url, params: { holdings_task: invalid_attributes }
           end.not_to change(HoldingsTask, :count)
+
+          expect(GoodJob::BatchRecord.exists?).to eq(false)
         end
+
+        # TODO: test UI
       end
 
       context 'email not present' do

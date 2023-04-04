@@ -5,12 +5,6 @@ module Holdings
   describe WorldCatJob, type: :job do
     include_context('HoldingsTask')
 
-    def stub_request_for(oclc_number)
-      req = BerkeleyLibrary::Holdings::WorldCat::LibrariesRequest.new(oclc_number)
-      xml = File.read("spec/data/holdings/world_cat/#{oclc_number}.xml")
-      stub_request(:get, req.uri).with(query: req.params).to_return(body: xml)
-    end
-
     describe :perform do
       it 'rejects a non-Worldcat task' do
         task.update(rlf: false, uc: false)
@@ -22,7 +16,7 @@ module Holdings
         task_records = task.holdings_records
 
         oclc_numbers_expected.each do |oclc_number|
-          stub_request_for(oclc_number)
+          stub_wc_request_for(oclc_number)
         end
 
         WorldCatJob.perform_now(task)
@@ -33,11 +27,8 @@ module Holdings
 
         expect(task.wc_incomplete?).to eq(false)
 
-        task_records.find_each do |wc_record|
-          oclc_number = wc_record.oclc_number
-          symbols_expected = holdings_by_oclc_num[oclc_number]
-          symbols_actual = wc_record.wc_symbols.split(',')
-          expect(symbols_actual).to contain_exactly(*symbols_expected)
+        task_records.find_each do |record|
+          verify_wc_symbols(record)
         end
       end
 
@@ -47,7 +38,7 @@ module Holdings
         # Simulate previously-completed partial job
         oclc_numbers_expected.each_with_index do |oclc_number, i|
           if i.odd?
-            stub_request_for(oclc_number)
+            stub_wc_request_for(oclc_number)
           else
             symbols_expected = holdings_by_oclc_num[oclc_number]
             wc_record = task_records.find_by!(oclc_number:)
@@ -65,11 +56,8 @@ module Holdings
 
         expect(task.wc_incomplete?).to eq(false)
 
-        task_records.find_each do |wc_record|
-          oclc_number = wc_record.oclc_number
-          symbols_expected = holdings_by_oclc_num[oclc_number]
-          symbols_actual = wc_record.wc_symbols.split(',')
-          expect(symbols_actual).to contain_exactly(*symbols_expected)
+        task_records.find_each do |record|
+          verify_wc_symbols(record)
         end
       end
 
@@ -78,7 +66,7 @@ module Holdings
 
         oclc_numbers_expected.each_with_index do |oclc_number, i|
           if i.odd?
-            stub_request_for(oclc_number)
+            stub_wc_request_for(oclc_number)
           else
             req = BerkeleyLibrary::Holdings::WorldCat::LibrariesRequest.new(oclc_number)
             stub_request(:get, req.uri).with(query: req.params).to_return(status: 500)
@@ -94,15 +82,12 @@ module Holdings
         expect(task_records.where(wc_retrieved: false)).not_to exist
 
         oclc_numbers_expected.each_with_index do |oclc_number, i|
-          wc_record = task_records.find_by!(oclc_number:)
+          record = task_records.find_by!(oclc_number:)
           if i.odd?
-            symbols_expected = holdings_by_oclc_num[oclc_number]
-            symbols_actual = wc_record.wc_symbols.split(',')
-            expect(symbols_actual).to contain_exactly(*symbols_expected)
-            expect(wc_record.wc_error).to be_nil
+            verify_wc_symbols(record)
           else
-            expect(wc_record.wc_symbols).to be_nil
-            expect(wc_record.wc_error).to eq('500 Internal Server Error')
+            expect(record.wc_symbols).to be_nil
+            expect(record.wc_error).to eq('500 Internal Server Error')
           end
         end
       end
@@ -114,7 +99,7 @@ module Holdings
 
         # Simulate being killed after retrieving half the items
         first_batch.each do |oclc_number|
-          stub_request_for(oclc_number)
+          stub_wc_request_for(oclc_number)
         end
 
         oclc_number_midpoint = oclc_numbers_expected[midpoint]
@@ -133,7 +118,7 @@ module Holdings
 
         # Simulate retry after interrupt
         second_batch.each do |oclc_number|
-          stub_request_for(oclc_number)
+          stub_wc_request_for(oclc_number)
         end
 
         WorldCatJob.perform_now(task)
@@ -144,12 +129,7 @@ module Holdings
 
         expect(task.wc_incomplete?).to eq(false)
 
-        task_records.find_each do |wc_record|
-          oclc_number = wc_record.oclc_number
-          symbols_expected = holdings_by_oclc_num[oclc_number]
-          symbols_actual = wc_record.wc_symbols.split(',')
-          expect(symbols_actual).to contain_exactly(*symbols_expected)
-        end
+        task_records.find_each(&method(:verify_wc_symbols))
       end
     end
   end

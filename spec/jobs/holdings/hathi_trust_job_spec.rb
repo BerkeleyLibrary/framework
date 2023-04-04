@@ -6,11 +6,6 @@ module Holdings
     include_context('HoldingsTask')
 
     describe 'success' do
-      let(:batch_size) { BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
-
-      let(:batches) { oclc_numbers_expected.each_slice(batch_size).to_a }
-      let(:batch_uris) { batches.map { |batch| BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
-      let(:batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/holdings/hathi_trust/ht-batch-#{i}.json") } }
 
       describe :perform do
         it 'rejects a non-HathiTrust task' do
@@ -21,10 +16,7 @@ module Holdings
 
         it 'retrieves record URLs' do
 
-          batch_uris.each_with_index do |batch_uri, i|
-            batch_json_body = batch_json_bodies[i]
-            stub_request(:get, batch_uri).to_return(body: batch_json_body)
-          end
+          ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
 
           HathiTrustJob.perform_now(task)
 
@@ -37,22 +29,16 @@ module Holdings
           expect(task.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
-            task_records.find_each do |ht_record|
-              oclc_num = ht_record.oclc_number
-              url_expected = record_urls_expected[oclc_num]
-              url_actual = ht_record.ht_record_url
-              expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
-            end
+            task_records.find_each(&method(:verify_ht_record_url))
           end
         end
 
         it 'completes partially-completed jobs' do
           task_records = task.holdings_records
 
-          batch_uris.each_with_index do |batch_uri, i|
-            batch_json_body = batch_json_bodies[i]
+          ht_batch_uris.each_with_index do |batch_uri, i|
             if i.odd?
-              stub_request(:get, batch_uri).to_return(body: batch_json_body)
+              stub_ht_request(batch_uri)
             else
               # Simulate previously-completed partial job
               batches[i].each do |oclc_number|
@@ -75,20 +61,16 @@ module Holdings
           expect(task.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
-            task_records.find_each do |ht_record|
-              oclc_num = ht_record.oclc_number
-              url_expected = record_urls_expected[oclc_num]
-              url_actual = ht_record.ht_record_url
-              expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
+            task_records.find_each do |record|
+              verify_ht_record_url(record)
             end
           end
         end
 
         it 'handles network errors' do
-          batch_uris.each_with_index do |batch_uri, i|
-            batch_json_body = batch_json_bodies[i]
+          ht_batch_uris.each_with_index do |batch_uri, i|
             if i.odd?
-              stub_request(:get, batch_uri).to_return(body: batch_json_body)
+              stub_ht_request(batch_uri)
             else
               stub_request(:get, batch_uri).to_return(status: 500)
             end
@@ -109,11 +91,8 @@ module Holdings
 
               if i.odd?
                 expect(batch_ht_records.where.not(ht_error: nil)).not_to exist
-                batch_ht_records.find_each do |ht_record|
-                  oclc_num = ht_record.oclc_number
-                  url_expected = record_urls_expected[oclc_num]
-                  url_actual = ht_record.ht_record_url
-                  expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
+                batch_ht_records.find_each do |record|
+                  verify_ht_record_url(record)
                 end
               else
                 expect(batch_ht_records.where(ht_error: nil)).not_to exist
@@ -128,8 +107,8 @@ module Holdings
 
         it '"handles" being interrupted/killed and then resumed' do
           # Simulate being killed while retrieving second batch
-          stub_request(:get, batch_uris[0]).to_return(body: batch_json_bodies[0])
-          stub_request(:get, batch_uris[1]).to_raise(SignalException.new(:KILL))
+          stub_request(:get, ht_batch_uris[0]).to_return(body: ht_batch_json_bodies[0])
+          stub_request(:get, ht_batch_uris[1]).to_raise(SignalException.new(:KILL))
 
           expect do
             HathiTrustJob.perform_now(task)
@@ -140,18 +119,15 @@ module Holdings
 
           batch_ht_records = task_records.where(oclc_number: batches[0])
           expect(batch_ht_records.count).to eq(batches[0].size)
-          batch_ht_records.find_each do |ht_record|
-            oclc_num = ht_record.oclc_number
-            url_expected = record_urls_expected[oclc_num]
-            url_actual = ht_record.ht_record_url
-            expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
+          batch_ht_records.find_each do |record|
+            verify_ht_record_url(record)
           end
 
           expect(task.hathi_incomplete?).to eq(true)
 
           # Simulate retry after interrupt
           [1, 2].each do |i|
-            stub_request(:get, batch_uris[i]).to_return(body: batch_json_bodies[i])
+            stub_request(:get, ht_batch_uris[i]).to_return(body: ht_batch_json_bodies[i])
           end
 
           HathiTrustJob.perform_now(task)
@@ -164,11 +140,8 @@ module Holdings
           [1, 2].each do |i|
             batch_ht_records = task_records.where(oclc_number: batches[i])
             expect(batch_ht_records.count).to eq(batches[i].size)
-            batch_ht_records.find_each do |ht_record|
-              oclc_num = ht_record.oclc_number
-              url_expected = record_urls_expected[oclc_num]
-              url_actual = ht_record.ht_record_url
-              expect(url_actual).to eq(url_expected), "OCLC #{oclc_num}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
+            batch_ht_records.find_each do |record|
+              verify_ht_record_url(record)
             end
           end
         end

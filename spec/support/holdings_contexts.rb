@@ -121,6 +121,44 @@ RSpec.shared_context('HoldingsTask') do
   include_context 'holdings data'
   include_context 'purge HoldingsTasks'
 
+  let(:batch_size) { BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
+
+  let(:batches) { oclc_numbers_expected.each_slice(batch_size).to_a }
+  let(:ht_batch_uris) { batches.map { |batch| BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
+  let(:ht_batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/holdings/hathi_trust/ht-batch-#{i}.json") } }
+
+  def stub_wc_request_for(oclc_number)
+    req = BerkeleyLibrary::Holdings::WorldCat::LibrariesRequest.new(oclc_number)
+    xml = File.read("spec/data/holdings/world_cat/#{oclc_number}.xml")
+    stub_request(:get, req.uri).with(query: req.params).to_return(body: xml)
+  end
+
+  def stub_ht_request(ht_batch_uri)
+    index = ht_batch_uris.index(ht_batch_uri)
+    batch_json_body = ht_batch_json_bodies[index]
+    stub_request(:get, ht_batch_uri).to_return(body: batch_json_body)
+  end
+
+  def verify_ht_record_url(record)
+    expect(record.ht_error).to be_nil
+    expect(record.ht_retrieved).to eq(true)
+
+    oclc_number = record.oclc_number
+    url_expected = record_urls_expected[oclc_number]
+    url_actual = record.ht_record_url
+    expect(url_actual).to eq(url_expected), "OCLC #{oclc_number}: expected #{url_expected.inspect}, was #{url_actual.inspect}"
+  end
+
+  def verify_wc_symbols(record)
+    expect(record.wc_error).to be_nil
+    expect(record.wc_retrieved).to eq(true)
+
+    oclc_number = record.oclc_number
+    symbols_expected = holdings_by_oclc_num[oclc_number]
+    symbols_actual = record.wc_symbols.split(',')
+    expect(symbols_actual).to contain_exactly(*symbols_expected)
+  end
+
   let(:input_file_path) { 'spec/data/holdings/input-file.xlsx' }
 
   attr_reader :task

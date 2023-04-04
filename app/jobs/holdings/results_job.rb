@@ -8,7 +8,6 @@ module Holdings
       logger.info("Starting #{ResultsJob} for batch #{batch.id}", task:, event: params[:event])
       logger.warn("#{task.class} #{task.id} is not complete") if task.incomplete?
 
-      task = task_from(batch)
       task.ensure_output_file!
 
       # TODO: send email
