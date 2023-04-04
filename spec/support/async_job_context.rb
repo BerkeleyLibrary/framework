@@ -26,7 +26,9 @@ RSpec.shared_context('async execution', shared_context: :metadata) do |job_class
     job_class.disable_test_adapter
 
     latches[job_class] = Concurrent::CountDownLatch.new.tap do |latch|
-      callback_proc = -> { latch.count_down }
+      callback_proc = -> do
+        latch.count_down
+      end
       job_class.after_perform(&callback_proc)
       callback_procs[job_class] = callback_proc
     end
@@ -40,13 +42,13 @@ RSpec.shared_context('async execution', shared_context: :metadata) do |job_class
   end
 
   after do
+    gj_adapter = gj_adapters[job_class]
+    gj_adapter.shutdown(timeout: shutdown_timeout)
+
     callback_proc = callback_procs[job_class]
     callback_chain = job_class.__callbacks[:perform].instance_variable_get(:@chain)
     callback = callback_chain.find { |cb| cb.instance_variable_get(:@filter) == callback_proc }
     callback_chain.delete(callback)
-
-    gj_adapter = gj_adapters[job_class]
-    gj_adapter.shutdown(timeout: shutdown_timeout)
 
     test_adapter = test_adapters[job_class]
     job_class.enable_test_adapter(test_adapter)

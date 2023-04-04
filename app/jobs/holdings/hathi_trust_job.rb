@@ -1,5 +1,5 @@
 module Holdings
-  class HathiTrustJob < ApplicationJob
+  class HathiTrustJob < HoldingsJobBase
     include BerkeleyLibrary::Holdings::HathiTrust
 
     # Finds unprocessed HathiTrust records for the specified task, retrieves

@@ -1,4 +1,9 @@
 class HoldingsTasksController < ApplicationController
+  before_action :ensure_holdings_task, only: %i[show create]
+
+  REQUIRED_PARAMS = %i[email input_file].freeze
+  OPTIONAL_PARAMS = %i[rlf uc hathi].freeze
+  ALL_PARAMS = (REQUIRED_PARAMS + OPTIONAL_PARAMS)
 
   # GET /holdings_tasks
   def index
@@ -7,7 +12,7 @@ class HoldingsTasksController < ApplicationController
 
   # GET /holdings_tasks/1
   def show
-    @holdings_task = HoldingsTask.find(params[:id])
+    @holdings_task = find_holdings_task
   end
 
   # GET /holdings_tasks/new
@@ -17,8 +22,6 @@ class HoldingsTasksController < ApplicationController
 
   # POST /holdings_tasks
   def create
-    @holdings_task = HoldingsTask.create_from(**holdings_task_params)
-
     if @holdings_task.persisted?
       schedule_jobs(@holdings_task)
       redirect_to holdings_task_url(@holdings_task)
@@ -29,23 +32,53 @@ class HoldingsTasksController < ApplicationController
 
   private
 
-  def schedule_jobs(task)
-    batch = GoodJob::Batch.add do
-      Holdings::WorldCatJob.perform_later(task) if task.world_cat?
-      Holdings::HathiTrustJob.perform_later(task) if task.hathi?
-    end
-    batch.enqueue(on_finish: Holdings::ResultsJob, task: task)
+  def ensure_holdings_task
+    @holdings_task ||= (find_holdings_task || create_holdings_task)
   end
 
-  # TODO: handle missing parameters
-  def holdings_task_params
-    params.require(:holdings_task).tap do |pp|
-      required_params = [:email, :input_file]
-      required_params.each { |a| pp.require(a) }
+  def find_holdings_task
+    HoldingsTask.find(id_param) if id_param
+  end
 
-      optional_params = [:rlf, :uc, :hathi]
-      all_params = (required_params + optional_params)
-      pp.permit(*all_params)
+  # params.require() is not smart enough to provide good error messages for multiple
+  # missing parameters, so we do something a little more complicated here
+  def create_holdings_task
+    return HoldingsTask.create_from(**holdings_task_opts) unless missing_params.any?
+
+    # This will be invalid and fail to persist
+    HoldingsTask.create(**holdings_task_opts)
+  end
+
+  def id_param
+    @id_param ||= params[:id]
+  end
+
+  def schedule_jobs(task)
+    # TODO: make these run off-hours (wrapper job?)
+    #       see https://github.com/bensheldon/good_job/blob/main/README.md#complex-batches
+    #       see https://github.com/bensheldon/good_job/blob/main/README.md#cron-style-repeatingrecurring-jobs
+
+    batch = GoodJob::Batch.new
+    batch.add(Holdings::WorldCatJob.new(task)) if task.world_cat?
+    batch.add(Holdings::HathiTrustJob.new(task)) if task.hathi?
+    batch.enqueue(on_finish: Holdings::ResultsJob, task:)
+
+    # GoodJob::Batch.enqueue(on_finish: Holdings::ResultsJob, task:) do
+    #   Holdings::WorldCatJob.perform_later(task) if task.world_cat?
+    #   Holdings::HathiTrustJob.perform_later(task) if task.hathi?
+    # end
+  end
+
+  def holdings_task_opts
+    # ActionController::Parameters.to_h is not smart enough to take a block, so we have
+    # to do this the hard way
+    @holdings_task_opts ||= params.require(:holdings_task).permit(*ALL_PARAMS).to_h.symbolize_keys
+  end
+
+  def missing_params
+    @missing_params ||= REQUIRED_PARAMS.reject do |k|
+      v = holdings_task_opts[k]
+      v.present? || v == false
     end
   end
 

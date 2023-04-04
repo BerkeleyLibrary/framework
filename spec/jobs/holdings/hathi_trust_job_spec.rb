@@ -12,15 +12,6 @@ module Holdings
       let(:batch_uris) { batches.map { |batch| BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
       let(:batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/holdings/hathi_trust/ht-batch-#{i}.json") } }
 
-      before do
-        @ht_queue_adapter = HathiTrustJob.queue_adapter
-        HathiTrustJob.queue_adapter = :inline
-      end
-
-      after do
-        HathiTrustJob.queue_adapter = @ht_queue_adapter
-      end
-
       describe :perform do
         it 'rejects a non-HathiTrust task' do
           task.update(hathi: false)
