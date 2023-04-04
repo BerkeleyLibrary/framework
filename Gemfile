@@ -6,11 +6,14 @@ ruby File.read('.ruby-version').strip
 
 gem 'awesome_print', '>=1.8.0'
 gem 'berkeley_library-docker', '~> 0.2.0'
+gem 'berkeley_library-holdings', github: 'BerkeleyLibrary/holdings' # TODO: use released version
 gem 'berkeley_library-logging', '~> 0.2', '>= 0.2.7'
 gem 'berkeley_library-marc', '~> 0.3.1'
 gem 'berkeley_library-tind', '~> 0.7.1'
+gem 'berkeley_library-util', '~> 0.1.8'
 gem 'bootstrap'
 gem 'faraday'
+gem 'good_job', '~> 3.10', '>= 3.14.2'
 gem 'ipaddress'
 gem 'jaro_winkler', '~> 1.5.4'
 gem 'jbuilder', '~> 2.5'
@@ -64,5 +67,3 @@ group :test do
   gem 'simplecov', '~> 0.21', require: false
   gem 'simplecov-rcov', '~> 0.2', require: false
 end
-
-gem 'good_job', '~> 3.6'
