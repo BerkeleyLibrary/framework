@@ -93,6 +93,27 @@ class HoldingsTask < ActiveRecord::Base
     "#{File.basename(filename, '.*')}-processed.xlsx"
   end
 
+  def record_count
+    @record_count ||= holdings_records.count
+  end
+
+  def completed_count
+    @completed_count ||= begin
+      conditions = {}
+      conditions[:ht_retrieved] = true if hathi?
+      conditions[:wc_retrieved] = true if world_cat?
+      holdings_records.where(**conditions).count
+    end
+  end
+
+  def error_count
+    @error_count ||= begin
+      count_hathi = hathi? ? holdings_records.where.not(ht_error: nil).count : 0
+      count_wc = world_cat? ? holdings_records.where.not(wc_error: nil).count : 0
+      count_hathi + count_wc
+    end
+  end
+
   # ------------------------------------------------------------
   # Public instance methods
 

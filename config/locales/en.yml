@@ -59,6 +59,9 @@ en:
         include:
           "true": "Yes"
           "false": "No"
+        record_count: Total records
+        completed_count: Records completed
+        error_count: Records with errors
     errors:
       models:
         holdings_task:
@@ -150,6 +153,10 @@ en:
   omniauth_callbacks:
     calnet:
       forbidden: <strong>Forbidden:</strong> You're not allowed to access the requested page.
+
+  holdings_mailer:
+    holdings_results:
+      subject: Your holdings request
 
   request_mailer:
     scan_request_opt_in_confirmation_email:

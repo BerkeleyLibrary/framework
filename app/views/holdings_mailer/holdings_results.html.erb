@@ -1,0 +1,14 @@
+<h1>Holdings Request</h1>
+
+<p>
+  Your holdings request is complete. Please see the attached spreadsheet, or
+  <%= link_to('click here to download it', rails_blob_path(holdings_task.output_file, disposition: 'attachment')) %>.
+  <% error_count = holdings_task.error_count %>
+  <% if error_count > 0 %>
+    Of <%= holdings_task.record_count %> total records, errors occurred when retrieving information
+    for <%= error_count %>. Please see the spreadsheet for details.
+  <% end %>
+</p>
+<p>
+  If you have any questions, please write to <a href="mailto:helpbox-library@berkeley.edu">helpbox-library@berkeley.edu</a>.
+</p>

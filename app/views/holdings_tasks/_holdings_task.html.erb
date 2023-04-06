@@ -17,13 +17,32 @@
           <table class="options attributes">
             <tbody>
               <% [:rlf, :uc, :hathi].each do |opt| %>
-              <tr>
-                <th scope="row"><%= t("activerecord.attributes.holdings_task.#{opt}") %></th>
-                <td>
-                  <% value = holdings_task.send(opt) || false %>
-                  <%= t("activerecord.attributes.holdings_task.include.#{value}") %>
-                </td>
-              </tr>
+                <tr>
+                  <th scope="row"><%= t("activerecord.attributes.holdings_task.#{opt}") %></th>
+                  <td>
+                    <% value = holdings_task.send(opt) || false %>
+                    <%= t("activerecord.attributes.holdings_task.include.#{value}") %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Records</th>
+        <td>
+          <table class="options attributes">
+            <tbody>
+              <% [:record_count, :completed_count, :error_count].each do |attr| %>
+                <tr>
+                  <th scope="row">
+                    <%= holdings_task.send(attr) %>
+                  </th>
+                  <td>
+                    <%= t("activerecord.attributes.holdings_task.#{attr}").downcase %>
+                  </td>
+                </tr>
               <% end %>
             </tbody>
           </table>

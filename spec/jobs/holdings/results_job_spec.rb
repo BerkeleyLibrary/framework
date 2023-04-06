@@ -37,7 +37,18 @@ module Holdings
         end
       end
 
-      # TODO: test email
+      it 'sends email' do
+        expect { ResultsJob.perform_now(batch, params) }.to(change { ActionMailer::Base.deliveries.count })
+        message = ActionMailer::Base.deliveries.select { |m| m.to && m.to.include?(task.email) }
+        expect(message).not_to be_nil
+
+        expected_subject = I18n.t('holdings_mailer.holdings_results.subject')
+        expect(message.subject).to eq(expected_subject)
+
+        # TODO: attachment
+        expect(message.body).to eq('elvis')
+      end
+
     end
   end
 end

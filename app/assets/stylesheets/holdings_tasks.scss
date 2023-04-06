@@ -72,10 +72,41 @@ form {
 }
 
 table.holdings-task {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+
+  //border-top: 1px solid #3b3b3b;
+  //border-bottom: 1px solid #3b3b3b;
 
   table.options {
     margin-top: 0;
+  }
+}
+
+table.holdings-task-list {
+  th {
+    text-align: left;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+
+  tr {
+    th, td {
+      border-bottom: 1px solid #888888;
+    }
+  }
+
+  tbody {
+    tr:nth-child(odd) {
+      background-color: #EEEAE3;
+    }
+
+    tr:last-of-type {
+      th, td {
+        border-bottom: none;
+      }
+    }
   }
 }

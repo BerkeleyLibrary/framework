@@ -10,7 +10,7 @@ module Holdings
 
       task.ensure_output_file!
 
-      # TODO: send email
+      HoldingsMailer.holdings_results(task)
     end
 
   end
