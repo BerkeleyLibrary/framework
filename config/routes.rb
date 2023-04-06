@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :holdings_tasks
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'
@@ -74,6 +73,10 @@ Rails.application.routes.draw do
   get '/tind-download/find_collection', to: 'tind_download#find_collection'
   get '/tind-download/download', to: 'tind_download#download'
   post '/tind-download/download', to: 'tind_download#download'
+
+  # Holdings
+  resources :holdings_tasks
+  get '/holdings_tasks/:id/result', to: 'holdings_tasks#result', as: :holdings_tasks_result
 
   # http://example.com/good_job
   mount GoodJob::Engine => 'good_job'

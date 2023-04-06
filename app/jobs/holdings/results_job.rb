@@ -10,7 +10,7 @@ module Holdings
 
       task.ensure_output_file!
 
-      HoldingsMailer.holdings_results(task)
+      HoldingsMailer.holdings_results(task).deliver_now
     end
 
   end

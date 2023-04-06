@@ -1,5 +1,5 @@
 class HoldingsTasksController < ApplicationController
-  before_action :ensure_holdings_task, only: %i[show create]
+  before_action :ensure_holdings_task, only: %i[show create result]
 
   REQUIRED_PARAMS = %i[email input_file].freeze
   OPTIONAL_PARAMS = %i[rlf uc hathi].freeze
@@ -27,6 +27,16 @@ class HoldingsTasksController < ApplicationController
       redirect_to holdings_task_url(@holdings_task)
     else
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  # GET /holdings_tasks/1/result
+  def result
+    output_file = @holdings_task.output_file
+    if @holdings_task.incomplete? || !output_file.attached?
+      render :not_found, status: :not_found
+    else
+      redirect_to rails_blob_path(output_file, disposition: 'attachment')
     end
   end
 

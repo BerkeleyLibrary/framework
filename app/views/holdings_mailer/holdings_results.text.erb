@@ -1,12 +1,6 @@
 Your holdings request is complete. Please see the attached spreadsheet,
 or download it at:
 
-<%= rails_blob_path(holdings_task.output_file) %>
+  <%= holdings_tasks_result_url(holdings_task) %>
 
-<%
-  error_count = holdings_task.error_count
-  if error_count > 0
-%>Of <%= holdings_task.record_count %> total records, errors occurred when retrieving information
-for <%= error_count %>. Please see the spreadsheet for details.<% end %>
-
-If you have any questions, please write to helpbox-library@berkeley.edu.
+<%= ("#{error_report}\n") if error_report %>If you have any questions, please write to helpbox-library@berkeley.edu.

@@ -150,6 +150,34 @@ RSpec.describe HoldingsTasksController, type: :request do
     end
   end
 
+  describe :result do
+    context 'success' do
+      include_context 'complete HoldingsTask'
+
+      it 'redirects to the blob download path' do
+        task.ensure_output_file!
+
+        expected_path = rails_blob_path(task.output_file, disposition: 'attachment')
+        get(holdings_tasks_result_url(task))
+
+        expect(response).to redirect_to(expected_path)
+      end
+    end
+
+    context 'failure' do
+      include_context('HoldingsTask')
+
+      it 'returns 404 not found' do
+        expect(task).to be_incomplete # just to be sure
+
+        get(holdings_tasks_result_url(task))
+
+        expect(response).not_to be_successful
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   # describe 'POST /create' do
   #   context 'with valid parameters' do
   #     it 'creates a new HoldingsTask' do

@@ -165,5 +165,5 @@ table.attributes {
 }
 
 table.errors {
-  @extend table.attributes;
+  @extend .attributes;
 }
