@@ -4,7 +4,7 @@ class FinesController < ApplicationController
   # This will be needed for transaction_complete since Paypal will hit that
   protect_from_forgery with: :null_session
 
-  self.support_email = 'helpbox@library.berkeley.edu'
+  self.support_email = 'helpbox-library@berkeley.edu'
 
   def index
     @jwt = params.require(:jwt)

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   # @!attribute [rw]
   # Value of the "Questions?" mailto link in the footer
   # @return [String]
-  class_attribute :support_email, default: 'privdesk@library.berkeley.edu'
+  class_attribute :support_email, default: 'privdesk-library@berkeley.edu'
   helper_method :support_email
   # @!endgroup
 

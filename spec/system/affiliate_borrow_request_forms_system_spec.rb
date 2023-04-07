@@ -7,7 +7,7 @@ describe :affiliate_borrow_request_forms, type: :system do
 
   it 'links to the privileges desk email address' do
     support_email = page.find(:xpath, "//a[@class='support-email']")
-    expect(support_email['href']).to eq('mailto:privdesk@library.berkeley.edu')
+    expect(support_email['href']).to eq('mailto:privdesk-library@berkeley.edu')
   end
 
   it "doesn't show a login link" do

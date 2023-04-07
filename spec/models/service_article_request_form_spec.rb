@@ -37,7 +37,7 @@ describe ServiceArticleRequestForm do
   end
 
   it 'submits a job' do
-    expected_submit_email = 'requests@library.berkeley.edu'
+    expected_submit_email = 'requests-library@berkeley.edu'
     expected_publication = {
       pub_title: 'King Lines',
       pub_location: nil,

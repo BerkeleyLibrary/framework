@@ -32,7 +32,7 @@ describe GalcRequestForm do
       patron = Alma::User.new
       patron.type = Alma::Type::LIBRARY_STAFF
       form = GalcRequestForm.new(patron:)
-      expect(form.support_email).to eq('eref@library.berkeley.edu')
+      expect(form.support_email).to eq('eref-library@berkeley.edu')
     end
   end
 

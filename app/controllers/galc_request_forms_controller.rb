@@ -1,6 +1,6 @@
 class GalcRequestFormsController < AuthenticatedFormController
 
-  self.support_email = 'eref@library.berkeley.edu'
+  self.support_email = 'eref-library@berkeley.edu'
 
   private
 

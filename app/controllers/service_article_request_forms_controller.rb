@@ -1,6 +1,6 @@
 class ServiceArticleRequestFormsController < AuthenticatedFormController
 
-  self.support_email = 'baker@library.berkeley.edu'
+  self.support_email = 'baker-library@berkeley.edu'
 
   private
 

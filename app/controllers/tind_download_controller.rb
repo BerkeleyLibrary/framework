@@ -18,7 +18,7 @@ class TindDownloadController < ApplicationController
   # ############################################################
   # Configuration
 
-  self.support_email = 'helpbox@library.berkeley.edu'
+  self.support_email = 'helpbox-library@berkeley.edu'
 
   # ############################################################
   # Actions

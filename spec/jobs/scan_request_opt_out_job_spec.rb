@@ -7,6 +7,6 @@ describe ScanRequestOptOutJob do
     'an email job',
     email_subject_success:,
     note_text: 'Fake Note Text',
-    confirm_cc: %w[prntscan@lists.berkeley.edu baker@library.berkeley.edu]
+    confirm_cc: %w[prntscan@lists.berkeley.edu baker-library@berkeley.edu]
   )
 end
