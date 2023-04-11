@@ -47,10 +47,14 @@ module AuthSupport
 
   def require_framework_admin!
     authenticate!
-    return true if current_user.framework_admin
+    return true if framework_admin?
 
     raise Error::ForbiddenError,
           "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
+  end
+
+  def framework_admin?
+    current_user.framework_admin
   end
 
 end

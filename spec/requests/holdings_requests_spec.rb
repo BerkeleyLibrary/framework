@@ -3,50 +3,18 @@ require 'support/async_job_context'
 require 'support/holdings_contexts'
 
 RSpec.describe HoldingsRequestsController, type: :request do
+  # TODO: separate immediate: true from immediate: false tests
+  # TODO: reject immediate: true from non-admin
   let(:valid_attributes) do
     {
       email: 'test@example.org',
       input_file: fixture_file_upload('spec/data/holdings/input-file.xlsx'),
       rlf: true,
       uc: true,
-      hathi: true
+      hathi: true,
+      immediate: true
     }
   end
-
-  # let(:invalid_attributes) do
-  #   skip('Add a hash of attributes invalid for your model')
-  # end
-  #
-  # describe 'GET /index' do
-  #   it 'renders a successful response' do
-  #     HoldingsRequest.create! valid_attributes
-  #     get holdings_requests_url
-  #     expect(response).to be_successful
-  #   end
-  # end
-  #
-  # describe 'GET /show' do
-  #   it 'renders a successful response' do
-  #     holdings_request = HoldingsRequest.create! valid_attributes
-  #     get holdings_request_url(holdings_request)
-  #     expect(response).to be_successful
-  #   end
-  # end
-  #
-  # describe 'GET /new' do
-  #   it 'renders a successful response' do
-  #     get new_holdings_request_url
-  #     expect(response).to be_successful
-  #   end
-  # end
-  #
-  # describe 'GET /edit' do
-  #   it 'renders a successful response' do
-  #     holdings_request = HoldingsRequest.create! valid_attributes
-  #     get edit_holdings_request_url(holdings_request)
-  #     expect(response).to be_successful
-  #   end
-  # end
 
   describe :index do
     it 'lists requests' do

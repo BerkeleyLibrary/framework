@@ -2,7 +2,7 @@ class HoldingsRequestsController < ApplicationController
   before_action :ensure_holdings_request, only: %i[show create result]
 
   REQUIRED_PARAMS = %i[email input_file].freeze
-  OPTIONAL_PARAMS = %i[rlf uc hathi].freeze
+  OPTIONAL_PARAMS = %i[rlf uc hathi immediate].freeze
   ALL_PARAMS = (REQUIRED_PARAMS + OPTIONAL_PARAMS)
 
   # GET /holdings_requests
@@ -20,10 +20,14 @@ class HoldingsRequestsController < ApplicationController
     @holdings_request = HoldingsRequest.new
   end
 
+  # TODO: separate endpoint (redirect through login to :new?) for admins
+  # TODO: Framework admins can set immediate: true
+
   # POST /holdings_requests
   def create
+    # TODO: reject immediate: true from non-admin
     if @holdings_request.persisted?
-      Holdings::JobScheduler.schedule_jobs(@holdings_request)
+      Holdings::BatchJob.schedule(@holdings_request)
       redirect_to holdings_request_url(@holdings_request)
     else
       render :new, status: :unprocessable_entity
