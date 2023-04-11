@@ -23,7 +23,7 @@ class HoldingsTasksController < ApplicationController
   # POST /holdings_tasks
   def create
     if @holdings_task.persisted?
-      schedule_jobs(@holdings_task)
+      Holdings::JobScheduler.schedule_jobs(@holdings_task)
       redirect_to holdings_task_url(@holdings_task)
     else
       render :new, status: :unprocessable_entity
@@ -61,16 +61,6 @@ class HoldingsTasksController < ApplicationController
 
   def id_param
     @id_param ||= params[:id]
-  end
-
-  def schedule_jobs(task)
-    # TODO: make these run off-hours (wrapper job?)
-    #       see https://github.com/bensheldon/good_job/blob/main/README.md#complex-batches
-    #       see https://github.com/bensheldon/good_job/blob/main/README.md#cron-style-repeatingrecurring-jobs
-    GoodJob::Batch.enqueue(on_finish: Holdings::ResultsJob, task:) do
-      Holdings::WorldCatJob.perform_later(task) if task.world_cat?
-      Holdings::HathiTrustJob.perform_later(task) if task.hathi?
-    end
   end
 
   def holdings_task_opts
