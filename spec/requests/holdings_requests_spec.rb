@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'support/async_job_context'
 require 'support/holdings_contexts'
 
-RSpec.describe HoldingsTasksController, type: :request do
+RSpec.describe HoldingsRequestsController, type: :request do
   let(:valid_attributes) do
     {
       email: 'test@example.org',
@@ -19,44 +19,44 @@ RSpec.describe HoldingsTasksController, type: :request do
   #
   # describe 'GET /index' do
   #   it 'renders a successful response' do
-  #     HoldingsTask.create! valid_attributes
-  #     get holdings_tasks_url
+  #     HoldingsRequest.create! valid_attributes
+  #     get holdings_requests_url
   #     expect(response).to be_successful
   #   end
   # end
   #
   # describe 'GET /show' do
   #   it 'renders a successful response' do
-  #     holdings_task = HoldingsTask.create! valid_attributes
-  #     get holdings_task_url(holdings_task)
+  #     holdings_request = HoldingsRequest.create! valid_attributes
+  #     get holdings_request_url(holdings_request)
   #     expect(response).to be_successful
   #   end
   # end
   #
   # describe 'GET /new' do
   #   it 'renders a successful response' do
-  #     get new_holdings_task_url
+  #     get new_holdings_request_url
   #     expect(response).to be_successful
   #   end
   # end
   #
   # describe 'GET /edit' do
   #   it 'renders a successful response' do
-  #     holdings_task = HoldingsTask.create! valid_attributes
-  #     get edit_holdings_task_url(holdings_task)
+  #     holdings_request = HoldingsRequest.create! valid_attributes
+  #     get edit_holdings_request_url(holdings_request)
   #     expect(response).to be_successful
   #   end
   # end
 
   describe :index do
-    it 'lists tasks' do
-      get holdings_tasks_url
+    it 'lists requests' do
+      get holdings_requests_url
       expect(response).to be_successful
 
       attrs = %i[email record_count completed_count error_count]
-      HoldingsTask.find_each do |task|
+      HoldingsRequest.find_each do |req|
         attrs.each do |attr|
-          expected_value = task.send(attr)
+          expected_value = req.send(attr)
           expect(response.body).to include(expected_value.to_s)
         end
       end
@@ -64,32 +64,32 @@ RSpec.describe HoldingsTasksController, type: :request do
   end
 
   describe :show do
-    include_context 'HoldingsTask'
+    include_context 'HoldingsRequest'
 
-    it 'displays a task' do
-      get holdings_task_url(task)
+    it 'displays a request' do
+      get holdings_request_url(req)
       expect(response).to be_successful
     end
 
     context 'complete' do
-      include_context 'complete HoldingsTask'
+      include_context 'complete HoldingsRequest'
 
       it 'includes download link for results' do
-        get holdings_task_url(task)
+        get holdings_request_url(req)
         expect(response).to be_successful
-        expected_url = rails_blob_path(task.input_file, disposition: 'attachment')
+        expected_url = rails_blob_path(req.input_file, disposition: 'attachment')
         expect(response.body).to include(expected_url)
       end
 
       context 'with errors' do
-        include_context 'complete HoldingsTask with errors'
+        include_context 'complete HoldingsRequest with errors'
 
         it 'includes error counts' do
-          get holdings_task_url(task)
+          get holdings_request_url(req)
           expect(response).to be_successful
 
           %i[record_count completed_count error_count].each do |attr|
-            expected_value = task.send(attr)
+            expected_value = req.send(attr)
             expect(response.body).to include(expected_value.to_s)
           end
         end
@@ -99,13 +99,13 @@ RSpec.describe HoldingsTasksController, type: :request do
 
   describe :new do
     it 'displays the form' do
-      get new_holdings_task_url
+      get new_holdings_request_url
       expect(response).to be_successful
     end
   end
 
   describe :create do
-    include_context('HoldingsTask')
+    include_context('HoldingsRequest')
 
     job_classes = [Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob]
     job_classes.each { |job_class| include_context('async execution', job_class:) }
@@ -115,14 +115,14 @@ RSpec.describe HoldingsTasksController, type: :request do
         oclc_numbers_expected.each { |oclc_number| stub_wc_request_for(oclc_number) }
         ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
 
-        HoldingsTask.destroy_all # just to be sure
-        expect(HoldingsTask.exists?).to eq(false) # just to be sure
+        HoldingsRequest.destroy_all # just to be sure
+        expect(HoldingsRequest.exists?).to eq(false) # just to be sure
 
         expect do
-          post holdings_tasks_url, params: { holdings_task: valid_attributes }
-        end.to change(HoldingsTask, :count).by(1)
+          post holdings_requests_url, params: { holdings_request: valid_attributes }
+        end.to change(HoldingsRequest, :count).by(1)
 
-        @task = HoldingsTask.take
+        @req = HoldingsRequest.take
       end
 
       it 'executes background jobs' do
@@ -141,11 +141,11 @@ RSpec.describe HoldingsTasksController, type: :request do
           end
         end
 
-        task_records = task.holdings_records
-        expect(task_records.count).to eq(oclc_numbers_expected.size)
+        request_records = req.holdings_records
+        expect(request_records.count).to eq(oclc_numbers_expected.size)
 
         aggregate_failures do
-          task_records.find_each do |record|
+          request_records.find_each do |record|
             verify_ht_record_url(record)
             verify_wc_symbols(record)
           end
@@ -159,14 +159,14 @@ RSpec.describe HoldingsTasksController, type: :request do
       shared_examples 'an invalid request' do
 
         let(:expected_errors) do
-          create_opts = HoldingsTasksController::REQUIRED_PARAMS
+          create_opts = HoldingsRequestsController::REQUIRED_PARAMS
             .to_h { |p| [p, nil] }
             .merge(invalid_attributes)
-          invalid_task = HoldingsTask.create_from(**create_opts)
-          invalid_task.errors
+          invalid_request = HoldingsRequest.create_from(**create_opts)
+          invalid_request.errors
         end
 
-        it 'does not create a task or schedule a job' do
+        it 'does not create a request or schedule a job' do
           expect(GoodJob::Batch).not_to receive(:enqueue)
 
           job_classes.each do |jc|
@@ -174,8 +174,8 @@ RSpec.describe HoldingsTasksController, type: :request do
           end
 
           expect do
-            post holdings_tasks_url, params: { holdings_task: invalid_attributes }
-          end.not_to change(HoldingsTask, :count)
+            post holdings_requests_url, params: { holdings_request: invalid_attributes }
+          end.not_to change(HoldingsRequest, :count)
 
           expect(response).not_to be_successful
           expected_errors.each do |err|
@@ -221,25 +221,25 @@ RSpec.describe HoldingsTasksController, type: :request do
 
   describe :result do
     context 'success' do
-      include_context 'complete HoldingsTask'
+      include_context 'complete HoldingsRequest'
 
       it 'redirects to the blob download path' do
-        task.ensure_output_file!
+        req.ensure_output_file!
 
-        expected_path = rails_blob_path(task.output_file, disposition: 'attachment')
-        get(holdings_tasks_result_url(task))
+        expected_path = rails_blob_path(req.output_file, disposition: 'attachment')
+        get(holdings_requests_result_url(req))
 
         expect(response).to redirect_to(expected_path)
       end
     end
 
     context 'failure' do
-      include_context('HoldingsTask')
+      include_context('HoldingsRequest')
 
       it 'returns 404 not found' do
-        expect(task).to be_incomplete # just to be sure
+        expect(req).to be_incomplete # just to be sure
 
-        get(holdings_tasks_result_url(task))
+        get(holdings_requests_result_url(req))
 
         expect(response).not_to be_successful
         expect(response).to have_http_status(:not_found)
@@ -249,27 +249,27 @@ RSpec.describe HoldingsTasksController, type: :request do
 
   # describe 'POST /create' do
   #   context 'with valid parameters' do
-  #     it 'creates a new HoldingsTask' do
+  #     it 'creates a new HoldingsRequest' do
   #       expect do
-  #         post holdings_tasks_url, params: { holdings_task: valid_attributes }
-  #       end.to change(HoldingsTask, :count).by(1)
+  #         post holdings_requests_url, params: { holdings_request: valid_attributes }
+  #       end.to change(HoldingsRequest, :count).by(1)
   #     end
   #
-  #     it 'redirects to the created holdings_task' do
-  #       post holdings_tasks_url, params: { holdings_task: valid_attributes }
-  #       expect(response).to redirect_to(holdings_task_url(HoldingsTask.last))
+  #     it 'redirects to the created holdings_request' do
+  #       post holdings_requests_url, params: { holdings_request: valid_attributes }
+  #       expect(response).to redirect_to(holdings_request_url(HoldingsRequest.last))
   #     end
   #   end
   #
   #   context 'with invalid parameters' do
-  #     it 'does not create a new HoldingsTask' do
+  #     it 'does not create a new HoldingsRequest' do
   #       expect do
-  #         post holdings_tasks_url, params: { holdings_task: invalid_attributes }
-  #       end.to change(HoldingsTask, :count).by(0)
+  #         post holdings_requests_url, params: { holdings_request: invalid_attributes }
+  #       end.to change(HoldingsRequest, :count).by(0)
   #     end
   #
   #     it "renders a successful response (i.e. to display the 'new' template)" do
-  #       post holdings_tasks_url, params: { holdings_task: invalid_attributes }
+  #       post holdings_requests_url, params: { holdings_request: invalid_attributes }
   #       expect(response).to be_successful
   #     end
   #   end
@@ -281,42 +281,42 @@ RSpec.describe HoldingsTasksController, type: :request do
   #       skip('Add a hash of attributes valid for your model')
   #     end
   #
-  #     it 'updates the requested holdings_task' do
-  #       holdings_task = HoldingsTask.create! valid_attributes
-  #       patch holdings_task_url(holdings_task), params: { holdings_task: new_attributes }
-  #       holdings_task.reload
+  #     it 'updates the requested holdings_request' do
+  #       holdings_request = HoldingsRequest.create! valid_attributes
+  #       patch holdings_request_url(holdings_request), params: { holdings_request: new_attributes }
+  #       holdings_request.reload
   #       skip('Add assertions for updated state')
   #     end
   #
-  #     it 'redirects to the holdings_task' do
-  #       holdings_task = HoldingsTask.create! valid_attributes
-  #       patch holdings_task_url(holdings_task), params: { holdings_task: new_attributes }
-  #       holdings_task.reload
-  #       expect(response).to redirect_to(holdings_task_url(holdings_task))
+  #     it 'redirects to the holdings_request' do
+  #       holdings_request = HoldingsRequest.create! valid_attributes
+  #       patch holdings_request_url(holdings_request), params: { holdings_request: new_attributes }
+  #       holdings_request.reload
+  #       expect(response).to redirect_to(holdings_request_url(holdings_request))
   #     end
   #   end
   #
   #   context 'with invalid parameters' do
   #     it "renders a successful response (i.e. to display the 'edit' template)" do
-  #       holdings_task = HoldingsTask.create! valid_attributes
-  #       patch holdings_task_url(holdings_task), params: { holdings_task: invalid_attributes }
+  #       holdings_request = HoldingsRequest.create! valid_attributes
+  #       patch holdings_request_url(holdings_request), params: { holdings_request: invalid_attributes }
   #       expect(response).to be_successful
   #     end
   #   end
   # end
   #
   # describe 'DELETE /destroy' do
-  #   it 'destroys the requested holdings_task' do
-  #     holdings_task = HoldingsTask.create! valid_attributes
+  #   it 'destroys the requested holdings_request' do
+  #     holdings_request = HoldingsRequest.create! valid_attributes
   #     expect do
-  #       delete holdings_task_url(holdings_task)
-  #     end.to change(HoldingsTask, :count).by(-1)
+  #       delete holdings_request_url(holdings_request)
+  #     end.to change(HoldingsRequest, :count).by(-1)
   #   end
   #
-  #   it 'redirects to the holdings_tasks list' do
-  #     holdings_task = HoldingsTask.create! valid_attributes
-  #     delete holdings_task_url(holdings_task)
-  #     expect(response).to redirect_to(holdings_tasks_url)
+  #   it 'redirects to the holdings_requests list' do
+  #     holdings_request = HoldingsRequest.create! valid_attributes
+  #     delete holdings_request_url(holdings_request)
+  #     expect(response).to redirect_to(holdings_requests_url)
   #   end
   # end
 end

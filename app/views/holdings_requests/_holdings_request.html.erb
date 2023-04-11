@@ -1,0 +1,63 @@
+<div id="<%= dom_id holdings_request %>">
+  <table class="holdings-request attributes">
+    <tbody>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.holdings_request.email') %></th>
+        <td><%= holdings_request.email %></td>
+      </tr>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.holdings_request.filename') %></th>
+        <td>
+          <%= link_to(holdings_request.filename, rails_blob_path(holdings_request.input_file, disposition: 'attachment')) %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Include</th>
+        <td>
+          <table class="options attributes">
+            <tbody>
+              <% [:rlf, :uc, :hathi].each do |opt| %>
+                <tr>
+                  <th scope="row"><%= t("activerecord.attributes.holdings_request.#{opt}") %></th>
+                  <td>
+                    <% value = holdings_request.send(opt) || false %>
+                    <%= t("activerecord.attributes.holdings_request.include.#{value}") %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Records</th>
+        <td>
+          <table class="options attributes">
+            <tbody>
+              <% [:record_count, :completed_count, :error_count].each do |attr| %>
+                <tr>
+                  <th scope="row">
+                    <%= holdings_request.send(attr) %>
+                  </th>
+                  <td>
+                    <%= t("activerecord.attributes.holdings_request.#{attr}").downcase %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.holdings_request.output_file') %></th>
+        <td>
+          <% if holdings_request.output_file.attached? %>
+            <%= link_to(holdings_request.output_filename, rails_blob_path(holdings_request.output_file, disposition: 'attachment')) %>
+          <% else %>
+            (none)
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

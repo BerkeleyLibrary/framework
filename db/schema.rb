@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_11_211853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -119,7 +119,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
   end
 
   create_table "holdings_records", force: :cascade do |t|
-    t.bigint "holdings_task_id", null: false
+    t.bigint "holdings_request_id", null: false
     t.string "oclc_number", null: false
     t.string "ht_record_url"
     t.string "ht_error"
@@ -129,11 +129,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
     t.boolean "wc_retrieved", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["holdings_task_id", "oclc_number"], name: "index_holdings_records_on_holdings_task_id_and_oclc_number", unique: true
-    t.index ["holdings_task_id"], name: "index_holdings_records_on_holdings_task_id"
+    t.index ["holdings_request_id", "oclc_number"], name: "index_holdings_records_on_holdings_request_id_and_oclc_number", unique: true
+    t.index ["holdings_request_id"], name: "index_holdings_records_on_holdings_request_id"
   end
 
-  create_table "holdings_tasks", force: :cascade do |t|
+  create_table "holdings_requests", force: :cascade do |t|
     t.string "email", null: false
     t.string "filename", null: false
     t.boolean "rlf", default: false, null: false
@@ -238,7 +238,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assignments", "framework_users", column: "framework_users_id"
   add_foreign_key "assignments", "roles"
-  add_foreign_key "holdings_records", "holdings_tasks"
+  add_foreign_key "holdings_records", "holdings_requests"
   add_foreign_key "host_bib_linked_bibs", "host_bibs"
   add_foreign_key "host_bib_linked_bibs", "linked_bibs"
   add_foreign_key "host_bibs", "host_bib_tasks"

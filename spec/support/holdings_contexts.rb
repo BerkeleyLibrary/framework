@@ -101,7 +101,7 @@ RSpec.shared_context('holdings data') do
   end
 end
 
-RSpec.shared_context('purge HoldingsTasks') do
+RSpec.shared_context('purge HoldingsRequests') do
   before do
     # ActiveStorage uses a background job to remove files
     @queue_adapter = ActiveStorage::PurgeJob.queue_adapter
@@ -110,16 +110,16 @@ RSpec.shared_context('purge HoldingsTasks') do
 
   after do
     # Explicitly purge ActiveStorage files
-    HoldingsTask.destroy_all
+    HoldingsRequest.destroy_all
     ActiveStorage::Blob.unattached.find_each(&:purge_later)
     ActiveStorage::PurgeJob.queue_adapter = @queue_adapter
   end
 end
 
-RSpec.shared_context('HoldingsTask') do
+RSpec.shared_context('HoldingsRequest') do
   include_context 'uploaded file'
   include_context 'holdings data'
-  include_context 'purge HoldingsTasks'
+  include_context 'purge HoldingsRequests'
 
   let(:batch_size) { BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
 
@@ -161,10 +161,10 @@ RSpec.shared_context('HoldingsTask') do
 
   let(:input_file_path) { 'spec/data/holdings/input-file.xlsx' }
 
-  attr_reader :task
+  attr_reader :req
 
   before do
-    @task = HoldingsTask.create(
+    @req = HoldingsRequest.create(
       email: 'dmoles@berkeley.edu',
       filename: 'input-file.xlsx',
       hathi: true,
@@ -172,23 +172,23 @@ RSpec.shared_context('HoldingsTask') do
       uc: true,
       input_file: uploaded_file_from(input_file_path)
     )
-    task.ensure_holdings_records!
+    req.ensure_holdings_records!
   end
 end
 
-RSpec.shared_context('complete HoldingsTask') do
-  include_context('HoldingsTask')
+RSpec.shared_context('complete HoldingsRequest') do
+  include_context('HoldingsRequest')
 
   before do
     ht_retrieved = true
     wc_retrieved = true
-    task.holdings_records.find_each do |rec|
+    req.holdings_records.find_each do |rec|
       oclc_number = rec.oclc_number
       wc_symbols = holdings_by_oclc_num[oclc_number].join(',')
       ht_record_url = record_urls_expected[oclc_number]
       rec.update(wc_symbols:, wc_retrieved:, ht_record_url:, ht_retrieved:)
     end
-    expect(task).not_to be_incomplete # just to be sure
+    expect(req).not_to be_incomplete # just to be sure
   end
 
   def assert_complete!(ss)
@@ -222,10 +222,10 @@ RSpec.shared_context('complete HoldingsTask') do
     end
   end
 
-  def assert_output_complete!(task)
-    expect(task.output_file).to be_attached
+  def assert_output_complete!(req)
+    expect(req.output_file).to be_attached
 
-    ss = task.output_file.open do |tmpfile|
+    ss = req.output_file.open do |tmpfile|
       BerkeleyLibrary::Util::XLSX::Spreadsheet.new(tmpfile.path)
     end
 
@@ -233,11 +233,11 @@ RSpec.shared_context('complete HoldingsTask') do
   end
 end
 
-RSpec.shared_context('incomplete HoldingsTask') do
-  include_context('HoldingsTask')
+RSpec.shared_context('incomplete HoldingsRequest') do
+  include_context('HoldingsRequest')
 
   before do
-    task.holdings_records.find_each.with_index do |rec, i|
+    req.holdings_records.find_each.with_index do |rec, i|
       oclc_number = rec.oclc_number
 
       options = {}.tap do |opts|
@@ -254,29 +254,29 @@ RSpec.shared_context('incomplete HoldingsTask') do
 
       rec.update(**options) unless options.empty?
     end
-    expect(task).to be_incomplete # just to be sure
+    expect(req).to be_incomplete # just to be sure
   end
 end
 
-RSpec.shared_context('incomplete HoldingsTask with errors') do
-  include_context('incomplete HoldingsTask')
+RSpec.shared_context('incomplete HoldingsRequest with errors') do
+  include_context('incomplete HoldingsRequest')
 
   before do
-    task.holdings_records.where(wc_retrieved: true).find_each.with_index do |rec, i|
+    req.holdings_records.where(wc_retrieved: true).find_each.with_index do |rec, i|
       rec.update(wc_symbols: nil, wc_error: '403 Forbidden') if i.even?
     end
 
-    task.holdings_records.where(ht_retrieved: true).find_each.with_index do |rec, i|
+    req.holdings_records.where(ht_retrieved: true).find_each.with_index do |rec, i|
       rec.update(ht_record_url: nil, ht_error: '500 Internal Server Error') if i % 3 == 0
     end
   end
 end
 
-RSpec.shared_context('complete HoldingsTask with errors') do
-  include_context('complete HoldingsTask')
+RSpec.shared_context('complete HoldingsRequest with errors') do
+  include_context('complete HoldingsRequest')
 
   before do
-    task.holdings_records.find_each.with_index do |r, i|
+    req.holdings_records.find_each.with_index do |r, i|
       r.update(wc_symbols: nil, wc_error: '403 Forbidden') if i.even?
       r.update(ht_record_url: nil, ht_error: '500 Internal Server Error') if i % 3 == 0
     end

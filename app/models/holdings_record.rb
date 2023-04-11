@@ -1,3 +1,3 @@
 class HoldingsRecord < ActiveRecord::Base
-  belongs_to :holdings_task
+  belongs_to :holdings_request
 end

@@ -3,38 +3,38 @@ require 'support/holdings_contexts'
 
 module Holdings
   describe HathiTrustJob, type: :job do
-    include_context('HoldingsTask')
+    include_context('HoldingsRequest')
 
     describe 'success' do
 
       describe :perform do
-        it 'rejects a non-HathiTrust task' do
-          task.update(hathi: false)
+        it 'rejects a non-HathiTrust request' do
+          req.update(hathi: false)
 
-          expect { HathiTrustJob.perform_now(task) }.to raise_error(ArgumentError)
+          expect { HathiTrustJob.perform_now(req) }.to raise_error(ArgumentError)
         end
 
         it 'retrieves record URLs' do
 
           ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
 
-          HathiTrustJob.perform_now(task)
+          HathiTrustJob.perform_now(req)
 
-          task_records = task.holdings_records
+          request_records = req.holdings_records
           expected_count = record_urls_expected.size
-          expect(task_records.where(ht_retrieved: true).count).to eq(expected_count)
-          expect(task_records.where(ht_retrieved: false)).not_to exist
-          expect(task_records.where.not(ht_error: nil)).not_to exist
+          expect(request_records.where(ht_retrieved: true).count).to eq(expected_count)
+          expect(request_records.where(ht_retrieved: false)).not_to exist
+          expect(request_records.where.not(ht_error: nil)).not_to exist
 
-          expect(task.hathi_incomplete?).to eq(false)
+          expect(req.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
-            task_records.find_each(&method(:verify_ht_record_url))
+            request_records.find_each(&method(:verify_ht_record_url))
           end
         end
 
         it 'completes partially-completed jobs' do
-          task_records = task.holdings_records
+          request_records = req.holdings_records
 
           ht_batch_uris.each_with_index do |batch_uri, i|
             if i.odd?
@@ -43,25 +43,25 @@ module Holdings
               # Simulate previously-completed partial job
               batches[i].each do |oclc_number|
                 ht_record_url = record_urls_expected[oclc_number]
-                record = task_records.find_by!(oclc_number:)
+                record = request_records.find_by!(oclc_number:)
                 record.update(ht_retrieved: true, ht_record_url:)
               end
             end
           end
 
-          expect(task.hathi_incomplete?).to eq(true)
+          expect(req.hathi_incomplete?).to eq(true)
 
-          HathiTrustJob.perform_now(task)
+          HathiTrustJob.perform_now(req)
 
-          task_records = task.holdings_records
-          expect(task_records.where(ht_retrieved: true).count).to eq(record_urls_expected.size)
-          expect(task_records.where(ht_retrieved: false)).not_to exist
-          expect(task_records.where.not(ht_error: nil)).not_to exist
+          request_records = req.holdings_records
+          expect(request_records.where(ht_retrieved: true).count).to eq(record_urls_expected.size)
+          expect(request_records.where(ht_retrieved: false)).not_to exist
+          expect(request_records.where.not(ht_error: nil)).not_to exist
 
-          expect(task.hathi_incomplete?).to eq(false)
+          expect(req.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
-            task_records.find_each do |record|
+            request_records.find_each do |record|
               verify_ht_record_url(record)
             end
           end
@@ -76,17 +76,17 @@ module Holdings
             end
           end
 
-          HathiTrustJob.perform_now(task)
+          HathiTrustJob.perform_now(req)
 
-          task_records = task.holdings_records
-          expect(task_records.where(ht_retrieved: true).count).to eq(record_urls_expected.size)
-          expect(task_records.where(ht_retrieved: false)).not_to exist
+          request_records = req.holdings_records
+          expect(request_records.where(ht_retrieved: true).count).to eq(record_urls_expected.size)
+          expect(request_records.where(ht_retrieved: false)).not_to exist
 
-          expect(task.hathi_incomplete?).to eq(false)
+          expect(req.hathi_incomplete?).to eq(false)
 
           aggregate_failures do
             batches.each_with_index do |batch, i|
-              batch_ht_records = task_records.where(oclc_number: batch)
+              batch_ht_records = request_records.where(oclc_number: batch)
               expect(batch_ht_records.count).to eq(batch.size)
 
               if i.odd?
@@ -111,34 +111,34 @@ module Holdings
           stub_request(:get, ht_batch_uris[1]).to_raise(SignalException.new(:KILL))
 
           expect do
-            HathiTrustJob.perform_now(task)
+            HathiTrustJob.perform_now(req)
           end.to raise_error(SignalException)
 
-          task_records = task.holdings_records
-          expect(task_records.where.not(ht_error: nil)).not_to exist
+          request_records = req.holdings_records
+          expect(request_records.where.not(ht_error: nil)).not_to exist
 
-          batch_ht_records = task_records.where(oclc_number: batches[0])
+          batch_ht_records = request_records.where(oclc_number: batches[0])
           expect(batch_ht_records.count).to eq(batches[0].size)
           batch_ht_records.find_each do |record|
             verify_ht_record_url(record)
           end
 
-          expect(task.hathi_incomplete?).to eq(true)
+          expect(req.hathi_incomplete?).to eq(true)
 
           # Simulate retry after interrupt
           [1, 2].each do |i|
             stub_request(:get, ht_batch_uris[i]).to_return(body: ht_batch_json_bodies[i])
           end
 
-          HathiTrustJob.perform_now(task)
+          HathiTrustJob.perform_now(req)
 
-          expect(task_records.where(ht_record_url: nil)).not_to exist
-          expect(task_records.where.not(ht_error: nil)).not_to exist
+          expect(request_records.where(ht_record_url: nil)).not_to exist
+          expect(request_records.where.not(ht_error: nil)).not_to exist
 
-          expect(task.hathi_incomplete?).to eq(false)
+          expect(req.hathi_incomplete?).to eq(false)
 
           [1, 2].each do |i|
-            batch_ht_records = task_records.where(oclc_number: batches[i])
+            batch_ht_records = request_records.where(oclc_number: batches[i])
             expect(batch_ht_records.count).to eq(batches[i].size)
             batch_ht_records.find_each do |record|
               verify_ht_record_url(record)

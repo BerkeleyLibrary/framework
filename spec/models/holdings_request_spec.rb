@@ -2,10 +2,10 @@ require 'rails_helper'
 require 'support/uploaded_file_context'
 require 'support/holdings_contexts'
 
-RSpec.describe HoldingsTask, type: :model do
+RSpec.describe HoldingsRequest, type: :model do
   include_context('uploaded file')
   include_context('holdings data')
-  include_context 'purge HoldingsTasks'
+  include_context 'purge HoldingsRequests'
 
   # ------------------------------------------------------------
   # Fixture
@@ -59,33 +59,33 @@ RSpec.describe HoldingsTask, type: :model do
 
   describe 'validation' do
     it 'accepts valid attributes' do
-      task = HoldingsTask.new(**valid_attributes)
-      expect(task).to be_valid
+      req = HoldingsRequest.new(**valid_attributes)
+      expect(req).to be_valid
     end
 
     it 'requires an email address' do
       invalid_attributes = valid_attributes.except(:email)
-      task = HoldingsTask.new(**invalid_attributes)
-      expect(task).not_to be_valid
+      req = HoldingsRequest.new(**invalid_attributes)
+      expect(req).not_to be_valid
     end
 
     it 'requires a filename' do
       invalid_attributes = valid_attributes.except(:filename)
-      task = HoldingsTask.new(**invalid_attributes)
-      expect(task).not_to be_valid
+      req = HoldingsRequest.new(**invalid_attributes)
+      expect(req).not_to be_valid
     end
 
     it 'requires at least one option to be set' do
       invalid_attributes = valid_attributes.except(:rlf, :uc, :hathi)
-      task = HoldingsTask.new(**invalid_attributes)
-      expect(task).not_to be_valid
+      req = HoldingsRequest.new(**invalid_attributes)
+      expect(req).not_to be_valid
     end
   end
 
   describe :create do
     it 'accepts an input file' do
-      task = HoldingsTask.create!(**valid_attributes)
-      assert_same_contents(input_file_path, task.input_file)
+      req = HoldingsRequest.create!(**valid_attributes)
+      assert_same_contents(input_file_path, req.input_file)
     end
 
     it 'accepts an IO' do
@@ -96,8 +96,8 @@ RSpec.describe HoldingsTask, type: :model do
         content_type: mime_type_xlsx
       }
 
-      task = HoldingsTask.create!(**attributes)
-      assert_same_contents(input_file_path, task.input_file)
+      req = HoldingsRequest.create!(**attributes)
+      assert_same_contents(input_file_path, req.input_file)
     end
 
     context 'with invalid input file' do
@@ -114,11 +114,11 @@ RSpec.describe HoldingsTask, type: :model do
         context 'with an UploadedFile' do
           it 'marks the record invalid' do
             params = attributes.except(:filename)
-            task = HoldingsTask.create_from(**params)
-            expect(task).not_to be_persisted
-            expect(task.id).to be_nil
+            req = HoldingsRequest.create_from(**params)
+            expect(req).not_to be_persisted
+            expect(req.id).to be_nil
 
-            errors = task.errors[:input_file]
+            errors = req.errors[:input_file]
             expect(errors.size).to eq(1)
             expect(errors[0]).to match(%r{application/x-ole-storage})
 
@@ -136,11 +136,11 @@ RSpec.describe HoldingsTask, type: :model do
             }
 
             params = attributes.except(:filename)
-            task = HoldingsTask.create_from(**params)
-            expect(task).not_to be_persisted
-            expect(task.id).to be_nil
+            req = HoldingsRequest.create_from(**params)
+            expect(req).not_to be_persisted
+            expect(req.id).to be_nil
 
-            errors = task.errors[:input_file]
+            errors = req.errors[:input_file]
             expect(errors.size).to eq(1)
             expect(errors[0]).to match(%r{application/x-ole-storage})
 
@@ -152,10 +152,10 @@ RSpec.describe HoldingsTask, type: :model do
 
       describe :ensure_holdings_records! do
         it 'raises ArgumentError' do
-          task = HoldingsTask.create!(**attributes)
-          expect { task.ensure_holdings_records! }.to raise_error(ArgumentError)
+          req = HoldingsRequest.create!(**attributes)
+          expect { req.ensure_holdings_records! }.to raise_error(ArgumentError)
 
-          expect(task.holdings_records).not_to exist
+          expect(req.holdings_records).not_to exist
         end
       end
     end
@@ -167,17 +167,17 @@ RSpec.describe HoldingsTask, type: :model do
 
     context 'with an UploadedFile' do
       it 'attaches the file and creates holdings records' do
-        task = HoldingsTask.create_from(**cf_attributes)
-        expect(task).to be_persisted
+        req = HoldingsRequest.create_from(**cf_attributes)
+        expect(req).to be_persisted
 
-        input_file = task.input_file
+        input_file = req.input_file
         expect(input_file).to be_attached
         assert_same_contents(input_file_path, input_file)
 
-        task_records = task.holdings_records
-        expect(task_records.count).to eq(numbers_expected_sorted.size)
+        request_records = req.holdings_records
+        expect(request_records.count).to eq(numbers_expected_sorted.size)
 
-        wc_oclc_numbers = task_records.pluck(:oclc_number)
+        wc_oclc_numbers = request_records.pluck(:oclc_number)
         expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
       end
     end
@@ -190,17 +190,17 @@ RSpec.describe HoldingsTask, type: :model do
           content_type: mime_type_xlsx
         }
 
-        task = HoldingsTask.create_from(**cf_attributes)
-        expect(task).to be_persisted
+        req = HoldingsRequest.create_from(**cf_attributes)
+        expect(req).to be_persisted
 
-        input_file = task.input_file
+        input_file = req.input_file
         expect(input_file).to be_attached
         assert_same_contents(input_file_path, input_file)
 
-        task_records = task.holdings_records
-        expect(task_records.count).to eq(numbers_expected_sorted.size)
+        request_records = req.holdings_records
+        expect(request_records.count).to eq(numbers_expected_sorted.size)
 
-        wc_oclc_numbers = task_records.pluck(:oclc_number)
+        wc_oclc_numbers = request_records.pluck(:oclc_number)
         expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
       end
     end
@@ -209,16 +209,16 @@ RSpec.describe HoldingsTask, type: :model do
 
   describe :destroy do
     it 'removes holdings records' do
-      task = HoldingsTask.create!(**valid_attributes)
-      task.ensure_holdings_records!
-      expect(task.holdings_records).to exist # just to be sure
+      req = HoldingsRequest.create!(**valid_attributes)
+      req.ensure_holdings_records!
+      expect(req.holdings_records).to exist # just to be sure
 
-      task.destroy!
-      expect(task.holdings_records).not_to exist
+      req.destroy!
+      expect(req.holdings_records).not_to exist
     end
 
     it 'removes attached files' do
-      task = HoldingsTask.create!(
+      req = HoldingsRequest.create!(
         email: 'me@example.test',
         filename: input_file_basename,
         rlf: true,
@@ -234,12 +234,12 @@ RSpec.describe HoldingsTask, type: :model do
         }
       )
 
-      attachments = [task.input_file, task.output_file]
+      attachments = [req.input_file, req.output_file]
       storage_paths = attachments.map { |f| ActiveStorage::Blob.service.path_for(f.key) }
 
       storage_paths.each { |path| expect(File.exist?(path)).to eq(true) } # just to be sure
 
-      task.destroy!
+      req.destroy!
 
       storage_paths.each { |path| expect(File.exist?(path)).to eq(false) }
     end
@@ -247,36 +247,36 @@ RSpec.describe HoldingsTask, type: :model do
 
   describe :search_wc_symbols do
     it 'returns the symbols' do
-      task = HoldingsTask.create!(**valid_attributes)
+      req = HoldingsRequest.create!(**valid_attributes)
       symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::ALL
-      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
 
     it 'is not affected by the presence/absence of :hathi' do
       attributes = valid_attributes.except(:hathi)
-      task = HoldingsTask.create!(**attributes)
+      req = HoldingsRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::ALL
-      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
 
-    it 'returns nil for HathiTrust-only tasks' do
+    it 'returns nil for HathiTrust-only requests' do
       attributes = valid_attributes.except(:rlf, :uc)
-      task = HoldingsTask.create!(**attributes)
-      expect(task.search_wc_symbols).to be_nil
+      req = HoldingsRequest.create!(**attributes)
+      expect(req.search_wc_symbols).to be_nil
     end
 
-    it 'returns RLF symbols for RLF tasks' do
+    it 'returns RLF symbols for RLF requests' do
       attributes = valid_attributes.except(:uc)
-      task = HoldingsTask.create!(**attributes)
+      req = HoldingsRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF
-      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
 
-    it 'returns UC symbols for UC tasks' do
+    it 'returns UC symbols for UC requests' do
       attributes = valid_attributes.except(:rlf)
-      task = HoldingsTask.create!(**attributes)
+      req = HoldingsRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::UC
-      expect(task.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
   end
 
@@ -284,35 +284,35 @@ RSpec.describe HoldingsTask, type: :model do
     let(:numbers_expected_sorted) { oclc_numbers_expected.sort }
 
     it 'attaches holdings records' do
-      task = HoldingsTask.create!(**valid_attributes)
-      task.ensure_holdings_records!
+      req = HoldingsRequest.create!(**valid_attributes)
+      req.ensure_holdings_records!
 
-      task_records = task.holdings_records
-      expect(task_records.count).to eq(numbers_expected_sorted.size)
+      request_records = req.holdings_records
+      expect(request_records.count).to eq(numbers_expected_sorted.size)
 
-      wc_oclc_numbers = task_records.pluck(:oclc_number)
+      wc_oclc_numbers = request_records.pluck(:oclc_number)
       expect(wc_oclc_numbers.sort).to eq(numbers_expected_sorted)
 
-      expect(task_records.where(wc_retrieved: true)).not_to exist
-      expect(task_records.where(ht_retrieved: true)).not_to exist
+      expect(request_records.where(wc_retrieved: true)).not_to exist
+      expect(request_records.where(ht_retrieved: true)).not_to exist
     end
 
     it 'is idempotent' do
-      task = HoldingsTask.create!(**valid_attributes)
-      2.times { task.ensure_holdings_records! }
+      req = HoldingsRequest.create!(**valid_attributes)
+      2.times { req.ensure_holdings_records! }
 
       expected_count = oclc_numbers_expected.size
-      expect(task.holdings_records.count).to eq(expected_count)
+      expect(req.holdings_records.count).to eq(expected_count)
     end
 
     it 'ignores duplicate OCLC numbers' do
       attributes = valid_attributes.except(:input_file)
       attributes[:input_file] = uploaded_file_from('spec/data/holdings/input-file-duplicates.xlsx')
-      task = HoldingsTask.create!(**attributes)
-      task.ensure_holdings_records!
+      req = HoldingsRequest.create!(**attributes)
+      req.ensure_holdings_records!
 
       expected_count = oclc_numbers_expected.size
-      expect(task.holdings_records.count).to eq(expected_count)
+      expect(req.holdings_records.count).to eq(expected_count)
     end
 
     it 'handles large numbers of records' do
@@ -338,10 +338,10 @@ RSpec.describe HoldingsTask, type: :model do
         attributes = valid_attributes.except(:input_file)
         attributes[:input_file] = input_file
 
-        task = HoldingsTask.create!(**attributes)
-        task.ensure_holdings_records!
+        req = HoldingsRequest.create!(**attributes)
+        req.ensure_holdings_records!
 
-        expect(task.holdings_records.count).to eq(expected_count)
+        expect(req.holdings_records.count).to eq(expected_count)
       end
     end
   end
@@ -350,9 +350,9 @@ RSpec.describe HoldingsTask, type: :model do
     context 'with attachment uploaded' do
       it 'yields a temporary file containing the input data' do
         expected_blob = File.binread(input_file_path)
-        task = HoldingsTask.create!(**valid_attributes)
+        req = HoldingsRequest.create!(**valid_attributes)
 
-        actual_blob = task.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
+        actual_blob = req.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
         expect(actual_blob).to eq(expected_blob)
       end
     end
@@ -360,9 +360,9 @@ RSpec.describe HoldingsTask, type: :model do
     context 'before attachment uploaded' do
       it 'yields a temporary file containing the input data' do
         expected_blob = File.binread(input_file_path)
-        HoldingsTask.transaction do
-          task = HoldingsTask.create(**valid_attributes)
-          actual_blob = task.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
+        HoldingsRequest.transaction do
+          req = HoldingsRequest.create(**valid_attributes)
+          actual_blob = req.with_input_tmpfile { |tmpfile| File.binread(tmpfile.path) }
           expect(actual_blob).to eq(expected_blob)
         end
       end
@@ -370,21 +370,21 @@ RSpec.describe HoldingsTask, type: :model do
   end
 
   describe :each_input_oclc do
-    attr_reader :task
+    attr_reader :req
 
     context 'success' do
       before do
-        @task = HoldingsTask.create!(**valid_attributes)
+        @req = HoldingsRequest.create!(**valid_attributes)
       end
 
       it 'returns an enum' do
-        en = task.each_input_oclc
+        en = req.each_input_oclc
         expect(en).to be_an(Enumerator)
         expect(en.to_a).to eq(oclc_numbers_expected)
       end
 
       it 'yields each OCLC number' do
-        expect { |b| task.each_input_oclc(&b) }
+        expect { |b| req.each_input_oclc(&b) }
           .to yield_successive_args(*oclc_numbers_expected)
       end
     end
@@ -395,21 +395,21 @@ RSpec.describe HoldingsTask, type: :model do
         attributes = valid_attributes.except(:input_file)
         attributes[:input_file] = input_file
 
-        task = HoldingsTask.create!(**attributes)
-        expect(task.each_input_oclc.to_a).to eq([])
+        req = HoldingsRequest.create!(**attributes)
+        expect(req.each_input_oclc.to_a).to eq([])
       end
     end
   end
 
   describe :ensure_output_file! do
-    include_context 'complete HoldingsTask'
+    include_context 'complete HoldingsRequest'
 
     it 'writes the output file' do
-      task.ensure_output_file!
+      req.ensure_output_file!
 
-      expect(task.output_file).to be_attached
+      expect(req.output_file).to be_attached
 
-      ss = task.output_file.open do |tmpfile|
+      ss = req.output_file.open do |tmpfile|
         BerkeleyLibrary::Util::XLSX::Spreadsheet.new(tmpfile.path)
       end
 
@@ -418,14 +418,14 @@ RSpec.describe HoldingsTask, type: :model do
 
     context 'with existing output' do
       before do
-        task.send(:write_output_file!)
+        req.send(:write_output_file!)
       end
 
       it 'does not re-create an existing output file' do
         expect(BerkeleyLibrary::Holdings::XLSXWriter).not_to receive(:new)
 
-        task.ensure_output_file!
-        assert_output_complete!(task)
+        req.ensure_output_file!
+        assert_output_complete!(req)
       end
     end
   end
@@ -433,35 +433,35 @@ RSpec.describe HoldingsTask, type: :model do
   describe :completed_count do
     shared_examples 'counting completed records' do
       it 'returns the count of completed records' do
-        completed_records = task.holdings_records.where(
+        completed_records = req.holdings_records.where(
           wc_retrieved: true,
           ht_retrieved: true
         )
         expected_count = completed_records.count
-        expect(task.completed_count).to eq(expected_count)
+        expect(req.completed_count).to eq(expected_count)
       end
     end
 
     context 'all complete' do
       context 'without errors' do
-        include_context 'complete HoldingsTask'
+        include_context 'complete HoldingsRequest'
         it_behaves_like 'counting completed records'
       end
 
       context 'with errors' do
-        include_context 'complete HoldingsTask with errors'
+        include_context 'complete HoldingsRequest with errors'
         it_behaves_like 'counting completed records'
       end
     end
 
     context 'partially complete' do
       context 'without errors' do
-        include_context('incomplete HoldingsTask')
+        include_context('incomplete HoldingsRequest')
         it_behaves_like 'counting completed records'
       end
 
       context 'with errors' do
-        include_context 'incomplete HoldingsTask with errors'
+        include_context 'incomplete HoldingsRequest with errors'
         it_behaves_like 'counting completed records'
       end
     end
@@ -470,18 +470,18 @@ RSpec.describe HoldingsTask, type: :model do
   describe :error_count do
     shared_examples 'counting records with errors' do
       it 'counts both HathiTrust and WorldCat errors' do
-        expected_count = task.holdings_records.where.not(wc_error: nil, ht_error: nil).count
-        expect(task.error_count).to eq(expected_count)
+        expected_count = req.holdings_records.where.not(wc_error: nil, ht_error: nil).count
+        expect(req.error_count).to eq(expected_count)
       end
     end
 
     context 'complete' do
-      include_context 'complete HoldingsTask with errors'
+      include_context 'complete HoldingsRequest with errors'
       it_behaves_like 'counting records with errors'
     end
 
     context 'incomplete' do
-      include_context 'incomplete HoldingsTask with errors'
+      include_context 'incomplete HoldingsRequest with errors'
       it_behaves_like 'counting records with errors'
     end
   end

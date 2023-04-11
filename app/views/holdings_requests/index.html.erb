@@ -1,0 +1,45 @@
+<h1>All holdings requests</h1>
+
+<div id="holdings_requests">
+  <table class="holdings-request holdings-request-list">
+    <thead>
+      <tr>
+        <td></td>
+        <th scope="col">Email</th>
+        <th scope="col">Input file</th>
+        <th scope="col">RLF</th>
+        <th scope="col">UC</th>
+        <th scope="col">HT</th>
+        <th scope="col"># Records</th>
+        <th scope="col"># Complete</th>
+        <th scope="col"># Errors</th>
+        <th scope="col">Output file</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @holdings_requests.each do |request| %>
+      <tr id="<%= dom_id request %>">
+        <td><%= link_to 'View', request %></td>
+        <td><%= request.email %></td>
+        <td><%= link_to(request.filename, rails_blob_path(request.input_file, disposition: 'attachment')) %></td>
+        <% [:rlf, :uc, :hathi].each do |opt| %>
+          <td>
+            <% value = request.send(opt) || false %>
+            <%= t("activerecord.attributes.holdings_request.include.#{value}") %>
+          </td>
+        <% end %>
+        <td><%= request.record_count %></td>
+        <td><%= request.completed_count %></td>
+        <td><%= request.error_count %></td>
+        <td>
+          <% if request.output_file.attached? %>
+            <%= link_to(request.output_filename, rails_blob_path(request.output_file, disposition: 'attachment')) %>
+          <% else %>
+            (none)
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

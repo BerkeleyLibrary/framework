@@ -3,37 +3,37 @@ require 'support/holdings_contexts'
 
 module Holdings
   describe WorldCatJob, type: :job do
-    include_context('HoldingsTask')
+    include_context('HoldingsRequest')
 
     describe :perform do
-      it 'rejects a non-Worldcat task' do
-        task.update(rlf: false, uc: false)
+      it 'rejects a non-Worldcat request' do
+        req.update(rlf: false, uc: false)
 
-        expect { WorldCatJob.perform_now(task) }.to raise_error(ArgumentError)
+        expect { WorldCatJob.perform_now(req) }.to raise_error(ArgumentError)
       end
 
       it 'retrieves the holdings' do
-        task_records = task.holdings_records
+        request_records = req.holdings_records
 
         oclc_numbers_expected.each do |oclc_number|
           stub_wc_request_for(oclc_number)
         end
 
-        WorldCatJob.perform_now(task)
+        WorldCatJob.perform_now(req)
 
         expected_count = holdings_by_oclc_num.size
-        expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
-        expect(task_records.where(wc_retrieved: false)).not_to exist
+        expect(request_records.where(wc_retrieved: true).count).to eq(expected_count)
+        expect(request_records.where(wc_retrieved: false)).not_to exist
 
-        expect(task.wc_incomplete?).to eq(false)
+        expect(req.wc_incomplete?).to eq(false)
 
-        task_records.find_each do |record|
+        request_records.find_each do |record|
           verify_wc_symbols(record)
         end
       end
 
       it 'completes partially-completed jobs' do
-        task_records = task.holdings_records
+        request_records = req.holdings_records
 
         # Simulate previously-completed partial job
         oclc_numbers_expected.each_with_index do |oclc_number, i|
@@ -41,28 +41,28 @@ module Holdings
             stub_wc_request_for(oclc_number)
           else
             symbols_expected = holdings_by_oclc_num[oclc_number]
-            wc_record = task_records.find_by!(oclc_number:)
+            wc_record = request_records.find_by!(oclc_number:)
             wc_record.update(wc_retrieved: true, wc_symbols: symbols_expected.join(','))
           end
         end
 
-        expect(task.wc_incomplete?).to eq(true)
+        expect(req.wc_incomplete?).to eq(true)
 
-        WorldCatJob.perform_now(task)
+        WorldCatJob.perform_now(req)
 
         expected_count = holdings_by_oclc_num.size
-        expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
-        expect(task_records.where(wc_retrieved: false)).not_to exist
+        expect(request_records.where(wc_retrieved: true).count).to eq(expected_count)
+        expect(request_records.where(wc_retrieved: false)).not_to exist
 
-        expect(task.wc_incomplete?).to eq(false)
+        expect(req.wc_incomplete?).to eq(false)
 
-        task_records.find_each do |record|
+        request_records.find_each do |record|
           verify_wc_symbols(record)
         end
       end
 
       it 'handles network errors' do
-        task_records = task.holdings_records
+        request_records = req.holdings_records
 
         oclc_numbers_expected.each_with_index do |oclc_number, i|
           if i.odd?
@@ -73,16 +73,16 @@ module Holdings
           end
         end
 
-        WorldCatJob.perform_now(task)
+        WorldCatJob.perform_now(req)
 
-        expect(task.wc_incomplete?).to eq(false)
+        expect(req.wc_incomplete?).to eq(false)
 
         expected_count = holdings_by_oclc_num.size
-        expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
-        expect(task_records.where(wc_retrieved: false)).not_to exist
+        expect(request_records.where(wc_retrieved: true).count).to eq(expected_count)
+        expect(request_records.where(wc_retrieved: false)).not_to exist
 
         oclc_numbers_expected.each_with_index do |oclc_number, i|
-          record = task_records.find_by!(oclc_number:)
+          record = request_records.find_by!(oclc_number:)
           if i.odd?
             verify_wc_symbols(record)
           else
@@ -107,29 +107,29 @@ module Holdings
         stub_request(:get, req_midpoint.uri).with(query: req_midpoint.params).to_raise(SignalException.new(:KILL))
 
         expect do
-          WorldCatJob.perform_now(task)
+          WorldCatJob.perform_now(req)
         end.to raise_error(SignalException)
 
-        task_records = task.holdings_records
-        expect(task_records.where(wc_retrieved: true).count).to eq(first_batch.size)
-        expect(task_records.where.not(wc_error: nil)).not_to exist
+        request_records = req.holdings_records
+        expect(request_records.where(wc_retrieved: true).count).to eq(first_batch.size)
+        expect(request_records.where.not(wc_error: nil)).not_to exist
 
-        expect(task.wc_incomplete?).to eq(true)
+        expect(req.wc_incomplete?).to eq(true)
 
         # Simulate retry after interrupt
         second_batch.each do |oclc_number|
           stub_wc_request_for(oclc_number)
         end
 
-        WorldCatJob.perform_now(task)
+        WorldCatJob.perform_now(req)
 
         expected_count = holdings_by_oclc_num.size
-        expect(task_records.where(wc_retrieved: true).count).to eq(expected_count)
-        expect(task_records.where(wc_retrieved: false)).not_to exist
+        expect(request_records.where(wc_retrieved: true).count).to eq(expected_count)
+        expect(request_records.where(wc_retrieved: false)).not_to exist
 
-        expect(task.wc_incomplete?).to eq(false)
+        expect(req.wc_incomplete?).to eq(false)
 
-        task_records.find_each(&method(:verify_wc_symbols))
+        request_records.find_each(&method(:verify_wc_symbols))
       end
     end
   end

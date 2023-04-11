@@ -2,15 +2,15 @@ module Holdings
   class WorldCatJob < HoldingsJobBase
     include BerkeleyLibrary::Holdings::WorldCat
 
-    # Finds unprocessed HathiTrust records for the specified task, retrieves
+    # Finds unprocessed HathiTrust records for the specified request, retrieves
     # the WorldCat holdings for each, and updates the records accordingly.
     #
-    # @param holdings_task [HoldingsTask] the task
-    def perform(holdings_task)
-      raise ArgumentError, "Not a WorldCat holdings task: #{holdings_task.id}" unless holdings_task.world_cat?
+    # @param holdings_request [HoldingsRequest] the request
+    def perform(holdings_request)
+      raise ArgumentError, "Not a WorldCat holdings request: #{holdings_request.id}" unless holdings_request.world_cat?
 
-      search_wc_symbols = holdings_task.search_wc_symbols
-      pending_wc_records(holdings_task).find_each do |wc_record|
+      search_wc_symbols = holdings_request.search_wc_symbols
+      pending_wc_records(holdings_request).find_each do |wc_record|
         update_record(wc_record, search_wc_symbols)
       end
     end
@@ -30,12 +30,12 @@ module Holdings
       req.execute
     end
 
-    # Gets the pending WorldCat records for the specified task
+    # Gets the pending WorldCat records for the specified request
     #
-    # @param holdings_task [HoldingsTask] the task
+    # @param holdings_request [HoldingsRequest] the request
     # @return ActiveRecord::Relation the records for which holdings have not yet been retrieved
-    def pending_wc_records(holdings_task)
-      holdings_task
+    def pending_wc_records(holdings_request)
+      holdings_request
         .holdings_records
         .where(wc_retrieved: false)
     end

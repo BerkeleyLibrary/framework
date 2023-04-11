@@ -2,38 +2,38 @@ module Holdings
   class HathiTrustJob < HoldingsJobBase
     include BerkeleyLibrary::Holdings::HathiTrust
 
-    # Finds unprocessed HathiTrust records for the specified task, retrieves
+    # Finds unprocessed HathiTrust records for the specified request, retrieves
     # the record URLs for each, and updates the records accordingly.
     #
-    # @param holdings_task [HoldingsTask] the task
-    def perform(holdings_task)
-      raise ArgumentError, "Not a HathiTrust holdings task: #{holdings_task.id}" unless holdings_task.hathi?
+    # @param holdings_request [HoldingsRequest] the request
+    def perform(holdings_request)
+      raise ArgumentError, "Not a HathiTrust holdings request: #{holdings_request.id}" unless holdings_request.hathi?
 
-      each_batch_for(holdings_task) do |batch|
+      each_batch_for(holdings_request) do |batch|
         process_batch(batch)
       end
     end
 
     private
 
-    # Gets the pending HathiTrust records for the specified task
+    # Gets the pending HathiTrust records for the specified request
     #
-    # @param holdings_task [HoldingsTask] the task
+    # @param holdings_request [HoldingsRequest] the request
     # @return ActiveRecord::Relation the records for which URLs have not yet been retrieved
-    def pending_ht_records(holdings_task)
-      holdings_task
+    def pending_ht_records(holdings_request)
+      holdings_request
         .holdings_records
         .where(ht_retrieved: false)
     end
 
-    # Finds unprocessed HathiTrust records for the specified task and yields them
+    # Finds unprocessed HathiTrust records for the specified request and yields them
     # in batches suitable for {{RecordUrlBatchRequest}}.
     #
-    # @param holdings_task [HoldingsTask] the task to process records for.
+    # @param holdings_request [HoldingsRequest] the request to process records for.
     # @yield batch [Array<HoldingsHathiTrustRecord>] each batch of records to process.
-    def each_batch_for(holdings_task, &)
+    def each_batch_for(holdings_request, &)
       batch_size = RecordUrlBatchRequest::MAX_BATCH_SIZE
-      pending_ht_records(holdings_task)
+      pending_ht_records(holdings_request)
         .find_in_batches(batch_size:, &)
     end
 

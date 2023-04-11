@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 # TODO: Move some code out of this class
-class HoldingsTask < ActiveRecord::Base
+class HoldingsRequest < ActiveRecord::Base
   include BerkeleyLibrary::Holdings
 
   # ------------------------------------------------------------
@@ -31,15 +31,15 @@ class HoldingsTask < ActiveRecord::Base
   # Class methods
 
   class << self
-    # Creates a new HoldingsTask, validates the attached input file, and
+    # Creates a new HoldingsRequest, validates the attached input file, and
     # creates holdings records for each OCLC number.
     def create_from(email:, input_file:, rlf: false, uc: false, hathi: false)
-      task = nil
+      request = nil
       transaction(requires_new: true) do
-        task = create_with_records(email:, input_file:, rlf:, uc:, hathi:)
-        raise ActiveRecord::Rollback if task.errors.any?
+        request = create_with_records(email:, input_file:, rlf:, uc:, hathi:)
+        raise ActiveRecord::Rollback if request.errors.any?
       end
-      task
+      request
     end
 
     private
@@ -47,11 +47,11 @@ class HoldingsTask < ActiveRecord::Base
     def create_with_records(email:, input_file:, rlf:, uc:, hathi:)
       filename = filename_from(input_file)
 
-      create(email:, input_file:, rlf:, uc:, hathi:, filename:).tap do |task|
-        task.ensure_holdings_records! if task.persisted?
+      create(email:, input_file:, rlf:, uc:, hathi:, filename:).tap do |request|
+        request.ensure_holdings_records! if request.persisted?
       rescue StandardError => e
         logger.error("Error creating holdings records from input file #{filename}", e)
-        task.errors.add(:input_file, clean_input_file_message(e.message, input_file)) if task
+        request.errors.add(:input_file, clean_input_file_message(e.message, input_file)) if request
       end
     end
 
@@ -118,7 +118,7 @@ class HoldingsTask < ActiveRecord::Base
 
   def ensure_holdings_records!
     all_rows = each_input_oclc.map do |oclc_num|
-      { holdings_task_id: id, oclc_number: oclc_num }
+      { holdings_request_id: id, oclc_number: oclc_num }
     end
     raise ArgumentError, MSG_NO_OCLC_NUMBERS if all_rows.empty?
 
