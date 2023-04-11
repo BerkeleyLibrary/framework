@@ -10,7 +10,9 @@ module Holdings
     before do
       @batch = instance_double(GoodJob::Batch).tap do |batch|
         allow(batch).to receive(:id).and_return('test-batch-id')
-        allow(batch).to receive(:properties).and_return({ task: @task })
+        allow(batch).to receive(:properties) do
+          { task: @task }
+        end
       end
 
       @params = { event: :finish }
@@ -63,15 +65,7 @@ module Holdings
       end
 
       context 'with errors' do
-        before do
-          task.holdings_records.find_each.with_index do |r, i|
-            if i.even?
-              r.update(wc_symbols: nil, wc_error: '403 Forbidden')
-            elsif i % 3 == 0
-              r.update(ht_record_url: nil, ht_error: '500 Internal Server Error')
-            end
-          end
-        end
+        include_context('complete HoldingsTask with errors')
 
         it 'sends email' do
           expect { ResultsJob.perform_now(batch, params) }.to(change { ActionMailer::Base.deliveries.count })

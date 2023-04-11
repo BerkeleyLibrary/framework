@@ -232,3 +232,53 @@ RSpec.shared_context('complete HoldingsTask') do
     assert_complete!(ss)
   end
 end
+
+RSpec.shared_context('incomplete HoldingsTask') do
+  include_context('HoldingsTask')
+
+  before do
+    task.holdings_records.find_each.with_index do |rec, i|
+      oclc_number = rec.oclc_number
+
+      options = {}.tap do |opts|
+        if i.even?
+          opts[:wc_retrieved] = true
+          opts[:wc_symbols] = holdings_by_oclc_num[oclc_number].join(',')
+        end
+
+        if i % 3 == 0
+          opts[:ht_retrieved] = true
+          opts[:ht_record_url] = record_urls_expected[oclc_number]
+        end
+      end
+
+      rec.update(**options) unless options.empty?
+    end
+    expect(task).to be_incomplete # just to be sure
+  end
+end
+
+RSpec.shared_context('incomplete HoldingsTask with errors') do
+  include_context('incomplete HoldingsTask')
+
+  before do
+    task.holdings_records.where(wc_retrieved: true).find_each.with_index do |rec, i|
+      rec.update(wc_symbols: nil, wc_error: '403 Forbidden') if i.even?
+    end
+
+    task.holdings_records.where(ht_retrieved: true).find_each.with_index do |rec, i|
+      rec.update(ht_record_url: nil, ht_error: '500 Internal Server Error') if i % 3 == 0
+    end
+  end
+end
+
+RSpec.shared_context('complete HoldingsTask with errors') do
+  include_context('complete HoldingsTask')
+
+  before do
+    task.holdings_records.find_each.with_index do |r, i|
+      r.update(wc_symbols: nil, wc_error: '403 Forbidden') if i.even?
+      r.update(ht_record_url: nil, ht_error: '500 Internal Server Error') if i % 3 == 0
+    end
+  end
+end

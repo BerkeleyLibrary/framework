@@ -110,7 +110,7 @@ RSpec.describe HoldingsTask, type: :model do
         @attributes = valid_attributes.except(:input_file).merge(input_file:)
       end
 
-      describe :create_from! do
+      describe :create_from do
         context 'with an UploadedFile' do
           it 'marks the record invalid' do
             params = attributes.except(:filename)
@@ -147,6 +147,7 @@ RSpec.describe HoldingsTask, type: :model do
             expect(ActiveStorage::Blob).not_to exist
           end
         end
+
       end
 
       describe :ensure_holdings_records! do
@@ -426,6 +427,62 @@ RSpec.describe HoldingsTask, type: :model do
         task.ensure_output_file!
         assert_output_complete!(task)
       end
+    end
+  end
+
+  describe :completed_count do
+    shared_examples 'counting completed records' do
+      it 'returns the count of completed records' do
+        completed_records = task.holdings_records.where(
+          wc_retrieved: true,
+          ht_retrieved: true
+        )
+        expected_count = completed_records.count
+        expect(task.completed_count).to eq(expected_count)
+      end
+    end
+
+    context 'all complete' do
+      context 'without errors' do
+        include_context 'complete HoldingsTask'
+        it_behaves_like 'counting completed records'
+      end
+
+      context 'with errors' do
+        include_context 'complete HoldingsTask with errors'
+        it_behaves_like 'counting completed records'
+      end
+    end
+
+    context 'partially complete' do
+      context 'without errors' do
+        include_context('incomplete HoldingsTask')
+        it_behaves_like 'counting completed records'
+      end
+
+      context 'with errors' do
+        include_context 'incomplete HoldingsTask with errors'
+        it_behaves_like 'counting completed records'
+      end
+    end
+  end
+
+  describe :error_count do
+    shared_examples 'counting records with errors' do
+      it 'counts both HathiTrust and WorldCat errors' do
+        expected_count = task.holdings_records.where.not(wc_error: nil, ht_error: nil).count
+        expect(task.error_count).to eq(expected_count)
+      end
+    end
+
+    context 'complete' do
+      include_context 'complete HoldingsTask with errors'
+      it_behaves_like 'counting records with errors'
+    end
+
+    context 'incomplete' do
+      include_context 'incomplete HoldingsTask with errors'
+      it_behaves_like 'counting records with errors'
     end
   end
 end

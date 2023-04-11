@@ -35,7 +35,7 @@ class HoldingsTask < ActiveRecord::Base
     # creates holdings records for each OCLC number.
     def create_from(email:, input_file:, rlf: false, uc: false, hathi: false)
       task = nil
-      transaction do
+      transaction(requires_new: true) do
         task = create_with_records(email:, input_file:, rlf:, uc:, hathi:)
         raise ActiveRecord::Rollback if task.errors.any?
       end
@@ -94,24 +94,23 @@ class HoldingsTask < ActiveRecord::Base
   end
 
   def record_count
-    @record_count ||= holdings_records.count
+    holdings_records.count
   end
 
   def completed_count
-    @completed_count ||= begin
-      conditions = {}
-      conditions[:ht_retrieved] = true if hathi?
-      conditions[:wc_retrieved] = true if world_cat?
-      holdings_records.where(**conditions).count
+    conditions = {}.tap do |cnds|
+      cnds[:ht_retrieved] = true if hathi?
+      cnds[:wc_retrieved] = true if world_cat?
     end
+    holdings_records.where(**conditions).count
   end
 
   def error_count
-    @error_count ||= begin
-      count_hathi = hathi? ? holdings_records.where.not(ht_error: nil).count : 0
-      count_wc = world_cat? ? holdings_records.where.not(wc_error: nil).count : 0
-      count_hathi + count_wc
+    conditions = [].tap do |cnds|
+      cnds << holdings_records.where.not(ht_error: nil) if hathi?
+      cnds << holdings_records.where.not(wc_error: nil) if world_cat?
     end
+    conditions.inject { |rel, cnd| rel.or(cnd) }.count
   end
 
   # ------------------------------------------------------------

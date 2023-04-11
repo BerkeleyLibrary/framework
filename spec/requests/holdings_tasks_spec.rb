@@ -48,6 +48,62 @@ RSpec.describe HoldingsTasksController, type: :request do
   #   end
   # end
 
+  describe :index do
+    it 'lists tasks' do
+      get holdings_tasks_url
+      expect(response).to be_successful
+
+      attrs = %i[email record_count completed_count error_count]
+      HoldingsTask.find_each do |task|
+        attrs.each do |attr|
+          expected_value = task.send(attr)
+          expect(response.body).to include(expected_value.to_s)
+        end
+      end
+    end
+  end
+
+  describe :show do
+    include_context 'HoldingsTask'
+
+    it 'displays a task' do
+      get holdings_task_url(task)
+      expect(response).to be_successful
+    end
+
+    context 'complete' do
+      include_context 'complete HoldingsTask'
+
+      it 'includes download link for results' do
+        get holdings_task_url(task)
+        expect(response).to be_successful
+        expected_url = rails_blob_path(task.input_file, disposition: 'attachment')
+        expect(response.body).to include(expected_url)
+      end
+
+      context 'with errors' do
+        include_context 'complete HoldingsTask with errors'
+
+        it 'includes error counts' do
+          get holdings_task_url(task)
+          expect(response).to be_successful
+
+          %i[record_count completed_count error_count].each do |attr|
+            expected_value = task.send(attr)
+            expect(response.body).to include(expected_value.to_s)
+          end
+        end
+      end
+    end
+  end
+
+  describe :new do
+    it 'displays the form' do
+      get new_holdings_task_url
+      expect(response).to be_successful
+    end
+  end
+
   describe :create do
     include_context('HoldingsTask')
 
@@ -101,6 +157,15 @@ RSpec.describe HoldingsTasksController, type: :request do
 
     context 'failure' do
       shared_examples 'an invalid request' do
+
+        let(:expected_errors) do
+          create_opts = HoldingsTasksController::REQUIRED_PARAMS
+            .to_h { |p| [p, nil] }
+            .merge(invalid_attributes)
+          invalid_task = HoldingsTask.create_from(**create_opts)
+          invalid_task.errors
+        end
+
         it 'does not create a task or schedule a job' do
           expect(GoodJob::Batch).not_to receive(:enqueue)
 
@@ -112,10 +177,14 @@ RSpec.describe HoldingsTasksController, type: :request do
             post holdings_tasks_url, params: { holdings_task: invalid_attributes }
           end.not_to change(HoldingsTask, :count)
 
+          expect(response).not_to be_successful
+          expected_errors.each do |err|
+            msg_html = CGI.escapeHTML(err.message)
+            expect(response.body).to include(msg_html)
+          end
+
           expect(GoodJob::BatchRecord.exists?).to eq(false)
         end
-
-        # TODO: test UI
       end
 
       context 'email not present' do
