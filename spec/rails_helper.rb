@@ -7,6 +7,8 @@ require 'ssh_helper'
 require 'alma_helper'
 
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
+
   config.use_transactional_fixtures = false
 
   config.before(:suite) do

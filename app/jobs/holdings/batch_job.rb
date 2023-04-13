@@ -15,7 +15,9 @@ module Holdings
       end
 
       def start_time
-        Date.tomorrow.midnight - 45.minutes
+        current_time_pacific = DateTime.current.in_time_zone('America/Los_Angeles')
+        tomorrow_midnight_pacific = current_time_pacific.tomorrow.midnight
+        tomorrow_midnight_pacific - 45.minutes
       end
     end
   end

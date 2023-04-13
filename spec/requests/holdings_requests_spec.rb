@@ -4,6 +4,8 @@ require 'support/async_job_context'
 require 'support/holdings_contexts'
 
 RSpec.describe HoldingsRequestsController, type: :request do
+  job_classes = [Holdings::BatchJob, Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob]
+  job_classes.each { |job_class| include_context('async execution', job_class:) }
 
   describe :index do
     it 'lists requests' do
@@ -74,13 +76,40 @@ RSpec.describe HoldingsRequestsController, type: :request do
       }
     end
 
-    job_classes = [Holdings::BatchJob, Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob]
-    job_classes.each { |job_class| include_context('async execution', job_class:) }
+    def assert_jobs_run(job_classes)
+      job_classes.each { |jc| await_performed(jc) }
+
+      expect(GoodJob::BatchRecord.exists?).to eq(true)
+
+      aggregate_failures do
+        job_classes.each do |jc|
+          good_jobs = GoodJob::Job.job_class(jc.name)
+          expect(good_jobs.count).to eq(1)
+
+          good_job = good_jobs.take
+          expect(good_job.error).to be_nil
+          expect(good_job.finished_at).not_to be_nil
+        end
+      end
+    end
+
+    def assert_holdings_retrieved
+      request_records = req.holdings_records
+      expect(request_records.count).to eq(oclc_numbers_expected.size)
+
+      aggregate_failures do
+        request_records.find_each do |record|
+          verify_ht_record_url(record)
+          verify_wc_symbols(record)
+        end
+      end
+    end
 
     shared_examples 'an invalid request' do
+      attr_reader :user
 
       let(:expected_errors) do
-        invalid_request = HoldingsRequest.create_from(**invalid_attributes)
+        invalid_request = HoldingsRequest.create_from(**invalid_attributes, user:)
         invalid_request.errors
       end
 
@@ -105,21 +134,74 @@ RSpec.describe HoldingsRequestsController, type: :request do
       end
     end
 
+    shared_context 'stubbing API calls' do
+      before do
+        oclc_numbers_expected.each { |oclc_number| stub_wc_request_for(oclc_number) }
+        ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
+      end
+    end
+
+    after do
+      GoodJob::Notifier.instances.each(&:shutdown)
+    end
+
+    context 'with immediate: false' do
+      context 'success' do
+        include_context 'stubbing API calls'
+
+        it 'does not start the batch job immediately' do
+          travel_to(Holdings::BatchJob.start_time - 1.hours) do
+            expect(GoodJob::Batch).not_to receive(:enqueue)
+
+            job_classes.each do |jc|
+              expect(jc).not_to receive(:perform)
+            end
+
+            expect do
+              post holdings_requests_url, params: { holdings_request: valid_attributes }
+            end.to change(HoldingsRequest, :count).by(1)
+
+            @req = HoldingsRequest.order(created_at: :desc).take
+            expect(response).to redirect_to(holdings_request_url(req))
+
+            expect(GoodJob::BatchRecord.exists?).to eq(false)
+          end
+        end
+
+        it 'schedules the batch job for 11:45 pm' do
+          expect do
+            post holdings_requests_url, params: { holdings_request: valid_attributes }
+          end.to change(HoldingsRequest, :count).by(1)
+
+          @req = HoldingsRequest.order(created_at: :desc).take
+          expect(response).to redirect_to(holdings_request_url(req))
+
+          travel_to(Holdings::BatchJob.start_time + 5.seconds) do
+            # At this point GoodJob's already scheduled a delayed executor, so
+            # we need to kill that and have it sweep again for pending jobs
+            GoodJob::Scheduler.instances.each(&:restart)
+
+            assert_jobs_run(job_classes)
+            assert_holdings_retrieved
+          end
+        end
+      end
+    end
+
     context 'with immediate: true' do
       before do
         valid_attributes[:immediate] = true
       end
 
       context 'as admin' do
-        before { login_as_patron(Alma::FRAMEWORK_ADMIN_ID) }
+        before { @user = login_as_patron(Alma::FRAMEWORK_ADMIN_ID) }
 
         after { logout! }
 
         context 'success' do
-          before do
-            oclc_numbers_expected.each { |oclc_number| stub_wc_request_for(oclc_number) }
-            ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
+          include_context 'stubbing API calls'
 
+          before do
             HoldingsRequest.destroy_all # just to be sure
             expect(HoldingsRequest.exists?).to eq(false) # just to be sure
 
@@ -127,34 +209,13 @@ RSpec.describe HoldingsRequestsController, type: :request do
               post holdings_requests_url, params: { holdings_request: valid_attributes }
             end.to change(HoldingsRequest, :count).by(1)
 
-            @req = HoldingsRequest.take
+            @req = HoldingsRequest.order(created_at: :desc).take
+            expect(response).to redirect_to(holdings_request_url(req))
           end
 
           it 'executes background jobs' do
-            job_classes.each { |jc| await_performed(jc) }
-
-            expect(GoodJob::BatchRecord.exists?).to eq(true)
-
-            aggregate_failures do
-              job_classes.each do |jc|
-                good_jobs = GoodJob::Job.job_class(jc.name)
-                expect(good_jobs.count).to eq(1)
-
-                good_job = good_jobs.take
-                expect(good_job.error).to be_nil
-                expect(good_job.finished_at).not_to be_nil
-              end
-            end
-
-            request_records = req.holdings_records
-            expect(request_records.count).to eq(oclc_numbers_expected.size)
-
-            aggregate_failures do
-              request_records.find_each do |record|
-                verify_ht_record_url(record)
-                verify_wc_symbols(record)
-              end
-            end
+            assert_jobs_run(job_classes)
+            assert_holdings_retrieved
           end
 
           # TODO: test UI
@@ -200,7 +261,7 @@ RSpec.describe HoldingsRequestsController, type: :request do
       end
 
       context 'with non-admin login' do
-        before { login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID) }
+        before { @user = login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID) }
 
         after { logout! }
 
