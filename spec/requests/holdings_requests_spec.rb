@@ -75,7 +75,7 @@ RSpec.describe HoldingsRequestsController, type: :request do
   describe :create do
     include_context('HoldingsRequest')
 
-    job_classes = [Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob]
+    job_classes = [Holdings::BatchJob, Holdings::WorldCatJob, Holdings::HathiTrustJob, Holdings::ResultsJob]
     job_classes.each { |job_class| include_context('async execution', job_class:) }
 
     context 'success' do
@@ -94,9 +94,9 @@ RSpec.describe HoldingsRequestsController, type: :request do
       end
 
       it 'executes background jobs' do
-        expect(GoodJob::BatchRecord.exists?).to eq(true)
-
         job_classes.each { |jc| await_performed(jc) }
+
+        expect(GoodJob::BatchRecord.exists?).to eq(true)
 
         aggregate_failures do
           job_classes.each do |jc|

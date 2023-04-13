@@ -33,10 +33,10 @@ class HoldingsRequest < ActiveRecord::Base
   class << self
     # Creates a new HoldingsRequest, validates the attached input file, and
     # creates holdings records for each OCLC number.
-    def create_from(email:, input_file:, rlf: false, uc: false, hathi: false)
+    def create_from(**options)
       request = nil
       transaction(requires_new: true) do
-        request = create_with_records(email:, input_file:, rlf:, uc:, hathi:)
+        request = create_with_records(**options)
         raise ActiveRecord::Rollback if request.errors.any?
       end
       request
@@ -44,10 +44,10 @@ class HoldingsRequest < ActiveRecord::Base
 
     private
 
-    def create_with_records(email:, input_file:, rlf:, uc:, hathi:)
+    def create_with_records(input_file:, **options)
       filename = filename_from(input_file)
 
-      create(email:, input_file:, rlf:, uc:, hathi:, filename:).tap do |request|
+      create(filename:, input_file:, **options).tap do |request|
         request.ensure_holdings_records! if request.persisted?
       rescue StandardError => e
         logger.error("Error creating holdings records from input file #{filename}", e)

@@ -113,8 +113,8 @@ RSpec.describe HoldingsRequest, type: :model do
       describe :create_from do
         context 'with an UploadedFile' do
           it 'marks the record invalid' do
-            params = attributes.except(:filename)
-            req = HoldingsRequest.create_from(**params)
+            options = attributes.except(:filename)
+            req = HoldingsRequest.create_from(**options)
             expect(req).not_to be_persisted
             expect(req.id).to be_nil
 
@@ -135,8 +135,8 @@ RSpec.describe HoldingsRequest, type: :model do
               content_type: mime_type_xlsx
             }
 
-            params = attributes.except(:filename)
-            req = HoldingsRequest.create_from(**params)
+            options = attributes.except(:filename)
+            req = HoldingsRequest.create_from(**options)
             expect(req).not_to be_persisted
             expect(req.id).to be_nil
 
