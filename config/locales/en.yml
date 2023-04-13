@@ -68,6 +68,8 @@ en:
           attributes:
             filename:
               blank: must be provided
+            immediate:
+              forbidden: "Only an administrator can trigger an immediate holdings request"
         proxy_borrower_requests:
           attributes:
             research_last:

@@ -57,7 +57,7 @@ class HoldingsRequestsController < ApplicationController
   # params.require() is not smart enough to provide good error messages for multiple
   # missing parameters, so we do something a little more complicated here
   def create_holdings_request
-    return HoldingsRequest.create_from(**holdings_request_opts) unless missing_params.any?
+    return HoldingsRequest.create_from(user: current_user, **holdings_request_opts) unless missing_params.any?
 
     # This will be invalid and fail to persist
     HoldingsRequest.create(**holdings_request_opts)

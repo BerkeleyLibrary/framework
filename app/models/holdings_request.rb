@@ -44,14 +44,12 @@ class HoldingsRequest < ActiveRecord::Base
 
     private
 
-    def create_with_records(input_file:, **options)
+    def create_with_records(input_file: nil, user: nil, **options)
       filename = filename_from(input_file)
 
       create(filename:, input_file:, **options).tap do |request|
-        request.ensure_holdings_records! if request.persisted?
-      rescue StandardError => e
-        logger.error("Error creating holdings records from input file #{filename}", e)
-        request.errors.add(:input_file, clean_input_file_message(e.message, input_file)) if request
+        ensure_holdings_records(request, input_file:)
+        ensure_admin_if_immediate(request, user:)
       end
     end
 
@@ -67,6 +65,21 @@ class HoldingsRequest < ActiveRecord::Base
       else
         msg
       end
+    end
+
+    def ensure_holdings_records(request, input_file:)
+      request.ensure_holdings_records! if request.persisted?
+    rescue StandardError => e
+      logger.error("Error creating holdings records from input file #{request.filename}", e)
+      request.errors.add(:input_file, clean_input_file_message(e.message, input_file)) if request
+    end
+
+    def ensure_admin_if_immediate(request, user:)
+      return unless request.immediate?
+      return if user && user.framework_admin
+
+      logger.error("Can't trigger immediate holdings request unless logged in as Framework admin", user:)
+      request.errors.add(:immediate, I18n.t('activerecord.errors.models.holdings_task.attributes.immediate.forbidden'))
     end
   end
 
