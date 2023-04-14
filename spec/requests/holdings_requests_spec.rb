@@ -141,10 +141,6 @@ RSpec.describe HoldingsRequestsController, type: :request do
       end
     end
 
-    after do
-      GoodJob::Notifier.instances.each(&:shutdown)
-    end
-
     context 'with immediate: false' do
       context 'success' do
         include_context 'stubbing API calls'
