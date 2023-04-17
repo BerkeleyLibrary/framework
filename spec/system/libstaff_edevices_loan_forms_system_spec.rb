@@ -60,6 +60,7 @@ describe :libstaff_edevices_loan_forms, type: :system do
       checks = LibstaffEdevicesLoanForm.instance_methods.map(&:to_s).select { |n| n.end_with?('check') }
       checks.each do |check|
         check_field = find(:xpath, "//input[@id='libstaff_edevices_loan_form_#{check}']")
+        page.scroll_to(check_field)
         check_field.set(true)
       end
 
