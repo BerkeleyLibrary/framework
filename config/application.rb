@@ -29,6 +29,16 @@ module Framework
     # Valid groups for libproxy access based on Alma groups
     config.libproxy_groups = config.libproxy['valid_groups']
 
+    # Setup for Alma Marc Record
+    # Alma SRU hostname
+    config.alma_sru_host = ENV.fetch('LIT_ALMA_SRU_HOST', 'berkeley.alma.exlibrisgroup.com')
+    # Alma institution code
+    config.alma_institution_code = ENV.fetch('LIT_ALMA_INSTITUTION_CODE', '01UCS_BER')
+    # Alma Primo host
+    config.alma_primo_host = ENV.fetch('LIT_ALMA_PRIMO_HOST', 'search.library.berkeley.edu')
+    # Alma view state key to use when generating Alma permalinks
+    config.alma_permalink_key = ENV.fetch('LIT_ALMA_PERMALINK_KEY', 'iqob43')
+
     # Setup paypal payflow link:
     config.paypal_payflow_url = config.altmedia['paypal_payflow_url']
     config.paypal_payflow_login = config.altmedia['paypal_payflow_login']

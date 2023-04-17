@@ -118,6 +118,29 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
+  create_table "host_bib_linked_bibs", force: :cascade do |t|
+    t.bigint "host_bib_id", null: false
+    t.bigint "linked_bib_id", null: false
+    t.index ["host_bib_id"], name: "index_host_bib_linked_bibs_on_host_bib_id"
+    t.index ["linked_bib_id"], name: "index_host_bib_linked_bibs_on_linked_bib_id"
+  end
+
+  create_table "host_bib_tasks", force: :cascade do |t|
+    t.string "filename", null: false
+    t.string "email"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "host_bibs", force: :cascade do |t|
+    t.string "mms_id"
+    t.integer "marc_status"
+    t.bigint "host_bib_task_id", null: false
+    t.datetime "updated_at"
+    t.index ["host_bib_task_id"], name: "index_host_bibs_on_host_bib_task_id"
+  end
+
   create_table "item_note_tasks", force: :cascade do |t|
     t.string "job_id", null: false
     t.boolean "completed", default: false
@@ -134,6 +157,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "set_name"
+  end
+
+  create_table "linked_bibs", force: :cascade do |t|
+    t.string "mms_id"
+    t.integer "marc_status"
+    t.string "ldr_6"
+    t.string "ldr_7"
+    t.string "field_035"
   end
 
   create_table "proxy_borrower_requests", force: :cascade do |t|
@@ -182,4 +213,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_192311) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assignments", "framework_users", column: "framework_users_id"
   add_foreign_key "assignments", "roles"
+  add_foreign_key "host_bib_linked_bibs", "host_bibs"
+  add_foreign_key "host_bib_linked_bibs", "linked_bibs"
+  add_foreign_key "host_bibs", "host_bib_tasks"
 end

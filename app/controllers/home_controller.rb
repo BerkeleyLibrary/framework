@@ -17,8 +17,4 @@ class HomeController < ApplicationController
     render :admin if require_framework_admin!
   end
 
-  def framework_admin
-    render :framework_admin if require_framework_admin!
-  end
-
 end

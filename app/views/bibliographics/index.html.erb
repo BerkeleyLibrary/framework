@@ -1,0 +1,23 @@
+
+<h4>Listing Host Bibliographic Tasks</h4>
+
+<table class="detailed-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>FileName</th>
+      <th>Email</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% Bibliographic::HostBibTask.order(created_at: :desc).limit(15).each do |upload| %>
+      <tr>
+        <td><%= upload.id %></td>
+        <td><%= upload.filename %></td>
+        <td><%= upload.email %></td>
+        <td><%= upload.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

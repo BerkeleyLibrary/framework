@@ -178,6 +178,13 @@ class RequestMailer < ApplicationMailer
     mail(to: email, subject: 'Item set internal notes updated')
   end
 
+  def bibliographic_email(email, attachment_contents, subject, body)
+    attachment_contents.each do |filename, attachment|
+      attachments[filename] = attachment
+    end
+    mail(to: email, subject:, body:)
+  end
+
   private
 
   # Create the Stack Pass approved PDF file

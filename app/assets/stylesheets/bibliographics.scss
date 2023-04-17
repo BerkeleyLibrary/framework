@@ -1,0 +1,44 @@
+.form-container {
+    padding: 20px;
+    border-radius: 5px;
+    text-align: right;
+  
+    .form-group {
+      margin-bottom: 20px;
+  
+      .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        box-sizing: border-box;
+        
+      }
+
+      .form-label {
+        width: 100%;
+        padding: 10px;
+        font-size: 20px;
+        text-align: left;
+        font-weight:bold;
+      }
+    }
+  }
+
+  table.detailed-table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+  
+    th {
+      background-color: #eee;
+      font-weight: bold;
+    }
+  }

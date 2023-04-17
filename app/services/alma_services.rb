@@ -164,4 +164,15 @@ module AlmaServices
       # rubocop:enable Metrics/AbcSize
     end
   end
+
+  class Marc
+    class << self
+      def record(id)
+        record_id = BerkeleyLibrary::Alma::RecordId.parse(id)
+        return unless record_id
+
+        record_id.get_marc_record
+      end
+    end
+  end
 end

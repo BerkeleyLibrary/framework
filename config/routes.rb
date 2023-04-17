@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'
-  get 'framework_admin', to: 'home#framework_admin'
   get 'health', to: 'home#health'
   get 'home', to: 'home#index'
 
@@ -82,4 +81,10 @@ Rails.application.routes.draw do
   # Alma Item Set Routes
   get '/alma-item-set', to: 'alma_item_set#index'
   post '/alma-item-set', to: 'alma_item_set#update'
+
+  # bib host file upload
+  get '/bibliographics', to: 'bibliographics#new'
+  post '/bibliographics', to: 'bibliographics#create'
+  get '/bibliographics/index', to: 'bibliographics#index'
+
 end

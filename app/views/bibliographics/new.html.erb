@@ -1,0 +1,10 @@
+<div class="form-container">
+  <%= form_with  url:bibliographics_path, method: :post, local: true, multipart: true do |f| %>
+    <div class="form-group">
+      <%= f.label :upload_file, "Please choose a '.txt' file", class: "form-label" %>
+      <%= f.file_field :upload_file, value: 'test', class: "form-control", required: true, autofocus: true %>
+    </div>
+    
+    <%= f.submit "Upload", class: "btn btn-primary" %>
+  <% end %>
+</div>
