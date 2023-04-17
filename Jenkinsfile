@@ -17,6 +17,6 @@ dockerComposePipeline(
       'Brakeman'     : 'artifacts/brakeman',
       'ESLint'       : 'artifacts/eslint'
     ],
-    raw     : 'artifacts/screenshots/**/*.png'
+    raw     : 'artifacts/capybara/**'
   ]
 )
