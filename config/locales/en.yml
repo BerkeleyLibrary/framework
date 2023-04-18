@@ -48,7 +48,7 @@ en:
         local_id: UC Library Search record link or call number for an item of interest
         pass_date: Requested access start date
         pass_date_end: Requested access end date
-      holdings_task:
+      holdings_request:
         email: Email address
         filename: Input file
         input_file: Input file

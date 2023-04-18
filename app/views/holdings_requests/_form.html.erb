@@ -1,4 +1,10 @@
 <%# TODO: Form validation (cf. TIND) %>
+
+<%
+  allow_immediate = user.framework_admin?
+  show_immediate = allow_immediate || holdings_request.immediate?
+%>
+
 <section id="holdings-request-form">
   <% if holdings_request.errors.any? %>
     <div class="alert alert-danger fade show" role="alert">
@@ -35,22 +41,39 @@
       <li>
         <fieldset class="required">
           <legend>Include</legend>
-          <ul>
+          <ul class="form-input required mb-4">
             <li>
-              <%= form.label :rlf %>
               <%= form.check_box :rlf %>
+              <%= form.label :rlf %>
             </li>
             <li>
-              <%= form.label :uc %>
               <%= form.check_box :uc %>
+              <%= form.label :uc %>
             </li>
             <li>
-              <%= form.label :hathi %>
               <%= form.check_box :hathi %>
+              <%= form.label :hathi %>
             </li>
           </ul>
         </fieldset>
       </li>
+      <% if show_immediate %>
+        <li>
+          <fieldset>
+            <legend>Schedule request to run</legend>
+            <ul class="form-input mb-4">
+              <li>
+                <%= form.radio_button :immediate, false, value: false %>
+                <%= form.label :immediate, 'off hours', value: false %>
+              </li>
+              <li>
+                <%= form.radio_button :immediate, true, value: true %>
+                <%= form.label :immediate, 'immediately', value: true %>
+              </li>
+            </ul>
+          </fieldset>
+        </li>
+      <% end %>
       <li>
         <p class="required-note">Required</p>
       </li>

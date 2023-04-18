@@ -1,12 +1,6 @@
 form {
   margin-top: 1rem;
 
-  label {
-    &::after {
-      content: ':';
-    }
-  }
-
   ul {
     list-style-type: none;
     padding-left: 0;
@@ -14,18 +8,27 @@ form {
 
     display: grid;
     grid-template-columns: min-content min-content;
-    gap: 0.5rem;
+    column-gap: 1rem;
 
     li {
       display: contents;
 
       label {
-        grid-column: 1;
         white-space: nowrap;
+
+        grid-column: 1;
+      }
+
+      input + label {
+        grid-column: 2;
       }
 
       input {
         grid-column: 2;
+
+        &[type="checkbox"], &[type="radio"] {
+          grid-column: 1;
+        }
 
         &[type="submit"] {
           margin-top: 2rem;
@@ -45,10 +48,6 @@ form {
 
           font-size: 1rem;
           white-space: nowrap;
-
-          &::after {
-            content: ':';
-          }
         }
 
         ul {
@@ -84,6 +83,8 @@ table.holdings-request {
 }
 
 table.holdings-request-list {
+  width: 100%;
+
   th {
     text-align: left;
   }

@@ -86,7 +86,11 @@ class User
 
   # @return [Boolean]
   attr_accessor :framework_admin
+  alias framework_admin? framework_admin
+
+  # @return [Boolean]
   attr_accessor :alma_admin
+  alias alma_admin? alma_admin
 
   # Whether the user was authenticated
   #

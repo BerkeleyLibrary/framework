@@ -213,8 +213,6 @@ RSpec.describe HoldingsRequestsController, type: :request do
             assert_jobs_run(job_classes)
             assert_holdings_retrieved
           end
-
-          # TODO: test UI
         end
 
         context 'failure' do

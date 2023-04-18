@@ -18,16 +18,16 @@ class HoldingsRequestsController < ApplicationController
   # GET /holdings_requests/new
   def new
     @holdings_request = HoldingsRequest.new
+    @user = current_user
   end
 
   # TODO: separate endpoint (redirect through login to :new?) for admins
-  # TODO: Framework admins can set immediate: true
 
   # POST /holdings_requests
   def create
-    # TODO: reject immediate: true from non-admin
     if @holdings_request.persisted?
       Holdings::BatchJob.schedule(@holdings_request)
+      flash[:success] = 'Holdings request scheduled.'
       redirect_to holdings_request_url(@holdings_request)
     else
       render :new, status: :unprocessable_entity
@@ -68,9 +68,14 @@ class HoldingsRequestsController < ApplicationController
   end
 
   def holdings_request_opts
-    # ActionController::Parameters.to_h is not smart enough to take a block, so we have
-    # to do this the hard way
-    @holdings_request_opts ||= params.require(:holdings_request).permit(*ALL_PARAMS).to_h.symbolize_keys
+    @holdings_request_opts ||= holdings_request_opts_from_params
+  end
+
+  def holdings_request_opts_from_params
+    # ActionController::Parameters.to_h is not smart enough to take a block,
+    # so we have to do this the hard way
+    holdings_request_params = params.require(:holdings_request).permit(*ALL_PARAMS)
+    holdings_request_params.to_h.symbolize_keys
   end
 
   def missing_params
