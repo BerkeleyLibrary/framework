@@ -21,7 +21,13 @@
       <tr id="<%= dom_id request %>">
         <td><%= link_to 'View', request %></td>
         <td><%= request.email %></td>
-        <td><%= link_to(request.filename, rails_blob_path(request.input_file, disposition: 'attachment')) %></td>
+        <td>
+          <% if request.input_file.attached? %>
+            <%= link_to(request.filename, rails_blob_path(request.input_file, disposition: 'attachment')) %>
+          <% else %>
+            (none)
+          <% end %>
+        </td>
         <% [:rlf, :uc, :hathi].each do |opt| %>
           <td>
             <% value = request.send(opt) || false %>
