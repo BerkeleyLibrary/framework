@@ -1,6 +1,8 @@
 <%# TODO: Form validation (cf. TIND) %>
 
 <%
+  accept_mime_type = BerkeleyLibrary::Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB
+
   allow_immediate = user.framework_admin?
   show_immediate = allow_immediate || holdings_request.immediate?
 %>
@@ -26,22 +28,30 @@
         <div class="form-label form-group required">
           <%= form.label :email, class: 'control-label' %>
         </div>
-        <div class="form-input required mb-4">
-          <%= form.text_field :email, class: 'form-control add-required' %>
+        <div class="form-input required">
+          <%= form.text_field :email, class: 'form-control add-required', required: true %>
         </div>
       </li>
       <li>
         <div class="form-label form-group required">
           <%= form.label :input_file, class: 'control-label' %>
         </div>
-        <div class="form-input required mb-4">
-          <%= form.file_field :input_file, class: 'form-control add-required' %>
+        <div class="form-input required">
+          <%= form.file_field :input_file, class: 'form-control add-required', accept: accept_mime_type, required: true %>
+
+          <p class="note">
+            <strong>Note:</strong>
+            Input files must be Microsoft Office Open XML Workbook (.xlsx) files,
+            without macros, and must include a column with the heading
+            “<%= BerkeleyLibrary::Holdings::Constants::OCLC_COL_HEADER %>”,
+            which must contain at least one OCLC number.
+          </p>
         </div>
       </li>
       <li>
         <fieldset class="required">
           <legend>Include</legend>
-          <ul class="form-input required mb-4">
+          <ul class="form-input required">
             <li>
               <%= form.check_box :rlf %>
               <%= form.label :rlf %>
@@ -54,6 +64,18 @@
               <%= form.check_box :hathi %>
               <%= form.label :hathi %>
             </li>
+            <li>
+              <p class="note">
+                <strong>Note:</strong>
+                At least one of
+                <%=
+                  [:rlf, :uc, :hathi]
+                  .map { |opt| t("activerecord.attributes.holdings_request.#{opt}") }
+                  .to_sentence(last_word_connector: ', or ')
+                %>
+                must be selected.
+              </p>
+            </li>
           </ul>
         </fieldset>
       </li>
@@ -61,13 +83,13 @@
         <li>
           <fieldset>
             <legend>Schedule request to run</legend>
-            <ul class="form-input mb-4">
+            <ul class="form-input">
               <li>
-                <%= form.radio_button :immediate, false, value: false %>
+                <%= form.radio_button :immediate, false, value: false, disabled: !allow_immediate %>
                 <%= form.label :immediate, 'off hours', value: false %>
               </li>
               <li>
-                <%= form.radio_button :immediate, true, value: true %>
+                <%= form.radio_button :immediate, true, value: true, disabled: !allow_immediate %>
                 <%= form.label :immediate, 'immediately', value: true %>
               </li>
             </ul>

@@ -1,3 +1,12 @@
 <h2>Holdings Request</h2>
 
 <%= render @holdings_request %>
+
+<% if @user.framework_admin? %>
+  <p>
+    <%= link_to('Schedule a holdings request', new_holdings_request_path) %>
+  </p>
+  <p>
+    <%= link_to('View all holdings requests', holdings_requests_path) %>
+  </p>
+<% end %>

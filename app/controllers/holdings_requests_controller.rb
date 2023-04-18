@@ -14,6 +14,7 @@ class HoldingsRequestsController < ApplicationController
   # GET /holdings_requests/1
   def show
     @holdings_request = find_holdings_request
+    @user = current_user
   end
 
   # GET /holdings_requests/new
