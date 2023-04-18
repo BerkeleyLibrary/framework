@@ -10,8 +10,15 @@ module Holdings
 
     class << self
       def schedule(request)
-        job = request.immediate? ? Holdings::BatchJob : Holdings::BatchJob.set(wait_until: start_time)
+        if request.immediate?
+          scheduled_at = Time.current
+          job = Holdings::BatchJob
+        else
+          scheduled_at = start_time
+          job = Holdings::BatchJob.set(wait_until: scheduled_at)
+        end
         job.perform_later(request)
+        request.update(scheduled_at:)
       end
 
       def start_time

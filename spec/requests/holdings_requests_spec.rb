@@ -146,7 +146,8 @@ RSpec.describe HoldingsRequestsController, type: :request do
         include_context 'stubbing API calls'
 
         it 'does not start the batch job immediately' do
-          travel_to(Holdings::BatchJob.start_time - 1.hours) do
+          start_time = Holdings::BatchJob.start_time
+          travel_to(start_time - 1.hours) do
             expect(GoodJob::Batch).not_to receive(:enqueue)
 
             job_classes.each do |jc|
@@ -165,14 +166,17 @@ RSpec.describe HoldingsRequestsController, type: :request do
         end
 
         it 'schedules the batch job for 11:45 pm' do
+          start_time = Holdings::BatchJob.start_time
+
           expect do
             post holdings_requests_url, params: { holdings_request: valid_attributes }
           end.to change(HoldingsRequest, :count).by(1)
 
           @req = HoldingsRequest.order(created_at: :desc).take
           expect(response).to redirect_to(holdings_request_url(req))
+          expect(req.scheduled_at).to eq(start_time)
 
-          travel_to(Holdings::BatchJob.start_time + 5.seconds) do
+          travel_to(start_time + 5.seconds) do
             # At this point GoodJob's already scheduled a delayed executor, so
             # we need to kill that and have it sweep again for pending jobs
             GoodJob::Scheduler.instances.each(&:restart)
@@ -207,6 +211,7 @@ RSpec.describe HoldingsRequestsController, type: :request do
 
             @req = HoldingsRequest.order(created_at: :desc).take
             expect(response).to redirect_to(holdings_request_url(req))
+            expect(req.scheduled_at).to be_within(1.minutes).of(Time.current)
           end
 
           it 'executes background jobs' do

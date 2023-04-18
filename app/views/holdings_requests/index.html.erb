@@ -14,6 +14,7 @@
         <th scope="col">RLF</th>
         <th scope="col">UC</th>
         <th scope="col">HT</th>
+        <th scope="col">Scheduled to run</th>
         <th scope="col"># Records</th>
         <th scope="col"># Complete</th>
         <th scope="col"># Errors</th>
@@ -21,35 +22,42 @@
       </tr>
     </thead>
     <tbody>
-    <% @holdings_requests.each do |request| %>
-      <tr id="<%= dom_id request %>">
-        <td><%= link_to 'View', request %></td>
-        <td><%= request.email %></td>
-        <td>
-          <% if request.input_file.attached? %>
-            <%= link_to(request.filename, rails_blob_path(request.input_file, disposition: 'attachment')) %>
-          <% else %>
-            (none)
-          <% end %>
-        </td>
-        <% [:rlf, :uc, :hathi].each do |opt| %>
+      <% @holdings_requests.each do |request| %>
+        <tr id="<%= dom_id request %>">
+          <td><%= link_to 'View', request %></td>
+          <td><%= request.email %></td>
           <td>
-            <% value = request.send(opt) || false %>
-            <%= t("activerecord.attributes.holdings_request.include.#{value}") %>
+            <% if request.input_file.attached? %>
+              <%= link_to(request.filename, rails_blob_path(request.input_file, disposition: 'attachment')) %>
+            <% else %>
+              (none)
+            <% end %>
           </td>
-        <% end %>
-        <td><%= request.record_count %></td>
-        <td><%= request.completed_count %></td>
-        <td><%= request.error_count %></td>
-        <td>
-          <% if request.output_file.attached? %>
-            <%= link_to(request.output_filename, rails_blob_path(request.output_file, disposition: 'attachment')) %>
-          <% else %>
-            (none)
+          <% [:rlf, :uc, :hathi].each do |opt| %>
+            <td>
+              <% value = request.send(opt) || false %>
+              <%= t("activerecord.attributes.holdings_request.include.#{value}") %>
+            </td>
           <% end %>
-        </td>
-      </tr>
-    <% end %>
+          <td>
+            <% if (scheduled_at = request.scheduled_at) %>
+              <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :long) %>
+            <% else %>
+              -
+            <% end %>
+          </td>
+          <td><%= request.record_count %></td>
+          <td><%= request.completed_count %></td>
+          <td><%= request.error_count %></td>
+          <td>
+            <% if request.output_file.attached? %>
+              <%= link_to(request.output_filename, rails_blob_path(request.output_file, disposition: 'attachment')) %>
+            <% else %>
+              (none)
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 </div>

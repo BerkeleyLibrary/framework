@@ -30,6 +30,16 @@
         </td>
       </tr>
       <tr>
+        <th scope="row">Scheduled to run at</th>
+        <td>
+          <% if (scheduled_at = holdings_request.scheduled_at) %>
+            <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :long) %>
+          <% else %>
+            (not yet scheduled)
+          <% end %>
+        </td>
+      </tr>
+      <tr>
         <th scope="row">Records</th>
         <td>
           <table class="options attributes">
