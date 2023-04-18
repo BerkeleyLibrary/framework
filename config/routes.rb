@@ -75,8 +75,9 @@ Rails.application.routes.draw do
   post '/tind-download/download', to: 'tind_download#download'
 
   # Holdings
-  resources :holdings_requests
+  get '/holdings_requests/immediate', to: 'holdings_requests#immediate', as: :immediate_holdings_request
   get '/holdings_requests/:id/result', to: 'holdings_requests#result', as: :holdings_requests_result
+  resources :holdings_requests
 
   # http://example.com/good_job
   mount GoodJob::Engine => 'good_job'
