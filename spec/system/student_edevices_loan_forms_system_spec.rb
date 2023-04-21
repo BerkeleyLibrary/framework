@@ -65,6 +65,7 @@ describe :student_edevices_loan_forms, type: :system do
       end
 
       submit_button = find(:xpath, "//input[@type='submit']")
+      page.scroll_to(submit_button)
       submit_button.click
 
       expect(page).to have_current_path('/forms/student_edevices_loan/all_checked')
