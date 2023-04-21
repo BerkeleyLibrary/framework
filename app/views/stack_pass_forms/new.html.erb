@@ -1,12 +1,13 @@
 <%= form_for(@form, class: 'needs-validation') do |f| %>
   <h1>Request for Access to Main (Gardner) Stacks</h1>
-  <p>The Stacks are open to those with a current University of California ID, UC Berkeley Library Card or Stanford ID. Scholars and the general public with no such affiliation who have a research need for materials with the location MAIN (Gardner) Stacks in our catalogs must acquire a stacks access pass. Requests for same-day access or for access at a future date, no more than 7 days in the future, can be made using the form below. Requests for longer-term access can be made in person at the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/find/privileges-desk' %> or via the <%= link_to 'Main Stacks Reference Card Request form', new_reference_card_form_path %>.</p>
-  <p>Permission for stack access is not automatic. You do not have permission unless you receive a positive reply from us. Access is not granted for studying, browsing, visiting with friends or family, or using the computers. A current government-issued photo ID is required to access the Stacks; no one under the age of eighteen (18) will be allowed to utilize the collection independently.</p>
+  <p>The Main (Gardner) Stacks are open to everyone with a current University of California ID (from any UC campus), UC Berkeley Library Card or proxy borrower card, LBNL ID, or Stanford ID. Prepare to show your ID for entry.</p>
+  <p>Members of the public who have research needs can obtain a Main (Gardner) Stacks access pass at no charge. Stacks passes are granted for browsing and using the library collections, not for general activities such as studying or meeting friends. A current government-issued photo ID is required to request a stack pass; people under the age of 18 utilizing the collection must be accompanied by an adult. Prepare to show your approved stack pass for entry.</p>
+  <p>Requests for same-day access, or for access up to 7 days in advance, can be made in-person during <%= link_to 'Library Privilege desk hours', 'https://www.lib.berkeley.edu/visit/doe' %> or by completing and submitting the form below. Regarding the online form:</p>
   <ul>
-    <li>For <strong>same-day</strong> access, Monday-Friday, your request must be submitted by 10 AM. To visit the Stacks on the weekend, your request must be made by 2 PM on the previous Friday.</li>
-    <li>If your request is approved, you will receive your pass as an email attachment. <strong>You may print out the pass before coming to the Library or you may save the pass to your phone</strong>. Library computers provide access to email hosted on .edu, .gov, .org, and .com domains.</li>
-    <li>You must fill out the form <strong>completely</strong>.</li>
+    <li>For <strong>same-day</strong> access, Monday-Friday, your request must be submitted by 10 AM. To visit the Stacks on the weekend, the request must be made by 2 PM on the previous Friday.</li>
+    <li>If your request is approved, you will receive your pass as an email attachment. <strong>You may print out the pass before coming to the Library or you may save the pass to your phone</strong>.</li>
   </ul>
+  <p>Requests for longer-term access can be made in person at the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/find/privileges-desk' %> or via the <%= link_to 'Main Stacks Reference Card Request form', new_reference_card_form_path %>.</p>
   <!-- FORM START -->
   <p style="color: #ee0000">* Required</p>
   <!-- name, email, phone -->
