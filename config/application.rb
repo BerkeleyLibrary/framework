@@ -4,6 +4,53 @@ Bundler.require(*Rails.groups)
 
 module Framework
   class Application < Rails::Application
+    class << self
+
+      GJ_CONFIG_ATTRS = %i[
+        execution_mode
+        queue_string
+        max_threads
+        poll_interval
+        max_cache
+        shutdown_timeout
+        enable_cron?
+        cron
+        cleanup_discarded_jobs?
+        cleanup_preserved_jobs_before_seconds_ago
+        cleanup_interval_jobs
+        cleanup_interval_seconds
+        inline_execution_respects_schedule?
+      ]
+
+      def log_good_job_config!
+        gj_config = GJ_CONFIG_ATTRS.to_h do |attr|
+          [attr, GoodJob.configuration.send(attr)]
+        end
+
+        Rails.logger.info('GoodJob configured', { config: gj_config })
+      end
+
+      def log_active_storage_config!
+        active_storage_service = ActiveStorage::Blob.service
+        return Rails.logger.info("ActiveStorage service: #{active_storage_service}") unless active_storage_service.respond_to?(:root)
+        return Rails.logger.warn('ActiveStorage root not set') unless (active_storage_root = active_storage_service.root)
+
+        log_active_storage_root!(active_storage_root)
+      end
+
+      private
+
+      def log_active_storage_root!(active_storage_root)
+        stat = File.stat(active_storage_root)
+        mode_str = format('%o', stat.mode)
+        details = { path: active_storage_root, type: stat.ftype, mode: mode_str, uid: stat.uid, gid: stat.gid }
+        Rails.logger.info('ActiveStorage root set', details:)
+      rescue Errno::ENOENT
+        Rails.logger.warn("ActiveStorage root #{active_storage_root} does not exist")
+      end
+
+    end
+
     config.load_defaults 7.0
 
     # Load our custom config. This is implicitly consumed in a few remaining
@@ -56,18 +103,8 @@ module Framework
     end
 
     config.after_initialize do
-      gj_config = %i[
-        execution_mode queue_string max_threads poll_interval
-        max_cache shutdown_timeout enable_cron? cron
-        cleanup_discarded_jobs? cleanup_preserved_jobs_before_seconds_ago
-        cleanup_interval_jobs cleanup_interval_seconds
-        inline_execution_respects_schedule?
-      ].to_h do |attr|
-        [attr, GoodJob.configuration.send(attr)]
-      end
-
-      Rails.logger.info('GoodJob configured', { config: gj_config })
+      log_active_storage_config!
+      log_good_job_config!
     end
-
   end
 end
