@@ -20,7 +20,7 @@ module Framework
         cleanup_interval_jobs
         cleanup_interval_seconds
         inline_execution_respects_schedule?
-      ]
+      ].freeze
 
       def log_good_job_config!
         gj_config = GJ_CONFIG_ATTRS.to_h do |attr|
