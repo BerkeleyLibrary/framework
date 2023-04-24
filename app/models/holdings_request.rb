@@ -131,11 +131,11 @@ class HoldingsRequest < ActiveRecord::Base
   end
 
   def first_completed_at
-    completed_records.order(updated_at: :asc).limit(1).pluck(:updated_at).first
+    completed_records.order(updated_at: :asc).limit(1).pick(:updated_at)
   end
 
   def last_completed_at
-    completed_records.order(updated_at: :desc).limit(1).pluck(:updated_at).first
+    completed_records.order(updated_at: :desc).limit(1).pick(:updated_at)
   end
 
   # ------------------------------------------------------------
