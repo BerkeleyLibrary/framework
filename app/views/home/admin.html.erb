@@ -1,5 +1,8 @@
 <h1>UC Berkeley Library Forms</h1>
-<ul id="webforms">
+
+<h2>Forms</h2>
+
+<ul>
   <li><%= link_to("Opt in/out of alt-media scanning (requires CalNet)", new_scan_request_form_path) %></li>
   <li><%= link_to("Library Staff Electronic Devices Loan - Terms and Conditions form (requires CalNet)", new_libstaff_edevices_loan_form_path) %></li>
   <li><%= link_to("Request a UC Berkeley Affiliate Borrowing Card", new_affiliate_borrow_request_form_path) %></li>
@@ -9,13 +12,19 @@
   <li><%= link_to("Graphics Arts Loan Collection (GALC) - Borrowing Contract (requires CalNet)", new_galc_request_form_path) %></li>
   <li><%= link_to("Proxy Borrowing Card Forms (requires CalNet)", proxy_borrower_forms_path) %></li>
   <li><%= link_to("Stack Pass/Reference Card", stack_requests_path) %></li>
-  <li><%= link_to("TIND Metadata Download", tind_download_path) %></li>
-  <li><%= link_to("Alma Items Set Notes", alma_item_set_path) %></li>
-  <li><%= link_to("Host Bibliographic and Linked Bibliographic", bibliographics_path) %></li>   
 </ul>
 
-<br/>
-<h3>Framework Admin</h3>
-<ul id="webforms">  
+<h2>Services</h2>
+
+<ul>
+  <li><%= link_to("TIND Metadata Download", tind_download_path) %></li>
+  <li><%= link_to("Alma Items Set Notes", alma_item_set_path) %></li>
+  <li><%= link_to("Host Bibliographic and Linked Bibliographic", bibliographics_path) %></li>
+  <li><%= link_to("WorldCat/HathiTrust Holdings Requests", holdings_requests_path) %></li>
+</ul>
+
+<h2>Framework Admin</h2>
+
+<ul>
   <li><%= link_to("GoodJob Dashboard", jobs_path) %></li>
 </ul>  

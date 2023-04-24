@@ -1,6 +1,6 @@
 class HoldingsRequestsController < ApplicationController
   before_action :ensure_holdings_request, only: %i[show create result]
-  before_action :require_framework_admin!, only: %i[immediate]
+  before_action :require_framework_admin!, only: %i[immediate, index]
 
   REQUIRED_PARAMS = %i[email input_file].freeze
   OPTIONAL_PARAMS = %i[rlf uc hathi immediate].freeze

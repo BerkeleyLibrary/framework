@@ -8,16 +8,41 @@ RSpec.describe HoldingsRequestsController, type: :request do
   job_classes.each { |job_class| include_context('async execution', job_class:) }
 
   describe :index do
-    it 'lists requests' do
-      get holdings_requests_url
-      expect(response).to be_successful
+    context 'without login' do
+      it 'redirects to login' do
+        get holdings_requests_url
+        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: holdings_requests_path)}"
+        expect(response).to redirect_to(login_with_callback_url)
+      end
+    end
 
-      attrs = %i[email record_count completed_count error_count]
-      HoldingsRequest.find_each do |req|
-        attrs.each do |attr|
-          expected_value = req.send(attr)
-          expect(response.body).to include(expected_value.to_s)
+    context 'as admin' do
+      before { @user = login_as_patron(Alma::FRAMEWORK_ADMIN_ID) }
+
+      after { logout! }
+
+      it 'lists requests' do
+        get holdings_requests_url
+        expect(response).to be_successful
+
+        attrs = %i[email record_count completed_count error_count]
+        HoldingsRequest.find_each do |req|
+          attrs.each do |attr|
+            expected_value = req.send(attr)
+            expect(response.body).to include(expected_value.to_s)
+          end
         end
+      end
+    end
+
+    context 'with non-admin login' do
+      before { @user = login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID) }
+
+      after { logout! }
+
+      it 'is forbidden' do
+        get holdings_requests_url
+        expect(response.status).to eq(403)
       end
     end
   end
