@@ -1,4 +1,5 @@
 class HoldingsRequestsController < ApplicationController
+  before_action :ensure_user
   before_action :ensure_holdings_request, only: %i[show create result]
   before_action :require_framework_admin!, only: %i[immediate, index]
 
@@ -14,13 +15,11 @@ class HoldingsRequestsController < ApplicationController
   # GET /holdings_requests/1
   def show
     @holdings_request = find_holdings_request
-    @user = current_user
   end
 
   # GET /holdings_requests/new
   def new
     @holdings_request = HoldingsRequest.new(immediate: current_user.framework_admin?)
-    @user = current_user
   end
 
   # GET /holdings_requests/immediate
@@ -52,6 +51,10 @@ class HoldingsRequestsController < ApplicationController
   end
 
   private
+
+  def ensure_user
+    @user = current_user
+  end
 
   def ensure_holdings_request
     @holdings_request ||= (find_holdings_request || create_holdings_request)
