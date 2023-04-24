@@ -31,6 +31,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  time:
+    formats:
+      tabular: "%Y-%m-%d %I:%M %p %Z"
   activerecord:
     attributes:
       stack_pass_form:

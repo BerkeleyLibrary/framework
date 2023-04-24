@@ -30,12 +30,39 @@
         </td>
       </tr>
       <tr>
-        <th scope="row">Scheduled to run at</th>
+        <th scope="row">Submitted</th>
+        <td>
+          <% created_at = holdings_request.created_at %>
+          <%= l(created_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Scheduled to run</th>
         <td>
           <% if (scheduled_at = holdings_request.scheduled_at) %>
-            <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :long) %>
+            <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
           <% else %>
-            (not yet scheduled)
+            immediately
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Started at</th>
+        <td>
+          <% if (first_completed_at = holdings_request.first_completed_at) %>
+            <%= l(first_completed_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+          <% else %>
+            (no records completed)
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Last updated at</th>
+        <td>
+          <% if (last_completed_at = holdings_request.last_completed_at) %>
+            <%= l(last_completed_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+          <% else %>
+            (no records completed)
           <% end %>
         </td>
       </tr>

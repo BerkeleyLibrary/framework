@@ -14,6 +14,7 @@
         <th scope="col">RLF</th>
         <th scope="col">UC</th>
         <th scope="col">HT</th>
+        <th scope="col">Submitted</th>
         <th scope="col">Scheduled to run</th>
         <th scope="col"># Records</th>
         <th scope="col"># Complete</th>
@@ -39,11 +40,15 @@
               <%= t("activerecord.attributes.holdings_request.include.#{value}") %>
             </td>
           <% end %>
-          <td>
+          <td class="timestamp">
+            <% created_at = request.created_at %>
+            <%= l(created_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+          </td>
+          <td class="timestamp">
             <% if (scheduled_at = request.scheduled_at) %>
-              <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :long) %>
+              <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
             <% else %>
-              -
+              immediately
             <% end %>
           </td>
           <td><%= request.record_count %></td>

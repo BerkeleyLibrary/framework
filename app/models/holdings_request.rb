@@ -110,12 +110,16 @@ class HoldingsRequest < ActiveRecord::Base
     holdings_records.count
   end
 
-  def completed_count
+  def completed_records
     conditions = {}.tap do |cnds|
       cnds[:ht_retrieved] = true if hathi?
       cnds[:wc_retrieved] = true if world_cat?
     end
-    holdings_records.where(**conditions).count
+    holdings_records.where(**conditions)
+  end
+
+  def completed_count
+    completed_records.count
   end
 
   def error_count
@@ -124,6 +128,14 @@ class HoldingsRequest < ActiveRecord::Base
       cnds << holdings_records.where.not(wc_error: nil) if world_cat?
     end
     conditions.inject { |rel, cnd| rel.or(cnd) }.count
+  end
+
+  def first_completed_at
+    completed_records.order(updated_at: :asc).limit(1).pluck(:updated_at).first
+  end
+
+  def last_completed_at
+    completed_records.order(updated_at: :desc).limit(1).pluck(:updated_at).first
   end
 
   # ------------------------------------------------------------
