@@ -139,31 +139,35 @@ section.exception-details {
   }
 }
 
-table.attributes {
-  width: 100%;
-  margin-top: 1rem;
+table {
+  font-variant-numeric: tabular-nums;
 
-  display: grid;
-  grid-template-columns: min-content minmax(0, 1fr);
-  gap: 0.5rem;
+  &.attributes {
+    width: 100%;
+    margin-top: 1rem;
 
-  tbody, tr {
-    display: contents;
+    display: grid;
+    grid-template-columns: min-content minmax(0, 1fr);
+    gap: 0.5rem;
+
+    tbody, tr {
+      display: contents;
+    }
+
+    th {
+      grid-column: 1;
+
+      text-align: left;
+      width: min-content;
+      white-space: nowrap;
+    }
+
+    td {
+      grid-column: 2;
+    }
   }
 
-  th {
-    grid-column: 1;
-
-    text-align: left;
-    width: min-content;
-    white-space: nowrap;
+  &.errors {
+    @extend .attributes;
   }
-
-  td {
-    grid-column: 2;
-  }
-}
-
-table.errors {
-  @extend .attributes;
 }

@@ -30,7 +30,7 @@ class HoldingsRequestsController < ApplicationController
   # POST /holdings_requests
   def create
     if @holdings_request.persisted?
-      Holdings::BatchJob.schedule(@holdings_request)
+      schedule_batch_job
       flash[:success] = 'Holdings request scheduled.'
       redirect_to holdings_request_url(@holdings_request)
     else
@@ -49,6 +49,14 @@ class HoldingsRequestsController < ApplicationController
   end
 
   private
+
+  def schedule_batch_job
+    # NOTE: We generate the result URL now in order to capture the
+    # actual request hostname, rather than rely on the one hard-coded
+    # in config.action_mailer.default_url_options
+    result_url = holdings_requests_result_url(@holdings_request)
+    Holdings::BatchJob.schedule(@holdings_request, result_url)
+  end
 
   def ensure_user
     @user = current_user

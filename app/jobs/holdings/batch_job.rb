@@ -1,23 +1,19 @@
 module Holdings
   class BatchJob < HoldingsJobBase
 
-    def perform(request)
-      GoodJob::Batch.enqueue(on_finish: ResultsJob, request:) do
+    def perform(request, result_url)
+      GoodJob::Batch.enqueue(on_finish: ResultsJob, request:, result_url:) do
         WorldCatJob.perform_later(request) if request.world_cat?
         HathiTrustJob.perform_later(request) if request.hathi?
       end
     end
 
     class << self
-      def schedule(request)
-        if request.immediate?
-          scheduled_at = Time.current
-          job = Holdings::BatchJob
-        else
-          scheduled_at = start_time
-          job = Holdings::BatchJob.set(wait_until: scheduled_at)
-        end
-        job.perform_later(request)
+      def schedule(request, result_url)
+        scheduled_at = request.immediate? ? Time.current : start_time
+        Holdings::BatchJob
+          .set(wait_until: scheduled_at)
+          .perform_later(request, result_url)
         request.update(scheduled_at:)
       end
 

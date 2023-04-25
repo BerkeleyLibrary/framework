@@ -8,10 +8,15 @@ module Holdings
     attr_reader :batch, :params
 
     before do
+      url_helpers = Rails.application.routes.url_helpers
+
       @batch = instance_double(GoodJob::Batch).tap do |batch|
         allow(batch).to receive(:id).and_return('test-batch-id')
         allow(batch).to receive(:properties) do
-          { request: @req }
+          {
+            request: @req,
+            result_url: url_helpers.holdings_requests_result_url(@req, host: 'framework.example.edu')
+          }
         end
       end
 

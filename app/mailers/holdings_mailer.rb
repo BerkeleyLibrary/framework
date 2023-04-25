@@ -11,10 +11,10 @@ class HoldingsMailer < ApplicationMailer
     end
   end
 
-  def holdings_results(request)
+  def holdings_results(request, result_url)
     headers(to: request.email, subject: 'Your holdings request')
     attach_output_file_for(request)
-    locals = locals_for(request)
+    locals = locals_for(request).merge(result_url:)
     mail do |format|
       format.html { render(locals:) }
       format.text { render(locals:) }
