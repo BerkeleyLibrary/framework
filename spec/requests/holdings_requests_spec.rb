@@ -141,9 +141,7 @@ RSpec.describe HoldingsRequestsController, type: :request do
       it 'does not create a request or schedule a job' do
         expect(GoodJob::Batch).not_to receive(:enqueue)
 
-        job_classes.each do |jc|
-          expect(jc).not_to receive(:perform)
-        end
+        job_classes.each { |jc| expect(jc).not_to receive(:perform) }
 
         expect do
           post holdings_requests_url, params: { holdings_request: invalid_attributes }
@@ -208,6 +206,32 @@ RSpec.describe HoldingsRequestsController, type: :request do
 
             assert_jobs_run(job_classes)
             assert_holdings_retrieved
+          end
+        end
+      end
+
+      context 'failure' do
+        describe 'when unable to upload input file' do
+          it 'does not create a request' do
+            expect(ActiveStorage::Blob.service).to receive(:make_path_for).and_raise(Errno::EACCES)
+
+            expect(GoodJob::Batch).not_to receive(:enqueue)
+
+            job_classes.each { |jc| expect(jc).not_to receive(:perform) }
+
+            blob_count_before = ActiveStorage::Blob.count
+            attachment_count_before = ActiveStorage::Attachment.count
+            request_count_before = HoldingsRequest.count
+
+            expect do
+              post holdings_requests_url, params: { holdings_request: valid_attributes }
+            end.to raise_error(Errno::EACCES)
+
+            expect(HoldingsRequest.count).to eq(request_count_before)
+            expect(ActiveStorage::Attachment.count).to eq(attachment_count_before)
+            expect(ActiveStorage::Blob.count).to eq(blob_count_before)
+
+            expect(GoodJob::BatchRecord.exists?).to eq(false)
           end
         end
       end

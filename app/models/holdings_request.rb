@@ -34,16 +34,38 @@ class HoldingsRequest < ActiveRecord::Base
     # Creates a new HoldingsRequest, validates the attached input file, and
     # creates holdings records for each OCLC number.
     def create_from(**options)
+      # This awkwardness is b/c we need the rollback to cancel
+      # creating associated HoldingsRecords, but we still want
+      # to return the created request
       request = nil
       transaction(requires_new: true) do
         request = create_with_records(**options)
         raise ActiveRecord::Rollback if request.errors.any?
       end
       request
+    rescue StandardError
+      # And this awkwardness is b/c ActiveStorage doesn't try to upload
+      # the files till after the transaction commits, so if that fails
+      # for some reason, we need to manually delete the record
+      clean_up(request) if request && request.persisted?
+
+      raise
     end
 
     private
 
+    # @param request [HoldingsRequest] the request
+    def clean_up(request)
+      blob = (input_file = request.input_file).attached? ? input_file.blob : nil
+      request.destroy
+    ensure
+      # If we were using S3 or whatever, this would be expensive
+      # and we should use purge_later, but since we're using
+      # local disk, let's just take care of it right now
+      blob.purge if blob
+    end
+
+    # @return HoldingsRequest the request
     def create_with_records(input_file: nil, user: nil, **options)
       filename = filename_from(input_file)
 
