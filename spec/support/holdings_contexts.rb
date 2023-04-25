@@ -282,3 +282,28 @@ RSpec.shared_context('complete HoldingsRequest with errors') do
     end
   end
 end
+
+RSpec.shared_context('HoldingsRequest with broken input file attachment') do
+  include_context('HoldingsRequest')
+
+  before do
+    req.input_file.tap do |input_file|
+      input_file.service.delete(input_file.key)
+    end
+
+    expect(req.input_file_uploaded?).to eq(false)
+  end
+end
+
+RSpec.shared_context('HoldingsRequest with broken output file attachment') do
+  include_context('complete HoldingsRequest')
+
+  before do
+    req.ensure_output_file!
+    req.output_file.tap do |output_file|
+      output_file.service.delete(output_file.key)
+    end
+
+    expect(req.output_file_uploaded?).to eq(false)
+  end
+end

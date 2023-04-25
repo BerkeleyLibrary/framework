@@ -17,21 +17,56 @@ RSpec.describe HoldingsRequestsController, type: :request do
     end
 
     context 'as admin' do
+
+      shared_examples 'a list of requests' do
+        it 'lists requests' do
+          get holdings_requests_url
+          expect(response).to be_successful
+
+          attrs = %i[email filename record_count completed_count error_count]
+          HoldingsRequest.find_each do |req|
+            attrs.each do |attr|
+              expected_value = req.send(attr)
+              expect(response.body).to include(expected_value.to_s)
+            end
+          end
+        end
+      end
+
       before { @user = login_as_patron(Alma::FRAMEWORK_ADMIN_ID) }
 
       after { logout! }
 
-      it 'lists requests' do
-        get holdings_requests_url
-        expect(response).to be_successful
+      context('with no requests') do
+        # just to be sure
+        before { expect(HoldingsRequest).not_to exist }
 
-        attrs = %i[email record_count completed_count error_count]
-        HoldingsRequest.find_each do |req|
-          attrs.each do |attr|
-            expected_value = req.send(attr)
-            expect(response.body).to include(expected_value.to_s)
-          end
-        end
+        it_behaves_like('a list of requests')
+      end
+
+      context('with incomplete request') do
+        include_context('incomplete HoldingsRequest')
+        it_behaves_like('a list of requests')
+      end
+
+      context('with incomplete request with errors') do
+        include_context('incomplete HoldingsRequest with errors')
+        it_behaves_like('a list of requests')
+      end
+
+      context('with holdings records') do
+        include_context('complete HoldingsRequest')
+        it_behaves_like('a list of requests')
+      end
+
+      context 'with broken input file' do
+        include_context('HoldingsRequest with broken input file attachment')
+        it_behaves_like('a list of requests')
+      end
+
+      context 'with broken output file' do
+        include_context('HoldingsRequest with broken output file attachment')
+        it_behaves_like('a list of requests')
       end
     end
 

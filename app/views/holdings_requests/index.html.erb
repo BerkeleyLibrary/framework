@@ -31,7 +31,7 @@
             <% if holdings_request.input_file_uploaded? %>
               <%= link_to(holdings_request.filename, rails_blob_path(holdings_request.input_file, disposition: 'attachment')) %>
             <% else %>
-              <%= request.filename %>
+              <%= holdings_request.filename %>
             <% end %>
           </td>
           <% [:rlf, :uc, :hathi].each do |opt| %>
