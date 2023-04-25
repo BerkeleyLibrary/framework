@@ -27,8 +27,6 @@ class HoldingsRequestsController < ApplicationController
     redirect_to new_holdings_request_url
   end
 
-  # TODO: separate endpoint (redirect through login to :new?) for admins
-
   # POST /holdings_requests
   def create
     if @holdings_request.persisted?
