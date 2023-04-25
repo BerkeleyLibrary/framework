@@ -197,8 +197,16 @@ class HoldingsRequest < ActiveRecord::Base
     end
   end
 
+  def input_file_uploaded?
+    input_file.attached? && input_file.service.exist?(input_file.key)
+  end
+
+  def output_file_uploaded?
+    output_file.attached? && output_file.service.exist?(output_file.key)
+  end
+
   def ensure_output_file!
-    return if output_file.attached?
+    return if output_file_uploaded?
 
     write_output_file!
   end
@@ -207,10 +215,6 @@ class HoldingsRequest < ActiveRecord::Base
   # Private methods
 
   private
-
-  def input_file_uploaded?
-    input_file.attached? && input_file.service.exist?(input_file.key)
-  end
 
   # Hack that lets us work with a newly uploaded input file before it's
   # been "uploaded" to ActiveStorage::Service::DiskService

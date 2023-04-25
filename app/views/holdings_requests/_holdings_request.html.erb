@@ -8,7 +8,11 @@
       <tr>
         <th scope="row"><%= t('activerecord.attributes.holdings_request.filename') %></th>
         <td>
-          <%= link_to(holdings_request.filename, rails_blob_path(holdings_request.input_file, disposition: 'attachment')) %>
+          <% if holdings_request.input_file_uploaded? %>
+            <%= link_to(holdings_request.filename, rails_blob_path(holdings_request.input_file, disposition: 'attachment')) %>
+          <% else %>
+            <%= holdings_request.filename %>
+          <% end %>
         </td>
       </tr>
       <tr>
@@ -36,36 +40,22 @@
           <%= l(created_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
         </td>
       </tr>
-      <tr>
-        <th scope="row">Scheduled to run</th>
-        <td>
-          <% if (scheduled_at = holdings_request.scheduled_at) %>
-            <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
-          <% else %>
-            immediately
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Started at</th>
-        <td>
-          <% if (first_completed_at = holdings_request.first_completed_at) %>
-            <%= l(first_completed_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
-          <% else %>
-            (no records completed)
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Last updated at</th>
-        <td>
-          <% if (last_completed_at = holdings_request.last_completed_at) %>
-            <%= l(last_completed_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
-          <% else %>
-            (no records completed)
-          <% end %>
-        </td>
-      </tr>
+      <%
+        timestamps = {
+          'Scheduled to run' => holdings_request.scheduled_at,
+          'Started' => holdings_request.first_completed_at,
+          'Last record completed' => holdings_request.last_completed_at
+        }
+        timestamps.each do |label, timestamp|
+          next unless timestamp
+      %>
+        <tr>
+          <th scope="row"><%= label %></th>
+          <td><%= l(timestamp.in_time_zone('America/Los_Angeles'), format: :tabular) %></td>
+        </tr>
+      <%
+        end
+      %>
       <tr>
         <th scope="row">Records</th>
         <td>
