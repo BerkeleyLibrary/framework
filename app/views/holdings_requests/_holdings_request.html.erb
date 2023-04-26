@@ -1,4 +1,6 @@
-<div id="<%= dom_id holdings_request %>">
+<section id="<%= dom_id holdings_request %>">
+  <h2>Details</h2>
+
   <table class="holdings-request attributes">
     <tbody>
       <tr>
@@ -87,4 +89,45 @@
       </tr>
     </tbody>
   </table>
-</div>
+
+  <% if (num_errors = holdings_request.error_count) > 0 %>
+    <%
+      wc = holdings_request.world_cat?
+      ht = holdings_request.hathi?
+
+      error_records = holdings_request
+        .records_with_errors
+        .order(:oclc_number)
+        .limit(HoldingsRequest::MAX_ERRORS_TO_DISPLAY)
+
+      num_errors_displayed = error_records.count
+    %>
+    <section id="<%= dom_id holdings_request %>.errors">
+      <h3>Errors</h3>
+
+      <% if num_errors_displayed < num_errors %>
+        <p>Showing <%= num_errors_displayed %> of <%= num_errors %> errors.</p>
+      <% end %>
+
+      <table class="holdings-request holdings-request-list">
+        <thead>
+          <tr>
+            <th scope="row">OCLC Number</th>
+            <% if wc %><th scope="row">WorldCat error</th><% end %>
+            <% if ht %><th scope="row">HathiTrust error</th><% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <%
+            error_records.find_each do |record| %>
+            <tr id="<%= dom_id record %>.errors">
+              <td><%= record.oclc_number %></td>
+              <% if wc %><td><%= record.wc_error %></td><% end %>
+              <% if ht %><td><%= record.ht_error %></td><% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+  <% end %>
+  </section>
+</section>

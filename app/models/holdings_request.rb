@@ -12,6 +12,8 @@ class HoldingsRequest < ActiveRecord::Base
 
   MSG_NO_OCLC_NUMBERS = 'No OCLC numbers found in input spreadsheet'.freeze
 
+  MAX_ERRORS_TO_DISPLAY = 100
+
   # ------------------------------------------------------------
   # Relations
 
@@ -145,11 +147,15 @@ class HoldingsRequest < ActiveRecord::Base
   end
 
   def error_count
+    records_with_errors.count
+  end
+
+  def records_with_errors
     conditions = [].tap do |cnds|
       cnds << holdings_records.where.not(ht_error: nil) if hathi?
       cnds << holdings_records.where.not(wc_error: nil) if world_cat?
     end
-    conditions.inject { |rel, cnd| rel.or(cnd) }.count
+    conditions.inject { |rel, cnd| rel.or(cnd) }
   end
 
   def first_completed_at

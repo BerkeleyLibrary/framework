@@ -54,6 +54,11 @@ RSpec.describe HoldingsRequestsController, type: :request do
         it_behaves_like('a list of requests')
       end
 
+      context('with complete request with errors') do
+        include_context('complete HoldingsRequest with errors')
+        it_behaves_like('a list of requests')
+      end
+
       context('with holdings records') do
         include_context('complete HoldingsRequest')
         it_behaves_like('a list of requests')
@@ -85,6 +90,26 @@ RSpec.describe HoldingsRequestsController, type: :request do
   describe :show do
     include_context 'HoldingsRequest'
 
+    shared_examples 'a list of errors' do
+      it 'lists the errors' do
+        get holdings_request_url(req)
+        expect(response).to be_successful
+
+        body_html = Nokogiri::HTML(response.body)
+
+        expected_records = req.records_with_errors.limit(HoldingsRequest::MAX_ERRORS_TO_DISPLAY)
+        expected_records.find_each do |rec|
+          rec_html = body_html.search("//*[@id='holdings_record_#{rec.id}.errors']").first
+          expect(rec_html).not_to be_nil
+
+          rec_html_str = rec_html.to_s
+
+          expected_values = [rec.oclc_number, rec.wc_error, rec.ht_error].compact
+          expected_values.each { |v| expect(rec_html_str).to include(v) }
+        end
+      end
+    end
+
     it 'displays a request' do
       get holdings_request_url(req)
       expect(response).to be_successful
@@ -102,16 +127,14 @@ RSpec.describe HoldingsRequestsController, type: :request do
 
       context 'with errors' do
         include_context 'complete HoldingsRequest with errors'
+        it_behaves_like 'a list of errors'
+      end
+    end
 
-        it 'includes error counts' do
-          get holdings_request_url(req)
-          expect(response).to be_successful
-
-          %i[record_count completed_count error_count].each do |attr|
-            expected_value = req.send(attr)
-            expect(response.body).to include(expected_value.to_s)
-          end
-        end
+    context 'incomplete' do
+      context 'with errors' do
+        include_context 'incomplete HoldingsRequest with errors'
+        it_behaves_like 'a list of errors'
       end
     end
   end

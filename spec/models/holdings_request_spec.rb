@@ -485,4 +485,25 @@ RSpec.describe HoldingsRequest, type: :model do
       it_behaves_like 'counting records with errors'
     end
   end
+
+  describe :records_with_errors do
+    shared_examples 'returning records with errors' do
+      it 'returns both HathiTrust and WorldCat errors' do
+        expected_records = req.holdings_records.where.not(wc_error: nil, ht_error: nil).to_a
+        actual_records = req.records_with_errors.to_a
+
+        expect(actual_records).to contain_exactly(*expected_records)
+      end
+    end
+
+    context 'complete' do
+      include_context 'complete HoldingsRequest with errors'
+      it_behaves_like 'returning records with errors'
+    end
+
+    context 'incomplete' do
+      include_context 'incomplete HoldingsRequest with errors'
+      it_behaves_like 'returning records with errors'
+    end
+  end
 end
