@@ -55,7 +55,12 @@ module Holdings
     def retrieve_record_urls(batch)
       oclc_numbers = batch.map(&:oclc_number)
       req = RecordUrlBatchRequest.new(oclc_numbers)
-      req.execute
+      begin
+        req.execute
+      rescue RestClient::Exception => e
+        logger.warn("GET #{req.uri} failed with #{e.message}")
+        raise
+      end
     end
 
     # Marks the specified batch of records as retrieved, and sets the `ht_error` message.

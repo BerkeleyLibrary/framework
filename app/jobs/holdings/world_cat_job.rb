@@ -27,7 +27,12 @@ module Holdings
 
     def retrieve_holdings(oclc_number, search_wc_symbols)
       req = LibrariesRequest.new(oclc_number, symbols: search_wc_symbols)
-      req.execute
+      begin
+        req.execute
+      rescue RestClient::Exception => e
+        logger.warn("GET #{req.uri} failed with #{e.message}")
+        raise
+      end
     end
 
     # Gets the pending WorldCat records for the specified request
