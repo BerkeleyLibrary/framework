@@ -9,7 +9,7 @@ class HoldingsRequestsController < ApplicationController
 
   # GET /holdings_requests
   def index
-    @holdings_requests = HoldingsRequest.all
+    @holdings_requests = HoldingsRequest.order(created_at: :desc)
   end
 
   # GET /holdings_requests/1
