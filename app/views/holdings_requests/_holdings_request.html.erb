@@ -97,7 +97,6 @@
 
       error_records = holdings_request
         .records_with_errors
-        .order(:oclc_number)
         .limit(HoldingsRequest::MAX_ERRORS_TO_DISPLAY)
 
       num_errors_displayed = error_records.count
