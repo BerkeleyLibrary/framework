@@ -69,7 +69,10 @@ module CapybaraHelper
   class Configurator
     include BerkeleyLibrary::Logging
 
-    DEFAULT_CHROME_ARGS = ['--window-size=2560,1344'].freeze
+    DEFAULT_CHROME_ARGS = %w[
+      --window-size=2560,1344
+      --disable-smooth-scrolling
+    ].freeze
 
     DEFAULT_WEBMOCK_OPTIONS = { allow_localhost: true }.freeze
     LOCALHOST_NAMES = %w[0.0.0.0 127.0.0.1 localhost].freeze
