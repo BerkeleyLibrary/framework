@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'admin', to: 'home#admin'
   get 'health', to: 'home#health'
   get 'home', to: 'home#index'
+  get 'build_info', to: 'home#build_info'
 
   defaults format: :text do
     resources :campus_networks, path: 'campus-networks', only: :index

@@ -1,0 +1,40 @@
+section.build-info {
+  //h1 {
+  //  font-size: 1rem;
+  //}
+
+  table.build-info {
+    gap: 0;
+    font-family: monospace;
+    width: fit-content;
+
+    th, td {
+      border-bottom: 1px solid #B88888;
+      white-space: nowrap;
+      width: 100%;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    th {
+      font-weight: normal;
+    }
+
+    tr:nth-child(even) {
+      th, td {
+        background-color: #F6F4F1;
+      }
+    }
+
+    tr:last-of-type {
+      th, td {
+        border-bottom: 1px solid #F6F4F1;
+      }
+    }
+
+    a {
+      box-shadow: none;
+      text-decoration: underline #FDB515;
+    }
+  }
+}

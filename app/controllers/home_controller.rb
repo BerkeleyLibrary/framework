@@ -17,4 +17,8 @@ class HomeController < ApplicationController
     render :admin if require_framework_admin!
   end
 
+  def build_info
+    render :build_info
+  end
+
 end

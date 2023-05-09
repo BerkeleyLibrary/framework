@@ -1,0 +1,26 @@
+<section class="build-info">
+  <h1>Build Information</h1>
+
+  <% if (build_info = BuildInfo.build_info).any? %>
+    <table class="build-info attributes">
+      <tbody>
+        <% build_info.to_h.each do |k, v| %>
+          <% row_id = "build-info-#{k.downcase}" %>
+          <tr id="<%= row_id %>">
+            <th scope="row"><%= k %></th>
+            <td>
+              <% if v.is_a?(URI) %>
+                <% v_str = v.to_s %>
+                <%= link_to(v_str, v_str, target: '_blank') %>
+              <% else %>
+                <%= v %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No build information found.</p>
+  <% end %>
+</section>

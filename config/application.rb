@@ -103,6 +103,7 @@ module Framework
     end
 
     config.after_initialize do
+      BuildInfo.log!
       log_active_storage_config!
       log_good_job_config!
     end
