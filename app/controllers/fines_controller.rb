@@ -34,7 +34,12 @@ class FinesController < ApplicationController
   # Display User Info to Lib Staff
   def lookup
     authorize!
-    @user = Alma::User.find_if_exists params[:alma_id]
+    begin
+      @user = Alma::User.find_if_exists params[:alma_id]
+    rescue ActiveRecord::RecordNotFound
+      flash[:danger] = "Error: No patron found with Alma ID: #{params[:alma_id]}"
+      redirect_to(action: :efines)
+    end
   end
 
   def send_invoice

@@ -20,14 +20,27 @@ describe 'Efines', type: :request do
     expect(response.body).to include('Non UC Berkeley Patron Fee Payments')
   end
 
+  it 'alerts user if patron is not found' do
+    user_id = 'fake-user-id'
+
+    stub_request(:get, "#{base_url_for user_id}?expand=fees&view=full")
+      .with(headers: request_headers)
+      .to_raise(ActiveRecord::RecordNotFound)
+
+    get "/efines/lookup?alma_id=#{user_id}"
+    follow_redirect!
+
+    expect(response.body).to include("Error: No patron found with Alma ID: #{user_id}")
+  end
+
   it 'lists user info and fees' do
     user_id = '10335026'
 
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{user_id}?expand=fees&view=full")
+    stub_request(:get, "#{base_url_for user_id}?expand=fees&view=full")
       .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
 
-    stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees')
+    stub_request(:get, "#{base_url_for user_id}/fees")
       .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-fees.json'))
 
@@ -39,11 +52,11 @@ describe 'Efines', type: :request do
   it 'link sent via email opens the patron select fees to pay page' do
     user_id = '10335026'
 
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{user_id}?expand=fees&view=full")
+    stub_request(:get, "#{base_url_for user_id}?expand=fees&view=full")
       .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
 
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{user_id}/fees")
+    stub_request(:get, "#{base_url_for user_id}/fees")
       .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-fees.json'))
 
@@ -55,7 +68,7 @@ describe 'Efines', type: :request do
     expect(response.body).to include('fine_payment_17178894770006532')
   end
 
-  it 'redirects to error page if request has a non-existant alma id' do
+  it 'link redirects to error page if request has a non-existant alma id' do
     stub_request(:get, "#{base_url_for}fees")
       .with(headers: request_headers)
       .to_return(status: 404, body: '')
