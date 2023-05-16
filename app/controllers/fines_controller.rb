@@ -15,6 +15,34 @@ class FinesController < ApplicationController
     redirect_to(action: :transaction_error)
   end
 
+  def efine
+    @jwt = params.require(:jwt)
+    secret = EfinesInvoice.secret
+    decoded_token = JWT.decode @jwt, secret, true, { algorithm: 'HS256' }
+    @alma_id = decoded_token.first['userName']
+    @fines = FinesPayment.new(alma_id: @alma_id)
+    render 'index'
+  rescue JWT::DecodeError
+    redirect_to(action: :transaction_error)
+  end
+
+  # Form to lookup patron fees
+  def efines
+    authorize!
+  end
+
+  # Display User Info to Lib Staff
+  def lookup
+    authorize!
+    @user = Alma::User.find_if_exists params[:alma_id]
+  end
+
+  def send_invoice
+    invoice = EfinesInvoice.new(params[:user_id])
+    @email = invoice.email
+    invoice.submit!
+  end
+
   def payment
     if params[:fine].present?
       @fines = FinesPayment.new(alma_id: params[:alma_id], fine_ids: params[:fine][:payment])
@@ -43,6 +71,13 @@ class FinesController < ApplicationController
   end
 
   private
+
+  def authorize!
+    return if Rails.env.development?
+
+    authenticate!
+    raise Error::ForbiddenError unless current_user.alma_admin
+  end
 
   # def log_error(src, p)
   def log_error(e, p = nil)

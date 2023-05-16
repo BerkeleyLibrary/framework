@@ -1,0 +1,37 @@
+<h2>User's Info</h2>
+<strong>Name:</strong> <%= @user.name %>
+<br>
+<strong>Email:</strong> <%= @user.email %>
+<h2 class="pt-4">User's Fees</h2>
+<% unless @user.fees['total_record_count'] == 0 %>
+  <div class="rts-table">
+    <div class="rts-header">
+      <div class="rts-row">
+        <div class="rts-cell rts-w100 rts-c">#</div>
+        <div class="rts-cell rts-w400">Type</div>
+        <div class="rts-cell rts-w400">Owner Title</div>
+        <div class="rts-cell rts-w150">Fee / Fine</div>
+        <div class="rts-cell rts-w400">Date</div>
+      </div>
+    </div>
+    <% @user.fees['fee'].each_with_index do |fee, idx| %>
+      <div class="rts-rowgrp">
+        <div class="rts-row">
+          <div class="rts-cell rts-w100 rts-c"><%= idx += 1 %></div>
+          <div class="rts-cell rts-w400"><%= fee['type']['desc'] %></div>
+          <div class="rts-cell rts-w400"><%= fee['owner']['desc'] %></div>
+          <div class="rts-cell rts-w150">$<%= sprintf('%.2f', fee['balance']) %></div>
+          <div class="rts-cell rts-w400"><%= I18n.l(fee['creation_time'].to_date, format: :long) %></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <br>
+  <%= form_with url: '/efines/send_invoice', method: :post, local:true do |form| %>
+    <input type="hidden" name="user_id" value="<%= @user.id %>">
+  <%=%>
+  <%= form.submit("Email Payment Request", {:class => 'btn btn-primary'}) %>
+  <% end %>
+<% else %>
+  <p>No fees were found for this patron.</p>
+<% end %>

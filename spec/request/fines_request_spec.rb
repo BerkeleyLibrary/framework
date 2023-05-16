@@ -1,7 +1,7 @@
 require 'forms_helper'
 
 describe 'Fines', type: :request do
-  def base_url_for(user_id)
+  def base_url_for(user_id = nil)
     "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{user_id}"
   end
 
@@ -17,8 +17,7 @@ describe 'Fines', type: :request do
   end
 
   it 'redirects to error page if request has a non-existant alma id' do
-    user_id = '00000'
-    stub_request(:get, "#{base_url_for(user_id)}/fees")
+    stub_request(:get, "#{base_url_for}fees")
       .with(headers: request_headers)
       .to_return(status: 404, body: '')
 

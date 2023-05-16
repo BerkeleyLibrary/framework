@@ -36,6 +36,11 @@ Rails.application.routes.draw do
   post '/fines/payment', to: 'fines#payment'
   post '/fines/transaction_complete', to: 'fines#transaction_complete'
 
+  get '/efine', to: 'fines#efine'
+  get '/efines', to: 'fines#efines'
+  get '/efines/lookup', to: 'fines#lookup'
+  post '/efines/send_invoice', to: 'fines#send_invoice'
+
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'
   get '/forms/proxy-borrower/admin_view', to: 'proxy_borrower_admin#admin_view'

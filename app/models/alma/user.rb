@@ -78,6 +78,10 @@ module Alma
       expiration_date < Date.current
     end
 
+    def fees
+      AlmaServices::Fines.fetch_all(@id) || nil
+    end
+
     def notes_array
       user_obj['user_note'].map { |n| n['note_text'] }
     end

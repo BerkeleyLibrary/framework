@@ -1,0 +1,267 @@
+{
+	"gender": {
+		"value": "",
+		"desc": ""
+	},
+	"password": "",
+	"status": {
+		"value": "ACTIVE",
+		"desc": "Active"
+	},
+	"fees": {
+		"value": 7.0,
+		"link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees"
+	},
+	"record_type": {
+		"value": "PUBLIC",
+		"desc": "Public"
+	},
+	"primary_id": "10335026",
+	"first_name": "Steven",
+	"middle_name": "M",
+	"last_name": "Sullivan",
+	"full_name": "Steven M Sullivan",
+	"user_title": {
+		"value": "",
+		"desc": ""
+	},
+	"job_category": {
+		"value": "",
+		"desc": ""
+	},
+	"job_description": "Library Administration",
+	"user_group": {
+		"value": "LIBSTAFF",
+		"desc": "Library Staff"
+	},
+	"campus_code": {
+		"value": "UCB_Campus",
+		"desc": "UCB Campus"
+	},
+	"web_site_url": "",
+	"cataloger_level": {
+		"value": "00",
+		"desc": "[00] Default Level"
+	},
+	"preferred_language": {
+		"value": "en",
+		"desc": "English"
+	},
+	"expiry_date": "2024-10-31Z",
+	"purge_date": "2025-10-31Z",
+	"account_type": {
+		"value": "EXTERNAL",
+		"desc": "External"
+	},
+	"external_id": "UC_Path",
+	"force_password_change": "false",
+	"status_date": "2022-12-08Z",
+	"contact_info": {
+		"address": [
+			{
+				"line1": "Library Administration",
+				"line2": "Doe Mem Lib-F02-94720",
+				"city": "Berkeley",
+				"country": {
+					"value": "",
+					"desc": ""
+				},
+				"state_province": "CA",
+				"postal_code": "94720",
+				"address_note": "",
+				"start_date": "2022-12-08Z",
+				"end_date": "2024-10-31Z",
+				"address_type": [
+					{
+						"value": "work",
+						"desc": "Work"
+					}
+				],
+				"preferred": true,
+				"segment_type": "External"
+			}
+		],
+		"email": [
+			{
+				"email_address": "steve.sullivan@berkeley.edu",
+				"email_type": [
+					{
+						"value": "work",
+						"desc": "Work"
+					}
+				],
+				"preferred": true,
+				"segment_type": "External"
+			}
+		],
+		"phone": [
+			{
+				"phone_number": "925-234-0409",
+				"phone_type": [
+					{
+						"value": "office",
+						"desc": "Office"
+					}
+				],
+				"preferred": true,
+				"preferred_sms": false,
+				"segment_type": "External"
+			}
+		]
+	},
+	"user_identifier": [
+		{
+			"value": "e10335026",
+			"status": "ACTIVE",
+			"id_type": {
+				"value": "BARCODE",
+				"desc": "Barcode"
+			},
+			"segment_type": "External"
+		},
+		{
+			"value": "1707532",
+			"status": "ACTIVE",
+			"id_type": {
+				"value": "UNIV_ID",
+				"desc": "University ID"
+			},
+			"segment_type": "External"
+		}
+	],
+	"user_role": [
+		{
+			"status": {
+				"value": "ACTIVE",
+				"desc": "Active"
+			},
+			"scope": {
+				"value": "01UCS_BER",
+				"desc": "University of California Berkeley"
+			},
+			"role_type": {
+				"value": "200",
+				"desc": "Patron"
+			},
+			"parameter": []
+		}
+	],
+	"user_block": [],
+	"user_note": [
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Record Source: U",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Total Checkout: 0",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Current Checkout: 0",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Claims Returned: 0",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Updated Date: 07-21-2021",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Message Note: -",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "20221129 GALC eligible [litscript]",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "Framework",
+			"created_date": "2022-11-29T20:32:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "Note: 20210618 library book scan eligible [litscript]",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "System",
+			"created_date": "2020-03-05T10:59:00Z",
+			"segment_type": "Internal"
+		},
+		{
+			"note_type": {
+				"value": "LIBRARY",
+				"desc": "Library"
+			},
+			"note_text": "20230404 Doe/Moffitt study room eligible [litscript]",
+			"user_viewable": false,
+			"popup_note": false,
+			"created_by": "Framework",
+			"created_date": "2023-04-04T23:30:00Z",
+			"segment_type": "Internal"
+		}
+	],
+	"user_statistic": [],
+	"proxy_for_user": [],
+	"pref_first_name": "Steven",
+	"pref_middle_name": "M",
+	"pref_last_name": "Sullivan",
+	"pref_name_suffix": "",
+	"is_researcher": false
+}
