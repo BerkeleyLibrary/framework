@@ -1,7 +1,7 @@
 require 'calnet_helper'
 
 RSpec.describe BibliographicsController, type: :request do
-  context 'specs for unauthenticated user' do
+  context 'specs for unauthorized user' do
     before do
       logout!
     end
@@ -57,15 +57,6 @@ RSpec.describe BibliographicsController, type: :request do
           expect(response).to redirect_to(bibliographics_path)
         end
       end
-    end
-
-    context 'specs for University staff' do
-      before do
-        patron_id = Alma::Type.sample_id_for(Alma::Type::STAFF)
-        login_as_patron(patron_id)
-      end
-
-      it_behaves_like 'an authorized user'
     end
 
     context 'specs for Framework admins' do
