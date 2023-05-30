@@ -7,7 +7,8 @@ describe 'Reference Card Form', type: :request do
 
   context 'specs without admin privledges' do
     before do
-      login_as_patron(5_551_212)
+      login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID)
+      allow_any_instance_of(User).to receive(:role?).with(Role.stackpass_admin).and_return(false)
     end
 
     it 'reference card index page redirects to form' do

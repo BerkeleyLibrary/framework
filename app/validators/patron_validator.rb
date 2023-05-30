@@ -29,6 +29,7 @@ class PatronValidator < ActiveModel::EachValidator
     return unless note_pattern
 
     note_pattern = Regexp.new(note_pattern) if note_pattern.is_a?(String)
+    # TODO: Clean up use of notes_array vs. find_note
     patron.notes_array.none? { |n| n =~ note_pattern }
   end
 

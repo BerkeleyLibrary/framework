@@ -7,8 +7,7 @@ info:
   email: ethomas@berkeley.edu
 extra:
   displayName: Elissa Thomas
-  employeeNumber: "013191304"
-  uid: "013191304"
+  employeeNumber: "013191303"
+  uid: "013191303"
   berkeleyEduIsMemberOf:
-    - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
-  berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
+    - cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu

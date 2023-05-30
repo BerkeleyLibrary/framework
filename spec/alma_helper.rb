@@ -32,18 +32,24 @@ end
 # Extension methods for Patron module and Alma::Type class, used only in test
 module Alma
 
-  FRAMEWORK_ADMIN_ID = '013191304'.freeze
-  NON_FRAMEWORK_ADMIN_ID = '3032640236'.freeze
+  # TODO: mock users based on specific properties instead of using fake data
+  #       (too many different combinations of affiliations / patron notes / etc.)
+
+  ALMA_ADMIN_ID = '013191303'.freeze
+  FRAMEWORK_ADMIN_ID = '013191305'.freeze
+  GRAD_STUDENT_ID = '18273645'.freeze
+  NON_FRAMEWORK_ADMIN_ID = '013191304'.freeze
+  UNIVERSITY_STAFF_ID = '5551212'.freeze
 
   # Sample IDs corresponding to spec/data/calnet and spec/data/alma_patrons
   SAMPLE_IDS = {
     Alma::Type::UNDERGRAD => '99999997',
-    Alma::Type::UNDERGRAD_SLE => NON_FRAMEWORK_ADMIN_ID,
-    Alma::Type::GRAD_STUDENT => '18273645',
+    Alma::Type::UNDERGRAD_SLE => '3032640236',
+    Alma::Type::GRAD_STUDENT => GRAD_STUDENT_ID,
     Alma::Type::FACULTY => '12345678',
     Alma::Type::MANAGER => '5551213',
-    Alma::Type::LIBRARY_STAFF => FRAMEWORK_ADMIN_ID,
-    Alma::Type::STAFF => '5551212',
+    Alma::Type::LIBRARY_STAFF => NON_FRAMEWORK_ADMIN_ID,
+    Alma::Type::STAFF => UNIVERSITY_STAFF_ID,
     Alma::Type::POST_DOC => '99999891',
     Alma::Type::VISITING_SCHOLAR => '87651234',
     Alma::Type::EXTENSION_STUDENT => '12345679',

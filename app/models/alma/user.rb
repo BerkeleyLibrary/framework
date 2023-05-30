@@ -82,10 +82,12 @@ module Alma
       AlmaServices::Fines.fetch_all(@id) || nil
     end
 
+    # TODO: Clean up use of notes_array vs. find_note
     def notes_array
       user_obj['user_note'].map { |n| n['note_text'] }
     end
 
+    # TODO: Clean up use of notes_array vs. find_note
     def find_note(note)
       @user_obj['user_note'].find { |p| p['note_text'].include? note }
     end

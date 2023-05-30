@@ -7,7 +7,7 @@ describe FinesController, type: :system do
 
   context 'authenticated alma_admin user' do
     before do
-      login_as_patron('013191304')
+      login_as_patron(Alma::ALMA_ADMIN_ID)
       visit efines_path
     end
 
@@ -38,7 +38,7 @@ describe FinesController, type: :system do
 
   context 'send request form' do
     before do
-      login_as_patron('013191304')
+      login_as_patron(Alma::ALMA_ADMIN_ID)
 
       stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026?expand=fees&view=full')
         .with(headers: request_headers)

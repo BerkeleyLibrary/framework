@@ -15,7 +15,7 @@ describe :alma_item_set, type: :system do
 
   describe 'authenticated user' do
     before do
-      login_as_patron(Alma::Type.sample_id_for(Alma::Type::LIBRARY_STAFF))
+      login_as_patron(Alma::ALMA_ADMIN_ID)
 
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 

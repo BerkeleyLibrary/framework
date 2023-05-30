@@ -9,7 +9,8 @@ describe 'Stack Pass Form', type: :request do
 
   context 'specs without admin privledges' do
     before do
-      login_as_patron('5551212')
+      login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID)
+      allow_any_instance_of(User).to receive(:role?).with(Role.stackpass_admin).and_return(false)
     end
 
     it 'index page does not include admin link for non admins' do

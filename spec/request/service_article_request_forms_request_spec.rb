@@ -44,9 +44,10 @@ describe :service_article_request_forms, type: :request do
     allow(Rails.application.config).to receive(:alma_api_key).and_return('totally-fake-key')
 
     not_eligible_notes = ['I might be eligible for some stuff but not this']
-    allow_any_instance_of(Alma::User).to receive(:find_note).and_return(not_eligible_notes)
+    # TODO: Clean up use of notes_array vs. find_note
+    allow_any_instance_of(Alma::User).to receive(:notes_array).and_return(not_eligible_notes)
 
-    with_patron_login('013191305') do
+    with_patron_login(Alma::NON_FRAMEWORK_ADMIN_ID) do
       get new_service_article_request_form_path
       expect(response).to have_http_status(:forbidden)
     end

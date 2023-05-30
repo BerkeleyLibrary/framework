@@ -107,6 +107,8 @@ class User
     @primary_patron_record ||= find_primary_record
   end
 
+  # TODO: Unify this, faculty/staff checks, framework/alma admin checks
+  #       (and improve the design)
   def role?(role)
     # First check if user is a hardcoded admin
     return true if FrameworkUsers.hardcoded_admin?(uid)

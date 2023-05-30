@@ -9,7 +9,7 @@ describe 'Efines', type: :request do
   let(:request_headers) { { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" } }
 
   before do
-    login_as_patron('013191304')
+    login_as_patron(Alma::ALMA_ADMIN_ID)
 
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
   end

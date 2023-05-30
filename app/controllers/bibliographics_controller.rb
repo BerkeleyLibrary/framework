@@ -21,7 +21,12 @@ class BibliographicsController < ApplicationController
 
   def authorize!
     authenticate!
-    raise Error::ForbiddenError unless current_user.ucb_staff?
+
+    # TODO: should this really be open to all UCB staff?
+    roles = %i[framework_admin? alma_admin? ucb_staff?]
+
+    # TODO: Unify Framework user roles, these sorts of checks
+    raise Error::ForbiddenError unless roles.any? { |role| current_user.send(role) }
   end
 
 end
