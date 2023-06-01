@@ -4,8 +4,8 @@
   Your holdings request is complete. Please see the attached spreadsheet, or
   <%= link_to('download the results here', result_url) %>.
 </p>
-<% if error_report %>
-  <p><%= error_report %></p>
+<% if record_errors %>
+  <p><%= record_errors %></p>
 <% end %>
 <p>
   If you have any questions, please write to <%= mail_to('helpbox-library@berkeley.edu') %>.

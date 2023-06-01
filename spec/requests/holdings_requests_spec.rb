@@ -322,8 +322,20 @@ RSpec.describe HoldingsRequestsController, type: :request do
           end
 
           it 'executes background jobs' do
-            assert_jobs_run(job_classes)
-            assert_holdings_retrieved
+            expect do
+              assert_jobs_run(job_classes)
+              assert_holdings_retrieved
+            end.to(change { ActionMailer::Base.deliveries.count })
+
+            message = ActionMailer::Base.deliveries.find { |m| m.to && m.to.include?(req.email) }
+            expect(message).not_to be_nil
+
+            attachments = message.attachments
+            expect(attachments.size).to eq(1)
+
+            attachment = attachments[0]
+            expect(attachment.content_type).to eq(mime_type_xlsx)
+            expect(attachment.filename).to eq(req.output_filename)
           end
         end
 

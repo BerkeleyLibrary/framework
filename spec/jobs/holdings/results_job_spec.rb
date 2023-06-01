@@ -78,7 +78,7 @@ module Holdings
           expect(message).not_to be_nil
 
           expect(req.error_count).to be > 0 # just to be sure
-          expected_report = HoldingsMailer.error_report_for(req)
+          expected_report = HoldingsMailer.record_errors_for(req)
           message_text = message.to_s.gsub("\r\n", "\n")
           expect(message_text).to include(expected_report)
         end

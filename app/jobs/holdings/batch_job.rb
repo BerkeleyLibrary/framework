@@ -2,7 +2,9 @@ module Holdings
   class BatchJob < HoldingsJobBase
 
     def perform(request, result_url)
-      GoodJob::Batch.enqueue(on_finish: ResultsJob, request:, result_url:) do
+      # TODO: more elegant handling of failures in ResultsJob
+      #       (separate output generation from email?)
+      GoodJob::Batch.enqueue(request:, result_url:, on_finish: ResultsJob, on_discard: RequestFailedJob) do
         WorldCatJob.perform_later(request) if request.world_cat?
         HathiTrustJob.perform_later(request) if request.hathi?
       end
