@@ -11,7 +11,7 @@ RSpec.describe 'Bibliographics', type: :system do
     end
   end
 
-  describe 'authenticated non-staff user' do
+  describe 'authenticated but unauthorized user' do
     # TODO: replace with around(:each) using with_patron_login() once we're on Rails 6.1
     #       (see CapybaraHelper::GridConfigurator#configure!)
     before { login_as_patron(Alma::Type.sample_id_for(Alma::Type::FACULTY)) }
@@ -20,22 +20,35 @@ RSpec.describe 'Bibliographics', type: :system do
 
     it 'returns 403 unauthorized' do
       visit bibliographics_path
-      expect(page).to have_content('Only UC Berkeley staff may access.')
+      expect(page).to have_content('You are not authorized to access this page.')
     end
   end
 
   describe 'authenticated user' do
-    before do
-      login_as_patron(Alma::Type.sample_id_for(Alma::Type::STAFF))
-      visit bibliographics_path
-    end
-
     after { logout! }
 
-    it 'displays the form' do
-      expect(page).to have_content("Please choose a '.txt'")
+    shared_examples 'an authorized user' do
+      it 'displays the form' do
+        visit bibliographics_path
+        expect(page).to have_content("Please choose a '.txt'")
+      end
     end
 
+    context 'specs for Framework admins' do
+      before do
+        login_as_patron(Alma::FRAMEWORK_ADMIN_ID)
+      end
+
+      it_behaves_like 'an authorized user'
+    end
+
+    context 'specs for Alma admins' do
+      before do
+        login_as_patron(Alma::ALMA_ADMIN_ID)
+      end
+
+      it_behaves_like 'an authorized user'
+    end
   end
 
 end
