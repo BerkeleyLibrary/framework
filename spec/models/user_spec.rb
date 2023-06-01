@@ -56,6 +56,38 @@ describe User do
         expect(user.framework_admin).to eq(is_framework_admin)
       end
     end
+
+    it 'handles a user without CalGroups' do
+      auth = {
+        'provider' => 'calnet',
+        'extra' => {
+          'berkeleyEduAffiliations' => 'expected affiliation',
+          'departmentNumber' => 'expected dept. number',
+          'displayName' => 'expected display name',
+          'berkeleyEduOfficialEmail' => 'expected email',
+          'employeeNumber' => 'expected employee ID',
+          'givenName' => 'expected given name',
+          'berkeleyEduStuID' => 'expected student ID',
+          'surname' => 'expected surname',
+          'berkeleyEduUCPathID' => 'expected UC Path ID',
+          'uid' => 'expected UID'
+        }
+      }
+
+      user = User.from_omniauth(auth)
+      expect(user.affiliations).to eq('expected affiliation')
+      expect(user.department_number).to eq('expected dept. number')
+      expect(user.display_name).to eq('expected display name')
+      expect(user.email).to eq('expected email')
+      expect(user.employee_id).to eq('expected employee ID')
+      expect(user.given_name).to eq('expected given name')
+      expect(user.student_id).to eq('expected student ID')
+      expect(user.surname).to eq('expected surname')
+      expect(user.ucpath_id).to eq('expected UC Path ID')
+      expect(user.uid).to eq('expected UID')
+      expect(user.framework_admin).to eq(false)
+      expect(user.alma_admin).to eq(false)
+    end
   end
 
   describe :authenticated? do

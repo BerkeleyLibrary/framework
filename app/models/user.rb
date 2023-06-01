@@ -14,30 +14,38 @@ class User
     # @see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema OmniAuth Schema
     # @see https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549 Sample Calnet Response
     # @see https://calnetweb.berkeley.edu/calnet-technologists/ldap-directory-service/how-ldap-organized/people-ou/people-attribute-schema CalNet LDAP
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def from_omniauth(auth)
       raise Error::InvalidAuthProviderError, auth['provider'] \
         if auth['provider'].to_sym != :calnet
 
-      # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
-      new(
-        affiliations: auth['extra']['berkeleyEduAffiliations'],
-        cs_id: auth['extra']['berkeleyEduCSID'],
-        department_number: auth['extra']['departmentNumber'],
-        display_name: auth['extra']['displayName'],
-        email: auth['extra']['berkeleyEduOfficialEmail'],
-        employee_id: auth['extra']['employeeNumber'],
-        given_name: auth['extra']['givenName'],
-        student_id: auth['extra']['berkeleyEduStuID'],
-        surname: auth['extra']['surname'],
-        ucpath_id: auth['extra']['berkeleyEduUCPathID'],
-        uid: auth['extra']['uid'] || auth['uid'],
-        # TODO: Consider replacing this with a DB-based role, now that we have DB-based roles
-        framework_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(FRAMEWORK_ADMIN_GROUP),
-        alma_admin: auth['extra']['berkeleyEduIsMemberOf'].include?(ALMA_ADMIN_GROUP)
-      )
+      new(**auth_params_from(auth))
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+    private
+
+    # rubocop:disable Metrics/MethodLength
+    def auth_params_from(auth)
+      auth_extra = auth['extra']
+      cal_groups = auth_extra['berkeleyEduIsMemberOf'] || []
+
+      # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
+      {
+        affiliations: auth_extra['berkeleyEduAffiliations'],
+        cs_id: auth_extra['berkeleyEduCSID'],
+        department_number: auth_extra['departmentNumber'],
+        display_name: auth_extra['displayName'],
+        email: auth_extra['berkeleyEduOfficialEmail'],
+        employee_id: auth_extra['employeeNumber'],
+        given_name: auth_extra['givenName'],
+        student_id: auth_extra['berkeleyEduStuID'],
+        surname: auth_extra['surname'],
+        ucpath_id: auth_extra['berkeleyEduUCPathID'],
+        uid: auth_extra['uid'] || auth['uid'],
+        framework_admin: cal_groups.include?(FRAMEWORK_ADMIN_GROUP),
+        alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
+      }
+    end
+    # rubocop:enable Metrics/MethodLength
   end
 
   # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
