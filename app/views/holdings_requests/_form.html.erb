@@ -55,14 +55,27 @@
             <li>
               <%= form.check_box :rlf %>
               <%= form.label :rlf %>
+              <p class="option-note">
+                Checks OCLC for
+                <%= BerkeleyLibrary::Holdings::WorldCat::Symbols::NRLF.join('/') %>
+                and
+                <%= BerkeleyLibrary::Holdings::WorldCat::Symbols::SRLF.join('/') %>
+                holdings symbols
+              </p>
             </li>
             <li>
               <%= form.check_box :uc %>
               <%= form.label :uc %>
+              <p class="option-note">
+                Checks OCLC for UC campus holdings symbols and reports those found
+              </p>
             </li>
             <li>
               <%= form.check_box :hathi %>
               <%= form.label :hathi %>
+              <p class="option-note">
+                Checks HathiTrust for digital files and returns record-level URLs
+              </p>
             </li>
             <li>
               <p class="note">
@@ -100,6 +113,10 @@
         <p class="required-note">Required</p>
       </li>
       <li>
+        <p class="note">
+          If you have any questions or problems using the tool, please
+          contact <%= mail_to('helpbox-library@berkeley.edu', subject: 'Holdings Requests') %>.
+        </p>
         <%= form.submit(class: %w[btn btn-primary]) %>
       </li>
     </ul>

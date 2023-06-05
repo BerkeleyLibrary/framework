@@ -33,6 +33,12 @@ form {
         }
       }
 
+      p.option-note {
+        padding-top: 0.25rem;
+        font-size: calc(7rem / 8);
+        grid-column: 2;
+      }
+
       fieldset {
         display: contents;
 
