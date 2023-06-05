@@ -1,6 +1,8 @@
 # Superclass of form controllers that require authentication
 class AuthenticatedFormController < ApplicationController
 
+  self.support_email = 'privdesk-library@berkeley.edu'
+
   before_action :authenticate!
 
   # noinspection RailsParamDefResolve

@@ -1,4 +1,7 @@
 class AffiliateBorrowRequestFormsController < ApplicationController
+
+  self.support_email = 'privdesk-library@berkeley.edu'
+
   before_action :init_form!
 
   def index
