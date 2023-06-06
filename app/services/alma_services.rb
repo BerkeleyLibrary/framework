@@ -150,18 +150,14 @@ module AlmaServices
         JSON.parse(res.body)
       end
 
-      # rubocop:disable Metrics/AbcSize
       def save_item(item)
         uri = URIs.append(alma_api_url, "bibs/#{item.mms_id}/holdings/#{item.holding_id}/items/#{item.item_pid}")
         item_ids = "#{item.mms_id}|#{item.holding_id}|#{item.item_pid}"
 
         connection(item.env).put(uri, item.to_json, { 'Content-Type' => 'application/json' }).tap do |res|
-          # rubocop:disable Layout/LineLength
-          Rails.logger.warn("Failed to save item(#{item_ids}) with error: #{JSON.parse(body)['errorList']['error'][0]['errorMessage']}") unless res.status == 200
-          # rubocop:enable Layout/LineLength
+          Rails.logger.warn("Failed to save item: #{item_ids}") unless res.status == 200
         end
       end
-      # rubocop:enable Metrics/AbcSize
     end
   end
 
