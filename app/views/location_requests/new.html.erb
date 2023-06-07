@@ -1,4 +1,14 @@
-<h1>New Location Request</h1>
+<h1>Location Request</h1>
+
+<p class="subtitle">(new and improved RLF tool)</p>
+
+<p>
+  The Location Request tool takes an OCLC number and queries OCLC and/or HathiTrust.
+  The tool is good for searching for single-volume monographs. For multi-volume monographs
+  or serials, the tool is most useful if nothing is held at an RLF. If an OCLC number is
+  found at an RLF or HathiTrust, more checking will be necessary to determine which
+  volume(s) is/are actually held.
+</p>
 
 <%= render "form", location_request: @location_request, user: @user %>
 
