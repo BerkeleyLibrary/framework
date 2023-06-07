@@ -136,7 +136,7 @@
     <% if ht_errors_displayed > 1 %>
       <p>
         Note that HathiTrust records are retrieved in batches of
-        <%= BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE %>,
+        <%= BerkeleyLibrary::Location::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE %>,
         and if one record in a batch has a problem (e.g. a malformatted OCLC number),
         that may result in an error being reported for all records in that batch.
       </p>

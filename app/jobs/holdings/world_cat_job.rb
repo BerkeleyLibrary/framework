@@ -1,6 +1,6 @@
 module Holdings
   class WorldCatJob < HoldingsJobBase
-    include BerkeleyLibrary::Holdings::WorldCat
+    include BerkeleyLibrary::Location::WorldCat
 
     # Finds unprocessed HathiTrust records for the specified request, retrieves
     # the WorldCat holdings for each, and updates the records accordingly.

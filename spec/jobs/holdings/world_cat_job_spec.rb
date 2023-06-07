@@ -68,7 +68,7 @@ module Holdings
           if i.odd?
             stub_wc_request_for(oclc_number)
           else
-            req = BerkeleyLibrary::Holdings::WorldCat::LibrariesRequest.new(oclc_number)
+            req = BerkeleyLibrary::Location::WorldCat::LibrariesRequest.new(oclc_number)
             stub_request(:get, req.uri).with(query: req.params).to_return(status: 500)
           end
         end
@@ -103,7 +103,7 @@ module Holdings
         end
 
         oclc_number_midpoint = oclc_numbers_expected[midpoint]
-        req_midpoint = BerkeleyLibrary::Holdings::WorldCat::LibrariesRequest.new(oclc_number_midpoint)
+        req_midpoint = BerkeleyLibrary::Location::WorldCat::LibrariesRequest.new(oclc_number_midpoint)
         stub_request(:get, req_midpoint.uri).with(query: req_midpoint.params).to_raise(SignalException.new(:KILL))
 
         expect do

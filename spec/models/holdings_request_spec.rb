@@ -248,14 +248,14 @@ RSpec.describe HoldingsRequest, type: :model do
   describe :search_wc_symbols do
     it 'returns the symbols' do
       req = HoldingsRequest.create!(**valid_attributes)
-      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::ALL
+      symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::ALL
       expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
 
     it 'is not affected by the presence/absence of :hathi' do
       attributes = valid_attributes.except(:hathi)
       req = HoldingsRequest.create!(**attributes)
-      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::ALL
+      symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::ALL
       expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
 
@@ -268,14 +268,14 @@ RSpec.describe HoldingsRequest, type: :model do
     it 'returns RLF symbols for RLF requests' do
       attributes = valid_attributes.except(:uc)
       req = HoldingsRequest.create!(**attributes)
-      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF
+      symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::RLF
       expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
 
     it 'returns UC symbols for UC requests' do
       attributes = valid_attributes.except(:rlf)
       req = HoldingsRequest.create!(**attributes)
-      symbols_expected = BerkeleyLibrary::Holdings::WorldCat::Symbols::UC
+      symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::UC
       expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
     end
   end
@@ -326,7 +326,7 @@ RSpec.describe HoldingsRequest, type: :model do
         new_path = File.join(tmpdir, "#{expected_count}.xlsx")
 
         ss = BerkeleyLibrary::Util::XLSX::Spreadsheet.new(original_path)
-        c_index = ss.find_column_index_by_header!(BerkeleyLibrary::Holdings::Constants::OCLC_COL_HEADER)
+        c_index = ss.find_column_index_by_header!(BerkeleyLibrary::Location::Constants::OCLC_COL_HEADER)
         oclc_numbers.each_with_index do |oclc_num, i|
           r_index = 1 + i # skip header row
           ss.set_value_at(r_index, c_index, oclc_num)
@@ -422,7 +422,7 @@ RSpec.describe HoldingsRequest, type: :model do
       end
 
       it 'does not re-create an existing output file' do
-        expect(BerkeleyLibrary::Holdings::XLSXWriter).not_to receive(:new)
+        expect(BerkeleyLibrary::Location::XLSXWriter).not_to receive(:new)
 
         req.ensure_output_file!
         assert_output_complete!(req)

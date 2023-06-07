@@ -43,7 +43,7 @@
             <strong>Note:</strong>
             Input files must be Microsoft Office Open XML Workbook (.xlsx) files,
             without macros, and must include a column with the heading
-            “<%= BerkeleyLibrary::Holdings::Constants::OCLC_COL_HEADER %>”,
+            “<%= BerkeleyLibrary::Location::Constants::OCLC_COL_HEADER %>”,
             which must contain at least one OCLC number.
           </p>
         </div>
@@ -57,9 +57,9 @@
               <%= form.label :rlf %>
               <p class="option-note">
                 Checks OCLC for
-                <%= BerkeleyLibrary::Holdings::WorldCat::Symbols::NRLF.join('/') %>
+                <%= BerkeleyLibrary::Location::WorldCat::Symbols::NRLF.join('/') %>
                 and
-                <%= BerkeleyLibrary::Holdings::WorldCat::Symbols::SRLF.join('/') %>
+                <%= BerkeleyLibrary::Location::WorldCat::Symbols::SRLF.join('/') %>
                 holdings symbols
               </p>
             </li>

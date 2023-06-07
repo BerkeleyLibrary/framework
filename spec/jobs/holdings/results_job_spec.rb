@@ -62,7 +62,7 @@ module Holdings
         end
 
         it 'does not re-create an existing output file' do
-          expect(BerkeleyLibrary::Holdings::XLSXWriter).not_to receive(:new)
+          expect(BerkeleyLibrary::Location::XLSXWriter).not_to receive(:new)
 
           ResultsJob.perform_now(batch, params)
           assert_output_complete!(req)

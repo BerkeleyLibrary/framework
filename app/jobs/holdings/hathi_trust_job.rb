@@ -1,6 +1,6 @@
 module Holdings
   class HathiTrustJob < HoldingsJobBase
-    include BerkeleyLibrary::Holdings::HathiTrust
+    include BerkeleyLibrary::Location::HathiTrust
 
     # Finds unprocessed HathiTrust records for the specified request, retrieves
     # the record URLs for each, and updates the records accordingly.

@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 # TODO: Move some code out of this class
 class HoldingsRequest < ActiveRecord::Base
-  include BerkeleyLibrary::Holdings
+  include BerkeleyLibrary::Location
 
   # ------------------------------------------------------------
   # Constants
@@ -185,7 +185,7 @@ class HoldingsRequest < ActiveRecord::Base
 
   def each_input_oclc(&)
     with_input_tmpfile do |tmpfile|
-      reader = BerkeleyLibrary::Holdings::XLSXReader.new(tmpfile.path)
+      reader = BerkeleyLibrary::Location::XLSXReader.new(tmpfile.path)
       reader.each_oclc_number(&)
     end
   end
@@ -198,8 +198,8 @@ class HoldingsRequest < ActiveRecord::Base
     return unless world_cat?
 
     [].tap do |symbols|
-      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::RLF) if rlf?
-      symbols.concat(BerkeleyLibrary::Holdings::WorldCat::Symbols::UC) if uc?
+      symbols.concat(BerkeleyLibrary::Location::WorldCat::Symbols::RLF) if rlf?
+      symbols.concat(BerkeleyLibrary::Location::WorldCat::Symbols::UC) if uc?
     end
   end
 
@@ -245,7 +245,7 @@ class HoldingsRequest < ActiveRecord::Base
 
   def new_result(oclc_number, wc_sym_str, wc_error, ht_record_url, ht_error)
     wc_symbols = (wc_sym_str ? wc_sym_str.split(',') : [])
-    HoldingsResult.new(oclc_number, wc_symbols:, wc_error:, ht_record_url:, ht_error:)
+    LocationResult.new(oclc_number, wc_symbols:, wc_error:, ht_record_url:, ht_error:)
   end
 
   def write_output_file!

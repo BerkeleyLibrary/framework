@@ -121,14 +121,14 @@ RSpec.shared_context('HoldingsRequest') do
   include_context 'holdings data'
   include_context 'purge HoldingsRequests'
 
-  let(:batch_size) { BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
+  let(:batch_size) { BerkeleyLibrary::Location::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE }
 
   let(:batches) { oclc_numbers_expected.each_slice(batch_size).to_a }
-  let(:ht_batch_uris) { batches.map { |batch| BerkeleyLibrary::Holdings::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
+  let(:ht_batch_uris) { batches.map { |batch| BerkeleyLibrary::Location::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
   let(:ht_batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/holdings/hathi_trust/ht-batch-#{i}.json") } }
 
   def stub_wc_request_for(oclc_number)
-    req = BerkeleyLibrary::Holdings::WorldCat::LibrariesRequest.new(oclc_number)
+    req = BerkeleyLibrary::Location::WorldCat::LibrariesRequest.new(oclc_number)
     xml = File.read("spec/data/holdings/world_cat/#{oclc_number}.xml")
     stub_request(:get, req.uri).with(query: req.params).to_return(body: xml)
   end
@@ -201,9 +201,9 @@ RSpec.shared_context('complete HoldingsRequest') do
       r_index = i + 1 # skip header
 
       wc_symbols = holdings_by_oclc_num[oclc_number]
-      has_nrlf = wc_symbols.intersection(BerkeleyLibrary::Holdings::WorldCat::Symbols::NRLF).any?
-      has_srlf = wc_symbols.intersection(BerkeleyLibrary::Holdings::WorldCat::Symbols::SRLF).any?
-      expected_uc = wc_symbols.intersection(BerkeleyLibrary::Holdings::WorldCat::Symbols::UC)
+      has_nrlf = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::NRLF).any?
+      has_srlf = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::SRLF).any?
+      expected_uc = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::UC)
 
       ht_record_url = record_urls_expected[oclc_number]
 
