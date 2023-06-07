@@ -1,0 +1,146 @@
+<section id="<%= dom_id location_request %>" class="location-request">
+  <h2>Details</h2>
+
+  <table class="location-request attributes">
+    <tbody>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.location_request.email') %></th>
+        <td><%= location_request.email %></td>
+      </tr>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.location_request.filename') %></th>
+        <td>
+          <% if location_request.input_file_uploaded? %>
+            <%= link_to(location_request.filename, rails_blob_path(location_request.input_file, disposition: 'attachment')) %>
+          <% else %>
+            <%= location_request.filename %>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Include</th>
+        <td>
+          <table class="options attributes">
+            <tbody>
+              <% [:rlf, :uc, :hathi].each do |opt| %>
+                <tr>
+                  <th scope="row"><%= t("activerecord.attributes.location_request.#{opt}") %></th>
+                  <td>
+                    <% value = location_request.send(opt) || false %>
+                    <%= t("activerecord.attributes.location_request.include.#{value}") %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Submitted</th>
+        <td>
+          <% created_at = location_request.created_at %>
+          <%= l(created_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+        </td>
+      </tr>
+      <%
+        timestamps = {
+          'Scheduled to run' => location_request.scheduled_at,
+          'Started' => location_request.first_completed_at,
+          'Last record completed' => location_request.last_completed_at
+        }
+        timestamps.each do |label, timestamp|
+          next unless timestamp
+      %>
+        <tr>
+          <th scope="row"><%= label %></th>
+          <td><%= l(timestamp.in_time_zone('America/Los_Angeles'), format: :tabular) %></td>
+        </tr>
+      <%
+        end
+      %>
+      <tr>
+        <th scope="row">Records</th>
+        <td>
+          <table class="options attributes">
+            <tbody>
+              <% [:record_count, :completed_count, :error_count].each do |attr| %>
+                <tr>
+                  <th scope="row">
+                    <%= location_request.send(attr) %>
+                  </th>
+                  <td>
+                    <%= t("activerecord.attributes.location_request.#{attr}").downcase %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row"><%= t('activerecord.attributes.location_request.output_file') %></th>
+        <td>
+          <% if location_request.output_file.attached? %>
+            <%= link_to(location_request.output_filename, rails_blob_path(location_request.output_file, disposition: 'attachment')) %>
+          <% else %>
+            (none)
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <% if (total_errors = location_request.error_count) > 0 %>
+    <%
+      wc = location_request.world_cat?
+      ht = location_request.hathi?
+
+      error_records = location_request
+        .records_with_errors
+        .limit(LocationRequest::MAX_ERRORS_TO_DISPLAY)
+
+      errors_to_display = error_records.count
+
+      ht_errors_displayed = 0
+    %>
+    <section id="<%= dom_id location_request %>.errors" class="location-request-errors">
+      <h3>Errors</h3>
+
+      <% if errors_to_display < total_errors %>
+        <p>Showing <%= errors_to_display %> of <%= total_errors %> errors.</p>
+      <% end %>
+
+      <table class="location-request location-request-list">
+        <thead>
+          <tr>
+            <th scope="row">OCLC Number</th>
+            <% if wc %><th scope="row">WorldCat error</th><% end %>
+            <% if ht %><th scope="row">HathiTrust error</th><% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <%
+            error_records.find_each do |record| %>
+            <tr id="<%= dom_id record %>.errors">
+              <td><%= record.oclc_number %></td>
+              <% if wc %><td><%= record.wc_error %></td><% end %>
+              <% if ht %>
+                <% ht_errors_displayed += 1 %>
+                <td><%= record.ht_error %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+    <% if ht_errors_displayed > 1 %>
+      <p>
+        Note that HathiTrust records are retrieved in batches of
+        <%= BerkeleyLibrary::Location::HathiTrust::RecordUrlBatchRequest::MAX_BATCH_SIZE %>,
+        and if one record in a batch has a problem (e.g. a malformatted OCLC number),
+        that may result in an error being reported for all records in that batch.
+      </p>
+    <% end %>
+  <% end %>
+  </section>
+</section>

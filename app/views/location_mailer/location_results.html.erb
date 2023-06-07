@@ -1,0 +1,12 @@
+<h1>Location Request</h1>
+
+<p>
+  Your location request is complete. Please see the attached spreadsheet, or
+  <%= link_to('download the results here', result_url) %>.
+</p>
+<% if record_errors %>
+  <p><%= record_errors %></p>
+<% end %>
+<p>
+  If you have any questions, please write to <%= mail_to('helpbox-library@berkeley.edu') %>.
+</p>

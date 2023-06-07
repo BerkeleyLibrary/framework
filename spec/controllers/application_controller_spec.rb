@@ -19,14 +19,15 @@ describe ApplicationController do
 
       # helpbox-library@berkeley.edu (default)
       ApplicationController => 'helpbox-library@berkeley.edu',
-      FinesController => 'helpbox-library@berkeley.edu',
-      HomeController => 'helpbox-library@berkeley.edu',
-      TindDownloadController => 'helpbox-library@berkeley.edu',
+
       AlmaItemSetController => 'helpbox-library@berkeley.edu',
       BibliographicsController => 'helpbox-library@berkeley.edu',
-      HoldingsRequestsController => 'helpbox-library@berkeley.edu',
-      SessionsController => 'helpbox-library@berkeley.edu',
       CampusNetworksController => 'helpbox-library@berkeley.edu',
+      FinesController => 'helpbox-library@berkeley.edu',
+      HomeController => 'helpbox-library@berkeley.edu',
+      LocationRequestsController => 'helpbox-library@berkeley.edu',
+      SessionsController => 'helpbox-library@berkeley.edu',
+      TindDownloadController => 'helpbox-library@berkeley.edu',
       ValidateProxyPatronController => 'helpbox-library@berkeley.edu', # never displayed, but no harm done
 
       # privdesk-library@berkeley.edu

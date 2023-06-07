@@ -49,7 +49,7 @@
     <orderEntry type="library" scope="PROVIDED" name="awesome_print (v1.9.2, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-alma (v0.0.7.1, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-docker (v0.2.0, RVM: ruby-3.1.2) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="berkeley_library-holdings (v1.0.5, RVM: ruby-3.1.2) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="berkeley_library-location (v2.0.0, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-logging (v0.2.7, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-marc (v0.3.1, RVM: ruby-3.1.2) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-tind (v0.7.1, RVM: ruby-3.1.2) [gem]" level="application" />
@@ -541,6 +541,7 @@
           <RakeTaskImpl description="Run all specs in spec directory (excluding plugin specs)" fullCommand="spec" id="spec" />
           <RakeTaskImpl id="spec">
             <subtasks>
+              <RakeTaskImpl description="Run the code examples in spec/controllers" fullCommand="spec:controllers" id="controllers" />
               <RakeTaskImpl description="Run the code examples in spec/jobs" fullCommand="spec:jobs" id="jobs" />
               <RakeTaskImpl description="Run the code examples in spec/lib" fullCommand="spec:lib" id="lib" />
               <RakeTaskImpl description="Run the code examples in spec/mailers" fullCommand="spec:mailers" id="mailers" />
@@ -555,9 +556,9 @@
                   <RakeTaskImpl description="Run specs in doemoff_study_room_user_forms_system_spec.rb" fullCommand="spec:system:doemoff_study_room_user_forms" id="doemoff_study_room_user_forms" />
                   <RakeTaskImpl description="Run specs in efine_invoice_system_spec.rb" fullCommand="spec:system:efine_invoice" id="efine_invoice" />
                   <RakeTaskImpl description="Run specs in galc_request_forms_system_spec.rb" fullCommand="spec:system:galc_request_forms" id="galc_request_forms" />
-                  <RakeTaskImpl description="Run specs in holdings_requests_system_spec.rb" fullCommand="spec:system:holdings_requests" id="holdings_requests" />
                   <RakeTaskImpl description="Run specs in home_system_spec.rb" fullCommand="spec:system:home" id="home" />
                   <RakeTaskImpl description="Run specs in libstaff_edevices_loan_forms_system_spec.rb" fullCommand="spec:system:libstaff_edevices_loan_forms" id="libstaff_edevices_loan_forms" />
+                  <RakeTaskImpl description="Run specs in location_requests_system_spec.rb" fullCommand="spec:system:location_requests" id="location_requests" />
                   <RakeTaskImpl description="Run specs in proxy_borrower_admin_system_spec.rb" fullCommand="spec:system:proxy_borrower_admin" id="proxy_borrower_admin" />
                   <RakeTaskImpl description="Run specs in proxy_borrower_dsp_system_spec.rb" fullCommand="spec:system:proxy_borrower_dsp" id="proxy_borrower_dsp" />
                   <RakeTaskImpl description="Run specs in proxy_borrower_faculty_system_spec.rb" fullCommand="spec:system:proxy_borrower_faculty" id="proxy_borrower_faculty" />

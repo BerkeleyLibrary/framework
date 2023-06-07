@@ -1,0 +1,125 @@
+<%# TODO: Form validation (cf. TIND) %>
+
+<%
+  accept_mime_type = BerkeleyLibrary::Util::XLSX::Spreadsheet::MIME_TYPE_OOXML_WB
+
+  allow_immediate = user.framework_admin?
+  show_immediate = allow_immediate || location_request.immediate?
+%>
+
+<section id="location-request-form">
+  <% if location_request.errors.any? %>
+    <div class="alert alert-danger fade show" role="alert">
+      <h5 class="alert-heading">The following errors have been found. Please correct them before submitting the form again:</h5>
+      <table class="errors">
+        <% location_request.errors.each do |error| %>
+          <tr>
+            <th scope="row"><%= t("activerecord.attributes.location_request.#{error.attribute}") %></th>
+            <td><%= error.message %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
+
+  <%= form_with(model: location_request) do |form| %>
+    <ul>
+      <li>
+        <div class="form-label form-group required">
+          <%= form.label :email, class: 'control-label' %>
+        </div>
+        <div class="form-input required">
+          <%= form.text_field :email, class: 'form-control add-required', required: true %>
+        </div>
+      </li>
+      <li>
+        <div class="form-label form-group required">
+          <%= form.label :input_file, class: 'control-label' %>
+        </div>
+        <div class="form-input required">
+          <%= form.file_field :input_file, class: 'form-control add-required', accept: accept_mime_type, required: true %>
+
+          <p class="note">
+            <strong>Note:</strong>
+            Input files must be Microsoft Office Open XML Workbook (.xlsx) files,
+            without macros, and must include a column with the heading
+            “<%= BerkeleyLibrary::Location::Constants::OCLC_COL_HEADER %>”,
+            which must contain at least one OCLC number.
+          </p>
+        </div>
+      </li>
+      <li>
+        <fieldset class="required">
+          <legend>Include</legend>
+          <ul class="form-input required">
+            <li>
+              <%= form.check_box :rlf %>
+              <%= form.label :rlf %>
+              <p class="option-note">
+                Checks OCLC for
+                <%= BerkeleyLibrary::Location::WorldCat::Symbols::NRLF.join('/') %>
+                and
+                <%= BerkeleyLibrary::Location::WorldCat::Symbols::SRLF.join('/') %>
+                holdings symbols
+              </p>
+            </li>
+            <li>
+              <%= form.check_box :uc %>
+              <%= form.label :uc %>
+              <p class="option-note">
+                Checks OCLC for UC campus holdings symbols and reports those found
+              </p>
+            </li>
+            <li>
+              <%= form.check_box :hathi %>
+              <%= form.label :hathi %>
+              <p class="option-note">
+                Checks HathiTrust for digital files and returns record-level URLs
+              </p>
+            </li>
+            <li>
+              <p class="note">
+                <strong>Note:</strong>
+                At least one of
+                <%=
+                  [:rlf, :uc, :hathi]
+                  .map { |opt| t("activerecord.attributes.location_request.#{opt}") }
+                  .to_sentence(last_word_connector: ', or ')
+                %>
+                must be selected.
+              </p>
+            </li>
+          </ul>
+        </fieldset>
+      </li>
+      <% if show_immediate %>
+        <li>
+          <fieldset>
+            <legend>Schedule request to run</legend>
+            <ul class="form-input">
+              <li>
+                <%= form.radio_button :immediate, false, value: false, disabled: !allow_immediate %>
+                <%= form.label :immediate, 'off hours', value: false %>
+              </li>
+              <li>
+                <%= form.radio_button :immediate, true, value: true, disabled: !allow_immediate %>
+                <%= form.label :immediate, 'immediately', value: true %>
+              </li>
+            </ul>
+          </fieldset>
+        </li>
+      <% end %>
+      <li>
+        <p class="required-note">Required</p>
+      </li>
+      <li>
+        <p class="note">
+          If you have any questions or problems using the tool, please
+          contact <%= mail_to('helpbox-library@berkeley.edu', subject: 'Location Requests') %>.
+        </p>
+        <%= form.submit(class: %w[btn btn-primary]) %>
+      </li>
+    </ul>
+  <% end %>
+
+</section>

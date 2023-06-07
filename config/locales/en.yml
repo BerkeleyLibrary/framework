@@ -51,7 +51,7 @@ en:
         local_id: UC Library Search record link or call number for an item of interest
         pass_date: Requested access start date
         pass_date_end: Requested access end date
-      holdings_request:
+      location_request:
         email: Email address
         filename: Input file
         input_file: Input file
@@ -67,12 +67,12 @@ en:
         error_count: Records with errors
     errors:
       models:
-        holdings_task:
+        location_task:
           attributes:
             filename:
               blank: must be provided
             immediate:
-              forbidden: "Only an administrator can trigger an immediate holdings request"
+              forbidden: "Only an administrator can trigger an immediate location request"
         proxy_borrower_requests:
           attributes:
             research_last:
@@ -148,7 +148,7 @@ en:
         create: Submit
       reference_card_form:
         create: Submit
-      holdings_task:
+      location_task:
         create: Upload file
 
   libstaff_edevices_loan_forms:
@@ -159,9 +159,9 @@ en:
     calnet:
       forbidden: <strong>Forbidden:</strong> You're not allowed to access the requested page.
 
-  holdings_mailer:
-    holdings_results:
-      subject: Your holdings request
+  location_mailer:
+    location_results:
+      subject: Your location request
 
   request_mailer:
     scan_request_opt_in_confirmation_email:

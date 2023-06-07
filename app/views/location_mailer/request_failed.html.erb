@@ -1,0 +1,11 @@
+<p>
+An error occurred when processing your location request.
+Please contact <%= mail_to('helpbox-library@berkeley.edu') %> for more information.
+</p>
+
+<% errors.each do |error| %>
+<pre>
+<%= error %>
+</pre>
+<% end %>
+

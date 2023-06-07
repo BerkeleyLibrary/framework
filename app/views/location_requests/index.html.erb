@@ -1,0 +1,68 @@
+<h1>All Location Requests</h1>
+
+<p>
+  <%= link_to('Schedule a location request', new_location_request_path) %>
+</p>
+
+<div id="location_requests">
+  <table class="location-request location-request-list">
+    <thead>
+      <tr>
+        <td></td>
+        <th scope="col">Email</th>
+        <th scope="col">Input file</th>
+        <th scope="col">RLF</th>
+        <th scope="col">UC</th>
+        <th scope="col">HT</th>
+        <th scope="col">Submitted</th>
+        <th scope="col">Scheduled to run</th>
+        <th scope="col"># Records</th>
+        <th scope="col"># Complete</th>
+        <th scope="col"># Errors</th>
+        <th scope="col">Output file</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @location_requests.each do |location_request| %>
+        <tr id="<%= dom_id location_request %>">
+          <td><%= link_to 'View', location_request %></td>
+          <td><%= location_request.email %></td>
+          <td>
+            <% if location_request.input_file_uploaded? %>
+              <%= link_to(location_request.filename, rails_blob_path(location_request.input_file, disposition: 'attachment')) %>
+            <% else %>
+              <%= location_request.filename %>
+            <% end %>
+          </td>
+          <% [:rlf, :uc, :hathi].each do |opt| %>
+            <td>
+              <% value = location_request.send(opt) || false %>
+              <%= t("activerecord.attributes.location_request.include.#{value}") %>
+            </td>
+          <% end %>
+          <td class="timestamp">
+            <% created_at = location_request.created_at %>
+            <%= l(created_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+          </td>
+          <td class="timestamp">
+            <% if (scheduled_at = location_request.scheduled_at) %>
+              <%= l(scheduled_at.in_time_zone('America/Los_Angeles'), format: :tabular) %>
+            <% else %>
+              -
+            <% end %>
+          </td>
+          <td><%= location_request.record_count %></td>
+          <td><%= location_request.completed_count %></td>
+          <td><%= location_request.error_count %></td>
+          <td>
+            <% if location_request.output_file_uploaded? %>
+              <%= link_to(location_request.output_filename, rails_blob_path(location_request.output_file, disposition: 'attachment')) %>
+            <% else %>
+              (none)
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

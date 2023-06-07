@@ -80,10 +80,10 @@ Rails.application.routes.draw do
   get '/tind-download/download', to: 'tind_download#download'
   post '/tind-download/download', to: 'tind_download#download'
 
-  # Holdings
-  get '/holdings_requests/immediate', to: 'holdings_requests#immediate', as: :immediate_holdings_request
-  get '/holdings_requests/:id/result', to: 'holdings_requests#result', as: :holdings_requests_result
-  resources :holdings_requests
+  # Locations
+  get '/location_requests/immediate', to: 'location_requests#immediate', as: :immediate_location_request
+  get '/location_requests/:id/result', to: 'location_requests#result', as: :location_requests_result
+  resources :location_requests
 
   # http://example.com/good_job
   mount GoodJob::Engine => 'good_job'

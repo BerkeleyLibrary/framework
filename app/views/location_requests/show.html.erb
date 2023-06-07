@@ -1,0 +1,12 @@
+<h1>Location Request</h1>
+
+<%= render @location_request %>
+
+<% if @user.framework_admin? %>
+  <p>
+    <%= link_to('Schedule a location request', new_location_request_path) %>
+  </p>
+  <p>
+    <%= link_to('View all location requests', location_requests_path) %>
+  </p>
+<% end %>
