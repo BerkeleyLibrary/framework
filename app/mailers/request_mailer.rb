@@ -129,7 +129,7 @@ class RequestMailer < ApplicationMailer
   # Send Proxy-Borrower Card Request Alert to privdesk
   def proxy_borrower_alert_email(proxy_request)
     @proxy_request = proxy_request
-    mail(to: privdesk_to)
+    mail(to: [privdesk_to, 'mamarrow@berkeley.edu'])
   end
 
   # Send Stack Pass Request Alert to privdesk
