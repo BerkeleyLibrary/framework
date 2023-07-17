@@ -23,12 +23,13 @@ services:
       # GOOD_JOB_MAX_THREADS: 4
   
   goodjob:
-    build: .
+    <<: *services-app
     command: good_job start
-    restart: always
-    # ports: # Hrm, guessing not necessary???
-    environment:
-      GOOD_JOB_MAX_THREADS: 4
+    depends_on:
+      - db
+      - selenium
+      - selenium-chrome
+    ports: []
 
   db:
     environment:
