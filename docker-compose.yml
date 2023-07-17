@@ -5,6 +5,7 @@ services:
       target: development
     depends_on:
       - db
+      - goodjob
       - selenium
       - selenium-chrome
     init: true
@@ -19,8 +20,15 @@ services:
     restart: always
     environment: 
       RAILS_MAX_THREADS: 6
+      # GOOD_JOB_MAX_THREADS: 4
+  
+  goodjob:
+    build: .
+    command: good_job start
+    restart: always
+    # ports: # Hrm, guessing not necessary???
+    environment:
       GOOD_JOB_MAX_THREADS: 4
-
 
   db:
     environment:
@@ -67,31 +75,6 @@ services:
     volumes:
       - /dev/shm:/dev/shm:rw
       - ./:/build:rw
-  # selenium:
-  #   image: selenium/hub
-  #   networks:
-  #     default:
-  #       aliases:
-  #         - selenium.test
-  #   ports:
-  #     - 4444:4444
-  #   volumes:
-  #     - ./:/build:rw
-
-  # selenium-chrome:
-  #   depends_on:
-  #     - selenium
-  #   environment:
-  #     HUB_HOST: selenium
-  #   image: selenium/node-chrome-debug
-  #   ports:
-  #     # @note Use `open vnc://localhost:55900` to view the chrome session.
-  #     #       Doesn't work if you pass the "headless" option via Capybara.
-  #     #       Password = "secret"
-  #     - 55900:5900
-  #   volumes:
-  #     - /dev/shm:/dev/shm:rw
-  #     - ./:/build:rw
 
   adminer:
     image: adminer

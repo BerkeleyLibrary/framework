@@ -68,5 +68,7 @@ Rails.application.configure do
   # Configure the default host - this is used by Stack Pass's mailer, to create a link
   # back to the application (directly to the approval form for an pass request):
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
-
+  
+  # For prod and dev we want external... test async (though right now it's inline...hrm)
+  config.good_job.execution_mode = :external
 end
