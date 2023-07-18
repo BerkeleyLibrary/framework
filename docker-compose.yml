@@ -5,7 +5,7 @@ services:
       target: development
     depends_on:
       - db
-      - goodjob
+      - worker
       - selenium
       - selenium-chrome
     init: true
@@ -20,9 +20,8 @@ services:
     restart: always
     environment: 
       RAILS_MAX_THREADS: 6
-      # GOOD_JOB_MAX_THREADS: 4
   
-  goodjob:
+  worker:
     <<: *services-app
     command: good_job start
     depends_on:

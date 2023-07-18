@@ -106,7 +106,4 @@ Rails.application.configure do
   # For production make use:
   config.action_mailer.default_url_options = { host: 'framework.lib.berkeley.edu' }
 
-  # For prod and dev we want external... test async (though right now it's inline...hrm)
-  config.good_job.execution_mode = :external
-
 end
