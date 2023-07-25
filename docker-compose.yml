@@ -20,6 +20,9 @@ services:
     restart: always
     environment: 
       RAILS_MAX_THREADS: 6
+      FRAMEWORK_ALMA_API_KEY: ${FRAMEWORK_ALMA_API_KEY}
+      FRAMEWORK_ALMA_SANDBOX_KEY: ${FRAMEWORK_ALMA_SANDBOX_KEY}
+      LIT_TIND_API_KEY: ${LIT_TIND_API_KEY}
   
   worker:
     <<: *services-app
