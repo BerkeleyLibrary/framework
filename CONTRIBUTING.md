@@ -67,6 +67,15 @@ for instructions on integrating Docker Desktop with WSL.
 
 #### Building the Docker stack
 
+##### Set Environment Variables
+Framework depends on several environment variables to be configured. The easiest way to manage this in your development environment is the use of a dotenv ('.env') file in the root of your application.
+Set this up by first copying the sample .env file:
+```sh
+cp .env.sample .env
+```
+Then edit the file by adding the appropriate API keys (which can be found in LastPass) and saving the file.
+
+##### Build
 To build a Docker stack based on the included
 [`docker-compose.yml`](docker-compose.yml) file, run the command:
 
