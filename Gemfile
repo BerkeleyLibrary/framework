@@ -4,7 +4,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby File.read('.ruby-version').strip
 
-gem 'dotenv-rails', '~> 2.8.1', require: 'dotenv/rails-now'
 gem 'awesome_print', '>=1.8.0'
 gem 'berkeley_library-docker', '~> 0.2.0'
 gem 'berkeley_library-location', '~> 2.0'
@@ -13,6 +12,7 @@ gem 'berkeley_library-marc', '~> 0.3.1'
 gem 'berkeley_library-tind', '~> 0.7.1'
 gem 'berkeley_library-util', '~> 0.1.8'
 gem 'bootstrap'
+gem 'dotenv-rails', '~> 2.8.1', require: 'dotenv/rails-now'
 gem 'faraday'
 gem 'good_job', '~> 3.10', '>= 3.14.2'
 gem 'ipaddress'
