@@ -1,5 +1,4 @@
 require 'berkeley_library/docker'
-require 'dotenv/load' unless BerkeleyLibrary::Docker.running_in_container?
 
 Rails.application.configure do
   # Setting logger to use outgai
