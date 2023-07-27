@@ -7,6 +7,8 @@ describe EfinesInvoice do
   before do
     alma_id = '10335026'
 
+    allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+
     stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{alma_id}?expand=fees&view=full")
       .with(headers: request_headers)
       .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
