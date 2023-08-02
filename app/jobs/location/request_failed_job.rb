@@ -9,7 +9,7 @@ module Location
       logger.info("Starting #{RequestFailedJob} for batch #{batch.id}", request:, event: params[:event])
 
       errors = GoodJob::Job.discarded.where(batch_id: batch.id).pluck(:error)
-
+      logger.error(errors.inspect)
       LocationMailer.request_failed(request, errors:).deliver_now
     end
   end
