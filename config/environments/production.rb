@@ -89,7 +89,9 @@ Rails.application.configure do
     user_name: config.altmedia['mail_smtp_username'],
     password: config.altmedia['mail_smtp_password'],
     authentication: 'plain',
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+    open_timeout: ENV.fetch('MAIL_OPEN_TIMEOUT', 5).to_i,
+    read_timeout: ENV.fetch('MAIL_READ_TIMEOUT', 120).to_i
   }
 
   if ENV['INTERCEPT_EMAILS'].present?
