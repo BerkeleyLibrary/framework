@@ -21,18 +21,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :authenticated?
 
-  # Log an exception
-  def log_error(error)
-    # TODO: share code w/ApplicationJob
-    msg = {
-      msg: error.message,
-      error: error.inspect.to_s,
-      cause: error.cause.inspect.to_s
-    }
-    msg[:backtrace] = error.backtrace if Rails.logger.level < Logger::INFO
-    logger.error(msg)
-  end
-
   # @return Regexp Pattern determining whether a request should be "hidden"
   #
   # For example, "LIT_HIDDEN_PATHS='foo bar.*'" will result in a regexp that

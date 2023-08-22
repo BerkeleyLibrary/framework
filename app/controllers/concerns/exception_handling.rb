@@ -5,6 +5,18 @@ module ExceptionHandling
   included do
     extend ClassMethods
 
+    # Log an exception
+    # @todo share code w/ApplicationJob
+    def log_error(error)
+      msg = {
+        msg: error.message,
+        error: error.inspect.to_s,
+        cause: error.cause.inspect.to_s
+      }
+      msg[:backtrace] = error.backtrace if Rails.logger.level < Logger::INFO
+      logger.error(msg) # @note assumes the including class has a .logger method
+    end
+
     # Order exceptions from most generic to most specific.
 
     rescue_from StandardError do |error|
