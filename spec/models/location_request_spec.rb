@@ -306,6 +306,8 @@ RSpec.describe LocationRequest, type: :model do
     end
 
     it 'does not ignore duplicate OCLC numbers' do
+      LocationRecord.destroy_all
+
       attributes = valid_attributes.except(:input_file)
       attributes[:input_file] = uploaded_file_from('spec/data/location/input-file-duplicates.xlsx')
       req = LocationRequest.create!(**attributes)
