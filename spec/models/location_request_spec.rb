@@ -16,6 +16,7 @@ RSpec.describe LocationRequest, type: :model do
   let(:input_file_path) { 'spec/data/location/input-file.xlsx' }
   let(:input_file_basename) { File.basename(input_file_path) }
   let(:oclc_numbers_expected) { File.readlines('spec/data/location/oclc_numbers_expected.txt', chomp: true) }
+  let(:oclc_numbers_expected_w_dupes) { File.readlines('spec/data/location/oclc_numbers_expected_w_dupes.txt', chomp: true) }
 
   # -------------------------------
   # helper methods
@@ -301,19 +302,18 @@ RSpec.describe LocationRequest, type: :model do
       req = LocationRequest.create!(**valid_attributes)
       2.times { req.ensure_location_records! }
 
-      expected_count = oclc_numbers_expected.size
+      expected_count = oclc_numbers_expected_w_dupes.size
+
       expect(req.location_records.count).to eq(expected_count)
     end
 
     it 'does not ignore duplicate OCLC numbers' do
-      LocationRecord.destroy_all
-
       attributes = valid_attributes.except(:input_file)
       attributes[:input_file] = uploaded_file_from('spec/data/location/input-file-duplicates.xlsx')
       req = LocationRequest.create!(**attributes)
       req.ensure_location_records!
 
-      expected_count = oclc_numbers_expected.size
+      expected_count = oclc_numbers_expected_w_dupes.size
       expect(req.location_records.count).to eq(expected_count)
     end
 
