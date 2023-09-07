@@ -4,6 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby File.read('.ruby-version').strip
 
+gem 'dotenv-rails', '~> 2.8.1', require: 'dotenv/rails-now'
 gem 'awesome_print', '>=1.8.0'
 gem 'berkeley_library-docker', '~> 0.2.0'
 gem 'berkeley_library-location', '~> 2.0'
