@@ -23,11 +23,14 @@ module TindMarc
     # Creates a hash containing an array of file paths. Each key will contain the files for one Tind record.
     # The expected filename format is mmsid_barcode and the key will be the alma id
     def filenames(root_dir)
-      raise StandardError.new("Directory: #{root_dir} not found") unless File.directory?(root_dir)
-      Find.find(root_dir) do |path|
-        key = create_key(path)
-        @file_hash[key] << path if @file_hash.key?(key) 
-      end
+      begin
+        Find.find(root_dir) do |path|
+          key = create_key(path)
+          @file_hash[key] << path if @file_hash.key?(key) 
+        end
+      rescue Exception => e 
+        Rails.logger.error "Directory not found #{e}"
+      end  
       @file_hash
     end
   end

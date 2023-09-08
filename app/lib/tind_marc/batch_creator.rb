@@ -3,7 +3,9 @@ require_relative 'alma_tind'
 module TindMarc
   class BatchCreator
     attr_reader :field_540a
-
+  
+    ROOT_DIR = '/opt/app/data/da'
+    
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(args = {})
       @records = []
@@ -23,7 +25,7 @@ module TindMarc
 
     def assets
       begin
-        AssetFile.new(@dir)
+        AssetFile.new("#{ROOT_DIR}/#{@dir}")
       rescue StandardError => error 
         Rails.logger.error error 
       end
