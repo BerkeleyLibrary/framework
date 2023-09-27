@@ -19,7 +19,7 @@ module TindMarc
     # rubocop:enable Metrics/ParameterLists
 
     #def additional_tind_fields(alma_id, files, url_base, initials, rights = nil)
-    def additional_tind_fields(key, files, url_base, field_980a, initials, rights = nil)
+    def additional_tind_fields(key, files, url_base, field_980a, rights = nil)
       fields = []
       #field_035 = ::MARC::DataField.new('035', ' ', ' ', ['a', "(#{field_980a})#{alma_id]}")
 
@@ -31,7 +31,7 @@ module TindMarc
         fields << field_540
       end
 
-      field_902 = ::MARC::DataField.new('902', ' ', ' ', %w[d #{Date.today.to_s}], ['n', "syscript: #{initials}"])
+      field_902 = ::MARC::DataField.new('902', ' ', ' ', %w[d #{Date.today.to_s}], ['n', 'syscript'])
       fields << field_902
 
       files.each do |file|

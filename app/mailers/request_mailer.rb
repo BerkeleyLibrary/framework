@@ -175,9 +175,9 @@ class RequestMailer < ApplicationMailer
   end
 
   # Send marc batch file for Tind upload. 
-  def tind_marc_batch_email(email, batch_file, batch_file_contents) 
+  def tind_marc_batch_email(email, subject, batch_file, batch_file_contents) 
     attachments[batch_file] =  batch_file_contents
-    mail(to: email, subject: 'Tind MARC Batch')
+    mail(to: email, subject: subject)
   end
 
 

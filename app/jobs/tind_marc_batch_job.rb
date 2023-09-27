@@ -1,4 +1,3 @@
-require_relative '../lib/tind_marc/tind_marc'
 class TindMarcBatchJob < ApplicationJob
 queue_as :default
 

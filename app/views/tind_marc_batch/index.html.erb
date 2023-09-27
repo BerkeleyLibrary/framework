@@ -1,6 +1,7 @@
 <h1>Tind Marc Batch</h1>
 <p>This form is for creating a Tind marc batch load from a directory of files. Metadata will be obtained from Alma</p>
-<%= form_with(url: '',id: 'set-form', local: true, target: '_blank') do |f| %>  
+<%= form_with(url: '', local: true, target: '_blank') do |f| %>  
+  <%= hidden_field_tag :email, @current_user.email %>
   <div class="form-label form-group required">
     <%= label_tag('directory', 'Resource Directory', class: 'control-label') %>
   </div>
@@ -54,18 +55,17 @@
     <%= label_tag('540_a', '540_a (Rights statement, can be edited)', class: 'control-label') %>
   </div>
   <div class="form-input mb-4 required">
-    <%= f.text_area(:f_540_a, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', required: false, autofocus: true, value: t('tind_marc_batch.standard_rights_statement'), rows: 8, required: true ) %>
+    <%= f.text_area(:f_540_a, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true, value: t('tind_marc_batch.standard_rights_statement'), rows: 8, required: true ) %>
   </div>
 
   <div class="form-label form-group">
     <%= label_tag('restriction', 'Restriction (optional)', class: 'control-label') %>
   </div>
-  <div class="form-input required mb-4">
+  <div class="form-input mb-4">
     <%= f.select :restriction, Rails.application.config.tind_restrictions, include_blank: true %>
   </div>
 
   <div class="form-input">
-   <%= f.submit(class: 'btn btn-primary', value: 'Batch') %> 
+   <%= f.submit(class: 'btn btn-primary', value: 'Create Batch') %> 
   </div>
-
 <% end %>

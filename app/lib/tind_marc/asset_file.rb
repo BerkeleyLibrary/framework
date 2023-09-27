@@ -12,11 +12,9 @@ module TindMarc
 
     def create_key(path)
       key = File.basename(path)
-#      key.gsub!(/_.*?$/, '')
-#      key.gsub!(/\.\w.*?$/, '')
-      key.gsub!(/\_\d{1,}\.\w.*?$/, '')
-      key.gsub!(/\.\w.*?$/,'')
-      @file_hash[key] = [] unless @file_hash.key?(key) || File.directory?(path)
+      key.match(/(^\d+_{1,1}[a-zA-Z0-9]+)[\_|\.]/i)
+      key = $1
+      @file_hash[key] = [] unless @file_hash.key?(key) || File.directory?(path) || key.nil?
       key
     end
 

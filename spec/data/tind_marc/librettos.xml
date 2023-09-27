@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<record>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Pae&#x308;r, Ferdinando, 1771-1839.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="245">
+    <subfield code="a">I molinari</subfield>
+    <subfield code="b">commedia con musica d'un atto solo</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="260">
+    <subfield code="a">In Venezia</subfield>
+    <subfield code="b">Appresso Modesto Fenzo, con licenza de' superiori</subfield>
+    <subfield code="c">1794.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="300">
+    <subfield code="a">38 pages</subfield>
+    <subfield code="c">18 cm</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">Twenty-two scenes.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"La musica e&#x300; del rinomato signor Ferdinando Pe&#x300;r all'attuale servizio di S.A.R. l'infante di Parma"--Page 3.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"Le scene sono d'invenzione, e direzione del signor Giuseppe Camisetta"--Page 3.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"Li balli saranno composti, e diretti dalli Signori Urbano Garzia, e Nicola Ferlotti"--Page 4.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"Il vestiario tutto nuovo di ricca, e vaga invenzione del signor Baldassar Majani"--Page 4.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"PRIMI BALLERINI. Il Sig. Nicola Ferlotti suddetto, La Sig. Giovanna Campigli; PRIMI GROTTESCHI A PERFETTA VICENDA ESTRATTI A SORTE. Giuseppe Conti detto Prussia, Carolina Brancher, Rafael Ferlotti, Giustina Santambrogio, Lorenzo Monati; PRIMI BALLERINI FUORI DE' CONCERTI. Teresa Ferlotti, Antonio Landini, Pellegrina Fabris; [corpo di ballo listed]"--Page 4.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"Attori. LAURETTA. La Sig. Anna Nava, prima buffa assoluta; LISAURA. La Sig. Teresa Cappelletti, prima donna di mezzo carattere assoluta; BARTOLONE. Il Sig. Gianbattista Brocchi, primo buffo caricato a perfetta vicenda; CIBANDOLA. Il Sig. Domenico Madrigali, primo buffo caricato a perfetta vicenda; IL CONTE. Il signor Felice Simi, primo mezzo carattere assoluto; PIPPO MOLINARO. Il Sig. Petronio Cappelletti, altro primo buffo"--Page 3.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">US-BEm.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="650">
+    <subfield code="a">Operas Librettos. </subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="650">
+    <subfield code="a">Ope&#x301;ras Livrets. </subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Foppa, Giuseppe, 1760-1845.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Camisetta, Giuseppe.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Garzia, Urbano.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Ferlotti, Nicola.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Majani, Baldassare.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Nava, Anna.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Brocchi, Giambattista.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Poggi Cappelletti, Teresa.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Madrigali, Domenico.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Simi, Felice.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Cappelletti, Petronio.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Campigli, Giovanna.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Conti, Giuseppe, detto Prussia.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Brancher, Carolina.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Ferlotti, Rafaelle.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Santambrogio, Giustina.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Monati, Lorenzo.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Ferlotti, Teresa.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Landini, Antonio.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Fabris, Pellegrina.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="903">
+    <subfield code="b">m</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="041">
+    <subfield code="a">ita</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="269">
+    <subfield code="a">1794</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="336">
+    <subfield code="a">Image</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="852">
+    <subfield code="c">Berkeley Library</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="980">
+    <subfield code="a">librettos</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="982">
+    <subfield code="a">librettos</subfield>
+    <subfield code="b">librettos</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="901">
+    <subfield code="m">991040470099706532</subfield>
+  </datafield>
+  <datafield ind1="4" ind2="1" tag="856">
+    <subfield code="u">https://search.library.berkeley.edu/discovery/fulldisplay?context=L&amp;vid=01UCS_BER:UCB&amp;docid=alma991040470099706532</subfield>
+    <subfield code="y">View library catalog record.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="a">(librettos)991040470099706532_C082377373</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="540">
+    <subfield code="a">Researchers may make free and open use of the UC Berkeley Library&#x2019;s digitized public domain materials. However, some materials in our online collections may be protected by U.S. copyright law (Title 17, U.S.C.). Use or reproduction of materials protected by copyright beyond that allowed by fair use (Title 17, U.S.C. &#xA7; 107) requires permission from the copyright owners. The use or reproduction of some materials may also be restricted by terms of University of California gift or purchase agreements, privacy and publicity rights, or trademark law. Responsibility for determining rights status and permissibility of any use or reproduction rests exclusively with the researcher. To learn more or make inquiries, please see our permissions policies (https://www.lib.berkeley.edu/about/permissions-policies).</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="FFT">
+    <subfield code="a">https://digitalassets.lib.berkeley.edu/librettos/incoming/991040470099706532_C082377373.jpg</subfield>
+    <subfield code="d">991040470099706532_C082377373.jpg</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="902">
+    <subfield code="d">2023-09-13</subfield>
+    <subfield code="n">syscript</subfield>
+  </datafield>
+</record>
+<?xml version="1.0"?>
+<record>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Pa&#xEB;r, Ferdinando, 1771-1839.</subfield>
+    <subfield code="e">Composer.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="245">
+    <subfield code="a">Il Matrimonio improvviso</subfield>
+    <subfield code="b">commedia con musica d'un atto solo</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="260">
+    <subfield code="a">Venezia</subfield>
+    <subfield code="b">Appresso Modesto Fenzo, con licenza de' superiori</subfield>
+    <subfield code="c">1794.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="300">
+    <subfield code="a">1-24  p.</subfield>
+    <subfield code="c">18 cm.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">Eighteen scenes; half title--p. 1, second series.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"La musica &#xE8; del rinomato signor Ferdinando P&#xE8;r all'attuale servizio di S.A.R. l'infante di Parma"--p. 3, second series.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"Le scene sono d'invenzione, e direzione del signor Giuseppe Camisetta"--p. 3, second series.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">"Attori. ERNESTINA. La Sig. Anna Nava, prima buffa assoluta; LA CONTESSA AMALIA ROTONDI. La Sig. Teresa Cappelletti, prima donna di mezzo carattere assoluta; NICCOL&#xD2;. Il Sig. Gianbattista Brocchi, primo buffo caricato a perfetta vicenda; GOTTARDO. Il Sig. Domenico Madrigali, primo buffo caricato a perfetta vicenda; GIULIETTO. Il Signor Felice Simi, primo mezzo carattere assoluto; NARDO. Il Sig. Petronio Cappelletti, altro primo buffo"--p. 3, second series.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">US-BEm</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="650">
+    <subfield code="a">Operas Librettos. </subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Foppa, Giuseppe, 1760-1845.</subfield>
+    <subfield code="e">Librettist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Camisetta, Giuseppe.</subfield>
+    <subfield code="e">Artist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Nava, Anna.</subfield>
+    <subfield code="e">Vocalist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Brocchi, Gio. Battista, fl. 1776-1809.</subfield>
+    <subfield code="e">Vocalist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Poggi Cappelletti, Teresa.</subfield>
+    <subfield code="e">Vocalist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Madrigali, Domenico.</subfield>
+    <subfield code="e">Vocalist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Simi, Felice.</subfield>
+    <subfield code="e">Vocalist.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Cappelletti, Petronio.</subfield>
+    <subfield code="e">Vocalist.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="903">
+    <subfield code="b">m</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="041">
+    <subfield code="a">ita</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="269">
+    <subfield code="a">1794</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="336">
+    <subfield code="a">Image</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="852">
+    <subfield code="c">Berkeley Library</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="980">
+    <subfield code="a">librettos</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="982">
+    <subfield code="a">librettos</subfield>
+    <subfield code="b">librettos</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="901">
+    <subfield code="m">991040470139706532</subfield>
+  </datafield>
+  <datafield ind1="4" ind2="1" tag="856">
+    <subfield code="u">https://search.library.berkeley.edu/discovery/fulldisplay?context=L&amp;vid=01UCS_BER:UCB&amp;docid=alma991040470139706532</subfield>
+    <subfield code="y">View library catalog record.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="a">(librettos)991040470139706532_C082377373</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="540">
+    <subfield code="a">Researchers may make free and open use of the UC Berkeley Library&#x2019;s digitized public domain materials. However, some materials in our online collections may be protected by U.S. copyright law (Title 17, U.S.C.). Use or reproduction of materials protected by copyright beyond that allowed by fair use (Title 17, U.S.C. &#xA7; 107) requires permission from the copyright owners. The use or reproduction of some materials may also be restricted by terms of University of California gift or purchase agreements, privacy and publicity rights, or trademark law. Responsibility for determining rights status and permissibility of any use or reproduction rests exclusively with the researcher. To learn more or make inquiries, please see our permissions policies (https://www.lib.berkeley.edu/about/permissions-policies).</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="FFT">
+    <subfield code="a">https://digitalassets.lib.berkeley.edu/librettos/incoming/991040470139706532_C082377373.jpg</subfield>
+    <subfield code="d">991040470139706532_C082377373.jpg</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="902">
+    <subfield code="d">2023-09-13</subfield>
+    <subfield code="n">syscript</subfield>
+  </datafield>
+</record>

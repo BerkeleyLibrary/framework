@@ -2,14 +2,14 @@ require_relative 'asset_file'
 require_relative 'alma_tind'
 module TindMarc
   class BatchCreator
-    attr_reader :field_540a
+#    attr_reader :field_540a
   
-    ROOT_DIR = '/opt/app/data/da'
+    ROOT_DIR = '/opt/app/data/da'.freeze
     
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(args = {})
       @records = []
-      @dir = args[:directory]
+      @dir = args[:directory].gsub(/^\//,'')
       @field_336 = args[:resource_type]
       @field_852c = args[:library]
       @field_540a = args[:f_540_a]
@@ -18,7 +18,6 @@ module TindMarc
       @field_982b = args[:f_982_b]
       @field_982p = args[:f_982_p]
       @field_991 = args[:restriction]
-      @field_902_n = args[:initials]
       @email = args[:email]
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -49,16 +48,20 @@ module TindMarc
     def produce_marc(assets)
       #assets.file_hash.each do |alma_id, files|
       assets.file_hash.each do |key, files|
-        alma_id = alma_id( key )
-        tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
+        begin
+          alma_id = alma_id( key )
+          tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
        
-        url_base = get_url_base(files[0])
-        additional_fields = @t.additional_tind_fields(key, files, url_base, @field_980a, @field_902_n, @field_540a)
-        rec = tind_marc.record(alma_id, additional_fields)
-        rec = update_field(rec) unless @field_982p.empty?
+          url_base = get_url_base(files[0])
+          additional_fields = @t.additional_tind_fields(key, files, url_base, @field_980a, @field_540a)
+          rec = tind_marc.record(alma_id, additional_fields)
+          rec = update_field(rec) unless @field_982p.empty?
 
-        rec = remove_leader_and_namespace(rec.to_xml)
-        @records.append rec
+          rec = remove_leader_and_namespace(rec.to_xml)
+          @records.append rec
+        rescue => e 
+          Rails.logger.debug "Couldn't create marc record for #{alma_id}. #{e}"
+        end           
       end
     end
 
@@ -68,7 +71,8 @@ module TindMarc
     end
 
     def send_email
-      RequestMailer.tind_marc_batch_email(@email, 'test', @records).deliver_now
+      attachment_name = "#{@field_980a.gsub(/\s/i,'_')}_#{Date.today.to_s}.xml"
+      RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records).deliver_now
     end
 
     private
@@ -79,6 +83,7 @@ module TindMarc
     end
 
     def get_url_base(path)
+      # Should add this as a config
       url_base = path.gsub('/opt/app/data/da', 'https://digitalassets.lib.berkeley.edu')
       filename = File.basename(path)
       url_base.gsub(filename, '')
