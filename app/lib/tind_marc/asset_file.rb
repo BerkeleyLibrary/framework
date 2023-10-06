@@ -12,7 +12,8 @@ module TindMarc
 
     def create_key(path)
       file_base = File.basename(path)
-      /(?<key>^\d+_{1,1}[a-zA-Z0-9]+)[\_|\.]/i =~ file_base 
+      # /(?<key>^\d+_{1,1}[a-zA-Z0-9]+)[\_|\.]/i =~ file_base
+      /(?<key>^\d+_{1,1}[a-zA-Z0-9]+)[_|.]/i =~ file_base
       @file_hash[key] = [] unless @file_hash.key?(key) || File.directory?(path) || key.nil?
       key
     end
@@ -23,11 +24,11 @@ module TindMarc
       begin
         Find.find(root_dir) do |path|
           key = create_key(path)
-          @file_hash[key] << path if @file_hash.key?(key) 
+          @file_hash[key] << path if @file_hash.key?(key)
         end
-      rescue Exception => e 
+      rescue StandardError => e
         Rails.logger.error "Directory not found #{e}"
-      end  
+      end
       @file_hash
     end
   end

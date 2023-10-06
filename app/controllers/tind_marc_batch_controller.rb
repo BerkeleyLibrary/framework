@@ -16,9 +16,7 @@ class TindMarcBatchController < ApplicationController
   private
 
   def validate_params
-    
     validator = TindMarcBatch.new(params)
-    #render :index unless validator.valid?
     redirect_to(action: :index) unless validator.valid?
   end
 

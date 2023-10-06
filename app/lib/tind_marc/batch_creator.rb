@@ -2,14 +2,13 @@ require_relative 'asset_file'
 require_relative 'alma_tind'
 module TindMarc
   class BatchCreator
-#    attr_reader :field_540a
-  
+
     ROOT_DIR = '/opt/app/data/da'.freeze
-    
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+
+    # rubocop:disable Metrics/MethodLength
     def initialize(args = {})
       @records = []
-      @dir = args[:directory].gsub(/^\//,'')
+      @dir = args[:directory].gsub(%r{^/}, '')
       @field_336 = args[:resource_type]
       @field_852c = args[:library]
       @field_540a = args[:f_540_a]
@@ -20,20 +19,18 @@ module TindMarc
       @field_991 = args[:restriction]
       @email = args[:email]
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     def assets
-      begin
-        AssetFile.new("#{ROOT_DIR}/#{@dir}")
-      rescue StandardError => error 
-        Rails.logger.error error 
-      end
+      AssetFile.new("#{ROOT_DIR}/#{@dir}")
+    rescue StandardError => e
+      Rails.logger.error e
     end
 
-    def alma_id( base )
+    def alma_id(base)
       base.gsub(/_.*?$/, '')
     end
- 
+
     def prepare
       @t = AlmaTind.new
       if @field_991.empty?
@@ -45,25 +42,24 @@ module TindMarc
       end
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def produce_marc(assets)
-      #assets.file_hash.each do |alma_id, files|
       assets.file_hash.each do |key, files|
-        begin
-          alma_id = alma_id( key )
-          tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
-       
-          url_base = get_url_base(files[0])
-          additional_fields = @t.additional_tind_fields(key, files, url_base, @field_980a, @field_540a)
-          rec = tind_marc.record(alma_id, additional_fields)
-          rec = update_field(rec) unless @field_982p.empty?
+        alma_id = alma_id(key)
+        tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
 
-          rec = remove_leader_and_namespace(rec.to_xml)
-          @records.append rec
-        rescue => e 
-          Rails.logger.debug "Couldn't create marc record for #{alma_id}. #{e}"
-        end           
+        url_base = get_url_base(files[0])
+        additional_fields = @t.additional_tind_fields(key, files, url_base, @field_980a, @field_540a)
+        rec = tind_marc.record(alma_id, additional_fields)
+        rec = update_field(rec) unless @field_982p.empty?
+
+        rec = remove_leader_and_namespace(rec.to_xml)
+        @records.append rec
+      rescue StandardError => e
+        Rails.logger.debug "Couldn't create marc record for #{alma_id}. #{e}"
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def print_out
       Rails.logger.debug @records
@@ -71,7 +67,7 @@ module TindMarc
     end
 
     def send_email
-      attachment_name = "#{@field_980a.gsub(/\s/i,'_')}_#{Date.today.to_s}.xml"
+      attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today}.xml"
       RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records).deliver_now
     end
 
