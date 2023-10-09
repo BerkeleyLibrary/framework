@@ -63,7 +63,7 @@ module TindMarc
 
     def print_out
       Rails.logger.debug @records
-      puts @records
+      # puts @records
     end
 
     def send_email
