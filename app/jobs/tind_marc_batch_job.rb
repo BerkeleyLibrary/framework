@@ -1,7 +1,7 @@
 class TindMarcBatchJob < ApplicationJob
-queue_as :default
+  queue_as :default
 
-  def perform(params) 
+  def perform(params)
     b = TindMarc::BatchCreator.new(params)
     b.prepare
     b.produce_marc(b.assets)

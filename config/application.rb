@@ -78,7 +78,7 @@ module Framework
     # Valid groups for libproxy access based on Alma groups
     config.libproxy_groups = config.libproxy['valid_groups']
 
-    # Tind set values for marc inserts 
+    # Tind set values for marc inserts
     config.tind_resource_types = config.tind_marc['resource_types']
     config.tind_restrictions = config.tind_marc['restrictions']
     config.tind_locations = config.tind_marc['locations']

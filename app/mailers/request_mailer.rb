@@ -174,12 +174,11 @@ class RequestMailer < ApplicationMailer
     mail(to: reference_card_form.email, subject: 'Reference Card Request - Approved')
   end
 
-  # Send marc batch file for Tind upload. 
-  def tind_marc_batch_email(email, subject, batch_file, batch_file_contents) 
-    attachments[batch_file] =  batch_file_contents
-    mail(to: email, subject: subject)
+  # Send marc batch file for Tind upload.
+  def tind_marc_batch_email(email, subject, batch_file, batch_file_contents)
+    attachments[batch_file] = batch_file_contents
+    mail(to: email, subject:)
   end
-
 
   # Send Item Set notes job update
   def item_notes_update_email(email, message)
