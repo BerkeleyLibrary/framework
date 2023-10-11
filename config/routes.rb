@@ -96,6 +96,6 @@ Rails.application.routes.draw do
   # bib host file upload
   get '/bibliographics', to: 'bibliographics#new'
   post '/bibliographics', to: 'bibliographics#create'
-  get '/bibliographics/index', to: 'bibliographics#index'
+  get '/bibliographics/response', to: 'bibliographics#response'
 
 end

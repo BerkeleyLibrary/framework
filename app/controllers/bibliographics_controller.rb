@@ -5,7 +5,7 @@ class BibliographicsController < ApplicationController
     upload_file = params[:upload_file]
     task = Bibliographic::HostBibTask.create_from!(upload_file, current_user.email)
     BibliographicJob.perform_later(task)
-    redirect_to bibliographics_index_path
+    redirect_to bibliographics_response_path
   rescue ActiveModel::ValidationError => e
     catch_upload_errors(e, upload_file.original_filename)
     redirect_to action: :new

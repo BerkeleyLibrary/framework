@@ -1,10 +1,16 @@
 <div class="form-container">
+
   <%= form_with  url:bibliographics_path, method: :post, local: true, multipart: true do |f| %>
+    <h1> Host Bibliographic Tool </h1>
+    <p>This tool allows users to upload a text file with a '.txt' extension. Each line of the file should contain a Host MMS ID (do not include a  header) and will return a list of the MMS IDs recorded in the MARC 774 $w from each host bibliographic record via email. </p>
+    <p>For more information on how the tool works, please refer to the <a title='Host bibliographic tool information page' href='https://www.lib.berkeley.edu/Staff/staff-docs/sils/sils-general-info-policies-and-practices/host-bibliographic-tool-info'>Host bibliographic tool information page</a> on the SILS documentation site.</p>
+    </br>
     <div class="form-group">
       <%= f.label :upload_file, "Please choose a '.txt' file", class: "form-label" %>
       <%= f.file_field :upload_file, value: 'test', class: "form-control", required: true, autofocus: true %>
     </div>
-    
-    <%= f.submit "Upload", class: "btn btn-primary" %>
+    <div style='text-align: right'>
+      <%= f.submit "Upload", class: "btn btn-primary" %>
+    </div>
   <% end %>
 </div>

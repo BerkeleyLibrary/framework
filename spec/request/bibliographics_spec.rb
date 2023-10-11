@@ -20,13 +20,22 @@ RSpec.describe BibliographicsController, type: :request do
       end
     end
 
-    context 'index' do
+    # context 'index' do
+    #   it 'GET redirects to login' do
+    #     get(form_path = bibliographics_index_path)
+    #     login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
+    #     expect(response).to redirect_to(login_with_callback_url)
+    #   end
+    # end
+
+    context 'response' do
       it 'GET redirects to login' do
-        get(form_path = bibliographics_index_path)
+        get(form_path = bibliographics_response_path)
         login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
         expect(response).to redirect_to(login_with_callback_url)
       end
     end
+
   end
 
   context 'specs for authorized user' do
@@ -47,7 +56,7 @@ RSpec.describe BibliographicsController, type: :request do
         it 'created without error' do
           upload_file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'data', 'bibliographic', 'upload_file.txt'), 'plain/text')
           post bibliographics_path, params: { upload_file: }
-          expect(response).to redirect_to(action: :index)
+          expect(response).to redirect_to(action: :response)
         end
 
         it 'created with error' do
