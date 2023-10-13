@@ -9,7 +9,8 @@ class TindMarcBatchController < ApplicationController
   def result; end
 
   def batch
-    TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params)
+    # TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params)
+    TindMarcBatchJob.perform_now(TindMarcBatch.new(params).permitted_params)
     render :result
   end
 
