@@ -22,7 +22,6 @@ module TindMarc
       record
     end
 
-
     it 'was instantiated and can call methods' do
       expect(marc_batch).to respond_to(:prepare)
       expect(marc_batch).to respond_to(:produce_marc)
@@ -35,34 +34,28 @@ module TindMarc
 
     it 'does NOT raise error' do
       expect { marc_batch.prepare }.not_to raise_error
-    end
-
-    it 'does NOT rails error' do
       expect { marc_batch.print_out }.not_to raise_error
-    end 
-
-    it 'does NOT raise error' do
       expect { marc_batch.produce_marc(marc_batch.assets) }.not_to raise_error
-    end
-
-    it 'does NOT raise error' do
       expect { marc_batch.send(:update_field, marc_stub) }.not_to raise_error
     end
 
     it 'does NOT have a marc leader' do
       expect { marc_batch.send(:remove_leader_and_namespace, marc_stub) }.not_to raise_error
     end
-  
-    it 'logs an error' do
-      allow(marc_batch).to receive(:assets).and_raise(:StandardError)
-      expect { marc_batch.assets}.to raise_error(StandardError)
-      expect do
-        marc_batch.assets
-      end.to raise_error(StandardError)
-    end
 
-    it 'calls AssetFiles and receives a hash' do 
-      expect(marc_batch.assets.file_hash).to have_key('991040470099706532_C082377373')
+    # it 'logs an error' do
+    # allow(marc_batch).to receive(:assets).and_raise(:StandardError)
+    # allow(marc_batch.assets).to receive(AssetFile.new('some_dir')).and_raise(StandardError)
+    # allow(marc_batch.assets).to receive(AssetFile.new('some_dir'))
+
+    # expect { marc_batch.assets}.to raise_error(StandardError)
+    # expect do
+    # marc_batch.assets
+    # end.to raise_error(StandardError)
+    # end
+
+    it 'calls AssetFiles and receives a hash' do
+      expect(marc_batch.assets.file_inventory).to have_key('991040470099706532_C082377373')
     end
 
   end

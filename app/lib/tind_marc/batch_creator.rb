@@ -23,8 +23,6 @@ module TindMarc
 
     def assets
       AssetFile.new("#{ROOT_DIR}/#{@dir}")
-    rescue StandardError => e
-      Rails.logger.error e
     end
 
     def alma_id(base)
@@ -44,7 +42,7 @@ module TindMarc
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def produce_marc(assets)
-      assets.file_hash.each do |key, files|
+      assets.file_inventory.each do |key, files|
         alma_id = alma_id(key)
         tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
 

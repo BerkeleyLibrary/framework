@@ -10,19 +10,19 @@ module TindMarc
     let(:test_key) { '991074090759706532_C032692057' }
 
     it 'contains a hash with two keys' do
-      expect(assets.file_hash.size).to eq(2)
+      expect(assets.file_inventory.size).to eq(2)
     end
 
     it 'expects test_key to have 190 file paths' do
-      expect(assets.file_hash[test_key].size).to eq(190)
+      expect(assets.file_inventory[test_key].size).to eq(190)
     end
 
     it 'expects a non matching file pattern to no be included in return hash' do
-      expect(assets.file_hash.key?(non_match)).to eq(false)
+      expect(assets.file_inventory.key?(non_match)).to eq(false)
     end
 
     it 'expects a non-existent path to contain an empty hash' do
-      expect(asset_error.file_hash.size).to eq(0)
+      expect(asset_error.file_inventory.size).to eq(0)
     end
   end
 end

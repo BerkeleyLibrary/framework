@@ -1,16 +1,15 @@
 class TindMarcBatchController < ApplicationController
-  before_action :authorize!, only: :index
-  before_action :validate_params, only: :batch
+  before_action :authorize!
+  before_action :validate_params, only: :create
 
-  def index
+  def new
     @current_user = current_user
   end
 
   def result; end
 
-  def batch
-    # TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params)
-    TindMarcBatchJob.perform_now(TindMarcBatch.new(params).permitted_params)
+  def create
+    TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params)
     render :result
   end
 
