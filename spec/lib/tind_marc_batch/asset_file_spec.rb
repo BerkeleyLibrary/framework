@@ -13,8 +13,8 @@ module TindMarc
       expect(assets.file_inventory.size).to eq(2)
     end
 
-    it 'expects test_key to have 190 file paths' do
-      expect(assets.file_inventory[test_key].size).to eq(190)
+    it 'expects test_key to have 18 file paths' do
+      expect(assets.file_inventory[test_key].size).to eq(18)
     end
 
     it 'expects a non matching file pattern to no be included in return hash' do

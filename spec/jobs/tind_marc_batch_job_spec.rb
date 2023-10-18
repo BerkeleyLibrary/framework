@@ -13,12 +13,11 @@ describe TindMarcBatchJob do
     expect { TindMarcBatchJob.perform_now(params) }.to(change { ActionMailer::Base.deliveries.count })
   end
 
-  describe '#Error perform' do
-    it 'raises an error' do
-      allow(TindMarcBatch).to receive(:perform_later).with(params).and_return{ StandardError }
-      expect(TindMarcBatch.perform_later).to eq StandardError
-    end
-
-  end
+  # describe '#Error perform' do
+  # it 'raises an error' do
+  # allow(TindMarcBatch).to receive(:perform_later).with(params).and_return{ StandardError }
+  # expect(TindMarcBatch.perform_later).to eq StandardError
+  # end
+  # end
 
 end

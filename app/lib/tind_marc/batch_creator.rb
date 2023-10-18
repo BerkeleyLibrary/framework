@@ -66,7 +66,7 @@ module TindMarc
 
     def send_email
       attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today}.xml"
-      RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records).deliver_now
+      RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records.to_xml).deliver_now
     end
 
     private
