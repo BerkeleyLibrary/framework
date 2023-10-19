@@ -59,14 +59,23 @@ module TindMarc
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+    def create_attachment
+      attachment = ''
+      @records.each do | rec | 
+        attachment << rec.to_s
+      end
+      attachment
+    end
+
     def print_out
       Rails.logger.debug @records
-      # puts @records
+      # puts @records 
     end
 
     def send_email
       attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today}.xml"
-      RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records.to_xml).deliver_now
+      # RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records.to_xml).deliver_now
+      RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, create_attachment).deliver_now
     end
 
     private
