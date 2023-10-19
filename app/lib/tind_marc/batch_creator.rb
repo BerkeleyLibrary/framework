@@ -61,7 +61,7 @@ module TindMarc
 
     def create_attachment
       attachment = ''
-      @records.each do | rec | 
+      @records.each do |rec|
         attachment << rec.to_s
       end
       attachment
@@ -69,7 +69,7 @@ module TindMarc
 
     def print_out
       Rails.logger.debug @records
-      # puts @records 
+      # puts @records
     end
 
     def send_email
