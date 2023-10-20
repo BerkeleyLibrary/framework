@@ -79,7 +79,7 @@ GEM
       berkeley_library-util (~> 0.1, >= 0.1.2)
       nokogiri (~> 1.13, >= 1.13.6)
     berkeley_library-docker (0.2.0)
-    berkeley_library-location (2.0.0)
+    berkeley_library-location (3.0.0)
       berkeley_library-logging (~> 0.2)
       berkeley_library-util (~> 0.1, >= 0.1.9)
       marcel (~> 1.0.2)
@@ -442,7 +442,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print (>= 1.8.0)
   berkeley_library-docker (~> 0.2.0)
-  berkeley_library-location (~> 2.0)
+  berkeley_library-location (~> 3.0)
   berkeley_library-logging (~> 0.2, >= 0.2.7)
   berkeley_library-marc (~> 0.3.1)
   berkeley_library-tind (~> 0.7.1)

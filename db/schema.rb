@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_29_003338) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_18_235459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -178,6 +178,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_29_003338) do
     t.boolean "wc_retrieved", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["location_request_id", "oclc_number"], name: "index_location_records_on_location_request_id_and_oclc_number", unique: true
     t.index ["location_request_id"], name: "index_location_records_on_location_request_id"
   end
 

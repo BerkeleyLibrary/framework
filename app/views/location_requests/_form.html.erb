@@ -21,7 +21,7 @@
       </table>
     </div>
   <% end %>
-
+  <p class="required-note">Required</p>
   <%= form_with(model: location_request) do |form| %>
     <ul>
       <li>
@@ -109,9 +109,6 @@
           </fieldset>
         </li>
       <% end %>
-      <li>
-        <p class="required-note">Required</p>
-      </li>
       <li>
         <p class="note">
           If you have any questions or problems using the tool, please

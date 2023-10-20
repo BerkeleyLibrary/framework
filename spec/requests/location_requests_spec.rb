@@ -227,6 +227,7 @@ RSpec.describe LocationRequestsController, type: :request do
         include_context 'stubbing API calls'
 
         it 'does not start the batch job immediately' do
+          LocationRequest.destroy_all
           start_time = Location::BatchJob.start_time
           travel_to(start_time - 1.hours) do
             expect(GoodJob::Batch).not_to receive(:enqueue)
