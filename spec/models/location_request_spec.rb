@@ -308,10 +308,10 @@ RSpec.describe LocationRequest, type: :model do
     end
 
     it 'ignores duplicate OCLC numbers' do
-      # NOTE - The model does ignore duplicate OCLC numbers, but the 
-      #        berkeley_library-location GEM does NOT ignore dupes,
-      #        so the model (thus DB) will only have unique OCLCs, but the 
-      #        actual output file will update rows with duplicate OCLC numbers.
+      # NOTE: The model does ignore duplicate OCLC numbers, but the
+      # berkeley_library-location GEM does NOT ignore dupes,
+      # so the model (thus DB) will only have unique OCLCs, but the
+      # actual output file will update rows with duplicate OCLC numbers.
       attributes = valid_attributes.except(:input_file)
       attributes[:input_file] = uploaded_file_from('spec/data/location/input-file-duplicates.xlsx')
       req = LocationRequest.create!(**attributes)
