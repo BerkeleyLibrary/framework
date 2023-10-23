@@ -1,3 +1,5 @@
+@Library('jenkins-workflow-scripts@DEV-392-jenkins-release-overhaul') _
+
 dockerComposePipeline(
   stack: [template: 'postgres-selenium'],
   commands: [
