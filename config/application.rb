@@ -61,6 +61,8 @@ module Framework
     # configs for libproxy validations
     config.libproxy = config_for(:libproxy)
 
+    config.tind_marc = config_for(:tind_marc)
+
     config.active_job.queue_adapter = :good_job
 
     # @note By default, Rails wraps fields that contain a validation error with
@@ -75,6 +77,12 @@ module Framework
 
     # Valid groups for libproxy access based on Alma groups
     config.libproxy_groups = config.libproxy['valid_groups']
+
+    # Tind set values for marc inserts
+    config.tind_resource_types = config.tind_marc['resource_types']
+    config.tind_restrictions = config.tind_marc['restrictions']
+    config.tind_locations = config.tind_marc['locations']
+    config.tind_data_root_dir = config.tind_marc['data_root_dir']
 
     # Setup for Alma Marc Record
     # Alma SRU hostname

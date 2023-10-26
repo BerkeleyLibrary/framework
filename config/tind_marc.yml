@@ -1,0 +1,29 @@
+default: &default
+
+  resource_types:
+    - Image 
+    - Text
+    - Map 
+    - Video 
+    - Audio 
+    - Notated Music 
+
+  restrictions:
+    - Restricted2Admin
+    - Restricted2Bancroft
+    - Restricted2EAL
+    - Restricted2Sciences
+    - Restricted4DailyCal
+    - berkeley_ip
+    - berkeley_campus 
+
+  data_root_dir: '/opt/app/data/da'
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

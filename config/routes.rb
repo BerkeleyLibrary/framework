@@ -89,6 +89,12 @@ Rails.application.routes.draw do
   mount GoodJob::Engine => 'good_job'
   get 'jobs', to: 'good_job/jobs#index'
 
+  # Tind Alma batch load request
+  # get '/tind-marc-batch', to: 'tind_marc_batch#index'
+  # post '/tind-marc-batch', to: 'tind_marc_batch#batch'
+  get '/tind-marc-batch', to: 'tind_marc_batch#new'
+  post '/tind-marc-batch', to: 'tind_marc_batch#create'
+
   # Alma Item Set Routes
   get '/alma-item-set', to: 'alma_item_set#index'
   post '/alma-item-set', to: 'alma_item_set#update'
