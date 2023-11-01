@@ -71,7 +71,7 @@ module AlmaServices
     end
   end
 
-  class Fines
+  class Fees
     class << self
       include Base
 
@@ -91,10 +91,10 @@ module AlmaServices
       end
 
       # If you pay the full amount owed for a fee, it automatically changes the status to "CLOSED"
-      def credit(alma_user_id, pp_ref_number, fine)
+      def credit(alma_user_id, pp_ref_number, fee)
         # Alma requires these params to be in the query string
-        params = { op: 'pay', method: 'ONLINE', amount: fine.balance, external_transaction_id: pp_ref_number }
-        payment_uri = URIs.append(fee_uri_for(alma_user_id, fine.id), '?', URI.encode_www_form(params))
+        params = { op: 'pay', method: 'ONLINE', amount: fee.balance, external_transaction_id: pp_ref_number }
+        payment_uri = URIs.append(fee_uri_for(alma_user_id, fee.id), '?', URI.encode_www_form(params))
 
         connection.post(payment_uri).tap do |res|
           raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200

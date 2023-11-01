@@ -70,7 +70,7 @@ module Framework
     #   for feedback messages, so I've disabled the Rails' default.
     config.action_view.field_error_proc = proc { |tag, _instance| tag }
 
-    # Alma API for handling Fees/Fines:
+    # Alma API for handling Fees:
     config.alma_api_url = config.altmedia['alma_api_url']
     config.alma_api_key = config.altmedia['alma_api_key']
     config.alma_sandbox_key = config.altmedia['alma_sandbox_key']

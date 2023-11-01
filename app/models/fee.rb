@@ -1,5 +1,4 @@
-# Represents a fine (aka fee in Alma) object
-class Fine
+class Fee
   include ActiveModel::Model
 
   attr_accessor :id
@@ -17,17 +16,17 @@ class Fine
   end
 
   def credit(alma_user_id, pp_ref_number)
-    AlmaServices::Fines.credit(alma_user_id, pp_ref_number, self)
+    AlmaServices::Fees.credit(alma_user_id, pp_ref_number, self)
   end
 
   class << self
 
-    # Fetch all alma fines for user
+    # Fetch all alma fees for user
     def where(alma_user_id:)
-      fines = []
-      parsed_fines = AlmaServices::Fines.fetch_all(alma_user_id)
-      fines = parsed_fines['fee'].map { |f| Fine.new(f) } if parsed_fines['total_record_count'] > 0
-      fines
+      fees = []
+      parsed_fees = AlmaServices::Fees.fetch_all(alma_user_id)
+      fees = parsed_fees['fee'].map { |f| Fee.new(f) } if parsed_fees['total_record_count'] > 0
+      fees
     end
 
   end

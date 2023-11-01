@@ -1,7 +1,7 @@
 require 'capybara_helper'
 require 'calnet_helper'
 
-describe FinesController, type: :system do
+describe FeesController, type: :system do
   let(:alma_api_key) { 'fake-api-key' }
   let(:request_headers) { { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" } }
 
@@ -11,7 +11,7 @@ describe FinesController, type: :system do
 
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
-      visit efines_path
+      visit efees_path
     end
 
     after { logout! }
@@ -23,11 +23,11 @@ describe FinesController, type: :system do
     it 'displays user info and fees' do
       stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026?expand=fees&view=full')
         .with(headers: request_headers)
-        .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
+        .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-data.json'))
 
       stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees')
         .with(headers: request_headers)
-        .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-fees.json'))
+        .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-fees.json'))
 
       fill_in('alma_id', with: '10335026')
       submit_button = find(:xpath, "//input[@type='submit']")
@@ -47,13 +47,13 @@ describe FinesController, type: :system do
 
       stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026?expand=fees&view=full')
         .with(headers: request_headers)
-        .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
+        .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-data.json'))
 
       stub_request(:get, 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/10335026/fees')
         .with(headers: request_headers)
-        .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-fees.json'))
+        .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-fees.json'))
 
-      visit '/efines/lookup?alma_id=10335026'
+      visit '/efees/lookup?alma_id=10335026'
     end
 
     it 'sends email to user' do

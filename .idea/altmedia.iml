@@ -554,7 +554,7 @@
                   <RakeTaskImpl description="Run specs in affiliate_borrow_request_forms_system_spec.rb" fullCommand="spec:system:affiliate_borrow_request_forms" id="affiliate_borrow_request_forms" />
                   <RakeTaskImpl description="Run specs in alma_item_set_system_spec.rb" fullCommand="spec:system:alma_item_set" id="alma_item_set" />
                   <RakeTaskImpl description="Run specs in doemoff_study_room_user_forms_system_spec.rb" fullCommand="spec:system:doemoff_study_room_user_forms" id="doemoff_study_room_user_forms" />
-                  <RakeTaskImpl description="Run specs in efine_invoice_system_spec.rb" fullCommand="spec:system:efine_invoice" id="efine_invoice" />
+                  <RakeTaskImpl description="Run specs in efee_invoice_system_spec.rb" fullCommand="spec:system:efee_invoice" id="efee_invoice" />
                   <RakeTaskImpl description="Run specs in galc_request_forms_system_spec.rb" fullCommand="spec:system:galc_request_forms" id="galc_request_forms" />
                   <RakeTaskImpl description="Run specs in home_system_spec.rb" fullCommand="spec:system:home" id="home" />
                   <RakeTaskImpl description="Run specs in libstaff_edevices_loan_forms_system_spec.rb" fullCommand="spec:system:libstaff_edevices_loan_forms" id="libstaff_edevices_loan_forms" />

@@ -2,7 +2,7 @@ require 'prawn'
 
 # rubocop:disable Metrics/ClassLength
 class RequestMailer < ApplicationMailer
-  # Adding url_helpers to build the link I create for efines
+  # Adding url_helpers to build the link I create for efees
   include Rails.application.routes.url_helpers
 
   # Sends the AffiliateBorrowRequestForm
@@ -193,19 +193,19 @@ class RequestMailer < ApplicationMailer
     mail(to: email, subject:, body:)
   end
 
-  def efine_invoice_email(efine)
+  def efee_invoice_email(efee)
     # type probably isn't needed now that I spun this off to a separate url
     params = {
-      type: 'efine',
-      jwt: efine.jwt
+      type: 'efee',
+      jwt: efee.jwt
     }
 
-    invoice_link = URI.parse(efine_url.to_s)
+    invoice_link = URI.parse(efee_url.to_s)
     invoice_link.query = URI.encode_www_form(params)
-    @name = efine.name
+    @name = efee.name
     @link = invoice_link.to_s
 
-    mail(to: efine.email)
+    mail(to: efee.email)
   end
 
   private

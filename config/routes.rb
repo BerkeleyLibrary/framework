@@ -28,18 +28,20 @@ Rails.application.routes.draw do
   # Alma patron validation for proxy
   post '/validate_proxy_patron', to: 'validate_proxy_patron#index'
 
-  # Fines/Fees Routes:
-  get '/fines', to: 'fines#index'
-  get '/fines/transaction_fail', to: 'fines#transaction_fail'
-  get '/fines/transaction_error', to: 'fines#transaction_error'
-  get '/fines/transaction_cancel', to: 'fines#transaction_cancel'
-  post '/fines/payment', to: 'fines#payment'
-  post '/fines/transaction_complete', to: 'fines#transaction_complete'
+  # Fees Routes:
+  get '/fees', to: 'fees#index'
+  get '/fees/transaction_fail', to: 'fees#transaction_fail'
+  get '/fees/transaction_error', to: 'fees#transaction_error'
+  get '/fees/transaction_cancel', to: 'fees#transaction_cancel'
+  post '/fees/payment', to: 'fees#payment'
+  post '/fees/transaction_complete', to: 'fees#transaction_complete'
 
-  get '/efine', to: 'fines#efine'
-  get '/efines', to: 'fines#efines'
-  get '/efines/lookup', to: 'fines#lookup'
-  post '/efines/send_invoice', to: 'fines#send_invoice'
+  # Email Fee Invoice:
+  # (allows library staff to lookup and send payment instructions)
+  get '/efee', to: 'fees#efee'
+  get '/efees', to: 'fees#efees'
+  get '/efees/lookup', to: 'fees#lookup'
+  post '/efees/send_invoice', to: 'fees#send_invoice'
 
   # Proxy Borrower Admin Routes:
   get '/forms/proxy-borrower/admin', to: 'proxy_borrower_admin#admin'

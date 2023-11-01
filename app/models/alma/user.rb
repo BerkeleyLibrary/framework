@@ -79,7 +79,7 @@ module Alma
     end
 
     def fees
-      AlmaServices::Fines.fetch_all(@id) || nil
+      AlmaServices::Fees.fetch_all(@id) || nil
     end
 
     # TODO: Clean up use of notes_array vs. find_note

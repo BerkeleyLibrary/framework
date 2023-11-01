@@ -1,6 +1,6 @@
 require 'forms_helper'
 
-describe 'Efines', type: :request do
+describe 'Efees', type: :request do
   def base_url_for(user_id = nil)
     "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{user_id}"
   end
@@ -15,7 +15,7 @@ describe 'Efines', type: :request do
   end
 
   it 'lookup form renders' do
-    get efines_path
+    get efees_path
     expect(response.status).to eq(200)
     expect(response.body).to include('Non UC Berkeley Patron Fee Payments')
   end
@@ -27,7 +27,7 @@ describe 'Efines', type: :request do
       .with(headers: request_headers)
       .to_raise(ActiveRecord::RecordNotFound)
 
-    get "/efines/lookup?alma_id=#{user_id}"
+    get "/efees/lookup?alma_id=#{user_id}"
     follow_redirect!
 
     expect(response.body).to include("Error: No patron found with Alma ID: #{user_id}")
@@ -38,13 +38,13 @@ describe 'Efines', type: :request do
 
     stub_request(:get, "#{base_url_for user_id}?expand=fees&view=full")
       .with(headers: request_headers)
-      .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
+      .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-data.json'))
 
     stub_request(:get, "#{base_url_for user_id}/fees")
       .with(headers: request_headers)
-      .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-fees.json'))
+      .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-fees.json'))
 
-    get "/efines/lookup?alma_id=#{user_id}"
+    get "/efees/lookup?alma_id=#{user_id}"
 
     expect(response.body).to include('Steven M Sullivan')
   end
@@ -54,18 +54,18 @@ describe 'Efines', type: :request do
 
     stub_request(:get, "#{base_url_for user_id}?expand=fees&view=full")
       .with(headers: request_headers)
-      .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-data.json'))
+      .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-data.json'))
 
     stub_request(:get, "#{base_url_for user_id}/fees")
       .with(headers: request_headers)
-      .to_return(status: 200, body: File.new('spec/data/fines/efine-lookup-fees.json'))
+      .to_return(status: 200, body: File.new('spec/data/fees/efee-lookup-fees.json'))
 
     # Create a new invoice
-    invoice = EfinesInvoice.new(user_id)
+    invoice = EfeesInvoice.new(user_id)
 
-    get "/efine?type=efine&jwt=#{invoice.jwt}"
-    expect(response.body).to include('fine_payment_17178894740006532')
-    expect(response.body).to include('fine_payment_17178894770006532')
+    get "/efee?type=efee&jwt=#{invoice.jwt}"
+    expect(response.body).to include('fee_payment_17178894740006532')
+    expect(response.body).to include('fee_payment_17178894770006532')
   end
 
   it 'link redirects to error page if request has a non-existant alma id' do
@@ -73,7 +73,7 @@ describe 'Efines', type: :request do
       .with(headers: request_headers)
       .to_return(status: 404, body: '')
 
-    get '/efine?&type-efine&jwt=totallyfakejwt'
+    get '/efee?&type-efee&jwt=totallyfakejwt'
     follow_redirect!
     expect(response.status).to eq(200)
     expect(response.body).to include('Error')

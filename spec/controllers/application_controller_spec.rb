@@ -23,7 +23,7 @@ describe ApplicationController do
       AlmaItemSetController => 'helpbox-library@berkeley.edu',
       BibliographicsController => 'helpbox-library@berkeley.edu',
       CampusNetworksController => 'helpbox-library@berkeley.edu',
-      FinesController => 'helpbox-library@berkeley.edu',
+      FeesController => 'helpbox-library@berkeley.edu',
       HomeController => 'helpbox-library@berkeley.edu',
       LocationRequestsController => 'helpbox-library@berkeley.edu',
       SessionsController => 'helpbox-library@berkeley.edu',

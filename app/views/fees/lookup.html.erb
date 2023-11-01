@@ -9,8 +9,8 @@
       <div class="rts-row">
         <div class="rts-cell rts-w100 rts-c">#</div>
         <div class="rts-cell rts-w400">Type</div>
-        <div class="rts-cell rts-w400">Owner Title</div>
-        <div class="rts-cell rts-w150">Fee / Fine</div>
+        <div class="rts-cell rts-w400">Library</div>
+        <div class="rts-cell rts-w150">Fee</div>
         <div class="rts-cell rts-w400">Date</div>
       </div>
     </div>
@@ -27,7 +27,7 @@
     <% end %>
   </div>
   <br>
-  <%= form_with url: '/efines/send_invoice', method: :post, local:true do |form| %>
+  <%= form_with url: '/efees/send_invoice', method: :post, local:true do |form| %>
     <input type="hidden" name="user_id" value="<%= @user.id %>">
   <%=%>
   <%= form.submit("Email Payment Request", {:class => 'btn btn-primary'}) %>

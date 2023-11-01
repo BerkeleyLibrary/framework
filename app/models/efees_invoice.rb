@@ -3,7 +3,7 @@ require 'jwt'
 # "invoice". The invoice is really just a link to Framework
 # to view and select fees to then pay via PayPal
 
-class EfinesInvoice
+class EfeesInvoice
   include ActiveModel::Model
 
   attr_accessor :alma_id
@@ -36,12 +36,12 @@ class EfinesInvoice
   end
 
   def encode
-    JWT.encode payload, EfinesInvoice.secret, 'HS256'
+    JWT.encode payload, EfeesInvoice.secret, 'HS256'
   end
 
   def submit!
     # Send the email with the link to the user!
-    RequestMailer.efine_invoice_email(self).deliver_now
+    RequestMailer.efee_invoice_email(self).deliver_now
   end
 
   private

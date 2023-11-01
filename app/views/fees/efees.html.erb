@@ -1,6 +1,6 @@
 <h1>Non UC Berkeley Patron Fee Payments</h1>
-<%= form_with(url: '/efines/lookup', method: :get, local: true) do |f| %>
-<p>Enter the patrons Alma ID below in order to lookup fees the patron's fee's. You can then send an email to the patron with a link with instructions to pay fees online.</p>
+<%= form_with(url: '/efees/lookup', method: :get, local: true) do |f| %>
+<p>Enter the patrons Alma ID below in order to lookup the patron's fees. You can then send an email to the patron with a link with instructions to pay fees online.</p>
 <%# Primary ID %>
 <div class="form-label form-group required">
   <%= label_tag(:alma_id, 'Alma ID:', class: 'control-label') %>

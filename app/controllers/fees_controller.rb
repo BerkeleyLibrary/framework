@@ -1,6 +1,6 @@
 require 'jwt'
 
-class FinesController < ApplicationController
+class FeesController < ApplicationController
   # This will be needed for transaction_complete since Paypal will hit that
   protect_from_forgery with: :null_session
 
@@ -8,24 +8,24 @@ class FinesController < ApplicationController
     @jwt = params.require(:jwt)
     decoded_token = JWT.decode @jwt, nil, false
     @alma_id = decoded_token.first['userName']
-    @fines = FinesPayment.new(alma_id: @alma_id)
+    @fees = FeesPayment.new(alma_id: @alma_id)
   rescue JWT::DecodeError
     redirect_to(action: :transaction_error)
   end
 
-  def efine
+  def efee
     @jwt = params.require(:jwt)
-    secret = EfinesInvoice.secret
+    secret = EfeesInvoice.secret
     decoded_token = JWT.decode @jwt, secret, true, { algorithm: 'HS256' }
     @alma_id = decoded_token.first['userName']
-    @fines = FinesPayment.new(alma_id: @alma_id)
+    @fees = FeesPayment.new(alma_id: @alma_id)
     render 'index'
   rescue JWT::DecodeError
     redirect_to(action: :transaction_error)
   end
 
   # Form to lookup patron fees
-  def efines
+  def efees
     authorize!
   end
 
@@ -36,19 +36,19 @@ class FinesController < ApplicationController
       @user = Alma::User.find_if_exists params[:alma_id]
     rescue ActiveRecord::RecordNotFound
       flash[:danger] = "Error: No patron found with Alma ID: #{params[:alma_id]}"
-      redirect_to(action: :efines)
+      redirect_to(action: :efees)
     end
   end
 
   def send_invoice
-    invoice = EfinesInvoice.new(params[:user_id])
+    invoice = EfeesInvoice.new(params[:user_id])
     @email = invoice.email
     invoice.submit!
   end
 
   def payment
-    if params[:fine].present?
-      @fines = FinesPayment.new(alma_id: params[:alma_id], fine_ids: params[:fine][:payment])
+    if params[:fee].present?
+      @fees = FeesPayment.new(alma_id: params[:alma_id], fee_ids: params[:fee][:payment])
     else
       flash[:danger] = 'Please select at least one fee.'
       redirect_with_params(action: :index)
@@ -67,9 +67,9 @@ class FinesController < ApplicationController
     log_info('TRANSACTION_COMPLETE', params)
     render(plain: 'Failed', status: :internal_server_error) && return unless params['RESULT'] == '0'
 
-    @fines = FinesPayment.new(alma_id: params[:USER1], fine_ids: params[:USER2])
-    @fines.pp_ref_number = params[:PNREF]
-    @fines.credit
+    @fees = FeesPayment.new(alma_id: params[:USER1], fee_ids: params[:USER2])
+    @fees.pp_ref_number = params[:PNREF]
+    @fees.credit
     render json: { status: 'silent post received' }
   end
 
@@ -84,11 +84,11 @@ class FinesController < ApplicationController
 
   # def log_error(src, p)
   def log_error(e, p = nil)
-    logger.error("FINES-#{e}: ALMA_ID: #{p[:USER]}, PP_ID: #{p[:PNREF]}, FEE_IDS: #{p[:USER2]}, AMT: #{p[:AMT]}, RESPMSG: #{p[:RESPMSG]}") if p
+    logger.error("FEES-#{e}: ALMA_ID: #{p[:USER]}, PP_ID: #{p[:PNREF]}, FEE_IDS: #{p[:USER2]}, AMT: #{p[:AMT]}, RESPMSG: #{p[:RESPMSG]}") if p
   end
 
   def log_info(src, p)
-    logger.info("FINES-#{src}: ALMA_ID: #{p[:USER1]}, PP_ID: #{p[:PNREF]}, FEE_IDS: #{p[:USER2]}, AMT: #{p[:AMT]}, RESPMSG: #{p[:RESPMSG]}")
+    logger.info("FEES-#{src}: ALMA_ID: #{p[:USER1]}, PP_ID: #{p[:PNREF]}, FEE_IDS: #{p[:USER2]}, AMT: #{p[:AMT]}, RESPMSG: #{p[:RESPMSG]}")
   end
 
 end
