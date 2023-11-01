@@ -1,10 +1,12 @@
 <h1>Tind Marc Batch Load Tool</h1>
-<p>This form is for creating a Tind Marc batch load from a directory of files. Metadata will be obtained from Alma</p>
+<p>This form is for creating a Tind Marc batch load from a directory of files. Metadata will be obtained from Alma.</p>
 <%= form_with(url: '', local: true, target: '_blank') do |f| %>  
   <%= hidden_field_tag :email, @current_user.email %>
+  <hr />
+  <p style="color: #ee0000">* Required</p>
   <div class="form-label form-group required">
     <%= label_tag('directory', 'Resource Directory', class: 'control-label') %>
-    <span style="font-size:0.4em">(example: librettos/ucb/incoming or /librettos/ucb/incoming)</span>
+    <span style="font-size:0.8em">(example: librettos/ucb/incoming or /librettos/ucb/incoming)</span>
   </div>
   <div class="form-input required mb-4">
     <%= f.text_field(:directory, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
