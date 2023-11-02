@@ -27,7 +27,7 @@ describe :tind_marc_batch, type: :system do
 
     it 'displays the form' do
       visit tind_marc_batch_path
-      expect(page).to have_content('Tind Marc Batch Load Tool')
+      expect(page).to have_content('Tind MARC Batch Load Tool')
     end
 
     it 'marks required fields as required' do
@@ -77,7 +77,7 @@ describe :tind_marc_batch, type: :system do
         find('#resource_type').find(:xpath, 'option[2]').select_option
         button = find(:xpath, "//input[@type='submit']")
         button.click
-        expect(page).to have_content('Your Tind Marc batch load has been submitted')
+        expect(page).to have_content('Your Tind MARC batch load has been submitted')
       end
     end
   end
