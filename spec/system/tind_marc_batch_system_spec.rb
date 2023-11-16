@@ -35,6 +35,7 @@ describe :tind_marc_batch, type: :system do
       required_input_fields = %w[
         directory
         library
+        initials
         f_980_a
         f_982_a
         f_982_b
@@ -56,6 +57,7 @@ describe :tind_marc_batch, type: :system do
         visit tind_marc_batch_path
         fill_in('directory', with: 'non-existent/directory')
         fill_in('library', with: 'LIBRARY')
+        fill_in('initials', with: 'DMZ')
         fill_in('f_980_a', with: 'facet')
         fill_in('f_982_a', with: 'short name')
         fill_in('f_982_b', with: 'long name')
@@ -63,13 +65,14 @@ describe :tind_marc_batch, type: :system do
         find('#resource_type').find(:xpath, 'option[2]').select_option
         button = find(:xpath, "//input[@type='submit']")
         button.click
-        expect(page).to have_content('Directory path is invalid')
+        expect(page).to have_content('Path is invalid')
       end
 
       it 'accepts a valid request' do
         visit tind_marc_batch_path
         fill_in('directory', with: 'librettos/incoming')
         fill_in('library', with: 'LIBRARY')
+        fill_in('initials', with: 'DMZ')
         fill_in('f_980_a', with: 'facet')
         fill_in('f_982_a', with: 'short name')
         fill_in('f_982_b', with: 'long name')

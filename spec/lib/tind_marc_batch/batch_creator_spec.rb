@@ -9,8 +9,8 @@ module TindMarc
                f_980_a: 'map field 980a', f_982_a: 'short collection name',
                f_982_b: 'long collection name', f_982_p: 'larger project',
                restriction: 'Restricted2Bancroft', email: 'some_email@nowhere.com' }
-
-    let(:marc_batch) { TindMarc::BatchCreator.new(params) }
+    email = 'somwhere@nowhere.com'
+    let(:marc_batch) { TindMarc::BatchCreator.new(params, email) }
 
     def marc_stub
       record = MARC::Record.new
@@ -27,10 +27,19 @@ module TindMarc
       expect(marc_batch.create_attachment).to eq('001 123456789035  $a (OCoLC)779630683 ')
     end
 
+    it 'sends and email' do
+      marc_batch.instance_variable_set(:@records, [marc_stub])
+      marc_batch.send_email.to eq('something')
+    end
+
+    it 'gets a base path' do
+      fake_path = '/opt/app/data/da/librettos/incoming/9911093939_C791912912.jpg'
+      expect(marc_batch.send(:get_url_base, fake_path)).to eq('https://digitalassets.lib.berkeley.edu/librettos/incoming/')
+    end
+
     it 'was instantiated and can call methods' do
       expect(marc_batch).to respond_to(:prepare)
       expect(marc_batch).to respond_to(:produce_marc)
-      expect(marc_batch).to respond_to(:send_email)
       expect(marc_batch).to respond_to(:send_email)
       expect(marc_batch).to respond_to(:create_attachment)
     end

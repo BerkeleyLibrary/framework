@@ -9,13 +9,13 @@ describe TindMarcBatch do
       before do
         params = {
           directory: 'librettos/incoming',
+          initials: 'DMZ',
           f_980_a: 'Librettos',
           f_982_a: 'Italian Librettos',
           f_982_b: 'Italian Librettos',
           f_540_a: 'some restriction text',
           resource_type: 'Image',
-          library: 'The Bancroft Library',
-          email: 'some_email@berkeley.edu'
+          library: 'The Bancroft Library'
         }
         @form = TindMarcBatch.new(params)
       end
@@ -32,13 +32,13 @@ describe TindMarcBatch do
       before do
         @params = {
           directory: nil,
+          initials: nil,
           f_980_a: nil,
           f_982_a: nil,
           f_982_b: nil,
           f_540_a: nil,
           resource_type: nil,
           library: nil,
-          email: nil,
           f_982_p: nil,
           restriction: nil
         }
@@ -51,18 +51,18 @@ describe TindMarcBatch do
     end
   end
 
-  describe 'permitted params are not valid' do
+  describe 'has non-permitted params' do
     describe 'form' do
       before do
         @params = {
           directory: nil,
+          initials: nil,
           f_980_a: nil,
           f_982_a: nil,
           f_982_b: nil,
           f_540_a: nil,
           resource_type: nil,
           library: nil,
-          email: nil,
           f_982_p: nil,
           restriction: nil,
           fail: nil
@@ -76,18 +76,18 @@ describe TindMarcBatch do
     end
   end
 
-  # Missing a required parameter should cause it to faile
+  # Missing a required parameter should cause it to fail
   describe 'is not valid' do
     describe 'form' do
       before do
         params = {
           directory: 'directory',
+          initials: 'DMZ',
           f_982_a: 'Italian Librettos',
           f_982_b: 'Italian Librettos',
           f_540_a: 'some restriction text',
           resource_type: 'Image',
-          library: 'The Bancroft Library',
-          email: 'some_email.berkeley.edu'
+          library: 'The Bancroft Library'
         }
         @form = TindMarcBatch.new(params)
       end

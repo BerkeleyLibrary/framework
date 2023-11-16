@@ -2,13 +2,12 @@ class TindMarcBatch < Form
   extend ActiveModel::Naming
   require 'find'
 
-  REQUIRED_PARAMS = %i[directory f_980_a f_982_a f_982_b f_540_a resource_type library email].freeze
+  REQUIRED_PARAMS = %i[directory f_980_a f_982_a f_982_b f_540_a resource_type library initials].freeze
   OPTIONAL_PARAMS = %i[f_982_p restriction].freeze
 
-  # validates_presence_of REQUIRED_PARAMS, allow_blank: false
-  validates :directory, :f_980_a, :f_982_a, :f_982_b, :f_540_a, :resource_type, :library, presence: true
+  validates :directory, :f_980_a, :f_982_a, :f_982_b, :f_540_a, :resource_type, :library, :initials, presence: true
   validate :directory_must_exist
-  validates :email, email: true, presence: true
+  validate :directory_has_digital_assets
 
   def initialize(params)
     super()
@@ -34,8 +33,18 @@ class TindMarcBatch < Form
 
   private
 
+  def directory_has_digital_assets
+    error_msg = "#{@params[:directory]} has no digital asset files."
+    unless (Dir.exist? "#{Rails.application.config.tind_data_root_dir}/#{@params[:directory]}") &&
+            Dir.glob("#{Rails.application.config.tind_data_root_dir}/#{@params[:directory]}/**/*.*").empty?
+      return
+    end
+
+    errors.add(:directory, error_msg)
+  end
+
   def directory_must_exist
-    error_msg = 'path is invalid. It should point to resources based on a collection root directory. (e.g. librettos/ucb/incoming)'
-    errors.add(:directory, error_msg) unless File.directory? "/opt/app/data/da/#{@params[:directory]}"
+    error_msg = 'Path is invalid. It should directory path based on a collection root directory. (e.g. librettos/ucb/incoming)'
+    errors.add(:directory, error_msg) unless File.directory? "#{Rails.application.config.tind_data_root_dir}/#{@params[:directory]}"
   end
 end

@@ -7,10 +7,12 @@ describe TindMarcBatchJob do
              library: 'The Bancroft Library', f_540_a: 'some rights statement',
              f_980_a: 'map field 980a', f_982_a: 'short collection name',
              f_982_b: 'long collection name', f_982_p: 'larger project',
-             restriction: 'Restricted2Bancroft', email: 'some_email@nowhere.com' }
+             restriction: 'Restricted2Bancroft' }
+
+  email = 'some-email@nowhere.com'
 
   it 'executes tind marc batch job and sends an email' do
-    expect { TindMarcBatchJob.perform_now(params) }.to(change { ActionMailer::Base.deliveries.count })
+    expect { TindMarcBatchJob.perform_now(params, email) }.to(change { ActionMailer::Base.deliveries.count })
   end
 
   # describe '#Error perform' do

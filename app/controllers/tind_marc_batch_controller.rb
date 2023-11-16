@@ -2,10 +2,6 @@ class TindMarcBatchController < ApplicationController
   before_action :authorize!
   before_action :validate_params, only: :create
 
-  def new
-    @current_user = current_user
-  end
-
   def index
     redirect_with_params(action: :new)
   end
@@ -13,7 +9,7 @@ class TindMarcBatchController < ApplicationController
   def result; end
 
   def create
-    TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params)
+    TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params, current_user.email)
     render :result
   end
 

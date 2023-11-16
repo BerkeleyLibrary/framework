@@ -4,7 +4,7 @@ module TindMarc
   class BatchCreator
 
     # rubocop:disable Metrics/MethodLength
-    def initialize(args = {})
+    def initialize(args, email)
       @records = []
       @dir = args[:directory].delete_prefix('/')
       @field_336 = args[:resource_type]
@@ -15,7 +15,8 @@ module TindMarc
       @field_982b = args[:f_982_b]
       @field_982p = args[:f_982_p]
       @field_991 = args[:restriction]
-      @email = args[:email]
+      @field_902n = args[:initials]
+      @email = email
     end
     # rubocop:enable Metrics/MethodLength
 
@@ -45,7 +46,7 @@ module TindMarc
         tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
 
         url_base = get_url_base(files[0])
-        additional_fields = @t.additional_tind_fields(key, files, url_base, @field_980a, @field_540a)
+        additional_fields = @t.additional_tind_fields(key, files, url_base, @field_902n, @field_980a, @field_540a)
         rec = tind_marc.record(alma_id, additional_fields)
         rec = update_field(rec) unless @field_982p.empty?
 
@@ -72,9 +73,13 @@ module TindMarc
     end
 
     def send_email
-      attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today}.xml"
-      # RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, @records.to_xml).deliver_now
-      RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", attachment_name, create_attachment).deliver_now
+      if @records.empty?
+        RequestMailer.tind_marc_batch_email(@email, "No batch records created for #{@dir}", assets.messages).deliver_now
+      else
+        attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today}.xml"
+        RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", assets.messages, attachment_name,
+                                            create_attachment).deliver_now
+      end
     end
 
     private

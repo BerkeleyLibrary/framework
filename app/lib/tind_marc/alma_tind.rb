@@ -26,7 +26,8 @@ module TindMarc
       fields
     end
 
-    def additional_tind_fields(key, files, url_base, field_980a, rights = nil)
+    # rubocop:disable Metrics/ParameterLists
+    def additional_tind_fields(key, files, url_base, initials, field_980a, rights = nil)
       fields = []
 
       field_035 = ::MARC::DataField.new('035', ' ', ' ', ['a', "(#{field_980a})#{key}"])
@@ -37,11 +38,12 @@ module TindMarc
         fields << field_540
       end
 
-      field_902 = ::MARC::DataField.new('902', ' ', ' ', %w[d #{Date.today.to_s}], %w[n syscript])
+      field_902 = ::MARC::DataField.new('902', ' ', ' ', %w[d #{Date.today.to_s}], ['n', "syscript - #{initials}"])
       fields << field_902
 
       add_fft(files, url_base, fields)
     end
+    # rubocop:enable Metrics/ParameterLists
 
   end
 end
