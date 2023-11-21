@@ -27,7 +27,6 @@ class FrameworkUsers < ActiveRecord::Base
     # getting in and managing things!
     HARDCODED_ADMIN_UIDS = [
       '7165',    # Lisa Weber
-      '1684944', # David Moles
       '1707532'  # Steve Sullivan
     ].freeze
 
