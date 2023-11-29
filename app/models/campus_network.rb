@@ -18,6 +18,8 @@ class CampusNetwork < IPAddr
     ['2607:f140:6000::/48', '2607:f140:5999:ffff:ffff:ffff:ffff:ffff', '2607:f140:6001:0000:0000:0000:0000:0000']
   ]
 
+  class_attribute :blocked_sups, default: [1,2]
+
   class_attribute :visitor_ips, default: ['2001:400:613:: - 2001:400:613:FFFF:FFFF:FFFF:FFFF:FFFF']
 
   def initialize(raw_addr, format = Socket::AF_INET, organization:)
@@ -54,11 +56,30 @@ class CampusNetwork < IPAddr
     end
 
     def parse_campus_addresses(raw_html)
-      Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
+      ipv4_ranges = Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
         next unless node.search('sup').empty?
-
-        new(node.text, organization: :ucb) unless IPAddr.new(node.text).private?
+        node.text unless IPAddr.new(node.text).private?
       end
+      filtered = remove_ipv4_omits(ipv4_ranges.compact, parse_campus_ipv4_omits(raw_html)).compact
+      
+    end
+
+    def remove_ipv4_omits(full_ranges, omits)
+      # permitted_ranges = []
+      # full_ranges.map do |node|
+      #   permitted_ranges.concat(generate_from_network(node.text, omits)
+      # end
+      # permitted_ranges
+      full_ranges
+    end
+
+    def parse_campus_ipv4_omits(raw_html)
+      restricted_ranges = []
+      Nokogiri::HTML(raw_html).xpath('//h2[contains(text(),"Wireless")]/following-sibling::table[1]').first.css('td:first').map do |node|
+        next unless !node.search('sup').empty? && (node.search('sup').text == '1')
+        restricted_ranges.push(IPAddr.new(node.text.chop)) if IPAddr.new(node.text.chop).ipv4?
+      end
+      restricted_ranges.compact
     end
 
     def parse_campus_ipv6_ranges(raw_html)
@@ -78,11 +99,11 @@ class CampusNetwork < IPAddr
       lbl_ranges
     end
 
-    def generate_from_network(current_ip_range)
+    def generate_from_network(current_ip_range, omit_array = Array.new(omitted_ips[0]))
       ip = IPAddr.new(current_ip_range)
       generated_networks = []
-      omitted_ips.each do |omit|
-        next unless ip.include? omit[0]
+      omit_array.each do |omit|
+        next unless ip.include? omit
 
         generated_networks.concat(network_bounds(ip, omit))
       end
@@ -90,10 +111,11 @@ class CampusNetwork < IPAddr
     end
 
     def network_bounds(ip, omit)
-      range = ip.to_range
-      first_ip = range.first
-      last_ip = range.last
-      ["#{first_ip} - #{omit[1]}", "#{omit[2]} - #{last_ip}"]
+      ip_range = ip.to_range
+      omit_range = omit.to_range
+      first_ip = ip_range.first
+      last_ip = ip_range.last
+      ["#{first_ip} - #{omit_range.first}", "#{omit_range.last} - #{last_ip}"]
     end
 
     def parse_lbl_addresses(raw_html)
