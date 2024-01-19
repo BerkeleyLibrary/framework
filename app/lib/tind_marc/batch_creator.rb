@@ -41,6 +41,7 @@ module TindMarc
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def produce_marc(assets)
+      @messages = assets.messages
       assets.file_inventory.each do |key, files|
         alma_id = alma_id(key)
         tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
@@ -54,6 +55,7 @@ module TindMarc
         @records.append rec
       rescue StandardError => e
         Rails.logger.debug "Couldn't create marc record for #{alma_id}. #{e}"
+        @messages << "Couldn't create marc record for #{alma_id}. #{e}"
       end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -74,10 +76,10 @@ module TindMarc
 
     def send_email
       if @records.empty?
-        RequestMailer.tind_marc_batch_email(@email, "No batch records created for #{@dir}", assets.messages).deliver_now
+        RequestMailer.tind_marc_batch_email(@email, "No batch records created for #{@dir}", @messages).deliver_now
       else
-        attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today}.xml"
-        RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", assets.messages, attachment_name,
+        attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
+        RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", @messages, attachment_name,
                                             create_attachment).deliver_now
       end
     end
