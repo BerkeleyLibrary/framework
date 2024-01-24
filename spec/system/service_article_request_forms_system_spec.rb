@@ -33,9 +33,9 @@ describe :service_article_request_forms, type: :system do
       logout!
     end
 
-    it 'links to the baker email address' do
+    it 'links to the cuy email address' do
       support_email = page.find(:xpath, "//a[@class='support-email']")
-      expect(support_email['href']).to eq('mailto:baker-library@berkeley.edu')
+      expect(support_email['href']).to eq('mailto:cuy-library@berkeley.edu')
     end
 
     it 'prepopulates the patron email as a required field' do

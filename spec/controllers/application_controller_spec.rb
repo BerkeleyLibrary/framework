@@ -12,7 +12,7 @@ describe ApplicationController do
   let(:expected_addresses) do
     {
       # baker-library@berkeley.edu
-      ServiceArticleRequestFormsController => 'baker-library@berkeley.edu',
+      ServiceArticleRequestFormsController => 'cuy-library@berkeley.edu',
 
       # eref-library@berkeley.edu
       GalcRequestFormsController => 'eref-library@berkeley.edu',

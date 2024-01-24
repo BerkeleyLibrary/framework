@@ -14,7 +14,7 @@ describe ServiceArticleRequestJob do
     stub_patron_dump(patron_id)
     @patron = Alma::User.find(patron_id)
 
-    @email = 'requests-library@berkeley.edu'
+    @email = 'cuy-library@berkeley.edu'
     @publication = {
       pub_title: 'IEEE Software',
       issn: '0740-7459',

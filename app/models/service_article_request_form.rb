@@ -57,7 +57,7 @@ class ServiceArticleRequestForm < Form
   validates :vol, presence: true
 
   def submit_email
-    @submit_email ||= 'requests-library@berkeley.edu'
+    @submit_email ||= 'cuy-library@berkeley.edu'
   end
 
   # rubocop:disable Metrics/MethodLength
