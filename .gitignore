@@ -1,6 +1,11 @@
 ############################################################
 # Custom ignores
 
+.gitconfig
+
+# vscode-remote-server
+.vscode-server/
+
 # github-markdown-preview previews
 *.md.html
 

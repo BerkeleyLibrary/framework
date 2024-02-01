@@ -3,7 +3,7 @@ require 'netaddr'
 require 'ipaddress'
 require 'open-uri'
 
-class CampusNetwork < IPAddr
+class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
   # @return [Symbol] Organization that owns the network (:ucb, :lbl)
   attr_reader :organization
 
@@ -18,9 +18,11 @@ class CampusNetwork < IPAddr
     ['2607:f140:6000::/48', '2607:f140:5999:ffff:ffff:ffff:ffff:ffff', '2607:f140:6001:0000:0000:0000:0000:0000']
   ]
 
+  class_attribute :blocked_sups, default: %w[1 2]
+
   class_attribute :visitor_ips, default: ['2001:400:613:: - 2001:400:613:FFFF:FFFF:FFFF:FFFF:FFFF']
 
-  def initialize(raw_addr, format = Socket::AF_INET, organization:)
+  def initialize(raw_addr, format = Socket::AF_INET, organization) # rubocop:disable Style/OptionalArguments
     @raw_addr = raw_addr
     @organization = organization
     super(raw_addr, format)
@@ -29,7 +31,8 @@ class CampusNetwork < IPAddr
   class << self
     def all(organization: nil)
       (ucb_networks + lbl_networks).select do |network|
-        organization.blank? || network.organization == organization.to_sym if network
+        result = organization.blank? || network.organization == organization.to_sym if network
+        result
       end
     end
 
@@ -50,15 +53,83 @@ class CampusNetwork < IPAddr
 
     def ucb_networks
       raw_html = URI(ucb_url).read('Accept' => 'text/html')
-      parse_campus_addresses(raw_html)
+      good_networks = parse_and_collect_good_campus_cidrs(raw_html).compact
+      unique_ranges = remove_covered_ucb_networks(good_networks)
+      campus_ipv4_omits = parse_campus_ipv4_omits(raw_html)
+      remove_ipv4_omits(unique_ranges.concat, campus_ipv4_omits.concat)
     end
 
-    def parse_campus_addresses(raw_html)
-      Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
-        next unless node.search('sup').empty?
+    # rubocop:disable Lint/UselessAssignment
 
-        new(node.text, organization: :ucb) unless IPAddr.new(node.text).private?
+    # Parses the raw html, grabs all the cidr networks from the first table
+    #  that don't have restricted super script notations or are private networks,
+    #  and finally returns an array of CampusNetwork objects
+    #
+    # @param raw_html [String]
+    # @return [[CampusNetwork]]
+    def parse_and_collect_good_campus_cidrs(raw_html) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      good_nodes = Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
+        next unless node.search('sup').empty? || blocked_sups.exclude?(node.search('sup').text)
+
+        node.search('sup').empty? ? node.text : node.text.chop
+      end.compact
+      good_nodes.map do |cidr_string|
+        next if cidr_string.nil?
+
+        addr = IPAddr.new(cidr_string)
+        new(cidr_string, organization = :ucb) unless addr.ipv6? || addr.private?
+      end.compact.reject { |item| !item.is_a?(self) } # rubocop:disable Style/MultilineBlockChain
+    end
+
+    # Sorts networks by size, then removes any networks that are covered by a larger network
+    #
+    # @param networks_arr [[CampusNetwork]]
+    # @return [[CampusNetwork]]
+    def remove_covered_ucb_networks(networks_arr)
+      sorted = networks_arr.sort_by { |addr| addr.to_range.size }
+      sorted.reject.with_index do |network, index|
+        sorted[(index + 1)..].any? { |other_network| other_network.to_range.cover?(network.to_range) }
       end
+    end
+
+    # splits any ipv4 network ranges that cover omitted networks
+    #
+    # @param full_ranges [[CampusNetwork]]
+    # @param omits [[IPAddr]]
+    # @return [[CampusNetwork]]
+    def remove_ipv4_omits(full_ranges, omits) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+      permitted_ranges = []
+      full_ranges.each do |original_range|
+        overlaps = omits.select { |omit| original_range.to_range.cover?(omit.to_range) }
+
+        if overlaps.empty? # TODO: refactor to overlaps.empty? ? orginal_range : call function for else block
+          permitted_ranges << original_range
+        else
+          overlaps.each do |omit|
+            remainders = NetAddr::CIDR.create(to_cidr_s(original_range)).remainder(to_cidr_s(omit))
+            remainders.each do |remainder|
+              permitted_ranges << new(remainder, organization = :ucb)
+            end
+          end
+        end
+      end
+      permitted_ranges
+    end
+
+    # Parses the raw html, returns all the cidr networks from the second table that
+    # have restricted super script notations & are ipv4 & are not private networks
+    #
+    # @param raw_html [String]
+    # @return [[IPAddr]]
+    def parse_campus_ipv4_omits(raw_html) # rubocop:disable Metrics/AbcSize
+      restricted_ranges = []
+      Nokogiri::HTML(raw_html).xpath('//h2[contains(text(),"Wireless")]/following-sibling::table[1]').first.css('td:first').map do |node|
+        next unless !node.search('sup').empty? && blocked_sups.include?(node.search('sup').text)
+
+        suspect_range = IPAddr.new(node.text.chop)
+        restricted_ranges.push(suspect_range) if suspect_range.ipv4? && !suspect_range.private?
+      end
+      restricted_ranges.compact
     end
 
     def parse_campus_ipv6_ranges(raw_html)
@@ -99,15 +170,30 @@ class CampusNetwork < IPAddr
     def parse_lbl_addresses(raw_html)
       Nokogiri::HTML(raw_html).css('td:nth-child(n+2)').map do |node|
         range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
-        new(convert_to_cidrs(range), organization: :lbl) unless IPAddr.new(range[1]).private? || IPAddress.valid_ipv6?(range[1])
+        new(convert_to_cidrs(range), organization = :lbl) unless IPAddr.new(range[1]).private? || IPAddress.valid_ipv6?(range[1])
       end
     end
+
+    # rubocop:enable Lint/UselessAssignment
 
     def convert_to_cidrs(range)
       # TODO: NetAddr performance: find something faster
       ip_net_range = NetAddr.range(range[0], range[1], Inclusive: true, Objectify: true)
       cidrs = NetAddr.merge(ip_net_range, Objectify: true)
       cidrs[0].to_s
+    end
+
+    # IPAddr object to string with prefix
+    # @param ip [IPAddr]
+    # @return [String]
+    def to_cidr_s(ip)
+      "#{ip}/#{ip.prefix}"
+    end
+
+    def previous_ip(ip_address)
+      ip = IPAddr.new(ip_address).to_i
+      previous_ip = IPAddr.new(ip - 1, Socket::AF_INET)
+      previous_ip.to_s
     end
   end
 
@@ -132,11 +218,6 @@ class CampusNetwork < IPAddr
   # @return [String]
   def to_vendor_range_format
     "#{to_range.first}-#{to_range.last}"
-  end
-
-  def to_range
-    raw_ipaddr = IPAddr.new(@raw_addr, family)
-    @range_val ||= raw_ipaddr.to_range
   end
 
 end
