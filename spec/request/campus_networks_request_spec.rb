@@ -69,8 +69,8 @@ describe :campus_networks, type: :request do
     end
 
     it 'returns generated ipV6 ranges' do
-      expect(body).to include('2607:f140:: - 2607:f140:5999:ffff:ffff:ffff:ffff:ffff')
-      expect(body).to include('2607:f140:6001:0000:0000:0000:0000:0000 - 2607:f140:ffff:ffff:ffff:ffff:ffff:ffff')
+      expect(body).to include('2607:f140:400:: - 2607:f140:400:ffff:ffff:ffff:ffff:ffff')
+      expect(body).to include('2607:f140:800:1:: - 2607:f140:800:1:ffff:ffff:ffff:ffff')
     end
 
     it 'returns "publisher format"' do

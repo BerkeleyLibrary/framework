@@ -13,9 +13,18 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
   # @return [String] Address of the nettools page listing all campus networks
   class_attribute :ucb_url, default: 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
 
-  # @return [[String]] Address of ip's to be ommited and the ranges bounds used
+  # @return [[String]] Address of campus ip's to be ommited and the ranges bounds used
+  # deprecated
   class_attribute :omitted_ips, default: [
     ['2607:f140:6000::/48', '2607:f140:5999:ffff:ffff:ffff:ffff:ffff', '2607:f140:6001:0000:0000:0000:0000:0000']
+  ]
+
+  # @return [[String]] Network cidrs from campus that have restricted access to library resources
+  # Specifically, these are the hardcoded networks for 'Authenticated IPv6 Public Network' and
+  # bsecure vpn 'Full, Library, and Auto Tunnel Networks'
+  # TODO: refactor to use a config file or to better parse acceptable ipv6 networks from the ucb_url
+  class_attribute :campus_ipv6_cidrs, default: [
+    '2607:f140:400::/48', '2607:f140:800:1::/64'
   ]
 
   class_attribute :blocked_sups, default: %w[1 2]
@@ -39,7 +48,13 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
     def ipv6_ranges(org)
       ipv6 = []
       ipv6.concat(parse_lbl_ipv6_ranges(URI(lbl_url).read('Accept' => 'text/html'))) unless org == 'ucb'
-      ipv6.concat(parse_campus_ipv6_ranges(URI(ucb_url).read('Accept' => 'text/html'))) unless org == 'lbl'
+      # ipv6.concat(parse_campus_ipv6_ranges(URI(ucb_url).read('Accept' => 'text/html'))) unless org == 'lbl'
+      unless org == 'lbl'
+        ipv6.concat(campus_ipv6_cidrs.map do |cidr|
+          network = IPAddr.new(cidr)
+          "#{network.to_range.first} - #{network.to_range.last}"
+        end)
+      end
 
       ipv6
     end
@@ -132,6 +147,7 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
       restricted_ranges.compact
     end
 
+    # debrecated due to complexity involved in parsing the ucb_url
     def parse_campus_ipv6_ranges(raw_html)
       generated = []
       Nokogiri::HTML(raw_html).css('table:first').css('tr:nth-child(n+3)').css('td:first').map do |node|
@@ -149,6 +165,8 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
       lbl_ranges
     end
 
+    # used to generate ipv6 networks
+    # deprecated due to complexity involved in parsing the ucb_url
     def generate_from_network(current_ip_range)
       ip = IPAddr.new(current_ip_range)
       generated_networks = []
@@ -160,6 +178,8 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
       generated_networks
     end
 
+    # used to generate ipv6 range strings
+    # deprecated due to complexity involved in parsing the ucb_url
     def network_bounds(ip, omit)
       range = ip.to_range
       first_ip = range.first
