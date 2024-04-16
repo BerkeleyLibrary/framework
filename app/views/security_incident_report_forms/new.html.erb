@@ -520,7 +520,8 @@ Please see:</br>
   <br/>
   <div class="form-input">
     <%= f.submit(class: 'btn btn-primary', value: 'Submit Report') %>
-    <%= f.submit("Reset", type: :reset, class: "btn btn-primary", onclick: "formReset();") %> 
+    <!-- %= f.submit("Reset", type: :reset, class: "btn btn-primary", onclick: "formReset();") % --> 
+    <%= f.submit("Reset", type: :reset, class: "btn btn-primary", onclick: "hideBlock('police_info')") %> 
   </div>
 
 <% end %>
