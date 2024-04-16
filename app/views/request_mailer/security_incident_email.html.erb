@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' /> 
+      <style>
+        .content {
+          max-width: fit-content;
+          margin-left: 30px;
+        }
+      </style>
+  </head>
+	  
+  <body>
+    <div class="content">
+      <h3>Key Details</h3>
+	    <div>
+	      <ul>
+	        <li>Location: <%= @security_incident.incident_location %></li>
+	        <li>Date: <%= @security_incident.incident_date %></li>
+	        <li>Time: <%= @security_incident.incident_time %></li>
+	        <li>Report Name: <%= @security_incident.reporter_name %></li>
+	        <li>Email: <%= @security_incident.email %></li>
+	        <li>Unit: <%= @security_incident.unit %></li>
+	        <li>Phone: <%= @security_incident.phone %></li>
+	        <li>Incident Description: <%= @security_incident.incident_description %></li>
+	      </ul>
+	    </div>
+	
+	    <h3>Type of incident</h3>
+	    <% if section_has_value_checked?(@security_incident, 'criminal') %>
+	      <h4>Type of criminal behavior</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'criminal') %>
+          </ul>
+        </div>
+	    <% end %> 
+	
+	    <% if section_has_value_checked?(@security_incident, 'disruptive') %>
+	      <h4>Type of disruptive behavior</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'disruptive') %>
+          </ul>
+        </div>
+      <% end %>
+
+	    <% if section_has_value_checked?(@security_incident, 'facility') %>
+	      <h4>Type of facility incident</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'facility') %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if section_has_value_checked?(@security_incident, 'injury') %>
+	      <h4>Affiliation of accidentally injured person(s)</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'injury') %>
+          </ul>
+        </div>
+        <h4>Description of injuries and assistance rendered (include name of hospital(s))</h4>
+        <div>
+          <%= @security_incident.injury_description %></li>
+        </div>
+      <% end %>
+      
+      <% unless @security_incident.subject_affiliation.nil? %>
+        <h3>Subject description</h3>
+        <div>
+          <h4>Subject 1</h4>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation') %>
+        </div>
+      <% end %>
+
+      <% unless @security_incident.subject_affiliation_1.nil? %>
+        <h4>Subject 2</h4>
+        <div>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_1') %>
+        </div>
+      <% end %>
+
+      <% unless @security_incident.subject_affiliation_1.nil? %>
+        <h4>Subject 3</h4>
+        <div>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_2') %>
+        </div>
+      <% end %>
+
+      <% unless @security_incident.property_description.nil? %>
+        <h4>Property Description</h4>
+        <div><%= @security_incident.property_description %></div>
+      <% end %>
+
+      <% unless @security_incident.police_notified.nil? %>
+        <div><h4>Police notified: <%= @security_incident.police_notified %></h4></div>
+        <% if @security_incident.police_report_number %>
+          <div>Police report number: <%= @security_incident.police_report_number %></div>
+        <% end %>
+        <% if @security_incident.officer_name_badge %>
+          <div>Officer name/badge number: <%= @security_incident.officer_name_badge %></div>
+        <% end %>
+      <% end %>
+
+      <% unless @security_incident.fire_department.nil? %>
+        <h4>Fire department called: <%= @security_incident.fire_department %></h4>
+      <% end %> 
+
+      <% unless @security_incident.sup_email.nil? %>
+        <h4>Supervisor email: <%= @security_incident.sup_email %></h4>
+      <% end %>
+    </div>
+  </body>
+</html> 

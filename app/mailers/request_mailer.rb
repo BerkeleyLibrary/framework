@@ -4,6 +4,7 @@ require 'prawn'
 class RequestMailer < ApplicationMailer
   # Adding url_helpers to build the link I create for efees
   include Rails.application.routes.url_helpers
+  helper :mail
 
   # Sends the AffiliateBorrowRequestForm
   def affiliate_borrow_request_form_email(borrow_request)
@@ -37,6 +38,17 @@ class RequestMailer < ApplicationMailer
     @note = note
 
     mail(to: admin_to)
+  end
+
+  # Sends the Security Incident form email
+  def security_incident_email(security_incident)
+    @security_incident = security_incident
+
+    mail(to: security_to)
+  end
+
+  def security_incident_failure_email(email)
+    mail(to: email)
   end
 
   # Send ServiceArticleRequest confirmation email to user

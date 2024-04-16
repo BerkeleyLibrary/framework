@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'
     resources :galc_request_forms, path: 'galc-agreement'
     resources :proxy_borrower_forms, path: 'proxy-borrower', only: [:index]
+    resources :security_incident_report_forms, path: 'security-incident-report'
     resources :stack_requests, path: 'stack-requests', only: [:index]
     resources :stack_pass_forms, path: 'stack-pass'
     resources :reference_card_forms, path: 'reference-card'
