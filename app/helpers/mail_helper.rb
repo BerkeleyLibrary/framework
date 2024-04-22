@@ -45,20 +45,30 @@ module MailHelper
   # rubocop:enable Metrics/MethodLength
 
   # We only want to display form values if there's something actually selected.
-  def display_type_of_incident(security_incident, section_type)
-    html = ''
+  def display_type_of_incident(security_incident, section_type, output_type)
+    output = ''
     sections(section_type).each do |value|
-      html << "<li>#{value.values[0]}</li>" if security_incident.send(value.keys[0]) == 'checked'
+      case output_type
+      when 'html'
+        output << "<li>#{value.values[0]}</li>" if security_incident.send(value.keys[0]) == 'checked'
+      when 'text'
+        output << "#{value.values[0]}\n" if security_incident.send(value.keys[0]) == 'checked'
+      end
     end
-    html
+    output
   end
 
-  def display_subject_affiliation(security_incident, section_type)
-    html = ''
+  def display_subject_affiliation(security_incident, section_type, output_type)
+    output = ''
     sections(section_type).each do |value|
-      html << "<div>#{value.values[0]}: #{security_incident.send(value.keys[0])}</div>" unless security_incident.send(value.keys[0]).nil?
+      case output_type
+      when 'html'
+        output << "<div>#{value.values[0]}: #{security_incident.send(value.keys[0])}</div>" unless security_incident.send(value.keys[0]).nil?
+      when 'text'
+        output << "#{value.values[0]}: #{security_incident.send(value.keys[0])}\n" unless security_incident.send(value.keys[0]).nil?
+      end
     end
-    html
+    output
   end
 
   # End of security incident report section

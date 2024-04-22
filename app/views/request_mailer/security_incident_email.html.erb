@@ -31,7 +31,7 @@
 	      <h4>Type of criminal behavior</h4>
         <div>
           <ul>
-            <%= sanitize display_type_of_incident(@security_incident, 'criminal') %>
+            <%= sanitize display_type_of_incident(@security_incident, 'criminal', 'html') %>
           </ul>
         </div>
 	    <% end %> 
@@ -40,7 +40,7 @@
 	      <h4>Type of disruptive behavior</h4>
         <div>
           <ul>
-            <%= sanitize display_type_of_incident(@security_incident, 'disruptive') %>
+            <%= sanitize display_type_of_incident(@security_incident, 'disruptive', 'html') %>
           </ul>
         </div>
       <% end %>
@@ -49,7 +49,7 @@
 	      <h4>Type of facility incident</h4>
         <div>
           <ul>
-            <%= sanitize display_type_of_incident(@security_incident, 'facility') %>
+            <%= sanitize display_type_of_incident(@security_incident, 'facility', 'html') %>
           </ul>
         </div>
       <% end %>
@@ -58,7 +58,7 @@
 	      <h4>Affiliation of accidentally injured person(s)</h4>
         <div>
           <ul>
-            <%= sanitize display_type_of_incident(@security_incident, 'injury') %>
+            <%= sanitize display_type_of_incident(@security_incident, 'injury', 'html') %>
           </ul>
         </div>
         <h4>Description of injuries and assistance rendered (include name of hospital(s))</h4>
@@ -71,21 +71,21 @@
         <h3>Subject description</h3>
         <div>
           <h4>Subject 1</h4>
-          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation') %>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation', 'html') %>
         </div>
       <% end %>
 
       <% unless @security_incident.subject_affiliation_1.nil? %>
         <h4>Subject 2</h4>
         <div>
-          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_1') %>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_1', 'html') %>
         </div>
       <% end %>
 
       <% unless @security_incident.subject_affiliation_1.nil? %>
         <h4>Subject 3</h4>
         <div>
-          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_2') %>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_2', 'html') %>
         </div>
       <% end %>
 

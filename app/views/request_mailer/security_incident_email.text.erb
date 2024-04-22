@@ -1,5 +1,3 @@
-Key Details
-
 Location: <%= @security_incident.incident_location %>
 Date: <%= @security_incident.incident_date %>
 Time: <%= @security_incident.incident_time %>
@@ -8,26 +6,25 @@ Email: <%= @security_incident.email %>
 Unit: <%= @security_incident.unit %>
 Phone: <%= @security_incident.phone %>
 Incident Description: <%= @security_incident.incident_description %>
-	
-Type of incident
+
 <% if section_has_value_checked?(@security_incident, 'criminal') %>
-Type of criminal behavior
-<%= sanitize display_type_of_incident(@security_incident, 'criminal') %>
+Type of criminal behavior:
+<%= sanitize display_type_of_incident(@security_incident, 'criminal', 'text') %>
 <% end %> 
 	
 <% if section_has_value_checked?(@security_incident, 'disruptive') %>
-Type of disruptive behavior
-<%= sanitize display_type_of_incident(@security_incident, 'disruptive') %>
+Type of disruptive behavior:
+<%= sanitize display_type_of_incident(@security_incident, 'disruptive', 'text') %>
 <% end %>
 
 <% if section_has_value_checked?(@security_incident, 'facility') %>
-Type of facility incident
-<%= sanitize display_type_of_incident(@security_incident, 'facility') %>
+Type of facility incident:
+<%= sanitize display_type_of_incident(@security_incident, 'facility', 'text') %>
 <% end %>
 
 <% if section_has_value_checked?(@security_incident, 'injury') %>
-Affiliation of accidentally injured person(s)
-<%= sanitize display_type_of_incident(@security_incident, 'injury') %>
+Affiliation of accidentally injured person(s):
+<%= sanitize display_type_of_incident(@security_incident, 'injury', 'text') %>
         
 Description of injuries and assistance rendered (include name of hospital(s))
 <%= @security_incident.injury_description %>
@@ -36,23 +33,25 @@ Description of injuries and assistance rendered (include name of hospital(s))
 <% unless @security_incident.subject_affiliation.nil? %>
 Subject description
 
-Subject 1
-<%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation') %>
+Subject 1:
+
+<%= display_subject_affiliation(@security_incident, 'subject_affiliation', 'text') %>
 <% end %>
 
 <% unless @security_incident.subject_affiliation_1.nil? %>
-Subject 2
-<%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_1') %>
+Subject 2:
+
+<%= display_subject_affiliation(@security_incident, 'subject_affiliation_1', 'text') %>
 <% end %>
 
 <% unless @security_incident.subject_affiliation_1.nil? %>
-Subject 3
-<%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_2') %>
+Subject 3:
+
+<%= display_subject_affiliation(@security_incident, 'subject_affiliation_2', 'text') %>
 <% end %>
 
 <% unless @security_incident.property_description.nil? %>
-Property Description
-<%= @security_incident.property_description %>
+Property Description: <%= @security_incident.property_description %>
 <% end %>
 
 <% unless @security_incident.police_notified.nil? %>
