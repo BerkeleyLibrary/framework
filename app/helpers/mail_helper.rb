@@ -58,6 +58,7 @@ module MailHelper
     output
   end
 
+  # rubocop:disable Metrics/AbcSize
   def display_subject_affiliation(security_incident, section_type, output_type)
     output = ''
     sections(section_type).each do |value|
@@ -70,6 +71,7 @@ module MailHelper
     end
     output
   end
+  # rubocop:enable Metrics/AbcSize
 
   # End of security incident report section
 end

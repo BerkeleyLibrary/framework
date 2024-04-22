@@ -79,7 +79,7 @@ describe SecurityIncidentReportForm do
       end
 
       it 'sends an email' do
-        expect { @form.submit!}.to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect { @form.submit! }.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
   end

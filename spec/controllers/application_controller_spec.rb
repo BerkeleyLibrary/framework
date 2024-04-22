@@ -14,6 +14,9 @@ describe ApplicationController do
       # baker-library@berkeley.edu
       ServiceArticleRequestFormsController => 'cuy-library@berkeley.edu',
 
+      # security incident form
+      SecurityIncidentReportFormsController => 'helpbox-library@berkeley.edu',
+
       # eref-library@berkeley.edu
       GalcRequestFormsController => 'eref-library@berkeley.edu',
 
