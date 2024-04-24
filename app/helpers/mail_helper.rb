@@ -20,7 +20,7 @@ module MailHelper
        { assault: 'Assualt' }, { criminal_other: 'Other' }]
     when 'disruptive'
       [{ rules_violation: 'Rules violation' }, { irate_abusive: 'Irate, abusive, disorderly conduct' },
-       { physical_altercation: 'Physical Altercation' }, { disruptive_other: 'Disruptive behavior' }]
+       { physical_altercation: 'Physical Altercation' }, { disruptive_other: 'Other' }]
     when 'facility'
       [{ power_outage: 'Power outage' }, { flooding: 'Flooding' }, { elevator: 'Elevator' }, { fire: 'Fire' }, { facility_other: 'Other' }]
     when 'injury'
