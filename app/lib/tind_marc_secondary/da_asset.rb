@@ -3,22 +3,22 @@ require_relative 'tind_item_collection'
 
 module TindMarcSecondary
 
-  class DaBatch
+  class DaAsset
     def initialize(config, verify_tind)
       @verify_tind = verify_tind
       @config = config
     end
 
-    def item_collection
-      items = items_from_da_folder
-      @verify_tind ? items_verified(items) : { insert: items }
+    def map
+      assets = batch_assets
+      @verify_tind ? assets_verified(assets) : { insert: assets }
     rescue StandardError => e
       Rails.logger.error "Inventory not populated: #{e}"
     end
 
     private
 
-    def items_from_da_folder
+    def batch_assets
       folder_names = Dir.children(@config.da_batch_path).select { |f| File.directory?(File.join(@config.da_batch_path, f)) }
       folder_names.map do |folder_name|
         {
@@ -28,8 +28,9 @@ module TindMarcSecondary
       end
     end
 
-    def items_verified(items)
-      { insert: items, append: [] }
+    # verifying from TIND
+    def assets_verified(assets)
+      { insert: assets, append: [] }
     end
 
   end
