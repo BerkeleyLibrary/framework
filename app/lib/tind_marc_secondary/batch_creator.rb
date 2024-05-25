@@ -1,7 +1,7 @@
 require 'berkeley_library/tind'
 require_relative 'da_batch'
 require_relative 'tind_batch'
-require_relative 'col'
+require_relative 'config'
 
 module TindMarcSecondary
   class BatchCreator
@@ -11,7 +11,7 @@ module TindMarcSecondary
       @verify_tind = false
       @messages = []
       @email = email
-      @config = Col.new(args)
+      @config = Config.new(args)
     end
 
     def run
