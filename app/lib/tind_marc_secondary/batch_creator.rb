@@ -1,11 +1,10 @@
 require 'berkeley_library/tind'
-require_relative 'da_batch'
+require_relative 'da_asset'
 require_relative 'tind_batch'
 require_relative 'config'
 
 module TindMarcSecondary
   class BatchCreator
-    # include Config
 
     def initialize(args, email)
       @verify_tind = false
@@ -15,9 +14,9 @@ module TindMarcSecondary
     end
 
     def run
-      da_batch = DaBatch.new(@config, @verify_tind)
+      da_assets = DaAsset.new(@config, @verify_tind)
       tind_batch = TindBatch.new(@config)
-      @record_collection = tind_batch.record_collection(da_batch.item_collection)
+      @record_collection = tind_batch.record_collection(da_assets.map)
     end
 
     # method for get result to test
