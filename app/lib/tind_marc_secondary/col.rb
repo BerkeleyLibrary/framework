@@ -7,8 +7,7 @@ module TindMarcSecondary
     # @da_batch_path = ''
     # @da_label_file_path = ''
 
-    attr_accessor :prefix_035, :base_url, :collection_subfields_tobe_updated, :collectional_fields, :da_batch_path, :da_label_file_path
-    attr_accessor :collection_fields
+    attr_accessor :prefix_035, :base_url, :collection_subfields_tobe_updated, :collection_fields, :da_batch_path, :da_label_file_path
     
     def initialize(args)
       setup(args)
@@ -33,8 +32,8 @@ module TindMarcSecondary
       incoming_path = args[:directory].delete_prefix('/')
       @prefix_035 = incoming_path.include?('aerial/ucb') ? "(#{args[:f_982_a]})" : "(#{args[:f_980_a]}"
       @base_url = "https://digitalassets.lib.berkeley.edu/#{incoming_path}/"
-      @collection_subfields_tobe_updated = args[:f_982_p].nil? ? {} : { '982' => { 'p' => args[:f_982_p] } }
-      @collectional_fields = create_collection_fields(args)
+      @collection_subfields_tobe_updated = args[:f_982_p].empty? ? {} : { '982' => { 'p' => args[:f_982_p] } }
+      @collection_fields = create_collection_fields(args)
     end
 
     def setup_da(args)

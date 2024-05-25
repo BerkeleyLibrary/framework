@@ -11,18 +11,17 @@ module TindMarcSecondary
     end
 
     def record_collection(hash)
-      insert_records = create_insert_records(hash[:insert])
-      append_records = create_append_records(hash[:append])
+      insert = create_insert_records(hash[:insert])
+      append = hash.key?(:append) ? create_append_records(hash[:append]) : []
 
-      { insert_records:, append_records: }
+      { insert:, append: }
     end
 
     private
 
     def create_insert_records(items)
-      Rails.logger.info("RRRR #{items.inspect}")
-      ls = items.map { |item| insert_record(item) }
-      @insert_records = ls
+      Rails.logger.info("RRRRA #{items.inspect}")
+      items.map { |item| insert_record(item) }
     end
 
     def create_append_records(items)
@@ -33,30 +32,33 @@ module TindMarcSecondary
 
     def insert_record(item)
       tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
-      alma_id = item[0]
-      additional_fields = (@config.collection_fields + ffts(item[1])).append(f_035(alma_id))
-      rec = tind_marc.record(alma_id, additional_fields)
+      additional_fields = (@config.collection_fields + ffts(item[:folder_name])).append(f_035(item[:mmsid]))
+      # Rails.logger.info("tttt #{@config.collection_fields.inspect}")
+      # additional_fields = [@config.collection_fields] 
+      # additional_fields = ffts(item[:folder_name]).append(f_035(item[:mmsid]))
+      # additional_fields = [f_035(item[:mmsid])]
+      rec = tind_marc.record(item[:mmsid], additional_fields)
       update_field(rec)
       rec
     rescue StandardError => e
-      Rails.logger.debug "Couldn't create marc record for #{alma_id}. #{e}"
-      @messages << "Couldn't create marc record for #{alma_id}. #{e}"
+      Rails.logger.debug "Couldn't create marc record for #{item[:mmsid]}. #{e}"
+      @messages << "Couldn't create marc record for #{item[:mmsid]}. #{e}"
     end
 
     def append_record(item)
       tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
-      alma_id = item[0]
-      additional_fields = (@config.collection_fields + ffts(item[1])).append(f_035(alma_id))
+      additional_fields = (@config.collection_fields + ffts(item[:folder_name])).append(f_035(item[:mmsid]))
       rec = tind_marc.record(alma_id, additional_fields)
       update_field(rec)
       rec
     rescue StandardError => e
-      Rails.logger.debug "Couldn't create marc record for #{alma_id}. #{e}"
-      @messages << "Couldn't create marc record for #{alma_id}. #{e}"
+      Rails.logger.debug "Couldn't create marc record for #{item[:mmsid]}. #{e}"
+      @messages << "Couldn't create marc record for #{item[:mmsid]}. #{e}"
     end
 
     def update_field(rec)
       hash = @config.collection_subfields_tobe_updated
+      Rails.logger.info "UpdatingWWWW1: #{hash.inspect}"
       BerkeleyLibrary::TIND::Mapping::TindRecordUtil.update_record(rec, hash) unless hash.empty?
     end
 
