@@ -17,14 +17,14 @@ module TindMarcSecondary
     def run
       da_batch = DaBatch.new(@config, @verify_tind)
       tind_batch = TindBatch.new(@config)
-      tind_batch.record_collection(da_batch.item_collection)
+      @record_collection = tind_batch.record_collection(da_batch.item_collection)
     end
 
     # method for get result to test
     def save_local(file)
       writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
 
-      @insert_records.each do |record|
+      @record_collection[:insert].each do |record|
         Rails.logger.info("66666666#{record.inspect}")
         record.leader = nil
 
