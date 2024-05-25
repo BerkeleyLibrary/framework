@@ -8,7 +8,7 @@ module TindMarcSecondary
       @config = config
     end
 
-    def record_collection(hash)
+    def records_hash(hash)
       insert = create_insert_records(hash[:insert])
       append = hash.key?(:append) ? create_append_records(hash[:append]) : []
 
@@ -17,51 +17,38 @@ module TindMarcSecondary
 
     private
 
-    def create_insert_records(items)
-      Rails.logger.info("RRRRA #{items.inspect}")
-      items.map { |item| insert_record(item) }
+    def create_insert_records(assets)
+      assets.map { |asset| insert_record(asset) }
     end
 
-    def create_append_records(items)
-      Rails.logger.info("RRRR #{items.inspect}")
-      ls = items.map { |item| append_record(item) }
+    # different
+    def create_append_records(assets)
+      ls = assets.map { |asset| append_record(asset) }
       @insert_records = ls
     end
 
-    def insert_record(item)
+    def insert_record(asset)
       tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
-      additional_fields = (@config.collection_fields + ffts(item[:folder_name])).append(f_035(item[:mmsid]))
-      # Rails.logger.info("tttt #{@config.collection_fields.inspect}")
-      # additional_fields = [@config.collection_fields] 
-      # additional_fields = ffts(item[:folder_name]).append(f_035(item[:mmsid]))
-      # additional_fields = [f_035(item[:mmsid])]
-      rec = tind_marc.record(item[:mmsid], additional_fields)
+      additional_fields = (@config.collection_fields + ffts(asset[:folder_name])).append(f_035(asset[:mmsid]))
+      rec = tind_marc.record(asset[:mmsid], additional_fields)
       update_field(rec)
       rec
     rescue StandardError => e
-      Rails.logger.debug "Couldn't create marc record for #{item[:mmsid]}. #{e}"
-      @messages << "Couldn't create marc record for #{item[:mmsid]}. #{e}"
+      Rails.logger.debug "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
+      @messages << "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
     end
 
-    def append_record(item)
-      tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
-      additional_fields = (@config.collection_fields + ffts(item[:folder_name])).append(f_035(item[:mmsid]))
-      rec = tind_marc.record(alma_id, additional_fields)
-      update_field(rec)
-      rec
+    def append_record(asset)
+      asset
     rescue StandardError => e
-      Rails.logger.debug "Couldn't create marc record for #{item[:mmsid]}. #{e}"
-      @messages << "Couldn't create marc record for #{item[:mmsid]}. #{e}"
+      Rails.logger.debug "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
+      @messages << "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
     end
 
     def update_field(rec)
       hash = @config.collection_subfields_tobe_updated
       Rails.logger.info "UpdatingWWWW1: #{hash.inspect}"
       BerkeleyLibrary::TIND::Mapping::TindRecordUtil.update_record(rec, hash) unless hash.empty?
-    end
-
-    def alma_id(folder_name)
-      folder_name.split('_')[0]
     end
 
     def ffts(folder_name)
@@ -71,13 +58,11 @@ module TindMarcSecondary
       file_desc_list.each do |file, desc|
         ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{@config.base_url}/#{file}"], ['d', desc])
       end
-      # Rails.logger.debug "000000000: #{ls.inspect}"
       ls
     end
 
-    def f_035(alma_id)
-      # Rails.logger.info "Record99999: #{@prefix_035}#{alma_id}"
-      ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@config.prefix_035}#{alma_id}"])
+    def f_035(mmsid)
+      ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@config.prefix_035}#{mmsid}"])
     end
 
     #  # label csv file column names sequence
