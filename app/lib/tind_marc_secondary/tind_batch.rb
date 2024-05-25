@@ -8,23 +8,17 @@ module TindMarcSecondary
       @config = config
     end
 
-    def records_hash(hash)
-      insert = create_insert_records(hash[:insert])
-      append = hash.key?(:append) ? create_append_records(hash[:append]) : []
+    def records_hash(assets_map)
+      insert = create_records(assets_map[:insert]) { |record| insert_record(record) }
+      append = assets_map.key?(:append) ? create_records(assets_map[:append]) { |record| append_record(record) } : []
 
       { insert:, append: }
     end
 
     private
 
-    def create_insert_records(assets)
-      assets.map { |asset| insert_record(asset) }
-    end
-
-    # different
-    def create_append_records(assets)
-      ls = assets.map { |asset| append_record(asset) }
-      @insert_records = ls
+    def create_records(assets, &)
+      assets.map(&)
     end
 
     def insert_record(asset)
@@ -39,7 +33,10 @@ module TindMarcSecondary
     end
 
     def append_record(asset)
-      asset
+      fields = asset[:f_035].concat(ffts(asset[:folder_name]))
+      record = ::MARC::Record.new
+      fields.each { |f| record.append(f) }
+      record
     rescue StandardError => e
       Rails.logger.debug "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
       @messages << "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
