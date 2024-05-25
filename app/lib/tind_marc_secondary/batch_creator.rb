@@ -5,7 +5,8 @@ require_relative 'config'
 
 module TindMarcSecondary
   class BatchCreator
-
+    attr_reader :records_hash
+    
     def initialize(args, email)
       @verify_tind = false
       @messages = []
@@ -16,14 +17,14 @@ module TindMarcSecondary
     def run
       da_assets = DaAsset.new(@config, @verify_tind)
       tind_batch = TindBatch.new(@config)
-      @record_collection = tind_batch.record_collection(da_assets.map)
+      @records_hash = tind_batch.records_hash(da_assets.map)
     end
 
     # method for get result to test
     def save_local(file)
       writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
 
-      @record_collection[:insert].each do |record|
+      @records_hash[:insert].each do |record|
         Rails.logger.info("66666666#{record.inspect}")
         record.leader = nil
 
