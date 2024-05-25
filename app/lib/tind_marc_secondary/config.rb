@@ -1,5 +1,5 @@
 module TindMarcSecondary
-  class Col
+  class Config
     # @prefix_035 = ''
     # @base_url = ''
     # @collection_subfields_tobe_updated = {}
