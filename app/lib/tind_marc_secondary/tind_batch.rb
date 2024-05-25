@@ -64,10 +64,12 @@ module TindMarcSecondary
       folder_name.split('_')[0]
     end
 
-    def ffts(_folder_name)
+    def ffts(folder_name)
+      hash = label_hash
+      file_desc_list = hash_by_record(hash, folder_name)
       ls = []
       file_desc_list.each do |file, desc|
-        ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{base_url}/#{file}"], ['d', desc])
+        ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{@config.base_url}/#{file}"], ['d', desc])
       end
       # Rails.logger.debug "000000000: #{ls.inspect}"
       ls
@@ -75,7 +77,7 @@ module TindMarcSecondary
 
     def f_035(alma_id)
       # Rails.logger.info "Record99999: #{@prefix_035}#{alma_id}"
-      ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@prefix_035}#{alma_id}"])
+      ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@config.prefix_035}#{alma_id}"])
     end
 
     #  # label csv file column names sequence
