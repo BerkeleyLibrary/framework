@@ -41,5 +41,32 @@ module TindMarcSecondary
       writer.close
     end
 
+    private
+
+    def attachment_filename(key)
+      "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
+    end
+
+    def attachment_content(records)
+      attachment = ''
+      records.each do |rec|
+        rec.leader = nil
+        attachment << rec.to_s
+      end
+      attachment
+    end
+
+    def generate_attatchments
+      attachment_hash = {}
+      @records_hash.each do |key, records|
+        attachment_hash[attachment_filename(key)] = { mime_type: 'text/xml', content: attachment_content(records) } if records.present?
+      end
+      attachment_hash
+    end
+
+    def sent_email
+      tind_marc_batch_2_email(email, attachment_contents, subject, body)
+      RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, message).deliver_now
+    end
   end
 end
