@@ -1,3 +1,6 @@
+require_relative 'da_asset'
+require_relative 'tind_batch'
+
 module TindMarcSecondary
   class Config
     # @prefix_035 = ''
@@ -24,6 +27,16 @@ module TindMarcSecondary
       }
       setup_tind(args)
       setup_da(args)
+    end
+
+    def assets_map(tind_verify)
+      da_asset = DaAsset.new(self, tind_verify)
+      da_asset.map
+    end
+
+    def tind_records_hash(assets_hash)
+      tind_batch = TindBatch.new(self)
+      tind_batch.records_hash(assets_hash)
     end
 
     private
