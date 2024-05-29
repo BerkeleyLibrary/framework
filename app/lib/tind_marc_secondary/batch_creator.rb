@@ -11,14 +11,22 @@ module TindMarcSecondary
       @verify_tind = false
       @messages = []
       @email = email
-      @config = Config.new(args)
+      @args = args
     end
 
+    # def run
+    #   config = Config.new(@args)
+    #   da_assets = DaAsset.new(config, @verify_tind)
+    #   tind_batch = TindBatch.new(config)
+    #   @records_hash = tind_batch.records_hash(da_assets.map)
+    # end
+
     def run
-      da_assets = DaAsset.new(@config, @verify_tind)
-      tind_batch = TindBatch.new(@config)
-      @records_hash = tind_batch.records_hash(da_assets.map)
+      config = Config.new(@args)
+      asset_map = config.assets_map(@verify_tindy)
+      @records_hash = config.tind_records_hash(asset_map)
     end
+
 
     # method for get result to test
     def save_local(file)
