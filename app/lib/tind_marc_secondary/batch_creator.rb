@@ -1,72 +1,79 @@
-require 'berkeley_library/tind'
 require_relative 'da_asset'
-require_relative 'tind_batch'
-require_relative 'config'
+require_relative 'tind_marc'
 
 module TindMarcSecondary
   class BatchCreator
-    attr_reader :records_hash
+    # @prefix_035 = ''
+    # @base_url = ''
+    # @collection_subfields_tobe_updated = {}
+    # @collectional_fields = []
+    # @da_batch_path = ''
+    # @da_label_file_path = ''
 
-    def initialize(args, email)
-      @verify_tind = false
-      @messages = []
-      @email = email
-      @args = args
+    attr_accessor :prefix_035, :base_url, :collection_subfields_tobe_updated, :collection_fields, :da_batch_path, :da_label_file_path
+    
+    def initialize(args)
+      setup(args)
     end
 
-    def run
-      config = Config.new(@args)
-      asset_map = config.assets_map(@verify_tindy)
-      @records_hash = config.tind_records_hash(asset_map)
-      sent_email
-      save_local
+    def setup(args)
+      BerkeleyLibrary::Alma::Config.default!
+      BerkeleyLibrary::TIND::Mapping::AlmaBase.collection_parameter_hash = {
+        '336' => [args[:resource_type]],
+        '852' => [args[:library]],
+        '980' => [args[:f_980_a]],
+        '982' => [args[:f_982_a], args[:f_982_b]],
+        '991' => args[:restriction].empty? ? [] : [args[:restriction]]
+      }
+      setup_tind(args)
+      setup_da(args)
+    end
+
+    def assets_map(tind_verify)
+      da_asset = DaAsset.new(self, tind_verify)
+      da_asset.map
+    end
+
+    def tind_records_hash(assets_hash)
+      tind_marc = TindMarc.new(self)
+      tind_marc.records_hash(assets_hash)
     end
 
     private
 
-    def attachment_filename(key)
-      "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
+    def setup_tind(args)
+      incoming_path = args[:directory].delete_prefix('/')
+      @prefix_035 = incoming_path.include?('aerial/ucb') ? "(#{args[:f_982_a]})" : "(#{args[:f_980_a]}"
+      @base_url = "https://digitalassets.lib.berkeley.edu/#{incoming_path}/"
+      @collection_subfields_tobe_updated = args[:f_982_p].empty? ? {} : { '982' => { 'p' => args[:f_982_p] } }
+      @collection_fields = create_collection_fields(args)
     end
 
-    def attachment_content(records)
-      attachment = ''
-      records.each do |rec|
-        rec.leader = nil
-        attachment << rec.to_s
-      end
-      attachment
-    end
-
-    def generate_attatchments
-      attachment_hash = {}
-      @records_hash.each do |key, records|
-        if key != :messages && records.present?
-          attachment_hash[attachment_filename(key)] =
-            { mime_type: 'text/xml', content: attachment_content(records) }
-        end
-      end
-      attachment_hash
-    end
-
-    def sent_email
-      attatchments = generate_attatchments
-      subject = attatchments.empty? ? "No batch records created for #{@args[:directory]}" : "Tind batch load for #{@args[:f_982_a]}"
-      RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
-    end
-
-    # method for get result to test in local
-    def save_local
+    def setup_da(args)
+      incoming_path = args[:directory].delete_prefix('/')
+      @incoming_path = incoming_path
       da_dir = Rails.application.config.tind_data_root_dir
-      file = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
-      writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
+      da_batch_path = File.join(da_dir, incoming_path)
+      @da_batch_path = da_batch_path
+      @da_label_file_path = File.join(da_batch_path, 'labels.csv')
+    end
 
-      @records_hash[:insert].each do |record|
-        Rails.logger.info("66666666#{record.inspect}")
-        record.leader = nil
+    def create_collection_fields(args)
+      [
+        create_field(args, :f_540_a, '540', 'a'),
+        create_field(args, :initials, '902', 'n'),
+        create_field_902(args)
+      ].compact
+    end
 
-        writer.write(record)
-      end
-      writer.close
+    def create_field(args, sym, tag, sf)
+      return if args[sym].nil?
+
+      ::MARC::DataField.new(tag, ' ', ' ', [sf, args[sym]])
+    end
+
+    def create_field_902(args)
+      ::MARC::DataField.new('902', ' ', ' ', %w[d #{Date.today.to_s}], ['n', "syscript - #{args[:initials]}"])
     end
 
   end
