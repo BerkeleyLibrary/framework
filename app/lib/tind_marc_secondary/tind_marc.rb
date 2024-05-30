@@ -62,7 +62,7 @@ module TindMarcSecondary
       ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@config.prefix_035}#{mmsid}"])
     end
 
-    #  # label csv file column names sequence
+    # label csv file provides the sequence of image and hocr file sequese listed in TIND FFT field
     def label_hash
       label_hash = {}
       File.open(@config.da_label_file_path, 'r').each_line do |line|

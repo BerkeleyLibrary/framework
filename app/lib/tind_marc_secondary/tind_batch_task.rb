@@ -22,7 +22,7 @@ module TindMarcSecondary
 
     private
     
-    # using the same name pattern as existing batch marc tool
+    #ToDiscuss, or get feedback from user: currently using the same name pattern as existing batch marc tool
     def attachment_filename(key)
       "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
     end
