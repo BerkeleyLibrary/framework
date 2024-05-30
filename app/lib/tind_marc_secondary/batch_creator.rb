@@ -6,7 +6,7 @@ require_relative 'config'
 module TindMarcSecondary
   class BatchCreator
     attr_reader :records_hash
-    
+
     def initialize(args, email)
       @verify_tind = false
       @messages = []
@@ -14,31 +14,12 @@ module TindMarcSecondary
       @args = args
     end
 
-    # def run
-    #   config = Config.new(@args)
-    #   da_assets = DaAsset.new(config, @verify_tind)
-    #   tind_batch = TindBatch.new(config)
-    #   @records_hash = tind_batch.records_hash(da_assets.map)
-    # end
-
     def run
       config = Config.new(@args)
       asset_map = config.assets_map(@verify_tindy)
       @records_hash = config.tind_records_hash(asset_map)
-    end
-
-
-    # method for get result to test
-    def save_local(file)
-      writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
-
-      @records_hash[:insert].each do |record|
-        Rails.logger.info("66666666#{record.inspect}")
-        record.leader = nil
-
-        writer.write(record)
-      end
-      writer.close
+      sent_email
+      save_local
     end
 
     private
@@ -59,14 +40,34 @@ module TindMarcSecondary
     def generate_attatchments
       attachment_hash = {}
       @records_hash.each do |key, records|
-        attachment_hash[attachment_filename(key)] = { mime_type: 'text/xml', content: attachment_content(records) } if records.present?
+        if key != :messages && records.present?
+          attachment_hash[attachment_filename(key)] =
+            { mime_type: 'text/xml', content: attachment_content(records) }
+        end
       end
       attachment_hash
     end
 
     def sent_email
-      tind_marc_batch_2_email(email, attachment_contents, subject, body)
-      RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, message).deliver_now
+      attatchments = generate_attatchments
+      subject = attatchments.empty? ? "No batch records created for #{@args[:directory]}" : "Tind batch load for #{@args[:f_982_a]}"
+      RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
     end
+
+    # method for get result to test in local
+    def save_local
+      da_dir = Rails.application.config.tind_data_root_dir
+      file = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
+      writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
+
+      @records_hash[:insert].each do |record|
+        Rails.logger.info("66666666#{record.inspect}")
+        record.leader = nil
+
+        writer.write(record)
+      end
+      writer.close
+    end
+
   end
 end
