@@ -1,5 +1,5 @@
 require 'find'
-require_relative 'tind_item_collection'
+# require_relative 'tind_item_collection'
 
 module TindMarcSecondary
 

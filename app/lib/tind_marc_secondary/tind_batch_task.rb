@@ -16,7 +16,7 @@ module TindMarcSecondary
       batch_creator = BatchCreator.new(@args)
       asset_map = batch_creator.assets_map(@verify_tindy)
       @records_hash = batch_creator.tind_records_hash(asset_map)
-      sent_email
+      # sent_email
       save_local
     end
 
