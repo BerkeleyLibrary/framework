@@ -3,13 +3,6 @@ require_relative 'tind_marc'
 
 module TindMarcSecondary
   class BatchCreator
-    # @prefix_035 = ''
-    # @base_url = ''
-    # @collection_subfields_tobe_updated = {}
-    # @collectional_fields = []
-    # @da_batch_path = ''
-    # @da_label_file_path = ''
-
     attr_accessor :prefix_035, :base_url, :collection_subfields_tobe_updated, :collection_fields, :da_batch_path, :da_label_file_path
     
     def initialize(args)

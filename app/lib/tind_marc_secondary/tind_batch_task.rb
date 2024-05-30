@@ -1,6 +1,4 @@
 require 'berkeley_library/tind'
-# require_relative 'da_asset'
-# require_relative 'tind_batch'
 require_relative 'batch_creator'
 
 module TindMarcSecondary
@@ -23,7 +21,8 @@ module TindMarcSecondary
     end
 
     private
-
+    
+    # using the same name pattern as existing batch marc tool
     def attachment_filename(key)
       "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
     end
