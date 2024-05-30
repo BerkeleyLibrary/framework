@@ -3,8 +3,8 @@ require_relative 'tind_marc'
 
 module TindMarcSecondary
   class BatchCreator
-    attr_accessor :prefix_035, :base_url, :collection_subfields_tobe_updated, :collection_fields, :da_batch_path, :da_label_file_path
-    
+    attr_accessor :config
+
     def initialize(args)
       setup(args)
     end
@@ -18,37 +18,33 @@ module TindMarcSecondary
         '982' => [args[:f_982_a], args[:f_982_b]],
         '991' => args[:restriction].empty? ? [] : [args[:restriction]]
       }
-      setup_tind(args)
-      setup_da(args)
+      create_configs(args)
+      # @config.display # checking configurations
     end
 
     def assets_map(tind_verify)
-      da_asset = DaAsset.new(self, tind_verify)
+      da_asset = DaAsset.new(@config, tind_verify)
       da_asset.map
     end
 
     def tind_records_hash(assets_hash)
-      tind_marc = TindMarc.new(self)
+      tind_marc = TindMarc.new(@config)
       tind_marc.records_hash(assets_hash)
     end
 
     private
 
-    def setup_tind(args)
+    def create_configs(args)
       incoming_path = args[:directory].delete_prefix('/')
-      @prefix_035 = incoming_path.include?('aerial/ucb') ? "(#{args[:f_982_a]})" : "(#{args[:f_980_a]}"
-      @base_url = "https://digitalassets.lib.berkeley.edu/#{incoming_path}/"
-      @collection_subfields_tobe_updated = args[:f_982_p].empty? ? {} : { '982' => { 'p' => args[:f_982_p] } }
-      @collection_fields = create_collection_fields(args)
-    end
-
-    def setup_da(args)
-      incoming_path = args[:directory].delete_prefix('/')
-      @incoming_path = incoming_path
       da_dir = Rails.application.config.tind_data_root_dir
       da_batch_path = File.join(da_dir, incoming_path)
-      @da_batch_path = da_batch_path
-      @da_label_file_path = File.join(da_batch_path, 'labels.csv')
+      @config = Config.new(incoming_path,
+                           da_batch_path,
+                           da_label_file_path(da_batch_path),
+                           base_url(incoming_path),
+                           prefix_035(incoming_path, args),
+                           collection_subfields_tobe_updated(args),
+                           create_collection_fields(args))
     end
 
     def create_collection_fields(args)
@@ -69,5 +65,21 @@ module TindMarcSecondary
       ::MARC::DataField.new('902', ' ', ' ', %w[d #{Date.today.to_s}], ['n', "syscript - #{args[:initials]}"])
     end
 
+    def da_label_file_path(da_batch_path)
+      File.join(da_batch_path, 'labels.csv')
+    end
+
+    def base_url(incoming_path)
+      "https://digitalassets.lib.berkeley.edu/#{incoming_path}/"
+    end
+
+    # TODO: to include other collection which use f_982_a, or this could be something user inputs from interface
+    def prefix_035(incoming_path, args)
+      incoming_path.include?('aerial/ucb') ? "(#{args[:f_982_a]})" : "(#{args[:f_980_a]}"
+    end
+
+    def collection_subfields_tobe_updated(args)
+      args[:f_982_p].empty? ? {} : { '982' => { 'p' => args[:f_982_p] } }
+    end
   end
 end
