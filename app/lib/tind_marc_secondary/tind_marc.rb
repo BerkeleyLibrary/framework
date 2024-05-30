@@ -2,7 +2,7 @@ require 'berkeley_library/tind'
 
 module TindMarcSecondary
 
-  class TindBatch
+  class TindMarc
     def initialize(config)
       @messages = []
       @config = config
