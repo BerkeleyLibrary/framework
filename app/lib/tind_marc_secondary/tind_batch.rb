@@ -12,7 +12,7 @@ module TindMarcSecondary
       insert = create_records(assets_map[:insert]) { |record| insert_record(record) }
       append = assets_map.key?(:append) ? create_records(assets_map[:append]) { |record| append_record(record) } : []
 
-      { insert:, append: }
+      { insert:, append:, messages: @messages }
     end
 
     private
@@ -28,8 +28,8 @@ module TindMarcSecondary
       update_field(rec)
       rec
     rescue StandardError => e
-      Rails.logger.debug "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
-      @messages << "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
+      Rails.logger.debug "Couldn't create insert marc record for #{asset[:mmsid]}. #{e}"
+      @messages << "Couldn't create insert marc record for #{asset[:mmsid]}. #{e}"
     end
 
     def append_record(asset)
@@ -38,8 +38,8 @@ module TindMarcSecondary
       fields.each { |f| record.append(f) }
       record
     rescue StandardError => e
-      Rails.logger.debug "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
-      @messages << "Couldn't create marc record for #{asset[:mmsid]}. #{e}"
+      Rails.logger.debug "Couldn't create append marc record for #{asset[:mmsid]}. #{e}"
+      @messages << "Couldn't create append marc record for #{asset[:mmsid]}. #{e}"
     end
 
     def update_field(rec)

@@ -8,18 +8,15 @@ class TindMarcBatchTestController < ApplicationController
 
   def result; end
 
-  # def create
-  #   TindMarcBatchSecondJob.perform_later(TindMarcBatch.new(params).permitted_params, current_user.email)
-  #   render :result
-  # end
   def create
-    creater = TindMarcSecondary::BatchCreator.new(TindMarcBatch.new(params).permitted_params, current_user.email)
-    creater.run
-    da_dir = Rails.application.config.tind_data_root_dir
-    filename = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
-    creater.save_local(filename)
+    TindMarcBatchSecondJob.perform_later(TindMarcBatch.new(params).permitted_params, current_user.email)
     render :result
   end
+  # def create
+  #   creater = TindMarcSecondary::BatchCreator.new(TindMarcBatch.new(params).permitted_params, current_user.email)
+  #   creater.run
+  #   render :result
+  # end
 
   private
 
