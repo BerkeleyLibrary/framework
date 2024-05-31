@@ -8,7 +8,7 @@ module TindMarcSecondary
       @da_batch_path = da_batch_path
     end
 
-    def map
+    def assets_hash
       assets = batch_assets
       @verify_tind ? assets_verified(assets) : { insert: assets }
     rescue StandardError => e
@@ -17,6 +17,7 @@ module TindMarcSecondary
 
     private
 
+    # mmsid in a folder name may be different from mmsid in a csv file: preparing for external csv files
     def batch_assets
       folder_names = Dir.children(@da_batch_path).select { |f| File.directory?(File.join(@da_batch_path, f)) }
       folder_names.map do |folder_name|
