@@ -73,7 +73,7 @@ module TindMarcSecondary
       "https://digitalassets.lib.berkeley.edu/#{incoming_path}/"
     end
 
-    # TODO: to include other collection which use f_982_a, or this could be something user inputs from interface
+    # TODO: to figure out other collections which use f_982_a, or this could be something a user inputs from interface
     def prefix_035(incoming_path, args)
       incoming_path.include?('aerial/ucb') ? "(#{args[:f_982_a]})" : "(#{args[:f_980_a]}"
     end

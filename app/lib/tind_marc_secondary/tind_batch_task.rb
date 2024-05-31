@@ -16,8 +16,8 @@ module TindMarcSecondary
       batch_creator = BatchCreator.new(@args)
       asset_map = batch_creator.assets_map(@verify_tindy)
       @records_hash = batch_creator.tind_records_hash(asset_map)
-      # sent_email
-      save_local
+      save_to_local if Rails.env.development?
+      sent_email
     end
 
     private
@@ -54,7 +54,7 @@ module TindMarcSecondary
     end
 
     # method for get result to test in local
-    def save_local
+    def save_to_local
       da_dir = Rails.application.config.tind_data_root_dir
       file = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
       writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
