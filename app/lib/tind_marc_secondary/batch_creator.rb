@@ -7,7 +7,21 @@ module TindMarcSecondary
 
     def initialize(args)
       setup(args)
+      create_configs(args)
+      # @config.display # checking configurations
     end
+
+    def assets_map(tind_verify)
+      da_asset = DaAsset.new(@config.da_batch_path, tind_verify)
+      da_asset.map
+    end
+
+    def tind_records_hash(assets_hash)
+      tind_marc = TindMarc.new(@config)
+      tind_marc.records_hash(assets_hash)
+    end
+
+    private
 
     def setup(args)
       BerkeleyLibrary::Alma::Config.default!
@@ -18,21 +32,7 @@ module TindMarcSecondary
         '982' => [args[:f_982_a], args[:f_982_b]],
         '991' => args[:restriction].empty? ? [] : [args[:restriction]]
       }
-      create_configs(args)
-      # @config.display # checking configurations
     end
-
-    def assets_map(tind_verify)
-      da_asset = DaAsset.new(@config, tind_verify)
-      da_asset.map
-    end
-
-    def tind_records_hash(assets_hash)
-      tind_marc = TindMarc.new(@config)
-      tind_marc.records_hash(assets_hash)
-    end
-
-    private
 
     def create_configs(args)
       incoming_path = args[:directory].delete_prefix('/')
