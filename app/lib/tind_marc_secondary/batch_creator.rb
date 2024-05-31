@@ -11,9 +11,9 @@ module TindMarcSecondary
       # @config.display # checking configurations
     end
 
-    def assets_map(tind_verify)
+    def da_assets_hash(tind_verify)
       da_asset = DaAsset.new(@config.da_batch_path, tind_verify)
-      da_asset.map
+      da_asset.assets_hash
     end
 
     def tind_records_hash(assets_hash)

@@ -8,17 +8,17 @@ class TindMarcBatchTestController < ApplicationController
 
   def result; end
 
-  def create
-    TindMarcBatchSecondJob.perform_later(TindMarcBatch.new(params).permitted_params, current_user.email)
-    render :result
-  end
-
-  ## testing locally
   # def create
-  #   creater = TindMarcSecondary::TindBatchTask.new(TindMarcBatch.new(params).permitted_params, current_user.email)
-  #   creater.run
+  #   TindMarcBatchSecondJob.perform_later(TindMarcBatch.new(params).permitted_params, current_user.email)
   #   render :result
   # end
+
+  # testing locally
+  def create
+    creater = TindMarcSecondary::TindBatchTask.new(TindMarcBatch.new(params).permitted_params, current_user.email)
+    creater.run
+    render :result
+  end
 
   private
 

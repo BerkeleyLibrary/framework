@@ -8,9 +8,9 @@ module TindMarcSecondary
       @config = config
     end
 
-    def records_hash(assets_map)
-      insert = create_records(assets_map[:insert]) { |record| insert_record(record) }
-      append = assets_map.key?(:append) ? create_records(assets_map[:append]) { |record| append_record(record) } : []
+    def records_hash(assets_hash)
+      insert = create_records(assets_hash[:insert]) { |asset| insert_record(asset) }
+      append = assets_hash.key?(:append) ? create_records(assets_hash[:append]) { |asset| append_record(asset) } : []
 
       { insert:, append:, messages: @messages }
     end
@@ -24,9 +24,9 @@ module TindMarcSecondary
     def insert_record(asset)
       tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
       additional_fields = (@config.collection_fields + ffts(asset[:folder_name])).append(f_035(asset[:mmsid]))
-      rec = tind_marc.record(asset[:mmsid], additional_fields)
-      update_field(rec)
-      rec
+      record = tind_marc.record(asset[:mmsid], additional_fields)
+      update_field(record)
+      record
     rescue StandardError => e
       Rails.logger.debug "Couldn't create insert marc record for #{asset[:mmsid]}. #{e}"
       @messages << "Couldn't create insert marc record for #{asset[:mmsid]}. #{e}"
@@ -44,7 +44,6 @@ module TindMarcSecondary
 
     def update_field(rec)
       hash = @config.collection_subfields_tobe_updated
-      Rails.logger.info "UpdatingWWWW1: #{hash.inspect}"
       BerkeleyLibrary::TIND::Mapping::TindRecordUtil.update_record(rec, hash) unless hash.empty?
     end
 
@@ -62,7 +61,9 @@ module TindMarcSecondary
       ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@config.prefix_035}#{mmsid}"])
     end
 
-    # label csv file provides the sequence of image and hocr file sequese listed in TIND FFT field
+    # label csv file provides the sequence of image and hocr file which listed in a TIND FFT field
+    # TODO: format of the csv file to be finalized
+    # A csv file with header, first column is label description, sencond column is relative path of a file to collection batch path
     def label_hash
       label_hash = {}
       File.open(@config.da_label_file_path, 'r').each_line do |line|
@@ -72,14 +73,15 @@ module TindMarcSecondary
       label_hash.to_a.drop(1).to_h
     end
 
+    # TODICUSS: handle data errror in a different way?
     def hash_by_record(hash, folder_name)
-      filenames = file_path_names(folder_name)
-      filenames_from_labels_file = hash.keys
-      filenames_without_labels = filenames - filenames_from_labels_file
-      raise " No digital files under #{da_batch_path}" if filenames.empty?
-      raise "some files have no labels in labels.csv file: #{filenames_without_labels.join(';')}" unless filenames_without_labels.empty?
+      da_filenames = file_path_names(folder_name)
+      label_filenames = hash.keys
+      da_filenames_without_labels = da_filenames - label_filenames
+      raise " No digital files under #{@config.da_batch_path}" if da_filenames.empty?
+      raise "some files have no labels in labels.csv file: #{da_filenames_without_labels.join(';')}" unless da_filenames_without_labels.empty?
 
-      hash.select { |k, _v| filenames.include?(k) }
+      hash.select { |k, _v| da_filenames.include?(k) }
     end
 
     def file_path_names(folder_name)
