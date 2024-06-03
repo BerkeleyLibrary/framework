@@ -1,6 +1,6 @@
 module TindMarcSecondary
-  class Verification
-    attr_reader :tind_field_035_value
+  class TindVerfication
+    attr_reader :insert_items, :append_items
     def initialize(assets)
         @collection_name = collection_name
         @ls = ls

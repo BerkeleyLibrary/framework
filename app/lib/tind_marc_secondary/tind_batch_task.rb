@@ -6,7 +6,6 @@ module TindMarcSecondary
     attr_reader :records_hash
 
     def initialize(args, email)
-      @verify_tind = false
       @messages = []
       @email = email
       @args = args
@@ -14,7 +13,7 @@ module TindMarcSecondary
 
     def run
       batch_creator = BatchCreator.new(@args)
-      da_assets_hash = batch_creator.da_assets_hash(@verify_tindy)
+      da_assets_hash = batch_creator.da_assets_hash
       @records_hash = batch_creator.tind_records_hash(da_assets_hash)
       save_to_local if Rails.env.development?
       sent_email

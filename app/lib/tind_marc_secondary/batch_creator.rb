@@ -8,11 +8,11 @@ module TindMarcSecondary
     def initialize(args)
       setup(args)
       create_configs(args)
-      # @config.display # checking configurations
+      Rails.logger.info(@config.display) # checking configurations
     end
 
-    def da_assets_hash(tind_verify)
-      da_asset = DaAsset.new(@config.da_batch_path, tind_verify)
+    def da_assets_hash
+      da_asset = DaAsset.new(@config.da_batch_path, @config.verify_tind)
       da_asset.assets_hash
     end
 
@@ -38,13 +38,13 @@ module TindMarcSecondary
       incoming_path = args[:directory].delete_prefix('/')
       da_dir = Rails.application.config.tind_data_root_dir
       da_batch_path = File.join(da_dir, incoming_path)
-      @config = Config.new(incoming_path,
-                           da_batch_path,
+      @config = Config.new(incoming_path, da_batch_path,
                            da_label_file_path(da_batch_path),
                            base_url(incoming_path),
                            prefix_035(incoming_path, args),
                            collection_subfields_tobe_updated(args),
-                           create_collection_fields(args))
+                           create_collection_fields(args),
+                           args[:verify_tind])
     end
 
     def create_collection_fields(args)
