@@ -203,6 +203,10 @@ en:
     all_checked:
       page_title: Agreement submitted
 
+  security_incident_report_forms:
+    new:
+      page_title: Safety and Security Incident/Accident/Complaint Report Form
+
   affiliate_borrow_request_forms:
     new:
       page_title: Berkeley Affiliate Staff Access Request

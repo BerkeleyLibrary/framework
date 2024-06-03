@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' /> 
+      <style>
+        .content {
+          max-width: fit-content;
+          margin-left: 30px;
+        }
+      </style>
+  </head>
+
+  <body>
+    <div class="content">
+      <h1>Incident Report</h1>
+      <h2>Key Details</h2>
+      <div>
+        <ul>
+          <li>Location: <%= @security_incident.incident_location %></li>
+          <li>Date: <%= @security_incident.incident_date %></li>
+          <li>Time: <%= Time.parse(@security_incident.incident_time.to_s).strftime("%l:%M %P") %></li>
+          <li>Reporter Name: <%= @security_incident.reporter_name %></li>
+          <li>Email: <%= @security_incident.email %></li>
+          <li>Unit: <%= @security_incident.unit %></li>
+          <li>Phone: <%= @security_incident.phone %></li>
+        </ul>
+      </div>
+
+      <h2>Incident</h2>
+      <h3>Description</h3>
+      <%= @security_incident.incident_description %>
+      <% if section_has_value_checked?(@security_incident, 'criminal') %>
+        <h4>Type of criminal behavior</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'criminal', 'html') %>
+          </ul>
+        </div>
+      <% end %> 
+
+      <% if section_has_value_checked?(@security_incident, 'disruptive') %>
+        <h4>Type of disruptive behavior</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'disruptive', 'html') %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if section_has_value_checked?(@security_incident, 'facility') %>
+        <h4>Type of facility incident</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'facility', 'html') %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if section_has_value_checked?(@security_incident, 'injury') %>
+        <h4>Affiliation of accidentally injured person(s)</h4>
+        <div>
+          <ul>
+            <%= sanitize display_type_of_incident(@security_incident, 'injury', 'html') %>
+          </ul>
+        </div>
+        <% unless @security_incident.injury_description.empty? %>
+          <h3>Description of injuries and assistance rendered (include name of hospital(s))</h3>
+          <div>
+            <%= @security_incident.injury_description %></li>
+          </div>
+        <% end %>
+      <% end %>
+      
+      <% unless @security_incident.subject_affiliation.nil? %>
+        <h3>Subject description</h3>
+        <div>
+          <h4>Subject 1</h4>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation', 'html') %>
+        </div>
+      <% end %>
+
+      <% unless @security_incident.subject_affiliation_1.nil? %>
+        <h4>Subject 2</h4>
+        <div>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_1', 'html') %>
+        </div>
+      <% end %>
+
+      <% unless @security_incident.subject_affiliation_2.nil? %>
+        <h3>Subject 3</h3>
+        <div>
+          <%=  sanitize display_subject_affiliation(@security_incident, 'subject_affiliation_2', 'html') %>
+        </div>
+      <% end %>
+
+      <% unless @security_incident.property_description.nil? %>
+        <% if @security_incident.property_description.to_s.match? (/\w/) %>
+          <h3>Property description</h3>
+          <div><%= @security_incident.property_description %></div>
+        <% end %>
+      <% end %>
+
+      <% unless @security_incident.police_notified.nil? %>
+        <div><h3>Police notified: <%= @security_incident.police_notified %></h3></div>
+        <% if @security_incident.police_notified == 'yes' %>
+          <% unless @security_incident.police_report_number.nil? %>
+            <div>Police report number: <%= @security_incident.police_report_number %></div>
+          <% end %>
+          <% unless @security_incident.officer_name_badge.nil? %>
+            <div>Officer name/badge number: <%= @security_incident.officer_name_badge %></div>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if section_has_value_checked?(@security_incident, 'fire_department') %> 
+        <h3>Fire department called: yes</h3> 
+      <% end %> 
+
+      <% unless @security_incident.sup_email.nil? %>
+        <% if @security_incident.sup_email.to_s.match? (/\w/) %>
+          <h3>Supervisor email: <%= @security_incident.sup_email %></h3>
+        <% end %>
+      <% end %>
+    </div>
+  </body>
+</html> 

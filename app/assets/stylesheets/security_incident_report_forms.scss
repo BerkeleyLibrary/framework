@@ -1,0 +1,85 @@
+input[type="radio"]{
+  margin: 0 0 0 20px;
+}
+
+table.security-incident-report {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  table.options {
+    margin-top: 0;
+  }
+}
+
+legend {
+  font-size: 26px;
+}
+
+table.security-incident-report-list {
+  width: 100%;
+  font-size: smaller;
+
+  th {
+    text-align: left;
+  }
+
+  th, td {
+    padding: 0.5rem;
+    // border-bottom: 1px solid #888888;
+    border-bottom: none; 
+    white-space: nowrap;
+  }
+
+  tbody {
+    tr:nth-child(odd) {
+      background-color: #EEEAE3;
+    }
+
+    tr:last-of-type {
+      th, td {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+ // background-color: DodgerBlue;
+}
+
+.flex-container > div {
+//  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+ // font-size: 30px;
+}
+
+.police{
+  margin: 0 0 0 -20px;
+}
+
+.visually-hidden { 
+    position: absolute !important;
+    height: 1px; 
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; /* added line */
+}
+
+
+div.hidden { display: none; }
+
+section.security-incident-report{
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #888888;
+  margin-bottom: 1rem;
+}   

@@ -1,0 +1,522 @@
+<div class="col"><h1>
+Safety and Security Incident/Accident/Complaint Report Form
+</h1></div>
+
+
+For an immediate response please contact the appropriate parties, in addition to filling out this form.</br>
+Please see:</br>
+<ul>
+<li><a href="https://www.lib.berkeley.edu/sites/default/files/staff/las/d-m_safety_matrix031716.pdf" target="_blank">After 5PM and Weekend Notification Matrix Doe-Moffitt version (PDF)</a></li>
+<li><a href="https://www.lib.berkeley.edu/sites/default/files/staff/las/SafetySecurityMatrixBRANCH_07-2021revision.xlsx" target="_blank">After 5PM and Weekend Notification Matrix Branch version (XLS)</a></li></ul>
+
+
+<p style="color: #ee0000">* Required fields are marked with an asterisk</p>
+<!-- %= form_with(url: '', local: true, target: '_blank') do |f| %--> 
+<%= form_for(@form, class: 'needs-validation') do |f| %>
+  <div class="form-label form-group required">
+    <%= f.label :incident_location, 'Location of incident/complaint', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:incident_location, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+ 
+  <div class="form-label form-group required">
+    <%= f.label :incident_date, 'Date', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.date_field :incident_date, :value => '', required: true, class: 'form-control' %> 
+  </div>
+  
+  <div class="form-label form-group required">
+    <%= f.label :incident_time, 'Time', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.time_field(:incident_time, :value => '', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>  
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :reporter_name, 'Name of person filing report', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:reporter_name, value: @user_name, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :email, 'Email', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:email, value: @user_email, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :unit, 'Library/Unit', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:unit, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :phone, 'Phone number', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:phone, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :incident_description, 'Description of incident/accident/complaint', class: 'control-label' %>
+    (please provide as much information as possible)
+  </div>
+  <div>
+    Please do not include any information that could identify the victim(s)
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_area(:incident_description, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+  
+  <hr/>
+
+  <h2>Select the type of incident</h2>
+
+  </p> 
+
+  <div class="form-group"> 
+    <legend>Type of criminal behavior</legend>
+    <div class="form-check">
+      <%= f.check_box :theft_personal, {required: false}, "checked", "unchecked" %>
+      <%= f.label :theft_personal, "Theft-personal items" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :theft_library, {required: false}, "checked", "unchecked" %>
+      <%= f.label :theft_library, "Theft-library property" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :vandalism, {required: false}, "checked", "unchecked" %>
+      <%= f.label :vandalism, "Vandalism-damaged property" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :assault, {required: false}, "checked", "unchecked" %>
+      <%= f.label :assault, "Assault" %>
+      </div>
+    <div class="form-check">
+      <%= f.check_box :criminal_other, {required: false}, "checked", "unchecked" %>
+      <%= f.label :criminal_other, "Other" %>
+    </div>
+  </div>
+
+  </p>
+
+  <div class="form-group"> 
+    <legend>Type of disruptive behavior</legend>
+    <div class="form-check">
+      <%= f.check_box :rules_violation, {required: false}, "checked", "unchecked" %>
+      <%= f.label :rules_violation, "Rules violation" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :irate_abusive, {required: false}, "checked", "unchecked" %>
+      <%= f.label :irate_abusive, "Irate, abusive, disorderly conduct" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :physical_altercation, {required: false}, "checked", "unchecked" %>
+      <%= f.label :physical_altercation, "Physical altercation" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :disruptive_other, {required: false}, "checked", "unchecked" %>
+      <%= f.label :disruptive_other, "Other" %>
+    </div>
+  </div>
+
+  </p>
+
+  <div class="form-group"> 
+    <legend>Type of facility incident</legend>
+    <div class="form-check">
+      <%= f.check_box :power_outage, {required: false}, "checked", "unchecked" %>
+      <%= f.label :power_outage, "Power outage" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :flooding, {required: false}, "checked", "unchecked" %>
+      <%= f.label :flooding, "Flooding" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :elevator, {required: false}, "checked", "unchecked" %>
+      <%= f.label :elevator, "Elevator" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :fire, {required: false}, "checked", "unchecked" %>
+      <%= f.label :fire, "Fire" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :facility_other, {required: false}, "checked", "unchecked" %>
+      <%= f.label :facility_other, "Other" %>
+    </div>
+  </div>
+  
+  </p>
+  
+  <div class="form-group"> 
+    <legend>Affiliation of accidentally injured person(s)</legend>
+    <div class="form-check">
+      <%= f.check_box(:library_employee, {required: false},"checked", "unchecked") %>
+      <%= f.label :library_employee, "Library employee" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :student_patron, {required: false}, "checked", "unchecked" %>
+      <%= f.label :student_patron, "Student (patron)" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :campus_employee, {required: false}, "checked", "unchecked" %>
+      <%= f.label :campus_employee, "Campus employee" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :visitor, {required: false}, "checked", "unchecked" %>
+      <%= f.label :visitor, "Visitor" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :injury_other, {required: false}, "checked", "unchecked" %>
+      <%= f.label :injury_other, "Other" %>
+    </div>
+  </div>
+
+  </p>
+
+  <div class="form-label form-group">
+    <%= f.label :injury_description, 'Description of injuries and assistance rendered (include name of hospital(s))', class: 'control-label' %>
+  </div>
+  <div class="form-input mb-4">
+    <%= f.text_area(:injury_description, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group">
+    <%= f.label :property_description, 'Description of property/equipment (include brand, model, color, year, license or serial #)
+', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_area(:property_description, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+  </div>
+  <hr/>
+
+  <h2>Subject description</h2>
+
+  </p>
+
+  <div id="subject_description">
+    <div>
+      <fieldset>
+        <legend>Subject affiliation</legend>
+        <div>
+          <%= f.radio_button(:subject_affiliation, "staff") %>
+          <%= f.label(:subject_affiliation_staff, :Staff) %>
+          <%= f.radio_button(:subject_affiliation, "student") %>
+          <%= f.label(:subject_affiliation_student, :Student) %>
+          <%= f.radio_button(:subject_affiliation, "unknown") %>
+          <%= f.label(:subject_affiliation_unknown, :Unknown) %>
+          <%= f.radio_button(:subject_affiliation, "other") %>
+          <%= f.label(:subject_affiliation_other, :Other) %>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="flex-container">
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :race, 'Race', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:race, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :sex, 'Sex', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:sex, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :build, 'Build', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:build, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :height, 'Height', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:height, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :weight, 'Weight', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:weight, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :hair, 'Hair', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:hair, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :eyes, 'Eyes', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:eyes, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div style="flex-grow: 20">
+        <div class="form-label form-group">
+          <%= f.label :clothing, 'Clothing', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:clothing, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <hr/>
+
+  <div id="subject_description_1">
+    <div>
+      <fieldset>
+        <legend>Subject affiliation</legend>
+        <div>
+          <%= f.radio_button(:subject_affiliation_1, :staff) %>
+          <%= f.label(:subject_affiliation_1_staff, :Staff) %>
+          <%= f.radio_button(:subject_affiliation_1, 'student') %>
+          <%= f.label(:subject_affiliation_1_student, :Student) %>
+          <%= f.radio_button(:subject_affiliation_1, 'unknown') %>
+          <%= f.label(:subject_affiliation_1_unknown, :Unknown) %>
+          <%= f.radio_button(:subject_affiliation_1, 'other') %>
+          <%= f.label(:subject_affiliation_1_other, :Other) %>
+        </div>
+      </fieldset>
+    </div>
+    
+    <div class="flex-container">
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :race_1, 'Race', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:race_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :sex_1, 'Sex', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:sex_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :build_1, 'Build', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:build_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :height_1, 'Height', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:height_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :weight_1, 'Weight', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:weight_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :hair_1, 'Hair', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:hair_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :eyes_1, 'Eyes', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:eyes_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div style="flex-grow: 20">
+        <div class="form-label form-group">
+          <%= f.label :clothing_1, 'Clothing', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:clothing_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr/>
+
+  <div id="subject_description_2">
+    <div>
+      <fieldset>
+        <legend>Subject affiliation</legend>
+        <div>
+          <%= f.radio_button(:subject_affiliation_2, :staff) %>
+          <%= f.label(:subject_affiliation_2_staff, :Staff) %>
+          <%= f.radio_button(:subject_affiliation_2, :student) %>
+          <%= f.label(:subject_affiliation_2_student, :Student) %>
+          <%= f.radio_button(:subject_affiliation_2, :unknown) %>
+          <%= f.label(:subject_affiliation_2_unknown, :Unknown) %>
+          <%= f.radio_button(:subject_affiliation_2, :other) %>
+          <%= f.label(:subject_affiliation_2_other, :Other) %>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="flex-container">
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :race_2, 'Race', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:race_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :sex_2, 'Sex', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:sex_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :build_2, 'Build', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:build_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :height_2, 'Height', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:height_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :weight_2, 'Weight', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:weight_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :hair_2, 'Hair', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:hair_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div>
+        <div class="form-label form-group">
+          <%= f.label :eyes_2, 'Eyes', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:eyes_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+      <div style="flex-grow: 20">
+        <div class="form-label form-group">
+          <%= f.label :clothing_2, 'Clothing', class: 'control-label' %>
+        </div>
+        <div class="form-input required mb-4">
+          <%= f.text_field(:clothing_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+  
+  <div id="police_notified">
+   <fieldset>
+    <legend>Police department notified</legend>
+    <div class="form-check police">
+      <%= f.radio_button(:police_notified, 'yes', onClick: "showBlock('police_info')") %>
+      <%= f.label('police_notified_yes', :Yes) %>
+    </div>
+    <div class="form-check police">
+      <%= f.radio_button(:police_notified, 'refused', onClick: "hideBlock('police_info')") %>
+      <%= f.label('police_notified_refused', 'Injured person refused to call police') %>
+    </div>
+    <div class="form-check police">
+      <%= f.radio_button(:police_notified, 'no', onClick: "hideBlock('police_info')") %>
+      <%= f.label('police_notified_no', :No ) %>
+    </div>
+   </fieldset>
+  </div> 
+
+  <div id="police_info" style="display:none;">
+   <fieldset>
+    <legend class="visually-hidden">Police notification details</legend>
+    <div class="form-label form-group">
+      <%= f.label :police_report_number, 'Police report number', class: 'control-label' %>
+    </div>
+    <div class="form-input mb-4">
+      <%= f.text_field(:police_report_number, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+    </div>
+    <div class="form-label form-group">
+      <%= f.label :officer_name_badge, "Officer's name/badge number", class: 'control-label' %>
+    </div>
+    <div class="form-input mb-4">
+      <%= f.text_field(:officer_name_badge, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+    </div>
+   </fieldset>
+  </div>
+
+  </p>
+
+  <div class="form-group"> 
+    <legend>Fire department called</legend>
+    <div class="form-check">
+      <%= f.check_box :fire_department, {required: false}, "checked", "unchecked" %>
+      <%= f.label :fire_department, "Yes" %>
+    </div>
+  <hr/>
+
+  <div class="form-label form-group required">
+    <%= f.label :sup_email, 'Send a copy of this report to your supervisor', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:sup_email, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true, placeholder: 'Email address of your supervisor') %>
+  </div>
+
+  <br/>
+  <div class="form-input">
+    <%= f.submit(class: 'btn btn-primary', value: 'Submit Report') %>
+    <!-- %= f.submit("Reset", type: :reset, class: "btn btn-primary", onclick: "formReset();") % --> 
+    <%= f.submit("Reset", type: :reset, class: "btn btn-primary", onclick: "hideBlock('police_info')") %> 
+  </div>
+
+<% end %>

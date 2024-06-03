@@ -14,4 +14,8 @@ class ApplicationMailer < ActionMailer::Base
   def privdesk_to
     Rails.application.config.altmedia['mail_privdesk_email']
   end
+
+  def security_to
+    Rails.application.config.altmedia['mail_security_email']
+  end
 end

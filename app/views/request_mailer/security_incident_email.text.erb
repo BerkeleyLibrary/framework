@@ -1,0 +1,78 @@
+Location: <%= @security_incident.incident_location %>
+Date: <%= @security_incident.incident_date %>
+Time: <%= Time.parse(@security_incident.incident_time.to_s).strftime("%l:%M %P") %>
+Reporter Name: <%= @security_incident.reporter_name %>
+Email: <%= @security_incident.email %>
+Unit: <%= @security_incident.unit %>
+Phone: <%= @security_incident.phone %>
+
+Description
+<%= @security_incident.incident_description %>
+
+<% if section_has_value_checked?(@security_incident, 'criminal') %>
+Type of criminal behavior:
+<%= sanitize display_type_of_incident(@security_incident, 'criminal', 'text') %>
+<% end %> 
+	
+<% if section_has_value_checked?(@security_incident, 'disruptive') %>
+Type of disruptive behavior:
+<%= sanitize display_type_of_incident(@security_incident, 'disruptive', 'text') %>
+<% end %>
+
+<% if section_has_value_checked?(@security_incident, 'facility') %>
+Type of facility incident:
+<%= sanitize display_type_of_incident(@security_incident, 'facility', 'text') %>
+<% end %>
+
+<% if section_has_value_checked?(@security_incident, 'injury') %>
+Affiliation of accidentally injured person(s):
+<%= sanitize display_type_of_incident(@security_incident, 'injury', 'text') %>
+<% unless @security_incident.injury_description.empty? %>        
+Description of injuries and assistance rendered (include name of hospital(s))
+<%= @security_incident.injury_description %>
+<% end %>
+<% end %>
+
+<% unless @security_incident.subject_affiliation.nil? %>
+Subject description
+
+Subject 1:
+
+<%= display_subject_affiliation(@security_incident, 'subject_affiliation', 'text') %>
+<% end %>
+
+<% unless @security_incident.subject_affiliation_1.nil? %>
+Subject 2:
+
+<%= display_subject_affiliation(@security_incident, 'subject_affiliation_1', 'text') %>
+<% end %>
+
+<% unless @security_incident.subject_affiliation_2.nil? %>
+Subject 3:
+
+<%= display_subject_affiliation(@security_incident, 'subject_affiliation_2', 'text') %>
+<% end %>
+
+<% unless @security_incident.property_description.nil? %>
+Property Description: <%= @security_incident.property_description %>
+<% end %>
+
+<% unless @security_incident.police_notified.nil? %>
+Police notified: <%= @security_incident.police_notified %>
+<% if @security_incident.police_notified == 'yes' %>
+<% if @security_incident.police_report_number %>
+Police report number: <%= @security_incident.police_report_number %>
+<% end %>
+<% if @security_incident.officer_name_badge %>
+Officer name/badge number: <%= @security_incident.officer_name_badge %>
+<% end %>
+<% end %>
+<% end %>
+
+<% if @security_incident.fire_department == 'checked' %>
+Fire department called: yes 
+<% end %> 
+
+<% unless @security_incident.sup_email.nil? %>
+Supervisor email: <%= @security_incident.sup_email %>
+<% end %>
