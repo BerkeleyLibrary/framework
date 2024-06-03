@@ -12,6 +12,10 @@
     <%= f.text_field(:directory, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
   </div>
 
+   <div class="form-input mb-4">
+    <div> <%= f.check_box :verify_tind, {required: false, checked: 'unchecked'} %> <%= f.label :fine_check, "Verifying TIND Collection" %> </div>
+  </div> 
+
   <div class="form-label form-group required">
     <%= label_tag('library', 'Library Location', class: 'control-label') %>
   </div>
