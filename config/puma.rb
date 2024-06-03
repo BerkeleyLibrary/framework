@@ -1,3 +1,5 @@
+require 'securerandom'
+
 # Puma can serve each request in a thread from an internal thread pool.
 # The `threads` method setting takes two numbers: a minimum and maximum.
 # Any libraries that use thread pools should be configured to match
@@ -31,7 +33,7 @@ environment ENV.fetch('RAILS_ENV') { 'development' }
 # preload_app!
 
 # By default, use a pidfile that won't conflict with other containerized replicas.
-pidfile ENV.fetch('PUMA_PIDFILE', '/tmp/framework-server.pid')
+pidfile ENV.fetch('PUMA_PIDFILE', "/tmp/framework-puma-#{SecureRandom.uuid[0,8]}.pid")
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
