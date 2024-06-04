@@ -1,5 +1,4 @@
-# require 'open-uri'
-# require 'berkeley_library/tind'
+require 'berkeley_library/tind'
 require 'net/https'
 require 'openssl'
 
@@ -36,12 +35,20 @@ module TindMarcSecondary
       end
       
       response = http.request(req)
-      Rails.logger.info("myturn2: #{response.body}")
-      records = BerkeleyLibrary::TIND::Mapping::Util.from_xml(response.body)
+      # puts response.body
+      # s = '\"YYCHHme\n'
+      # Rails.logger.info(s)
+      # Rails.logger.info("myturn2: #{response.body}")
+      # tt = '<collection> <record>\n  <controlfield tag=\"001\">281446</controlfield>\n  <datafield tag=\"035\" ind1=\" \" ind2=\" \">\n    <subfield code=\"a\">aerialphotos-991000401929706532</subfield>\n  </datafield>\n</record>\n\n</collection>'
+      Rails.logger.info("starting TIND mappings")
+      content = response.body
+      records = BerkeleyLibrary::TIND::Mapping::Util.from_xml(content)
       # Rails.logger.info("myturn: #{records.first.inspect}")
       # records.first.
       # records
-      val = f_035_value(records.first)
+      puts records.class.name
+      Rails.logger.info("ending TIND mappings")
+      val = f_035_value(records)
       Rails.logger.info("035!! #{val}")
       val
 
