@@ -16,7 +16,7 @@ default: &default
   paypal_payflow_url: <%= ENV["PAYPAL_PAYFLOW_URL"] || 'https://payflowlink.paypal.com' %>
   paypal_payflow_login: <%= ENV["PAYPAL_PAYFLOW_LOGIN"] || 'ucblibrary' %>
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
-  tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %>
+  tind_api_key: <%= ENV["LIT_TIND_API_KEY"] %> || 'Token 96de3f65-31ee-48f9-9053-5c66b2c289cf'
 
 development:
   <<: *default

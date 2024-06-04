@@ -1,4 +1,5 @@
 require 'find'
+require_relative 'tind_verification'
 
 module TindMarcSecondary
 
@@ -10,7 +11,8 @@ module TindMarcSecondary
 
     def assets_hash
       assets = batch_assets
-      @verify_tind ? assets_verified(assets) : { insert: assets }
+      assets_verified(assets)
+      # @verify_tind == 1 ? assets_verified(assets) : { insert: assets }
     rescue StandardError => e
       Rails.logger.error "Inventory not populated: #{e}"
     end
@@ -30,6 +32,9 @@ module TindMarcSecondary
 
     # verifying from TIND
     def assets_verified(assets)
+      Rails.logger.info "assets_verified!!!"
+      tind_verification = TindVerification.new('ddddd')
+      tind_verification.verify_tind
       { insert: assets, append: [] }
     end
 
