@@ -10,7 +10,7 @@ module TindMarcSecondary
 
     def records_hash(assets_hash)
       insert = create_record?(assets_hash, :insert) ?  create_records(assets_hash[:insert]) { |asset| insert_record(asset) } : []
-      append = create_record?(assets_hash, :append) ?  create_records(assets_hash[:append]) { |asset| append_record(asset) } : [] 
+      append = create_record?(assets_hash, :append) ?  create_records(assets_hash[:append]) { |asset| append_record(asset) } : []
 
       { insert:, append:, messages: @messages }
     end
@@ -18,7 +18,7 @@ module TindMarcSecondary
     private
 
     def create_record?(assets_hash, key)
-      assets_hash.key?(key) && (! assets_hash[key].empty?)
+      assets_hash.key?(key) && !assets_hash[key].empty?
     end
 
     def create_records(assets, &)

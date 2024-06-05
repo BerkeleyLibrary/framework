@@ -4,9 +4,10 @@ require_relative 'tind_verification'
 module TindMarcSecondary
 
   class DaAsset
-    def initialize(da_batch_path, verify_tind)
+    def initialize(da_batch_path, verify_tind, collection_name)
       @verify_tind = verify_tind
       @da_batch_path = da_batch_path
+      @collection_name = collection_name
     end
 
     def assets_hash
@@ -27,15 +28,14 @@ module TindMarcSecondary
 
     # verifying from TIND
     def assets_verified(assets)
-      collection_name = 'Map Collections'
-      verification = TindVerification.new(collection_name)
+      verification = TindVerification.new(@collection_name)
       insert_assets = []
       append_assets = []
       assets.each do |asset|
         f_035 = verification.f_035(asset[:mmsid])
-        f_035 ? append(asset, f_035, append_assets) : insert_assets.push(asset) 
+        f_035 ? append(asset, f_035, append_assets) : insert_assets.push(asset)
       end
-      
+
       { insert: insert_assets, append: append_assets }
     end
 

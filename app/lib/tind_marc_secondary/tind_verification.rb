@@ -9,8 +9,15 @@ module TindMarcSecondary
       @collection_name = qualified_collection_name(tind_collection_name)
     end
 
-    # TODO: handle restrict collection
     def f_035(mmsid)
+      record = record(mmsid)
+      f_035_value(record)
+    end
+
+    private
+
+    # TODO: handle restrict collection and exception
+    def response(mmsid)
       url = tind_url(mmsid)
       initheaders = {}
       uri = URI.parse(url)
@@ -18,12 +25,13 @@ module TindMarcSecondary
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       req = Net::HTTP::Get.new(uri.request_uri, initheaders)
-      response = http.request(req)
-      record = BerkeleyLibrary::TIND::Mapping::Util.from_xml(response.body)
-      f_035_value(record)
+      http.request(req)
     end
 
-    private
+    def record(mmsid)
+      response = response(mmsid)
+      BerkeleyLibrary::TIND::Mapping::Util.from_xml(response.body)
+    end
 
     def tind_url(mmsid)
       "#{Rails.application.config.tind_base_uri}/search?In=en&c=#{@collection_name}&p=901:#{mmsid}&of=xm&ot=035"

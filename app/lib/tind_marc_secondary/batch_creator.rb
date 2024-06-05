@@ -12,7 +12,7 @@ module TindMarcSecondary
     end
 
     def da_assets_hash
-      da_asset = DaAsset.new(@config.da_batch_path, @config.verify_tind)
+      da_asset = DaAsset.new(@config.da_batch_path, @config.verify_tind, @config.collection_name)
       da_asset.assets_hash
     end
 
@@ -44,7 +44,7 @@ module TindMarcSecondary
                            prefix_035(incoming_path, args),
                            collection_subfields_tobe_updated(args),
                            create_collection_fields(args),
-                           args[:verify_tind])
+                           args[:verify_tind], args[:collection_name])
     end
 
     def create_collection_fields(args)
@@ -81,5 +81,11 @@ module TindMarcSecondary
     def collection_subfields_tobe_updated(args)
       args[:f_982_p].empty? ? {} : { '982' => { 'p' => args[:f_982_p] } }
     end
+
+    # TODO: test responses with and without  collection name
+    # def collection_name(args)
+    #    args[:collection_name]
+    # end
+
   end
 end
