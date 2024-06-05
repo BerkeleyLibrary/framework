@@ -32,6 +32,7 @@ describe ApplicationController do
       SessionsController => 'helpbox-library@berkeley.edu',
       TindDownloadController => 'helpbox-library@berkeley.edu',
       TindMarcBatchController => 'helpbox-library@berkeley.edu',
+      TindMarcBatchTestController => 'helpbox-library@berkeley.edu',
       ValidateProxyPatronController => 'helpbox-library@berkeley.edu', # never displayed, but no harm done
 
       # privdesk-library@berkeley.edu
