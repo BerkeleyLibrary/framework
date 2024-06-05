@@ -8,7 +8,7 @@ module TindMarcSecondary
     def initialize(args)
       setup(args)
       create_configs(args)
-      Rails.logger.info(@config.display) # checking configurations
+      # Rails.logger.info(@config.display) # checking configurations
     end
 
     def da_assets_hash

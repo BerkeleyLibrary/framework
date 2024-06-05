@@ -12,7 +12,7 @@ module TindMarcSecondary
 
     def assets_hash
       assets = batch_assets
-      assets_verified(assets)
+      prepare_hash(assets)
     rescue StandardError => e
       Rails.logger.error "Inventory not populated: #{e}"
     end
@@ -26,8 +26,9 @@ module TindMarcSecondary
       end
     end
 
-    # verifying from TIND
-    def assets_verified(assets)
+    def prepare_hash(assets)
+      return { insert: assets, append: [] } unless @verify_tind
+
       verification = TindVerification.new(@collection_name)
       insert_assets = []
       append_assets = []

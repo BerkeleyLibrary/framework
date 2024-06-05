@@ -59,7 +59,7 @@ module TindMarcSecondary
       writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
 
       @records_hash[:append].each do |record|
-        Rails.logger.info("66666666#{record.inspect}")
+        Rails.logger.info("save to local: #{record.inspect}")
         record.leader = nil
 
         writer.write(record)
