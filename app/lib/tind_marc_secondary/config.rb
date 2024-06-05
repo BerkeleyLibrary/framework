@@ -6,7 +6,8 @@ module TindMarcSecondary
                       :prefix_035,
                       :collection_subfields_tobe_updated,
                       :collection_fields,
-                      :verify_tind) do
+                      :verify_tind,
+                      :collection_name) do
     def display
       "incoming_path: #{incoming_path},
        da_batch_path: #{da_batch_path},
@@ -15,7 +16,9 @@ module TindMarcSecondary
        prefix_035: #{prefix_035},
        collection_subfields_tobe_updated: #{collection_subfields_tobe_updated},
        collection_fields: #{collection_fields},
-       verify_tind: #{verify_tind}"
+       verify_tind: #{verify_tind},
+       collection_name: #{collection_name}"
     end
   end
+
 end

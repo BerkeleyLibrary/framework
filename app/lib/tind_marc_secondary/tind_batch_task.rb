@@ -58,7 +58,7 @@ module TindMarcSecondary
       file = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
       writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
 
-      @records_hash[:insert].each do |record|
+      @records_hash[:append].each do |record|
         Rails.logger.info("66666666#{record.inspect}")
         record.leader = nil
 
