@@ -9,15 +9,10 @@ module TindMarcSecondary
     end
 
     def records_hash(assets_hash)
-      puts "do is here"
-      puts assets_hash
       insert = create_record?(assets_hash, :insert) ?  create_records(assets_hash[:insert]) { |asset| insert_record(asset) } : []
       append = create_record?(assets_hash, :append) ?  create_records(assets_hash[:append]) { |asset| append_record(asset) } : [] 
 
-      c = { insert:, append:, messages: @messages }
-      puts c
-      puts "do c is here"
-      c
+      { insert:, append:, messages: @messages }
     end
 
     private

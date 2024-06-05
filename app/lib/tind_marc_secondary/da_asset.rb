@@ -36,13 +36,7 @@ module TindMarcSecondary
         f_035 ? append(asset, f_035, append_assets) : insert_assets.push(asset) 
       end
       
-      puts "a is here"
-      puts insert_assets
-      puts append_assets
-      v = { insert: insert_assets, append: append_assets }
-      puts "v is here"
-      puts v
-      v
+      { insert: insert_assets, append: append_assets }
     end
 
     def append(asset, f_035, assets)
