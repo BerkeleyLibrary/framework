@@ -59,7 +59,7 @@ module TindMarcSecondary
       file_desc_list = hash_by_record(hash, folder_name)
       ls = []
       file_desc_list.each do |file, desc|
-        ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{@config.base_url}/#{file}"], ['d', desc])
+        ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{@config.base_url}#{file}"], ['d', desc])
       end
       ls
     end
