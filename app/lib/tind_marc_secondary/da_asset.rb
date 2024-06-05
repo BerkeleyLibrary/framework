@@ -11,29 +11,12 @@ module TindMarcSecondary
 
     def assets_hash
       assets = batch_assets
-      puts "mine asset"
-      puts assets
-      a = assets_verified(assets)
-      puts "mine asset"
-      puts a
-      a
-      # @verify_tind == 1 ? assets_verified(assets) : { insert: assets }
+      assets_verified(assets)
     rescue StandardError => e
       Rails.logger.error "Inventory not populated: #{e}"
     end
 
     private
-
-    # mmsid in a folder name may be different from mmsid in a csv file: preparing for external csv files
-    # def batch_assets
-    #   folder_names = Dir.children(@da_batch_path).select { |f| File.directory?(File.join(@da_batch_path, f)) }
-    #   folder_names.map do |folder_name|
-    #     {
-    #       mmsid: folder_name.split('_')[0].strip,
-    #       folder_name:
-    #     }
-    #   end
-    # end
 
     def batch_assets
       folder_names = Dir.children(@da_batch_path).select { |f| File.directory?(File.join(@da_batch_path, f)) }
@@ -50,8 +33,6 @@ module TindMarcSecondary
       append_assets = []
       assets.each do |asset|
         f_035 = verification.f_035(asset[:mmsid])
-        puts "he is here"
-        puts f_035
         f_035 ? append(asset, f_035, append_assets) : insert_assets.push(asset) 
       end
       

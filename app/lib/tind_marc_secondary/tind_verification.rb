@@ -9,6 +9,7 @@ module TindMarcSecondary
       @collection_name = qualified_collection_name(tind_collection_name)
     end
 
+    # TODO: handle restrict collection
     def f_035(mmsid)
       url = tind_url(mmsid)
       initheaders = {}
@@ -18,9 +19,6 @@ module TindMarcSecondary
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       req = Net::HTTP::Get.new(uri.request_uri, initheaders)
       response = http.request(req)
-      puts " i am here"
-      puts mmsid.to_s
-      puts response.body
       record = BerkeleyLibrary::TIND::Mapping::Util.from_xml(response.body)
       f_035_value(record)
     end
