@@ -1,5 +1,6 @@
 require 'berkeley_library/tind'
 require_relative 'batch_creator'
+require 'nokogiri'
 
 module TindMarcSecondary
   class TindBatchTask
@@ -29,8 +30,8 @@ module TindMarcSecondary
     def attachment_content(records)
       attachment = ''
       records.each do |rec|
-        # rec.leader = nil
-        attachment << rec.to_xml
+        rec_xml = remove_leader_and_namespace(rec.to_xml)
+        attachment << rec_xml.to_s
       end
       attachment
     end
@@ -65,6 +66,13 @@ module TindMarcSecondary
         writer.write(record)
       end
       writer.close
+    end
+
+    def remove_leader_and_namespace(rec)
+      rec = Nokogiri.XML(rec.to_s)
+      rec.search('leader').each(&:remove)
+      rec.remove_namespaces!
+      rec
     end
 
   end
