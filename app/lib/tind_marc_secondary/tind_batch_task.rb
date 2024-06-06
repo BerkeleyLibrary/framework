@@ -30,7 +30,7 @@ module TindMarcSecondary
       attachment = ''
       records.each do |rec|
         rec.leader = nil
-        attachment << rec.to_s
+        attachment << rec.to_xml
       end
       attachment
     end
