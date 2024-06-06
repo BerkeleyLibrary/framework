@@ -29,7 +29,7 @@ module TindMarcSecondary
     def attachment_content(records)
       attachment = ''
       records.each do |rec|
-        rec.leader = nil
+        # rec.leader = nil
         attachment << rec.to_xml
       end
       attachment
