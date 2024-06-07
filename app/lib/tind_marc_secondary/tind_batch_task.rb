@@ -27,22 +27,12 @@ module TindMarcSecondary
       "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
     end
 
-    # def attachment_content(records)
-    #   attachment = ''
-    #   records.each do |rec|
-    #     rec_xml = remove_leader_and_namespace(rec.to_xml)
-    #     attachment << rec_xml.to_s
-    #   end
-    #   attachment
-    # end
-
+    # marc record cannot be converted to xml when leader is either nil or empty
     def attachment_content(records)
       attachment = ''
       records.each do |rec|
-        puts "having rec 3"
-        puts rec
-        # rec_xml = remove_leader_and_namespace(rec.to_xml)
-        rec_xml = rec.to_xml
+        rec.leader = '          22        4500'
+        rec_xml = remove_leader_and_namespace(rec.to_xml)
         attachment << rec_xml.to_s
       end
       attachment
@@ -65,26 +55,34 @@ module TindMarcSecondary
       RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
     end
 
-    # method for get result to test in local
-    def save_to_local
-      da_dir = Rails.application.config.tind_data_root_dir
-      file = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
-      writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
-
-      @records_hash[:append].each do |record|
-        Rails.logger.info("save to local: #{record.inspect}")
-        record.leader = nil
-
-        writer.write(record)
-      end
-      writer.close
-    end
-
     def remove_leader_and_namespace(rec)
       rec = Nokogiri.XML(rec.to_s)
       rec.search('leader').each(&:remove)
       rec.remove_namespaces!
       rec
+    end
+
+    # method for get result to test in local
+    def save_to_local
+      insert_file = 'aerial/ucb/incoming/insert_result.xml'
+      save_file(@records_hash[:insert], insert_file)
+      append_file = 'aerial/ucb/incoming/append_result.xml'
+      save_file(@records_hash[:append], append_file)
+    end
+
+    # method for get result to test in local
+    def save_file(records, file)
+      return if records.empty?
+
+      da_dir = Rails.application.config.tind_data_root_dir
+      file = File.join(da_dir, file)
+      writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
+      records.each do |record|
+        Rails.logger.info("save to local: #{record.inspect}")
+        record.leader = nil
+        writer.write(record)
+      end
+      writer.close
     end
 
   end
