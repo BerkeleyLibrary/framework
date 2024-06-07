@@ -2,8 +2,8 @@ class TindMarcBatch < Form
   extend ActiveModel::Naming
   require 'find'
 
-  REQUIRED_PARAMS = %i[directory f_980_a f_982_a f_982_b f_540_a resource_type library initials].freeze
-  OPTIONAL_PARAMS = %i[f_982_p restriction].freeze
+  REQUIRED_PARAMS = %i[directory f_980_a f_982_a f_982_b f_540_a resource_type library initials verify_tind].freeze
+  OPTIONAL_PARAMS = %i[f_982_p restriction collection_name].freeze
 
   validates :directory, :f_980_a, :f_982_a, :f_982_b, :f_540_a, :resource_type, :library, :initials, presence: true
   validate :directory_must_exist

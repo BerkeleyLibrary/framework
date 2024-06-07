@@ -12,6 +12,17 @@
     <%= f.text_field(:directory, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
   </div>
 
+   <div class="form-input mb-4">
+    <div> <%= f.check_box :verify_tind, {required: false, checked: 'unchecked'} %> <%= f.label :fine_check, "Verifying TIND Collection" %> </div>
+  </div> 
+
+  <div class="form-label form-group">
+    <%= label_tag('collection name', 'If above checked, please provide the collection name if it is different from 980__a value (optional)', class: 'control-label') %>
+  </div>
+  <div class="form-input mb-4">
+    <%= f.text_field(:collection_name, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: false, autofocus: true) %>
+  </div>
+
   <div class="form-label form-group required">
     <%= label_tag('library', 'Library Location', class: 'control-label') %>
   </div>

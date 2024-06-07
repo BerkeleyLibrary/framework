@@ -7,7 +7,6 @@ module TindMarcSecondary
     attr_reader :records_hash
 
     def initialize(args, email)
-      @verify_tind = false
       @messages = []
       @email = email
       @args = args
@@ -15,7 +14,7 @@ module TindMarcSecondary
 
     def run
       batch_creator = BatchCreator.new(@args)
-      da_assets_hash = batch_creator.da_assets_hash(@verify_tindy)
+      da_assets_hash = batch_creator.da_assets_hash
       @records_hash = batch_creator.tind_records_hash(da_assets_hash)
       save_to_local if Rails.env.development?
       sent_email
@@ -23,14 +22,27 @@ module TindMarcSecondary
 
     private
 
+    # ToDiscuss, or get feedback from user: currently using the same name pattern as existing batch marc tool
     def attachment_filename(key)
       "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
     end
 
+    # def attachment_content(records)
+    #   attachment = ''
+    #   records.each do |rec|
+    #     rec_xml = remove_leader_and_namespace(rec.to_xml)
+    #     attachment << rec_xml.to_s
+    #   end
+    #   attachment
+    # end
+
     def attachment_content(records)
       attachment = ''
       records.each do |rec|
-        rec_xml = remove_leader_and_namespace(rec.to_xml)
+        puts "having rec 3"
+        puts rec
+        # rec_xml = remove_leader_and_namespace(rec.to_xml)
+        rec_xml = rec.to_xml
         attachment << rec_xml.to_s
       end
       attachment
@@ -59,8 +71,8 @@ module TindMarcSecondary
       file = File.join(da_dir, 'aerial/ucb/incoming/result.xml')
       writer = BerkeleyLibrary::TIND::MARC::XMLWriter.new(file)
 
-      @records_hash[:insert].each do |record|
-        Rails.logger.info("66666666#{record.inspect}")
+      @records_hash[:append].each do |record|
+        Rails.logger.info("save to local: #{record.inspect}")
         record.leader = nil
 
         writer.write(record)

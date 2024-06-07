@@ -9,16 +9,22 @@ module TindMarcSecondary
     end
 
     def records_hash(assets_hash)
-      insert = create_records(assets_hash[:insert]) { |asset| insert_record(asset) }
-      append = assets_hash.key?(:append) ? create_records(assets_hash[:append]) { |asset| append_record(asset) } : []
+      insert = create_records(assets_hash, :insert) { |asset| insert_record(asset) }
+      append = create_records(assets_hash, :append) { |asset| append_record(asset) }
 
       { insert:, append:, messages: @messages }
     end
 
     private
 
-    def create_records(assets, &)
-      assets.map(&)
+    def create_record?(assets_hash, key)
+      assets_hash.key?(key) && !assets_hash[key].empty?
+    end
+
+    def create_records(assets_hash, key, &)
+      return [] unless create_record?(assets_hash, key)
+
+      assets_hash[key].map(&)
     end
 
     def insert_record(asset)
@@ -33,7 +39,8 @@ module TindMarcSecondary
     end
 
     def append_record(asset)
-      fields = asset[:f_035].concat(ffts(asset[:folder_name]))
+      fields = [tind_f_035(asset[:f_035_from_tind])]
+      fields.concat(ffts(asset[:folder_name]))
       record = ::MARC::Record.new
       fields.each { |f| record.append(f) }
       record
@@ -52,13 +59,17 @@ module TindMarcSecondary
       file_desc_list = hash_by_record(hash, folder_name)
       ls = []
       file_desc_list.each do |file, desc|
-        ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{@config.base_url}/#{file}"], ['d', desc])
+        ls << ::MARC::DataField.new('FFT', ' ', ' ', ['a', "#{@config.base_url}#{file}"], ['d', desc])
       end
       ls
     end
 
     def f_035(mmsid)
       ::MARC::DataField.new('035', ' ', ' ', ['a', "#{@config.prefix_035}#{mmsid}"])
+    end
+
+    def tind_f_035(val)
+      ::MARC::DataField.new('035', ' ', ' ', ['a', val])
     end
 
     # label csv file provides the sequence of image and hocr file which listed in a TIND FFT field
