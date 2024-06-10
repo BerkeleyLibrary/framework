@@ -44,8 +44,8 @@ services:
       - ./:/build:rw
 
   selenium:
-    image: selenium/hub
-    # image: selenium/hub:4.10.0
+    # image: selenium/hub
+    image: selenium/hub:4.10.0
     networks:
       default:
         aliases:
@@ -58,8 +58,8 @@ services:
       - ./:/build:rw
 
   selenium-chrome:
-    image: selenium/node-chrome
-    # image: selenium/node-chrome:4.10.0
+    # image: selenium/node-chrome
+    image: selenium/node-chrome:4.10.0
     # shm_size: 2gb
     depends_on:
       - selenium
