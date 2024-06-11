@@ -31,7 +31,6 @@ describe TindMarcBatch do
     describe 'form' do
       before do
         @params = {
-          collection_name: nil,
           directory: nil,
           initials: nil,
           f_980_a: nil,
@@ -57,7 +56,6 @@ describe TindMarcBatch do
     describe 'form' do
       before do
         @params = {
-
           directory: nil,
           initials: nil,
           f_980_a: nil,
@@ -69,7 +67,6 @@ describe TindMarcBatch do
           f_982_p: nil,
           restriction: nil,
           fail: nil
-
         }
       end
 

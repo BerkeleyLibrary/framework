@@ -4,10 +4,9 @@ require_relative 'tind_verification'
 module TindMarcSecondary
 
   class DaAsset
-    def initialize(da_batch_path, verify_tind, collection_name)
+    def initialize(da_batch_path, verify_tind)
       @verify_tind = verify_tind
       @da_batch_path = da_batch_path
-      @collection_name = collection_name
     end
 
     def assets_hash
@@ -29,7 +28,7 @@ module TindMarcSecondary
     def prepare_hash(assets)
       return { insert: assets, append: [] } unless @verify_tind
 
-      verification = TindVerification.new(@collection_name)
+      verification = TindVerification.new
       insert_assets = []
       append_assets = []
       assets.each do |asset|
