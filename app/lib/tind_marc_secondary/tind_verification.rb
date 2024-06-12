@@ -36,9 +36,13 @@ module TindMarcSecondary
       Rails.logger.error("Error fetching TIND record: #{e.message}")
     end
    
+    # To handle different response
     def record_id(mmsid)
       url = tind_api_mmsid_url(mmsid)
       response = response(url)
+      code = response.code
+      raise StandardError, "Error fetching TIND record: #{code.message}" unless code == '200'
+
       hash = JSON.parse(response.body)
       count = hash['total']
       raise StandardError, "Multiple TIND records found for mmsid: #{mmsid}" if count > 1
@@ -50,6 +54,12 @@ module TindMarcSecondary
     def marc_xml_record(record_id)
       url = tind_api_record_id_url(record_id)
       response = response(url)
+      code = response.code
+
+      raise StandardError, "Error fetching TIND record with id: #{code.message}" unless code in ['200', '404']
+
+      return if code == 404
+
       response.body
       Nokogiri::XML(response.body)
     end
