@@ -11,15 +11,19 @@ module TindMarcSecondary
       # Rails.logger.info(@config.display) # checking configurations
     end
 
+    def tind_records_hash
+      assets_hash = da_assets_hash
+      return { insert: [], append: [], messages: assets_hash[:messages] } if assets_hash[:insert].empty? && assets_hash[:append].empty?
+
+      tind_marc = TindMarc.new(@config)
+      tind_marc.records_hash(assets_hash)
+    end
+
     def da_assets_hash
       da_asset = DaAsset.new(@config.da_batch_path, @config.verify_tind)
       da_asset.assets_hash
     end
 
-    def tind_records_hash(assets_hash)
-      tind_marc = TindMarc.new(@config)
-      tind_marc.records_hash(assets_hash)
-    end
 
     private
 

@@ -11,10 +11,11 @@ module TindMarcSecondary
     # url = 'https://digicoll.lib.berkeley.edu/api/v1/search?In=en&p=901:991024141319706532&of=xm&ot=001,035,245'
     # url = 'https://digicoll.lib.berkeley.edu/api/v1/record/281845/?of=xm&ot=001,035,245'
     # "{\"reason\": \"Failed to validate given credentials\", \"success\": false}"
-# {\"hits\": [281845], \"total\": 1}"
+    # {\"hits\": [281845], \"total\": 1}"
     def initialize; end
 
     def f_035(mmsid)
+      # mmsid = '991042697829706532'
       id = record_id(mmsid)
       return if id.nil?
 
@@ -35,13 +36,13 @@ module TindMarcSecondary
     rescue StandardError => e
       Rails.logger.error("Error fetching TIND record: #{e.message}")
     end
-   
-    # To handle different response
+
+    # when a search is based on a field value, tind api search response code will 200 if no records found
     def record_id(mmsid)
       url = tind_api_mmsid_url(mmsid)
       response = response(url)
       code = response.code
-      raise StandardError, "Error fetching TIND record: #{code.message}" unless code == '200'
+      raise StandardError, "Error fetching TIND record on mmsid: #{response.message}" unless code == '200'
 
       hash = JSON.parse(response.body)
       count = hash['total']
@@ -51,12 +52,12 @@ module TindMarcSecondary
       hash['hits'][0]
     end
 
+    # When a search is based on record id, tind api search response code will be 404 if no record found
     def marc_xml_record(record_id)
       url = tind_api_record_id_url(record_id)
       response = response(url)
       code = response.code
-
-      raise StandardError, "Error fetching TIND record with id: #{code.message}" unless code in ['200', '404']
+      raise StandardError, "Error fetching TIND record with id #{record_id}: #{response.message}" unless %w[200 404].include?(code)
 
       return if code == 404
 

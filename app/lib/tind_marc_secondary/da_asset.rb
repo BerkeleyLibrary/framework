@@ -14,6 +14,7 @@ module TindMarcSecondary
       prepare_hash(assets)
     rescue StandardError => e
       Rails.logger.error "Inventory not populated: #{e}"
+      { insert: [], append: [], messages: [e.message] }
     end
 
     private

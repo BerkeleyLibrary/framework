@@ -14,8 +14,7 @@ module TindMarcSecondary
 
     def run
       batch_creator = BatchCreator.new(@args)
-      da_assets_hash = batch_creator.da_assets_hash
-      @records_hash = batch_creator.tind_records_hash(da_assets_hash)
+      @records_hash = batch_creator.tind_records_hash
       save_to_local if Rails.env.development?
       sent_email
     end
@@ -24,7 +23,7 @@ module TindMarcSecondary
 
     # ToDiscuss, or get feedback from user: currently using the same name pattern as existing batch marc tool
     def attachment_filename(key)
-      "#{key}#{@args[:f_980_a].gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
+      "#{key}_#{@args[:f_980_a].gsub(/\s/i, '_')}_#{incoming_name}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
     end
 
     # marc record cannot be converted to xml when leader is either nil or empty
@@ -49,9 +48,16 @@ module TindMarcSecondary
       attachment_hash
     end
 
+    def incoming_name
+      @args[:directory].split('/').compact.last
+    end
+
     def sent_email
       attatchments = generate_attatchments
-      subject = attatchments.empty? ? "No batch records created for #{@args[:directory]}" : "Tind batch load for #{@args[:f_982_a]}"
+      batch_info = "#{@args[:f_982_a]} - #{@args[:directory]}"
+      subject = attatchments.empty? ? "Failed: no batch records created for #{batch_info}" : "Completed: Tind batch records created for #{batch_info}"
+      puts "22Sending email with subject: #{subject}"
+      puts @records_hash[:messages]
       RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
     end
 
