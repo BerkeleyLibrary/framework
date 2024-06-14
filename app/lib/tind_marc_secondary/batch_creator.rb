@@ -24,7 +24,6 @@ module TindMarcSecondary
       da_asset.assets_hash
     end
 
-
     private
 
     def setup(args)
