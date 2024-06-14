@@ -76,6 +76,10 @@ module TindMarcSecondary
     # TODO: format of the csv file to be finalized
     # A csv file with header, first column is label description, sencond column is relative path of a file to collection batch path
     def label_hash
+      # TODO: handle collection has no label file: ToDiscuss: how do we know if the collection is supposed to have a label file
+      # return {} unless File.exist?(@config.da_label_file_path)
+      raise StandardError, "No such label file found #{@config.da_label_file_path}" unless File.exist?(@config.da_label_file_path)
+
       label_hash = {}
       File.open(@config.da_label_file_path, 'r').each_line do |line|
         description, relative_path = line.split(',')

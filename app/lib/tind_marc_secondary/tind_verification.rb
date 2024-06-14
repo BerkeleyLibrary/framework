@@ -15,7 +15,7 @@ module TindMarcSecondary
     def initialize; end
 
     def f_035(mmsid)
-      # mmsid = '991042697829706532'
+      # mmsid = 'a991042697829706532'
       id = record_id(mmsid)
       return if id.nil?
 
@@ -37,7 +37,7 @@ module TindMarcSecondary
       Rails.logger.error("Error fetching TIND record: #{e.message}")
     end
 
-    # when a search is based on a field value, tind api search response code will 200 if no records found
+    # Tind api search response code is '200' when searching on a field value and has no records found
     def record_id(mmsid)
       url = tind_api_mmsid_url(mmsid)
       response = response(url)
@@ -52,7 +52,7 @@ module TindMarcSecondary
       hash['hits'][0]
     end
 
-    # When a search is based on record id, tind api search response code will be 404 if no record found
+    # Tind api search response code is '404' when searching on a field value and has no records found
     def marc_xml_record(record_id)
       url = tind_api_record_id_url(record_id)
       response = response(url)

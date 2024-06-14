@@ -56,8 +56,6 @@ module TindMarcSecondary
       attatchments = generate_attatchments
       batch_info = "#{@args[:f_982_a]} - #{@args[:directory]}"
       subject = attatchments.empty? ? "Failed: no batch records created for #{batch_info}" : "Completed: Tind batch records created for #{batch_info}"
-      puts "22Sending email with subject: #{subject}"
-      puts @records_hash[:messages]
       RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
     end
 
