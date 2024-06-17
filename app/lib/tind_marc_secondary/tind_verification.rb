@@ -15,7 +15,6 @@ module TindMarcSecondary
     def initialize; end
 
     def f_035(mmsid)
-      # mmsid = 'a991042697829706532'
       id = record_id(mmsid)
       return if id.nil?
 
