@@ -26,7 +26,7 @@ module TindMarcSecondary
     private
 
     def response(url)
-      initheaders = { 'Authorization' => Rails.application.config.tind_api_key }
+      initheaders = { 'Authorization' => "Token #{Rails.application.config.tind_api_key}" }
       uri = URI.parse(url)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
