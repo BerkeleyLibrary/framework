@@ -15,6 +15,7 @@ module TindMarcSecondary
     def initialize; end
 
     def f_035(mmsid)
+      Rails.logger.info("TIND API token: Token #{Rails.application.config.tind_api_key}")
       id = record_id(mmsid)
       return if id.nil?
 
@@ -65,10 +66,12 @@ module TindMarcSecondary
     end
 
     def tind_api_record_id_url(record_id)
+      Rails.logger.info("TIND_record_URL: #{Rails.application.config.tind_base_uri}api/v1/record/#{record_id}/?of=xm")
       "#{Rails.application.config.tind_base_uri}api/v1/record/#{record_id}/?of=xm"
     end
 
     def tind_api_mmsid_url(mmsid)
+      Rails.logger.info("TIND_mmsid_URL: #{Rails.application.config.tind_base_uri}api/v1/search?In=en&p=901:#{mmsid}&of=xm")
       "#{Rails.application.config.tind_base_uri}api/v1/search?In=en&p=901:#{mmsid}&of=xm"
     end
 
