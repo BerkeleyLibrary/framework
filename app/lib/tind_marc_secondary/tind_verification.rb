@@ -23,6 +23,18 @@ module TindMarcSecondary
       f_035_value(record)
     end
 
+    def record_ids(mmsid)
+      url = tind_api_mmsid_url(mmsid)
+      response = response(url)
+      code = response.code
+      raise StandardError, "Error fetching TIND record on mmsid: #{response.message}" unless code == '200'
+
+      hash = JSON.parse(response.body)
+      hash['hits'].map do |id|
+        "https://digicoll.lib.berkeley.edu/record/#{id}?ln=en"
+      end
+    end
+
     private
 
     def response(url)

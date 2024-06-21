@@ -29,10 +29,13 @@ module TindMarcSecondary
     # marc record cannot be converted to xml when leader is either nil or empty
     def attachment_content(records)
       attachment = ''
+      num = 0
       records.each do |rec|
         rec.leader = '          22        4500'
         rec_xml = remove_leader_and_namespace(rec.to_xml)
+        rec_xml = rec_xml.gsub('<?xml version="1.0"?>', '') unless num == 0
         attachment << rec_xml.to_s
+        num += 1
       end
       attachment
     end
@@ -52,11 +55,29 @@ module TindMarcSecondary
       @args[:directory].split('/').compact.last
     end
 
+    # def sent_email
+    #   attatchments = generate_attatchments
+    #   batch_info = "#{@args[:f_982_a]} - #{@args[:directory]}"
+    #   subject = attatchments.empty? ? "Failed: no batch records created for #{batch_info}" :
+    # "Completed: Tind batch records created for #{batch_info}"
+    #   RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
+    # end
+    def tind_information(ls)
+      {
+        'mmsid_tind_information.txt' => { mime_type: 'text/txt', content: ls.join('\n') }
+      }
+    end
+
     def sent_email
-      attatchments = generate_attatchments
       batch_info = "#{@args[:f_982_a]} - #{@args[:directory]}"
-      subject = attatchments.empty? ? "Failed: no batch records created for #{batch_info}" : "Completed: Tind batch records created for #{batch_info}"
-      RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
+      if @records_hash.key?(:tind_info)
+        subject = 'MMSID and TIND Information'
+        RequestMailer.tind_marc_batch_2_email(@email, tind_information(@records_hash[:tind_info]), subject, 'https://hocr-framework.ucblib.org/tind-marc-batch-test').deliver_now
+      else
+        attatchments = generate_attatchments
+        subject = attatchments.empty? ? "Failed: no record created for #{batch_info}" : "Completed: Tind batch records created for #{batch_info}"
+        RequestMailer.tind_marc_batch_2_email(@email, attatchments, subject, @records_hash[:messages]).deliver_now
+      end
     end
 
     def remove_leader_and_namespace(rec)

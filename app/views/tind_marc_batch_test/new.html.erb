@@ -13,8 +13,13 @@
   </div>
 
    <div class="form-input mb-4">
-    <div> <%= f.check_box :verify_tind, {required: false, checked: 'unchecked'} %> <%= f.label :fine_check, "Verifying TIND Collection" %> </div>
+    <div> <%= f.check_box :verify_tind, {required: false, checked: 'unchecked'} %> <%= f.label :verify, "Verifying TIND Collection" %> </div>
   </div> 
+
+    <div class="form-input mb-4">
+    <div> <%= f.check_box :send_mmsid_tind_info, {required: false, checked: 'unchecked'} %> <%= f.label :send_mmsid_tind, "Send MMSID TIND Information" %> </div>
+  </div> 
+
 
   <%
 =begin%>

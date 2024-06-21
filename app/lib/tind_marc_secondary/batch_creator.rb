@@ -8,19 +8,20 @@ module TindMarcSecondary
     def initialize(args)
       setup(args)
       create_configs(args)
-      # Rails.logger.info(@config.display) # checking configurations
+      Rails.logger.info(@config.display) # checking configurations
     end
 
     def tind_records_hash
       assets_hash = da_assets_hash
-      return { insert: [], append: [], messages: assets_hash[:messages] } if assets_hash[:insert].empty? && assets_hash[:append].empty?
+      # return { insert: [], append: [], messages: assets_hash[:messages] } if assets_hash[:insert].empty? && assets_hash[:append].empty?
+      return assets_hash if assets_hash[:insert].empty? && assets_hash[:append].empty?
 
       tind_marc = TindMarc.new(@config)
       tind_marc.records_hash(assets_hash)
     end
 
     def da_assets_hash
-      da_asset = DaAsset.new(@config.da_batch_path, @config.verify_tind)
+      da_asset = DaAsset.new(@config.da_batch_path, @config.verify_tind, @config.send_mmsid_tind_info)
       da_asset.assets_hash
     end
 
@@ -47,7 +48,7 @@ module TindMarcSecondary
                            prefix_035(incoming_path, args),
                            collection_subfields_tobe_updated(args),
                            create_collection_fields(args),
-                           notify?(args))
+                           send_mmsid_tind_info?(args), notify?(args))
     end
 
     def create_collection_fields(args)
@@ -87,6 +88,10 @@ module TindMarcSecondary
 
     def notify?(args)
       args[:verify_tind] == '1'
+    end
+
+    def send_mmsid_tind_info?(args)
+      args[:send_mmsid_tind_info] == '1'
     end
 
   end

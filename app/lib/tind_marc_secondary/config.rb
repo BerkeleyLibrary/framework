@@ -6,6 +6,7 @@ module TindMarcSecondary
                       :prefix_035,
                       :collection_subfields_tobe_updated,
                       :collection_fields,
+                      :send_mmsid_tind_info,
                       :verify_tind) do
     def display
       "incoming_path: #{incoming_path},
@@ -15,6 +16,7 @@ module TindMarcSecondary
        prefix_035: #{prefix_035},
        collection_subfields_tobe_updated: #{collection_subfields_tobe_updated},
        collection_fields: #{collection_fields},
+       send_mmsid_tind_info: #{send_mmsid_tind_info},
        verify_tind: #{verify_tind}"
     end
   end
