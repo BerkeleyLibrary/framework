@@ -41,6 +41,7 @@ describe TindMarcBatch do
           library: nil,
           f_982_p: nil,
           restriction: nil,
+          send_mmsid_tind_info: nil,
           verify_tind: nil
         }
       end
