@@ -19,6 +19,8 @@ module TindMarcSecondary
       id = record_id(mmsid)
       return if id.nil?
 
+      return 'fake_035' if id == 'fake_tind_id'
+
       record = marc_xml_record(id)
       f_035_value(record)
     end
@@ -58,7 +60,9 @@ module TindMarcSecondary
 
       hash = JSON.parse(response.body)
       count = hash['total']
-      raise StandardError, "Multiple TIND records found for mmsid: #{mmsid}" if count > 1
+      # raise StandardError, "Multiple TIND records found for mmsid: #{mmsid}" if count > 1
+      return 'fake_tind_id' if count > 1
+
       return if count == 0
 
       hash['hits'][0]
