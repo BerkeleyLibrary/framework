@@ -31,13 +31,18 @@ module TindMarcSecondary
       attachment = ''
       num = 0
       records.each do |rec|
-        rec.leader = '          22        4500'
-        rec_xml = remove_leader_and_namespace(rec.to_xml)
-        rec_xml = rec_xml.gsub('<?xml version="1.0"?>', '') unless num == 0
-        attachment << rec_xml.to_s
+        rec_xml_str = record_str(rec)
+        rec_xml_str = rec_xml_str.gsub('<?xml version="1.0"?>', '') unless num == 0
+        attachment << rec_xml_str
         num += 1
       end
       attachment
+    end
+
+    def record_str(rec)
+      rec.leader = '          22        4500'
+      rec_xml = remove_leader_and_namespace(rec.to_xml)
+      rec_xml.to_s
     end
 
     def generate_attatchments
