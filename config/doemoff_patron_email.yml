@@ -1,0 +1,15 @@
+default: &default
+
+  sender:
+    'Main Circulation': 'maincirc-library@berkeley.edu'
+    'Moffitt Circulation': 'moffcirc-library@berkeley.edu'
+    'Doe/Moffitt Lost and Found': 'lost_found-library@berkeley.edu'
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

@@ -115,6 +115,10 @@ en:
       stack_pass_form: Stack Pass Request Form
       reference_card_form: Reference Card Form
 
+  doemoff_patron_email_forms:
+    new:
+      page_title: Doe/Moffitt Libraries patron email form 
+
   doemoff_study_room_use_forms:
     all_checked:
       page_title: Agreement submitted

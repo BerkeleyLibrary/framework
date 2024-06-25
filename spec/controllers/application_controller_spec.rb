@@ -17,6 +17,9 @@ describe ApplicationController do
       # security incident form
       SecurityIncidentReportFormsController => 'helpbox-library@berkeley.edu',
 
+      # Doe/Moff Patron Email form
+      DoemoffPatronEmailFormsController => 'helpbox-library@berkeley.edu',
+
       # eref-library@berkeley.edu
       GalcRequestFormsController => 'eref-library@berkeley.edu',
 

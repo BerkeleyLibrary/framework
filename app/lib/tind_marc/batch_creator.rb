@@ -78,7 +78,7 @@ module TindMarc
       if @records.empty?
         RequestMailer.tind_marc_batch_email(@email, "No batch records created for #{@dir}", @messages).deliver_now
       else
-        attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.zone.today.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
+        attachment_name = "#{@field_980a.gsub(/\s/i, '_')}_#{Time.current.in_time_zone('Pacific Time (US & Canada)').to_date}.xml"
         RequestMailer.tind_marc_batch_email(@email, "Tind batch load for #{@field_982b}", @messages, attachment_name,
                                             create_attachment).deliver_now
       end

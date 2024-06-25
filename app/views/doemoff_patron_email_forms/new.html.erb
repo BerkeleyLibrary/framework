@@ -1,0 +1,39 @@
+<div class="col">
+  <h1>
+    Doe/Moffitt Libraries patron email form
+  </h1>
+</div>
+
+<p>
+<b>Students: </b>use this form to email links, lost and found inquiries, and other information to Doe/Moffitt library patrons
+</p>
+
+<p style="color: #ee0000">* Required fields are marked with an asterisk</p>
+<%= form_for(@form, class: 'needs-validation') do |f| %>
+  <div class="form-label form-group required">
+    <%= f.label :patron_email, 'Patron email address:', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:patron_email, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :patron_message, 'Message for patron:', class: 'control-label' %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_area(:patron_message, rows: 5, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= f.label :sender, 'Select the sender:', class: 'control-label' %>
+  </div>
+  <div class="form-input mb-4">
+    <%= f.select :sender, Rails.application.config.patron_sender, required: true, autofocus: true %>
+  </div>
+
+  <div class="form-input">
+    <%= f.submit(class: 'btn btn-primary', value: 'Submit') %>
+    <%= f.submit("Clear form", type: :reset, class: "btn btn-primary", onclick: "formReset();") %> 
+  </div>
+
+<% end %>

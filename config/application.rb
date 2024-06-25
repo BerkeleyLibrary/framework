@@ -63,6 +63,8 @@ module Framework
 
     config.tind_marc = config_for(:tind_marc)
 
+    config.doemoff_patron_email = config_for(:doemoff_patron_email)
+
     config.active_job.queue_adapter = :good_job
 
     # @note By default, Rails wraps fields that contain a validation error with
@@ -83,6 +85,9 @@ module Framework
     config.tind_restrictions = config.tind_marc['restrictions']
     config.tind_locations = config.tind_marc['locations']
     config.tind_data_root_dir = config.tind_marc['data_root_dir']
+
+    # Set values for Doe/Moffitt patron email sender
+    config.patron_sender = config.doemoff_patron_email['sender']
 
     # Setup for Alma Marc Record
     # Alma SRU hostname

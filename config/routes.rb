@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     resources :service_article_request_forms, path: 'altmedia-articles'
     resources :student_edevices_loan_forms, path: 'student_edevices_loan'
     resources :galc_request_forms, path: 'galc-agreement'
+    resources :doemoff_patron_email_forms, path: 'doemoff-patron-email'
     resources :proxy_borrower_forms, path: 'proxy-borrower', only: [:index]
     resources :security_incident_report_forms, path: 'security-incident-report'
     resources :stack_requests, path: 'stack-requests', only: [:index]
