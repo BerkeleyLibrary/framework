@@ -45,7 +45,7 @@ module TindMarcSecondary
       @config = Config.new(incoming_path, da_batch_path,
                            da_label_file_path(da_batch_path),
                            base_url(incoming_path),
-                           prefix_035(incoming_path, args),
+                           prefix_035(args),
                            collection_subfields_tobe_updated(args),
                            create_collection_fields(args),
                            send_mmsid_tind_info?(args), notify?(args))
@@ -78,8 +78,12 @@ module TindMarcSecondary
     end
 
     # TODO: to figure out other collections which use f_982_a, or this could be something a user inputs from interface
-    def prefix_035(incoming_path, args)
-      incoming_path.include?('aerial/ucb') ? "(#{args[:f_982_a]})" : "(#{args[:f_980_a]}"
+    def prefix_035(args)
+      args[:f_980_a] == 'Map Collections' ? "(#{prefix(args[:f_982_a])})" : "(#{prefix(args[:f_980_a])})"
+    end
+
+    def prefix(value)
+      value.gsub(' ', '_').downcase
     end
 
     def collection_subfields_tobe_updated(args)
