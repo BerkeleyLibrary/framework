@@ -43,7 +43,8 @@ class RequestMailer < ApplicationMailer
   # Sends doemoff patron email
   def doemoff_patron_email(email_form)
     @email_form = email_form
-    mail(to: @email_form.patron_email, bcc: @email_form.recipient_email, reply_to: @email_form.recipient_email)
+    mail(to: @email_form.patron_email, bcc: @email_form.recipient_email, reply_to: @email_form.recipient_email,
+         subject: 'Message from Doe/Moffitt Libraries Staff')
   end
 
   # Sends the Security Incident form email
