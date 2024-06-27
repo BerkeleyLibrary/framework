@@ -71,10 +71,10 @@ class RequestMailerPreview < ActionMailer::Preview
   def doemoff_patron_email
     patron_email = DoemoffPatronEmailForm.new
     patron_email.patron_email = 'test@gmail.com'
-    patron_email.patron_message = 'We found the book you were looking for. Under the lamp near the entrance '\
-                                  'you will find a piece of paper with a riddle which (if properly solved) will '\
-                                  'direct you to the next riddle. Solve all the riddles correctly '\
-                                  'and it will lead you to your book'
+    patron_email.patron_message = "We found the book you were looking for. Under the lamp near the entrance "\
+                                  "you will find a piece of paper with a riddle which (if properly solved) will "\
+                                  "direct you to the next riddle.\nSolve all the riddles correctly "\
+                                  "and it will lead you to your book"
     patron_email.recipient_email = 'maincirc-library@berkeley.edu'
     RequestMailer.doemoff_patron_email(patron_email)
   end
