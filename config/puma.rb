@@ -30,8 +30,5 @@ environment ENV.fetch('RAILS_ENV') { 'development' }
 #
 # preload_app!
 
-# By default, use a pidfile that won't conflict with other containerized replicas.
-pidfile ENV.fetch('PUMA_PIDFILE', File::NULL)
-
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
