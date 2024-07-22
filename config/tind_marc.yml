@@ -15,6 +15,7 @@ default: &default
     - Restricted2Sciences
     - Restricted4DailyCal
     - Restricted2BerkeleyIP
+    - Restricted2Humanities
     - berkeley_campus
 
   data_root_dir: '/opt/app/data/da'
