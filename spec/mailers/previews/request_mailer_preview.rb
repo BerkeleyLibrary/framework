@@ -80,4 +80,18 @@ class RequestMailerPreview < ActionMailer::Preview
     patron_email.recipient_email = 'maincirc-library@berkeley.edu'
     RequestMailer.doemoff_patron_email(patron_email)
   end
+
+  def departmental_card_email
+    departmental_card = DepartmentalCardForm.new
+    departmental_card.name = 'Andy Dufresne'
+    departmental_card.email = 'andy_dufresne@shawshank.org'
+    departmental_card.phone = '510-555-5555'
+    departmental_card.address = '124 North Main Street, Portland, ME 04101'
+    departmental_card.supervisor_name = 'Brooks Hatlen'
+    departmental_card.supervisor_email = 'bhatlen@shawshank.org'
+    departmental_card.barcode = 'K81433-SHNK'
+    departmental_card.reason = 'Adding books to the library.'
+
+    RequestMailer.departmental_card_form_email(departmental_card)
+  end
 end

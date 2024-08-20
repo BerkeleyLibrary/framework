@@ -49,6 +49,7 @@ describe ApplicationController do
       StackPassFormsController => 'privdesk-library@berkeley.edu',
       StackRequestsController => 'privdesk-library@berkeley.edu',
       StudentEdevicesLoanFormsController => 'privdesk-library@berkeley.edu',
+      DepartmentalCardFormsController => 'privdesk-library@berkeley.edu',
 
       # prntscan@lists.berkeley.edu
       ScanRequestFormsController => 'prntscan@lists.berkeley.edu'

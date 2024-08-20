@@ -232,6 +232,16 @@ class RequestMailer < ApplicationMailer
     mail(to: efee.email)
   end
 
+  # Departmental Card Request : alerts to privdesk, Mark Marrow and Supervisor
+  def departmental_card_form_email(departmental_card_form)
+    @departmental_card_form = departmental_card_form
+    mail(
+      to: [privdesk_to, 'mamarrow@berkeley.edu', @departmental_card_form.supervisor_email],
+      subject: 'Departmental Card Request',
+      reply_to: [privdesk_to, 'mamarrow@berkeley.edu']
+    )
+  end
+
   private
 
   # Create the Stack Pass approved PDF file

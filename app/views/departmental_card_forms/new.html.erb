@@ -1,0 +1,73 @@
+<div id="form-view">
+  <%= form_with(url: departmental_card_forms_path, id: 'departmental-card-form', method: :post, local: true, target: '_blank') do |f| %>
+    <h1>Request a Departmental Card</h1>
+    <p>Once approved, departmental cards should be available in 2 business days at the Privileges Desk.</p>
+    <hr />
+    <p style="color: #ee0000">* All of the fields below, except Current Account Barcode are required.</p>
+    <!-- FORM START -->
+    <!-- Name -->
+    <div class="form-group mb-4 required">
+      <%= f.label(:name, 'Your Name:', class: 'control-label') %>
+      <%= f.text_field(:name, class: 'narrow form-control required', required: true, readonly: true, value: @display_name) %>
+    </div>
+    <!-- Address -->
+    <div class="mb-4 form-group required">
+      <%= f.label(:address, 'Your Campus Address:', class: 'control-label') %>
+      <%= f.text_field(:address, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    </div>
+    <!-- Phone -->
+    <div class="form-group mb-4 required">
+      <%= f.label(:phone, 'Your Phone Number:', class: 'control-label') %>
+      <%= f.text_field(:phone, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    </div>
+    
+    <!-- Email -->
+    <div class="form-group mb-4 required">
+      <%= f.label(:email, 'Your Email Address:', class: 'control-label') %>
+      <%= f.text_field(:email, class: 'narrow form-control add-required', required: true, readonly: true, value: @email) %>
+      <small class="form-text text-muted mb-4" style="padding-bottom: 35px;">
+        Circulation notices will be emailed to this address.
+      </small>
+    </div>
+
+    <!-- Supervisor Name -->
+    <div class="form-group required mb-4">
+      <%= f.label(:supervisor_name, 'Your Supervisor:', class: 'control-label') %>
+      <%= f.text_field(:supervisor_name, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    </div>
+
+    <!-- Supervisor Email -->
+    <div class="form-group mb-4 required">
+      <%= f.label(:supervisor_email, "Your Supervisor's Email:", class: 'control-label') %>
+      <%= f.text_field(:supervisor_email, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <small class="form-text text-muted mb-4">
+        Supervisors must reply to the form output email to approve card requests. Replies will be emailed to privdesk-library@berkeley.edu and mamarrow@berkeley.edu
+      </small>
+    </div>
+    
+    <!-- Current Account Barcode -->
+    <div class="mb-4">
+      <%= f.label(:barcode, 'Current Account Barcode:', class: 'control-label') %>
+      <%= f.text_field(:barcode, class: 'narrow form-control', required: false, autofocus: true) %>
+      <small class="form-text text-muted">
+        Barcode starts with an L.
+      </small>
+    </div>
+    
+    
+    <!-- Reason Needed -->
+    <div class="form-group required mb-4">
+      <%= f.label :reason, 'Reason Needed:', class: 'control-label' %>
+      (please provide as much information as possible)
+      <%= f.text_area(:reason, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    </div>
+    
+    <!-- INFO -->
+    <p><strong>New Applicants</strong> - Your card will be available for pickup at the <strong>Privileges Desk (198 Gardner Stacks)</strong> during <%= link_to 'normal business hours', 'https://www.lib.berkeley.edu/find/privileges-desk' %>, 2-3 business days after your supervisor has approved your request and informed privdesk-library@berkeley.edu and Mark Marrow.  A confirmation email will be sent notifying you the card is available for pickup.</p>
+    <p><strong>Renewing Applicants</strong> - You will be notified via email confirmation that the account expiration has been extended shortly after your supervisor has approved your request, and informed privdesk-library@berkeley.edu and Mark Marrow. You are welcome to pick up a new expiration date sticker at the <strong>Privileges Desk (198 Gardner Stacks)</strong> during <%= link_to 'normal business hours', 'https://www.lib.berkeley.edu/find/privileges-desk' %> if the need for a sticker arises; sticker is not necessary to utilize the updated card.</p>
+    <!-- SUBMIT BUTTON -->
+    <div class="form-input">
+      <p><input type="submit" id='submit-btn' class='btn btn-primary' value="Submit"></p>
+    </div>
+  <% end %>
+</div>

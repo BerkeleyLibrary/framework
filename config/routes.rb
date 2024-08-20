@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :stack_requests, path: 'stack-requests', only: [:index]
     resources :stack_pass_forms, path: 'stack-pass'
     resources :reference_card_forms, path: 'reference-card'
+    resources :departmental_card_forms, path: 'departmental-card'
   end
 
   # Alma patron validation for proxy

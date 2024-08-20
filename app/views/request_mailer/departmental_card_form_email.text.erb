@@ -1,0 +1,15 @@
+Departmental Card Request
+
+Name: <%= @departmental_card_form.name %>
+Email: <%= @departmental_card_form.email %>
+Phone: <%= @departmental_card_form.phone %>
+Campus Address: <%= @departmental_card_form.address %>
+Supervisor: <%= @departmental_card_form.supervisor_name %>
+Supervisor Email: <%= @departmental_card_form.supervisor_email %>
+<% if @departmental_card_form.barcode.present? %>
+Current Account Barcode: <%= @departmental_card_form.barcode %>
+<% end %>
+Reason Needed: <%= @departmental_card_form.reason %>
+
+Supervisors must reply to the form output email to approve card requests. 
+Replies will be emailed to privdesk-library@berkeley.edu and mamarrow@berkeley.edu
