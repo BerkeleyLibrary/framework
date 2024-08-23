@@ -72,5 +72,5 @@ extra:
     - cn=edu:berkeley:app:calmessages:CM-Student-Staff,ou=campus groups,dc=berkeley,dc=edu
     - cn=edu:berkeley:official:students:Programs:Undergrad:16288U,ou=campus groups,dc=berkeley,dc=edu
   berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
-  berkeleyedualternateid: jrdoe@berkeley.edu
+  berkeleyEduAlternateID: jrdoe@berkeley.edu
   longTermAuthenticationRequestTokenUsed: "false"
