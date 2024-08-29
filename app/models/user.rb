@@ -34,7 +34,7 @@ class User
         cs_id: auth_extra['berkeleyEduCSID'],
         department_number: auth_extra['departmentNumber'],
         display_name: auth_extra['displayName'],
-        email: auth_extra['berkeleyEduAlternateID'],
+        email: auth_extra['berkeleyEduAlternateId'],
         employee_id: auth_extra['employeeNumber'],
         given_name: auth_extra['givenName'],
         student_id: auth_extra['berkeleyEduStuID'],

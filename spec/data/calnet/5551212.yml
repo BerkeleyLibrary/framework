@@ -24,5 +24,5 @@ extra:
   berkeleyEduIsMemberOf:
     - cn=edu:berkeley:official:all,ou=campus groups,dc=berkeley,dc=edu
   berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
-  berkeleyEduAlternateID: rjroe@berkeley.edu
+  berkeleyEduAlternateId: rjroe@berkeley.edu
   longTermAuthenticationRequestTokenUsed: "false"
