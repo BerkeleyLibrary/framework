@@ -1,8 +1,0 @@
-#<div id="form-view">
-  <h1>Tind Marc Batch</h1>
-  <p>This form is for creating a Tind marc batch load from a directory of files. Metadata will be obtained from Alma</p>
-#  <%= form_for(@form) do |f| %>
-#    <%= field_for(f, :directory, required: true) %> 
-#    <%= f.submit(class: 'btn btn-primary') %> 
-#  <% end %>
-#</div>

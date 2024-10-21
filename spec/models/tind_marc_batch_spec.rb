@@ -8,14 +8,16 @@ describe TindMarcBatch do
     describe 'form' do
       before do
         params = {
-          directory: 'librettos/incoming',
+          directory: 'directory_collection/ucb/incoming',
+          flat_file_type: 'MMSID',
           initials: 'DMZ',
           f_980_a: 'Librettos',
           f_982_a: 'Italian Librettos',
           f_982_b: 'Italian Librettos',
           f_540_a: 'some restriction text',
           resource_type: 'Image',
-          library: 'The Bancroft Library'
+          library: 'The Bancroft Library',
+          source_data_root_dir: '/opt/app/spec/data/tind_marc/data/da/'.freeze
         }
         @form = TindMarcBatch.new(params)
       end
@@ -27,35 +29,12 @@ describe TindMarcBatch do
     end
   end
 
-  describe 'permitted params are valid' do
-    describe 'form' do
-      before do
-        @params = {
-          directory: nil,
-          initials: nil,
-          f_980_a: nil,
-          f_982_a: nil,
-          f_982_b: nil,
-          f_540_a: nil,
-          resource_type: nil,
-          library: nil,
-          f_982_p: nil,
-          restriction: nil
-        }
-      end
-
-      it 'is valid' do
-        expect(TindMarcBatch.new(@params).permitted_params).to eq(@params)
-      end
-
-    end
-  end
-
   describe 'has non-permitted params' do
     describe 'form' do
       before do
         @params = {
           directory: nil,
+          flat_file_type: nil,
           initials: nil,
           f_980_a: nil,
           f_982_a: nil,

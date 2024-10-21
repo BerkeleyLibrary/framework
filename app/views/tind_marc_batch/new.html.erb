@@ -1,4 +1,6 @@
-<h1>Tind MARC Batch Load Tool</h1>
+<h1>Tind MARC Batch Load Tool</h1> 
+ <div style='text-align: right'>  <%= link_to 'MMSID and TIND Information', mmsid_tind_path(directory: params[:directory]), title: 'Go to MMSID and TIND information page', target: '_blank' %> </div>
+
 <p>This form is for creating a Tind Marc batch load from a directory of files. Metadata will be obtained from Alma.</p>
 <%= form_with(url: '', local: true, target: '_blank') do |f| %>  
   <!-- %= hidden_field_tag :email, @current_user.email % -->
@@ -11,7 +13,9 @@
   <div class="form-input required mb-4">
     <%= f.text_field(:directory, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
   </div>
-
+  <div class="form-input mb-4">
+    <div> <%= f.check_box :mmsid_barcode, {required: false, checked: 'unchecked'} %> <%= f.label :mmsid_barcode_check, "Select to use MMSID and barcode to create TIND records. (If files have same MMSID but different barcodes, the tool will create multiple TIND records.)" %> </div>
+  </div> 
   <div class="form-label form-group required">
     <%= label_tag('library', 'Library Location', class: 'control-label') %>
   </div>

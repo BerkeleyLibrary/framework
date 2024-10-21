@@ -196,11 +196,11 @@ class RequestMailer < ApplicationMailer
     mail(to: reference_card_form.email, subject: 'Reference Card Request - Approved')
   end
 
-  # Send marc batch file for Tind upload.
-  def tind_marc_batch_email(email, subject, body, batch_file = nil, batch_file_contents = nil)
-    return mail(to: email, subject:, body:) if batch_file_contents.nil?
-
-    attachments[batch_file] = batch_file_contents
+  # Send marc multiple batch files for Tind upload.
+  def tind_marc_batch_2_email(email, attachment_contents, subject, body)
+    attachment_contents.each do |filename, attachment|
+      attachments[filename] = attachment
+    end
     mail(to: email, subject:, body:)
   end
 

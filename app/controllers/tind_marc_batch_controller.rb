@@ -2,16 +2,19 @@ class TindMarcBatchController < ApplicationController
   before_action :authorize!
   before_action :validate_params, only: :create
 
-  def index
-    redirect_with_params(action: :new)
-  end
-
   def result; end
 
   def create
     TindMarcBatchJob.perform_later(TindMarcBatch.new(params).permitted_params, current_user.email)
     render :result
   end
+
+  # testing locally
+  # def create
+  #   creater = TindMarc::TindBatchTask.new(TindMarcBatch.new(params).permitted_params, current_user.email)
+  #   creater.run
+  #   render :result
+  # end
 
   private
 

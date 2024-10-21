@@ -98,6 +98,14 @@ Rails.application.routes.draw do
   get '/tind-marc-batch', to: 'tind_marc_batch#new'
   post '/tind-marc-batch', to: 'tind_marc_batch#create'
 
+  # Tind Alma batch load test request
+  get '/tind-marc-batch-test', to: 'tind_marc_batch_test#new'
+  post '/tind-marc-batch-test', to: 'tind_marc_batch_test#create'
+
+  # Tind MMSID Information request
+  get '/mmsid-tind', to: 'mmsid_tind#new'
+  post '/mmsid-tind', to: 'mmsid_tind#create'
+
   # Alma Item Set Routes
   get '/alma-item-set', to: 'alma_item_set#index'
   post '/alma-item-set', to: 'alma_item_set#update'

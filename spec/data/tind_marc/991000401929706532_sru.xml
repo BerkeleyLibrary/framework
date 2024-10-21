@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><searchRetrieveResponse xmlns="http://www.loc.gov/zing/srw/">
+  <version>1.2</version>
+  <numberOfRecords>1</numberOfRecords>
+  <records>
+    <record>
+      <recordSchema>marcxml</recordSchema>
+      <recordPacking>xml</recordPacking>
+      <recordData>
+        <record xmlns="http://www.loc.gov/MARC21/slim">
+          <leader>01514nem a2200349 a 4500</leader>
+          <controlfield tag="001">991000401929706532</controlfield>
+          <controlfield tag="008">831227s1974    cau          f  0   eng d</controlfield>
+          <datafield ind1="1" ind2=" " tag="034">
+            <subfield code="a">a15840</subfield>
+            <subfield code="d">Wl231600</subfield>
+            <subfield code="e">W1223100</subfield>
+            <subfield code="f">N0401100</subfield>
+            <subfield code="g">N0390200</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(CUY)UCB-b100118720-01ucs_ber</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(OCoLC)21637869</subfield>
+            <subfield code="9">ExL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">CUBG1530-M</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(EXLNZ-01UCS_NETWORK)9913452218306531</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="052">
+            <subfield code="a">4362</subfield>
+            <subfield code="b">M4</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="052">
+            <subfield code="a">4363</subfield>
+            <subfield code="b">C5</subfield>
+            <subfield code="b">G5</subfield>
+            <subfield code="b">L2</subfield>
+            <subfield code="b">M4</subfield>
+            <subfield code="b">T4</subfield>
+            <subfield code="b">T7</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="090">
+            <subfield code="b">AIR PHOTO 01</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1="2" ind2=" " tag="110">
+            <subfield code="a">Pacific Resources (Firm)</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="0" tag="245">
+            <subfield code="a">Mendocino National Forest, :</subfield>
+            <subfield code="b">California /</subfield>
+            <subfield code="c">Pacific Resources, Inc.</subfield>
+          </datafield>
+          <datafield ind1="3" ind2=" " tag="246">
+            <subfield code="a">[Aerial photgraph of Mendocino National Forest, California.]</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="255">
+            <subfield code="a">Scale ca. 1:15,840</subfield>
+            <subfield code="c">(W 123⁰16'--W 122⁰31'/N 40⁰11'--N 39⁰02')</subfield>
+          </datafield>
+          <datafield ind1="0" ind2=" " tag="260">
+            <subfield code="a">[California?] :</subfield>
+            <subfield code="b">Pacific Resources,</subfield>
+            <subfield code="c">1974.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="300">
+            <subfield code="a">1,511 aerial remote-sensing images ;</subfield>
+            <subfield code="c">33 x 33 cm. + index map.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="500">
+            <subfield code="a">Flight number: ME 03.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="500">
+            <subfield code="a">Calibrated focal length (8 1/4) 208.28 mm.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="500">
+            <subfield code="a">Flown for the U.S. Forest Service, Contract no.39-4891.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="500">
+            <subfield code="a">Title from index map.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="500">
+            <subfield code="a">Black and white contact prints. Some prints also in color.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="590">
+            <subfield code="a">EART; AIR PHOTO 01: For holdings see index map.</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="0" tag="651">
+            <subfield code="a">Mendocino National Forest (Calif.)</subfield>
+            <subfield code="v">Aerial photographs.</subfield>
+          </datafield>
+          <datafield ind1="1" ind2="0" tag="710">
+            <subfield code="a">United States.</subfield>
+            <subfield code="b">Forest Service.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="968">
+            <subfield code="a">Reclvl: f Addate: 831227 Addid: UCB Moddate: 080529 Modid: XRF</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="993">
+            <subfield code="a">20130624</subfield>
+            <subfield code="b">Gov Doc</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="993">
+            <subfield code="a">20140903</subfield>
+            <subfield code="b">Gov Doc Federal</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="996">
+            <subfield code="e">GLADN77480</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="996">
+            <subfield code="a">b100118720</subfield>
+            <subfield code="b">Updated: 08-09-20</subfield>
+            <subfield code="c">Created: 03-11-09</subfield>
+            <subfield code="d">CatDate: 12-27-83</subfield>
+            <subfield code="9">LOCAL</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="AVA">
+            <subfield code="0">991000401929706532</subfield>
+            <subfield code="8">22700284430006532</subfield>
+            <subfield code="a">01UCS_BER</subfield>
+            <subfield code="b">EART</subfield>
+            <subfield code="c">Earth Science/Map Collection Air Photos</subfield>
+            <subfield code="d">AIR PHOTO 01</subfield>
+            <subfield code="e">available</subfield>
+            <subfield code="f">1513</subfield>
+            <subfield code="g">0</subfield>
+            <subfield code="i">UCB_Campus</subfield>
+            <subfield code="j">es93</subfield>
+            <subfield code="k">8</subfield>
+            <subfield code="p">1</subfield>
+            <subfield code="q">Earth Sciences &amp; Map Library</subfield>
+            <subfield code="t">1,504 photos + index, and duplicate prints in color of: 2:293, 3:271, 6:56, 138, 216, 249, 295, 314.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="AVA">
+            <subfield code="0">991000401929706532</subfield>
+            <subfield code="8">22700304770006532</subfield>
+            <subfield code="a">01UCS_BER</subfield>
+            <subfield code="b">EART</subfield>
+            <subfield code="c">Earth Science/Map Collection Index Case</subfield>
+            <subfield code="d">AIR PHOTO 01</subfield>
+            <subfield code="e">available</subfield>
+            <subfield code="f">1</subfield>
+            <subfield code="g">0</subfield>
+            <subfield code="i">UCB_Campus</subfield>
+            <subfield code="j">esi</subfield>
+            <subfield code="k">8</subfield>
+            <subfield code="p">2</subfield>
+            <subfield code="q">Earth Sciences &amp; Map Library</subfield>
+          </datafield>
+        </record>
+      </recordData>
+      <recordIdentifier>991000401929706532</recordIdentifier>
+      <recordPosition>1</recordPosition>
+    </record>
+  </records>
+  <extraResponseData xmlns:xb="http://www.exlibris.com/repository/search/xmlbeans/">
+    <xb:exact>true</xb:exact>
+    <xb:responseDate>2024-08-28T17:32:04-0700</xb:responseDate>
+  </extraResponseData>
+</searchRetrieveResponse>

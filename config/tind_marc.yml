@@ -7,7 +7,7 @@ default: &default
     - Video 
     - Audio
     - Notated Music
-
+    
   restrictions:
     - Restricted2Admin
     - Restricted2Bancroft
