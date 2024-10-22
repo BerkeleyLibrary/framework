@@ -26,7 +26,7 @@ module TindMarc
     end
 
     def rows_from_mmsid_flat_files
-      Util.mmsids_from_flat_filenames(@batch_info.da_batch_path).map { |mmsid| mmsid_to_row(mmsid) }
+      Util.identifications_from_flat_filenames(@batch_info.da_batch_path, 1).map { |mmsid| mmsid_to_row(mmsid) }
     end
 
     def mmsid_to_row(mmsid, folder_name = nil)

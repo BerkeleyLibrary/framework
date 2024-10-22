@@ -14,10 +14,6 @@ module TindMarc
         raise StandardError, txt
       end
 
-      def mmsids_from_flat_filenames(dir_path)
-        file_path_names_from_flat_files(dir_path).map { |filename| filename.split('_')[0] }.compact.uniq
-      end
-
       def identifications_from_flat_filenames(dir_path, flat_file_combination_num)
         ruturn [] if flat_file_combination_num.nil?
 
