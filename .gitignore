@@ -319,3 +319,6 @@ flycheck_*.el
 # testing data
 /data/da/aerial/ucb/*
 /data/da/wwii/*
+
+# .local (used by ruby-advisory-db for caching)
+.local
