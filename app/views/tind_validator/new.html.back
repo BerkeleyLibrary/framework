@@ -1,0 +1,13 @@
+<!--%= form_for(@form, class: 'needs-validation') do |f| %-->
+<%= form_with(url: '', local: true, target: '_blank') do |f| %>
+<div class="form-label form-group required">
+	<%= f.label :input_file, class: 'control-label' %>
+</div>
+<div class="form-input required">
+	<!-- %= f.file_field :input_file, class: 'form-control add-required', accept: accept_mime_type, required: true %-->
+	<%= f.file_field :input_file, class: 'form-control add-required', required: true %>
+</div>
+<div>
+ <%= f.submit(class: %w[btn btn-primary], disabled: false) %>
+</div>
+<% end %>

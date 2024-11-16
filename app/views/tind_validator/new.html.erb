@@ -1,0 +1,89 @@
+<h1>Tind Batch Validator</h1>
+<p>This form is for creating a Tind Marc batch load using a spreadsheet. Metadata will be supplied from spreadsheet.</p>
+<%= form_with(url: '', local: true, target: '_blank') do |f| %>  
+  <%= hidden_field_tag :email, @email %>
+  <hr />
+  <p style="color: #ee0000">* Required</p>
+  <div class="form-label form-group required">
+    <%= f.label :input_file, class: 'control-label' %>
+  </div>
+  <div class="form-input required">
+    <!-- %= f.file_field :input_file, class: 'form-control add-required', accept: accept_mime_type, required: true %-->
+    <%= f.file_field :input_file, class: 'form-control add-required', required: true %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('directory', 'Resource Directory', class: 'control-label') %>
+    <span style="font-size:0.8em">(example: librettos/ucb/incoming or /librettos/ucb/incoming)</span>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:directory, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('library', 'Library Location', class: 'control-label') %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:'852__c', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('902_n', '902_n (your initials)', class: 'control-label') %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:'902__n', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('980_a', '980_a (internal collection code)', class: 'control-label') %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:'980__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('982_a', '982_a (collection short name)', class: 'control-label') %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:'982__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('982_b', '982_b (collection long name)', class: 'control-label') %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.text_field(:'982__b', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group">
+    <%= label_tag('982_p', '982_p (optional)', class: 'control-label') %>
+  </div>
+  <div class="form-input mb-4">
+    <%= f.text_field(:'982__p', :onkeyup => 'checkFormInputs()', class: 'narrow form-control', required: false, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('type', 'Resource Type (for facet)', class: 'control-label') %>
+  </div>
+  <div class="form-input required mb-4">
+    <%= f.select :'336__a', Rails.application.config.tind_resource_types %>
+  </div>
+
+  <div class="form-label form-group required">
+    <%= label_tag('540_a', '540_a (Rights statement, can be edited)', class: 'control-label') %>
+  </div>
+  <div class="form-input mb-4 required">
+    <%= f.text_area(:'540__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true, value: t('tind_marc_batch.standard_rights_statement'), rows: 8, required: true ) %>
+  </div>
+
+  <div class="form-label form-group">
+    <%= label_tag('restriction', 'Restriction (optional)', class: 'control-label') %>
+  </div>
+  <div class="form-input mb-4">
+    <%= f.select :'991__a', Rails.application.config.tind_restrictions, include_blank: true %>
+  </div>
+
+  <div class="form-input">
+   <%= f.submit(class: 'btn btn-primary', value: 'Create Batch') %> 
+  </div>
+<% end %>

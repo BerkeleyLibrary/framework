@@ -4,10 +4,14 @@ services:
       context: .
       target: development
     depends_on:
-      - db
-      - worker
-      - selenium
-      - selenium-chrome
+      db:
+        condition: service_started
+      worker:
+        condition: service_started
+      selenium:
+        condition: service_started
+      selenium-chrome:
+        condition: service_started
     init: true
     networks:
       default:
@@ -79,5 +83,3 @@ services:
     restart: always
     ports:
       - 8080:8080
-
-version: '3.8'
