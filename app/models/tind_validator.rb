@@ -3,10 +3,10 @@ class TindValidator < Form
 
   BASE_PATH = '/opt/app/data/da/4tind/tind_spreadsheets'.freeze
 
-  REQUIRED_PARAMS = %i[directory 980__a 982__a 982__b 540__a 336__a 852__c 902__n email].freeze
+  REQUIRED_PARAMS = %i[directory 980__a 982__a 982__b 540__a 336__a 852__c 902__n].freeze
   OPTIONAL_PARAMS = %i[982__p 991__a].freeze
 
-  validates :directory, :email, :'980__a', :'982__a', :'982__b', :'336__a', :'540__a', :'852__c', :'902__n', :input_file, presence: true
+  validates :directory, :'980__a', :'982__a', :'982__b', :'336__a', :'540__a', :'852__c', :'902__n', :input_file, presence: true
   validate :directory_must_exist
   validate :directory_has_digital_assets
 
