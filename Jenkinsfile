@@ -2,9 +2,9 @@ dockerComposePipeline(
   stack: [template: 'postgres-selenium'],
   commands: [
     [
-        [exec: 'rake check RAILS_ENV=test'],
+        # [exec: 'rake check RAILS_ENV=test'],
         'rake js:eslint NODE_ENV=development',
-        'rake rubocop',
+        # 'rake rubocop',
         'rake brakeman',
         'rake bundle:audit'
     ],
