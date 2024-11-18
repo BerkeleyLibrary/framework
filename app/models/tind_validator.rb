@@ -8,7 +8,7 @@ class TindValidator < Form
 
   validates :directory, :'980__a', :'982__a', :'982__b', :'336__a', :'540__a', :'852__c', :'902__n', :input_file, presence: true
   validate :directory_must_exist
-  validate :directory_has_digital_assets
+  # validate :directory_has_digital_assets
 
   def initialize(params)
     super()
