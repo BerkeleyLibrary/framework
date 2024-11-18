@@ -8,10 +8,7 @@ dockerComposePipeline(
     ],
   ],
   artifacts: [
-    junit   : 'artifacts/rspec/**/*.xml',
     html    : [
-      'Code Coverage': 'artifacts/rcov',
-      'RuboCop'      : 'artifacts/rubocop',
       'Brakeman'     : 'artifacts/brakeman',
       'ESLint'       : 'artifacts/eslint'
     ],
