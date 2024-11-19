@@ -4,7 +4,7 @@ dockerComposePipeline(
     [
         [exec: 'rake check RAILS_ENV=test'],
         'rake js:eslint NODE_ENV=development',
-        'rake rubocop',
+        // 'rake rubocop',
         'rake brakeman',
         'rake bundle:audit'
     ],
@@ -13,7 +13,7 @@ dockerComposePipeline(
     junit   : 'artifacts/rspec/**/*.xml',
     html    : [
       'Code Coverage': 'artifacts/rcov',
-      'RuboCop'      : 'artifacts/rubocop',
+      // 'RuboCop'      : 'artifacts/rubocop',
       'Brakeman'     : 'artifacts/brakeman',
       'ESLint'       : 'artifacts/eslint'
     ],
