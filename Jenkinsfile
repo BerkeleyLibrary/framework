@@ -1,3 +1,5 @@
+@Library('jenkins-workflow-scripts@auto_previews') _
+
 dockerComposePipeline(
   stack: [template: 'postgres-selenium'],
   commands: [
