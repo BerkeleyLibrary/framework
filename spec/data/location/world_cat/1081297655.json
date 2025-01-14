@@ -1,0 +1,37 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "930786480",
+			"title": "Microeconomics : theory and applications with calculus",
+			"creator": "Jeffrey M. Perloff",
+			"date": "2017",
+			"machineReadableDate": "2017",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Fourth edition",
+			"publisher": "Pearson",
+			"publicationPlace": "Boston",
+			"isbns": [
+				"0134167384",
+				"9780134167381"
+			],
+			"mergedOclcNumbers": [
+				"923556491",
+				"935986853",
+				"936004562",
+				"1081297655"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 0
+			}
+		}
+	]
+}

@@ -1,0 +1,59 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "786872103",
+			"title": "Physical chemistry : a molecular approach",
+			"creator": "Donald A. McQuarrie",
+			"date": "1997",
+			"machineReadableDate": "1997",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"publisher": "University Science Books",
+			"publicationPlace": "Sausalito California",
+			"isbns": [
+				"0935702997",
+				"9780935702996"
+			],
+			"mergedOclcNumbers": [
+				"844503899",
+				"1191395603",
+				"1201599437",
+				"1201851969"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "LEAUB",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "LEAUB"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 1,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

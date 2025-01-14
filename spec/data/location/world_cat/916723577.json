@@ -1,0 +1,116 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "916723577",
+			"title": "Munson, Young, and Okiishi's Fundamentals of fluid mechanics",
+			"creator": "Bruce Roy Munson",
+			"date": "2016",
+			"machineReadableDate": "2016",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Eighth edition",
+			"publisher": "Wiley",
+			"publicationPlace": "Hoboken, NJ",
+			"isbns": [
+				"1119080703",
+				"9781119080701"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "YDXCP",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "YDXCP"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 4,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CLU",
+						"registryId": 207,
+						"institutionNumber": 781,
+						"institutionName": "University of California, Los Angeles",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/207",
+						"address": {
+							"street1": "280 Charles E. Young Dr.",
+							"city": "Los Angeles",
+							"state": "US-CA",
+							"postalCode": "90255",
+							"country": "US",
+							"lat": 34.07501,
+							"lon": -118.441185
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUI",
+						"registryId": 5656,
+						"institutionNumber": 1101,
+						"institutionName": "University of California, Irvine",
+						"alsoCalled": "Langson Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5656",
+						"address": {
+							"street1": "Univ of California Irvine",
+							"city": "Irvine",
+							"state": "US-CA",
+							"postalCode": "92697",
+							"country": "US",
+							"lat": 33.647266,
+							"lon": -117.841034
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUS",
+						"registryId": 30059,
+						"institutionNumber": 840,
+						"institutionName": "University of California, San Diego",
+						"alsoCalled": "UC San Diego Library; UCSD Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/30059",
+						"address": {
+							"street1": "9500 Gilman Drive, Dept. 0175G",
+							"city": "La Jolla",
+							"state": "US-CA",
+							"postalCode": "92093-0175",
+							"country": "US",
+							"lat": 32.881065,
+							"lon": -117.23741
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

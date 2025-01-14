@@ -1,0 +1,58 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1019839414",
+			"title": "Epidemiology : beyond the basics",
+			"creator": "M. Szklo",
+			"date": "2019",
+			"machineReadableDate": "2019",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Fourth edition",
+			"publisher": "Jones & Bartlett Learning",
+			"publicationPlace": "Burlington, Massachusetts",
+			"isbns": [
+				"9781284116595",
+				"128411659X"
+			],
+			"mergedOclcNumbers": [
+				"995126798",
+				"1019836353"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DNLM/DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 1,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

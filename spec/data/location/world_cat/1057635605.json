@@ -1,0 +1,82 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1057635605",
+			"title": "There there",
+			"creator": "Tommy Orange",
+			"date": "2019",
+			"machineReadableDate": "2018",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "First Vintage books edition",
+			"publisher": "Vintage Books, a division of Penguin Random House LLC",
+			"publicationPlace": "New York",
+			"isbns": [
+				"0525436146",
+				"9780525436140",
+				"9781784707972",
+				"178470797X"
+			],
+			"mergedOclcNumbers": [
+				"1255413457",
+				"1298903367",
+				"1302352484"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "YDX",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "YDX"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 2,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUV",
+						"registryId": 5697,
+						"institutionNumber": 2340,
+						"institutionName": "University of California, Davis",
+						"alsoCalled": "Shields Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5697",
+						"address": {
+							"street1": "100 NW Quad",
+							"city": "Davis",
+							"state": "US-CA",
+							"postalCode": "95616-5292",
+							"country": "US",
+							"lat": 38.539604,
+							"lon": -121.749374
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

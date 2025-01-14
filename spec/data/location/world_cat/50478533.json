@@ -1,0 +1,102 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "50478533",
+			"title": "American Indian stories, legends, and other writings",
+			"creator": "Zitkala-S̈a",
+			"date": "2003",
+			"machineReadableDate": "2003",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"publisher": "Penguin Books",
+			"publicationPlace": "New York, N.Y.",
+			"isbns": [
+				"0142437093",
+				"9780142437094"
+			],
+			"mergedOclcNumbers": [
+				"52455972",
+				"123075835",
+				"232705437",
+				"718006289",
+				"1305852358"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": "4",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 3,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUV",
+						"registryId": 5697,
+						"institutionNumber": 2340,
+						"institutionName": "University of California, Davis",
+						"alsoCalled": "Shields Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5697",
+						"address": {
+							"street1": "100 NW Quad",
+							"city": "Davis",
+							"state": "US-CA",
+							"postalCode": "95616-5292",
+							"country": "US",
+							"lat": 38.539604,
+							"lon": -121.749374
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUS",
+						"registryId": 30059,
+						"institutionNumber": 840,
+						"institutionName": "University of California, San Diego",
+						"alsoCalled": "UC San Diego Library; UCSD Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/30059",
+						"address": {
+							"street1": "9500 Gilman Drive, Dept. 0175G",
+							"city": "La Jolla",
+							"state": "US-CA",
+							"postalCode": "92093-0175",
+							"country": "US",
+							"lat": 32.881065,
+							"lon": -117.23741
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

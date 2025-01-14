@@ -1,0 +1,103 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "895650546",
+			"title": "The poetic Edda",
+			"creator": "Carolyne Larrington",
+			"date": "2014",
+			"machineReadableDate": "2014",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Revised edition",
+			"publisher": "Oxford University Press",
+			"publicationPlace": "Oxford",
+			"isbns": [
+				"9780199675340",
+				"0199675341",
+				"9780198834571",
+				"0198834578"
+			],
+			"mergedOclcNumbers": [
+				"891029243",
+				"1197738301"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 3,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUI",
+						"registryId": 5656,
+						"institutionNumber": 1101,
+						"institutionName": "University of California, Irvine",
+						"alsoCalled": "Langson Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5656",
+						"address": {
+							"street1": "Univ of California Irvine",
+							"city": "Irvine",
+							"state": "US-CA",
+							"postalCode": "92697",
+							"country": "US",
+							"lat": 33.647266,
+							"lon": -117.841034
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUT",
+						"registryId": 211,
+						"institutionNumber": 1959,
+						"institutionName": "University of California, Santa Barbara",
+						"alsoCalled": "UCSB Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/211",
+						"address": {
+							"street1": "UCSB Library",
+							"street2": "525 UCEN Road",
+							"city": "Santa Barbara",
+							"state": "US-CA",
+							"postalCode": "93106-9010",
+							"country": "US",
+							"lat": 34.41369,
+							"lon": -119.84556
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

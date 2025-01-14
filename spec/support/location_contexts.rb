@@ -127,10 +127,27 @@ RSpec.shared_context('LocationRequest') do
   let(:ht_batch_uris) { batches.map { |batch| BerkeleyLibrary::Location::HathiTrust::RecordUrlBatchRequest.new(batch).uri } }
   let(:ht_batch_json_bodies) { Array.new(batches.size) { |i| File.read("spec/data/location/hathi_trust/ht-batch-#{i}.json") } }
 
+  def stub_token_request
+    stub_request(:post, 'https://oauth.oclc.org/token?grant_type=client_credentials&scope=wcapi:view_institution_holdings')
+      .with(
+        headers: {
+          'Accept' => 'application/json',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => /^Basic /,
+          'User-Agent' => 'Ruby'
+        }
+      )
+      .to_return(
+        status: 200,
+        body: File.read('spec/data/location/world_cat/token.json'),
+        headers: {}
+      )
+  end
+
   def stub_wc_request_for(oclc_number)
     req = BerkeleyLibrary::Location::WorldCat::LibrariesRequest.new(oclc_number)
-    xml = File.read("spec/data/location/world_cat/#{oclc_number}.xml")
-    stub_request(:get, req.uri).with(query: req.params).to_return(body: xml)
+    json = File.read("spec/data/location/world_cat/#{oclc_number}.json")
+    stub_request(:get, req.uri).with(query: req.params).to_return(body: json)
   end
 
   def stub_ht_request(ht_batch_uri)

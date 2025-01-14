@@ -1,0 +1,54 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "916140635",
+			"title": "Medical nutrition therapy : a case-study approach",
+			"creator": "Marcia Nahikian-Nelms",
+			"date": "2017",
+			"machineReadableDate": "2017",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Fifth edition",
+			"publisher": "Cengage Learning",
+			"publicationPlace": "[Boston, Mass.]",
+			"isbns": [
+				"9781305628663",
+				"1305628667"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "YDXCP",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "YDXCP"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 1,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

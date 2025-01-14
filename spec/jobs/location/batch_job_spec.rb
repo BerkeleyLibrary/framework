@@ -12,6 +12,8 @@ module Location
     attr_reader :result_url
 
     before do
+      stub_token_request
+
       ht_batch_uris.each { |batch_uri| stub_ht_request(batch_uri) }
       oclc_numbers_expected.each { |oclc_number| stub_wc_request_for(oclc_number) }
 

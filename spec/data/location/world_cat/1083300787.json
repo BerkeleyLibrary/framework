@@ -1,0 +1,54 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1083300787",
+			"title": "Discrete mathematics and its applications : Math 55 University of California Berkeley",
+			"creator": "Kenneth H. Rosen",
+			"date": "2019",
+			"machineReadableDate": "2019",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Eighth edition",
+			"publisher": "McGraw-Hill",
+			"publicationPlace": "New York, NY",
+			"isbns": [
+				"9781260836530",
+				"1260836533"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "CUY",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "CUY"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 1,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

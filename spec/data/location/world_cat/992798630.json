@@ -1,0 +1,110 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "992798630",
+			"title": "Materials science and engineering : an introduction",
+			"creator": "William D. Callister",
+			"date": "2018",
+			"machineReadableDate": "2018",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "10th edition",
+			"publisher": "Wiley",
+			"publicationPlace": "Hoboken, NJ",
+			"isbns": [
+				"1119463092",
+				"9781119463092",
+				"9781119405399",
+				"1119405394",
+				"9781119405405",
+				"1119405408",
+				"9781119471981",
+				"1119471982",
+				"9781119463153",
+				"1119463157",
+				"9781119721772",
+				"1119721776"
+			],
+			"mergedOclcNumbers": [
+				"1048459984",
+				"1132416452"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 3,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CLU",
+						"registryId": 207,
+						"institutionNumber": 781,
+						"institutionName": "University of California, Los Angeles",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/207",
+						"address": {
+							"street1": "280 Charles E. Young Dr.",
+							"city": "Los Angeles",
+							"state": "US-CA",
+							"postalCode": "90255",
+							"country": "US",
+							"lat": 34.07501,
+							"lon": -118.441185
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CRU",
+						"registryId": 208,
+						"institutionNumber": 1058,
+						"institutionName": "University of California, Riverside",
+						"alsoCalled": "UCR",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/208",
+						"address": {
+							"street1": "Ill - Rivera Library / University of California",
+							"street2": "3401 Watkins Drive",
+							"city": "Riverside",
+							"state": "US-CA",
+							"postalCode": "92521-0409",
+							"country": "US",
+							"lat": 33.972725,
+							"lon": -117.32714
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

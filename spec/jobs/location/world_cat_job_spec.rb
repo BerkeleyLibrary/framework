@@ -6,6 +6,10 @@ module Location
     include_context('LocationRequest')
 
     describe :perform do
+      before do
+        stub_token_request
+      end
+
       it 'rejects a non-Worldcat request' do
         req.update(rlf: false, uc: false)
 
@@ -112,6 +116,7 @@ module Location
 
         request_records = req.location_records
         expect(request_records.where(wc_retrieved: true).count).to eq(first_batch.size)
+
         expect(request_records.where.not(wc_error: nil)).not_to exist
 
         expect(req.wc_incomplete?).to eq(true)

@@ -1,0 +1,56 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1233025104",
+			"title": "The political economy reader : contending perspectives and contemporary debates",
+			"creator": "Naazneen Barma",
+			"date": "2022",
+			"machineReadableDate": "2022",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Second edition",
+			"publisher": "Routledge, Taylor & Francis Group",
+			"publicationPlace": "New York",
+			"isbns": [
+				"9780367497293",
+				"0367497298",
+				"9780367497248",
+				"0367497247"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 1,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

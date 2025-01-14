@@ -1,0 +1,79 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1202732743",
+			"title": "\"They say / I say\" : the moves that matter in academic writing with readings",
+			"creator": "Gerald Graff",
+			"date": "2021",
+			"machineReadableDate": "2021",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Fifth edition",
+			"publisher": "W.W. Norton & Company",
+			"publicationPlace": "New York, NY",
+			"isbns": [
+				"9780393427509",
+				"0393427501",
+				"9780393538731",
+				"0393538737"
+			],
+			"mergedOclcNumbers": [
+				"1474657071"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 2,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CLU",
+						"registryId": 207,
+						"institutionNumber": 781,
+						"institutionName": "University of California, Los Angeles",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/207",
+						"address": {
+							"street1": "280 Charles E. Young Dr.",
+							"city": "Los Angeles",
+							"state": "US-CA",
+							"postalCode": "90255",
+							"country": "US",
+							"lat": 34.07501,
+							"lon": -118.441185
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

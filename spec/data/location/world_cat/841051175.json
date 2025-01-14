@@ -1,0 +1,234 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "841051175",
+			"title": "The biology of cancer",
+			"creator": "Robert A. Weinberg",
+			"date": "2014",
+			"machineReadableDate": "2014",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Second edition",
+			"publisher": "Garland Science, Taylor & Francis Group",
+			"publicationPlace": "New York",
+			"isbns": [
+				"0815342195",
+				"9780815342199",
+				"0815342209",
+				"9780815342205"
+			],
+			"mergedOclcNumbers": [
+				"829055826",
+				"846814992",
+				"856582346",
+				"889374639",
+				"906244146",
+				"970514582",
+				"971539695",
+				"971996775",
+				"978025839",
+				"1015487369",
+				"1017788018",
+				"1027378814",
+				"1027951443",
+				"1030071189",
+				"1035346017",
+				"1056841951",
+				"1076773367",
+				"1105375560",
+				"1107586017",
+				"1114797121",
+				"1117843901",
+				"1179435623",
+				"1200987664",
+				"1201004103",
+				"1201625220"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 8,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUN",
+						"registryId": 210,
+						"institutionNumber": 2117,
+						"institutionName": "University of California, San Francisco",
+						"alsoCalled": "UCSF; UC San Francisco; Univ of CA, San Francisco",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/210",
+						"address": {
+							"street1": "Library &amp; CKM",
+							"street2": "530 Parnassus Avenue",
+							"city": "San Francisco",
+							"state": "US-CA",
+							"postalCode": "94143-0840",
+							"country": "US",
+							"lat": 37.763477,
+							"lon": -122.45915
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUZ",
+						"registryId": 4688,
+						"institutionNumber": 2132,
+						"institutionName": "University of California, Santa Cruz",
+						"alsoCalled": "UCSC",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/4688",
+						"address": {
+							"street1": "University of California, Santa Cruz",
+							"street2": "University Library, 1156 High St",
+							"city": "Santa Cruz",
+							"state": "US-CA",
+							"postalCode": "95064",
+							"country": "US",
+							"lat": 36.996063,
+							"lon": -122.05888
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CRU",
+						"registryId": 208,
+						"institutionNumber": 1058,
+						"institutionName": "University of California, Riverside",
+						"alsoCalled": "UCR",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/208",
+						"address": {
+							"street1": "Ill - Rivera Library / University of California",
+							"street2": "3401 Watkins Drive",
+							"city": "Riverside",
+							"state": "US-CA",
+							"postalCode": "92521-0409",
+							"country": "US",
+							"lat": 33.972725,
+							"lon": -117.32714
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUI",
+						"registryId": 5656,
+						"institutionNumber": 1101,
+						"institutionName": "University of California, Irvine",
+						"alsoCalled": "Langson Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5656",
+						"address": {
+							"street1": "Univ of California Irvine",
+							"city": "Irvine",
+							"state": "US-CA",
+							"postalCode": "92697",
+							"country": "US",
+							"lat": 33.647266,
+							"lon": -117.841034
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUV",
+						"registryId": 5697,
+						"institutionNumber": 2340,
+						"institutionName": "University of California, Davis",
+						"alsoCalled": "Shields Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5697",
+						"address": {
+							"street1": "100 NW Quad",
+							"city": "Davis",
+							"state": "US-CA",
+							"postalCode": "95616-5292",
+							"country": "US",
+							"lat": 38.539604,
+							"lon": -121.749374
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUT",
+						"registryId": 211,
+						"institutionNumber": 1959,
+						"institutionName": "University of California, Santa Barbara",
+						"alsoCalled": "UCSB Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/211",
+						"address": {
+							"street1": "UCSB Library",
+							"street2": "525 UCEN Road",
+							"city": "Santa Barbara",
+							"state": "US-CA",
+							"postalCode": "93106-9010",
+							"country": "US",
+							"lat": 34.41369,
+							"lon": -119.84556
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUS",
+						"registryId": 30059,
+						"institutionNumber": 840,
+						"institutionName": "University of California, San Diego",
+						"alsoCalled": "UC San Diego Library; UCSD Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/30059",
+						"address": {
+							"street1": "9500 Gilman Drive, Dept. 0175G",
+							"city": "La Jolla",
+							"state": "US-CA",
+							"postalCode": "92093-0175",
+							"country": "US",
+							"lat": 32.881065,
+							"lon": -117.23741
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

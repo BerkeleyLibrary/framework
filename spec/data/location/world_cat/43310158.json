@@ -1,0 +1,79 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "43310158",
+			"title": "Abstract algebra",
+			"creator": "I. N. Herstein",
+			"date": "©1999",
+			"machineReadableDate": "1999",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "3rd ed",
+			"publisher": "J. Wiley & Sons",
+			"publicationPlace": "New York",
+			"isbns": [
+				"0471368792",
+				"9780471368793"
+			],
+			"mergedOclcNumbers": [
+				"1191400477",
+				"1201638046"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "BGU",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "BGU"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 2,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUI",
+						"registryId": 5656,
+						"institutionNumber": 1101,
+						"institutionName": "University of California, Irvine",
+						"alsoCalled": "Langson Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5656",
+						"address": {
+							"street1": "Univ of California Irvine",
+							"city": "Irvine",
+							"state": "US-CA",
+							"postalCode": "92697",
+							"country": "US",
+							"lat": 33.647266,
+							"lon": -117.841034
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

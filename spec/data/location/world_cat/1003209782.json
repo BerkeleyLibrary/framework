@@ -1,0 +1,56 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1003209782",
+			"title": "How to take smart notes : one simple technique to boost writing, learning and thinking--for students, academics and nonfiction book writers",
+			"creator": "Sönke Ahrens",
+			"date": "2017",
+			"machineReadableDate": "2017",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"publisher": "Createspace Independent Publishing Platform",
+			"publicationPlace": "North Charleston, South Carolina",
+			"isbns": [
+				"1542866502",
+				"9781542866507"
+			],
+			"mergedOclcNumbers": [
+				"1091892779"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "ZQP",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "ZQP"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 1,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}

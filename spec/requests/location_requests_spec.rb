@@ -224,6 +224,8 @@ RSpec.describe LocationRequestsController, type: :request do
 
     context 'with immediate: false' do
       context 'success' do
+        before { stub_token_request }
+
         include_context 'stubbing API calls'
 
         it 'does not start the batch job immediately' do
@@ -298,11 +300,15 @@ RSpec.describe LocationRequestsController, type: :request do
 
     context 'with immediate: true' do
       before do
+        stub_token_request
         valid_attributes[:immediate] = true
       end
 
       context 'as admin' do
-        before { @user = login_as_patron(Alma::FRAMEWORK_ADMIN_ID) }
+        before do
+          stub_token_request
+          @user = login_as_patron(Alma::FRAMEWORK_ADMIN_ID)
+        end
 
         after { logout! }
 

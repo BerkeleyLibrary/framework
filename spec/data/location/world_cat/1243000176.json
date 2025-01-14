@@ -1,0 +1,123 @@
+{
+	"numberOfRecords": 1,
+	"briefRecords": [
+		{
+			"oclcNumber": "1243000176",
+			"title": "Lehninger principles of biochemistry",
+			"creator": "David L. Nelson",
+			"date": "2021",
+			"machineReadableDate": "2021",
+			"language": "eng",
+			"generalFormat": "Book",
+			"specificFormat": "PrintBook",
+			"edition": "Eighth edition",
+			"publisher": "Macmillan Learning",
+			"publicationPlace": "New York, NY",
+			"isbns": [
+				"9781319228002",
+				"1319228003",
+				"9781319381493",
+				"1319381499"
+			],
+			"mergedOclcNumbers": [
+				"1160018498",
+				"1251521449"
+			],
+			"catalogingInfo": {
+				"catalogingAgency": "DLC",
+				"catalogingLanguage": "eng",
+				"levelOfCataloging": " ",
+				"transcribingAgency": "DLC"
+			},
+			"institutionHolding": {
+				"totalHoldingCount": 4,
+				"briefHoldings": [
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CLU",
+						"registryId": 207,
+						"institutionNumber": 781,
+						"institutionName": "University of California, Los Angeles",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/207",
+						"address": {
+							"street1": "280 Charles E. Young Dr.",
+							"city": "Los Angeles",
+							"state": "US-CA",
+							"postalCode": "90255",
+							"country": "US",
+							"lat": 34.07501,
+							"lon": -118.441185
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CRU",
+						"registryId": 208,
+						"institutionNumber": 1058,
+						"institutionName": "University of California, Riverside",
+						"alsoCalled": "UCR",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/208",
+						"address": {
+							"street1": "Ill - Rivera Library / University of California",
+							"street2": "3401 Watkins Drive",
+							"city": "Riverside",
+							"state": "US-CA",
+							"postalCode": "92521-0409",
+							"country": "US",
+							"lat": 33.972725,
+							"lon": -117.32714
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUY",
+						"registryId": 5689,
+						"institutionNumber": 1993,
+						"institutionName": "UC Berkeley Libraries",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5689",
+						"address": {
+							"street1": "133 Doe Library",
+							"street2": "University of California",
+							"city": "Berkeley",
+							"state": "US-CA",
+							"postalCode": "94720-6000",
+							"country": "US",
+							"lat": 37.87575,
+							"lon": -122.24341
+						},
+						"institutionType": "ACADEMIC"
+					},
+					{
+						"country": "US",
+						"state": "US-CA",
+						"oclcSymbol": "CUV",
+						"registryId": 5697,
+						"institutionNumber": 2340,
+						"institutionName": "University of California, Davis",
+						"alsoCalled": "Shields Library",
+						"hasOPACLink": true,
+						"self": "https://worldcat.org/oclc-config/institution/data/5697",
+						"address": {
+							"street1": "100 NW Quad",
+							"city": "Davis",
+							"state": "US-CA",
+							"postalCode": "95616-5292",
+							"country": "US",
+							"lat": 38.539604,
+							"lon": -121.749374
+						},
+						"institutionType": "ACADEMIC"
+					}
+				]
+			}
+		}
+	]
+}
