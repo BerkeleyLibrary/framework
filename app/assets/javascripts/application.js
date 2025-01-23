@@ -16,3 +16,4 @@
 //= require jquery-ui
 //= require popper
 //= require bootstrap
+//= require shared/field_functions
