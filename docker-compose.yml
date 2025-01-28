@@ -76,10 +76,15 @@ services:
       - /dev/shm:/dev/shm:rw
       - ./:/build:rw
 
-  adminer:
-    image: adminer
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: dbeaver 
+    depends_on:
+      - db
     restart: always
     ports:
-      - 8080:8080
+      - '8080:8978'
+    volumes: 
+      - ./:/build:rw
 
 version: '3.8'

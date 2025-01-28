@@ -87,7 +87,7 @@ This will build or pull images for the following services:
 
 | Service           | Ports | Protocol     | Description                                                                                  |
 | ---               | ---   | ---          | ---                                                                                          |
-| `adminer`         | 8080  | http         | a web-based database administration tool (used for debugging)                                |
+| `dbeaver`         | 8080  | http         | a web-based database administration tool (used for debugging)                                |
 | `db`              | 5432  | native (api) | a PostgreSQL database                                                                        |
 | `app`             | 3000  | http         | the Rails application (built from the [Dockerfile](Dockerfile) in this repository            |
 | `selenium`        | 4444  | http (api)   | [Selenium Grid](https://www.selenium.dev/documentation/en/grid/) hub (used for system tests) |
