@@ -10,6 +10,10 @@ describe :campus_networks, type: :request do
       status: 200,
       body: File.new('spec/data/lblnetworks.html')
     )
+    stub_request(:get, CampusNetwork.lblz_url).to_return(
+      status: 200,
+      body: File.new('spec/data/lblznetworks.html')
+    )
   end
 
   it 'is the :campus_networks path' do
@@ -39,6 +43,10 @@ describe :campus_networks, type: :request do
         status: 200,
         body: File.new('spec/data/lblnetworks.html')
       )
+      stub_request(:get, CampusNetwork.lblz_url).to_return(
+        status: 200,
+        body: File.new('spec/data/lblznetworks.html')
+      )
 
       @ranges = %w[
         128.3.*.*
@@ -61,7 +69,7 @@ describe :campus_networks, type: :request do
     end
 
     it 'returns a comma-delimited list in star format' do
-      expect(body).to include(ranges.join(', '))
+      expect(body).to include(*ranges)
     end
 
     it 'returns a newline-delimited list in star format' do
@@ -120,7 +128,7 @@ describe :campus_networks, type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to match(/LBL-only IP Addresses/m)
-        expect(response.body).to include(lbl_ranges.join(', '))
+        expect(response.body).to include(*lbl_ranges)
       end
 
       it 'can filter for UCB only' do
@@ -135,7 +143,7 @@ describe :campus_networks, type: :request do
         get campus_networks_path(organization: 'ucb')
         expect(response).to have_http_status(:ok)
         expect(response.body).to match(/UCB-only IP Addresses/m)
-        expect(response.body).to include(ucb_ranges.join(', '))
+        expect(response.body).to include(*ucb_ranges)
       end
     end
   end

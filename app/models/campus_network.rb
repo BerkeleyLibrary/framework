@@ -9,6 +9,7 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
 
   # @return [String] Address of the nettools page listing all campus networks
   class_attribute :lbl_url, default: 'https://whois.arin.net/rest/org/LBNL/nets'
+  class_attribute :lblz_url, default: 'https://whois.arin.net/rest/org/LBNL-Z/nets'
 
   # @return [String] Address of the nettools page listing all campus networks
   class_attribute :ucb_url, default: 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
@@ -39,16 +40,17 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
 
   class << self
     def all(organization: nil)
-      (ucb_networks + lbl_networks).select do |network|
+      (ucb_networks + lbl_networks + lblz_networks).select do |network|
         result = organization.blank? || network.organization == organization.to_sym if network
         result
       end
     end
 
-    def ipv6_ranges(org)
+    def ipv6_ranges(org) # rubocop:disable Metrics/AbcSize
       ipv6 = []
       ipv6.concat(parse_lbl_ipv6_ranges(URI(lbl_url).read('Accept' => 'text/html'))) unless org == 'ucb'
-      # ipv6.concat(parse_campus_ipv6_ranges(URI(ucb_url).read('Accept' => 'text/html'))) unless org == 'lbl'
+      ipv6.concat(parse_lbl_ipv6_ranges(URI(lblz_url).read('Accept' => 'text/html'))) unless org == 'ucb'
+
       unless org == 'lbl'
         ipv6.concat(campus_ipv6_cidrs.map do |cidr|
           network = IPAddr.new(cidr)
@@ -63,6 +65,11 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
 
     def lbl_networks
       raw_html = URI(lbl_url).read('Accept' => 'text/html')
+      parse_lbl_addresses(raw_html)
+    end
+
+    def lblz_networks
+      raw_html = URI(lblz_url).read('Accept' => 'text/html')
       parse_lbl_addresses(raw_html)
     end
 
@@ -158,7 +165,7 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
 
     def parse_lbl_ipv6_ranges(raw_html)
       lbl_ranges = []
-      Nokogiri::HTML(raw_html).css('td:nth-child(n+2)').map do |node|
+      Nokogiri::HTML(raw_html).css('td:nth-child(2)').map do |node|
         range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
         lbl_ranges.push(node.text) unless IPAddress.valid_ipv4?(range[1]) || visitor_ips.include?(node.text)
       end
@@ -188,7 +195,7 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
     end
 
     def parse_lbl_addresses(raw_html)
-      Nokogiri::HTML(raw_html).css('td:nth-child(n+2)').map do |node|
+      Nokogiri::HTML(raw_html).css('td:nth-child(2)').map do |node|
         range = node.text.gsub(/\s+/, '').split(/\s*-\s*/)
         new(convert_to_cidrs(range), organization = :lbl) unless IPAddr.new(range[1]).private? || IPAddress.valid_ipv6?(range[1])
       end
@@ -225,6 +232,7 @@ class CampusNetwork < IPAddr # rubocop:disable Metrics/ClassLength
 
     gateway = to_range.first.to_s.split('.')
     broadcast = to_range.last.to_s.split('.')
+
     first, last = gateway.zip(broadcast)
       .map { |a, b| [a, b] == %w[0 255] ? %w[* *] : [a, b] }
       .transpose
