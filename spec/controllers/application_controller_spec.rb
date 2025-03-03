@@ -37,6 +37,7 @@ describe ApplicationController do
       TindMarcBatchController => 'helpbox-library@berkeley.edu',
       # TindMarcBatchTestController => 'helpbox-library@berkeley.edu',
       MmsidTindController => 'helpbox-library@berkeley.edu',
+      TindValidatorController => 'helpbox-library@berkeley.edu',
       ValidateProxyPatronController => 'helpbox-library@berkeley.edu', # never displayed, but no harm done
 
       # privdesk-library@berkeley.edu

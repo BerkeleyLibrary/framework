@@ -106,6 +106,10 @@ Rails.application.routes.draw do
   get '/mmsid-tind', to: 'mmsid_tind#new'
   post '/mmsid-tind', to: 'mmsid_tind#create'
 
+  # Tind validator
+  get '/tind-spread-validator', to: 'tind_validator#new'
+  post '/tind-spread-validator', to: 'tind_validator#create'
+
   # Alma Item Set Routes
   get '/alma-item-set', to: 'alma_item_set#index'
   post '/alma-item-set', to: 'alma_item_set#update'

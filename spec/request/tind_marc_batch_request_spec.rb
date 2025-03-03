@@ -29,6 +29,9 @@ RSpec.describe TindMarcBatchController, type: :request do
 
     before do
       login_as_patron(Alma::ALMA_ADMIN_ID)
+
+      # And pass @user to the controller as the current_user:
+      # allow_any_instance_of(TindMarcBatchController).to receive(:current_user).and_return(@current_user)
     end
 
     after do

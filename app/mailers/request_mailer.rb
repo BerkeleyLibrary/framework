@@ -204,6 +204,16 @@ class RequestMailer < ApplicationMailer
     mail(to: email, subject:, body:)
   end
 
+  # Send CSV/XLSX spreadsheet for spreadsheet validator.
+  def tind_spread_email(email, subject, body, attachment_contents)
+    return mail(to: email, subject:, body:) if attachment_contents.empty?
+
+    attachment_contents.each do |filename, attachment|
+      attachments[filename] = attachment
+    end
+    mail(to: email, subject:, body:)
+  end
+
   # Send Item Set notes job update
   def item_notes_update_email(email, message)
     @email_message = message
