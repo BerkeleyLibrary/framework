@@ -20,7 +20,7 @@
 
   <p style="color:#ee0000">* Required</p>
 
-  <div class="form-group">
+  <div class="form-group" role="radiogroup" aria-required="true">
     <div class="form-check">
       <%= f.radio_button(:opt_in, true, checked: true) %>
       <%= f.label(:opt_in_true) %>

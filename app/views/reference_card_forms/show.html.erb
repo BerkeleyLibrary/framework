@@ -46,11 +46,13 @@
     <div class="form-group m-0 required">
       <fieldset class="form-group m-0 p-0">
         <div class="mb-4 form-group">
-          <%= radio_button_tag(:stack_pass_approve_deny, 1, false, id: 'stack_pass_approve', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
-          <%= label_tag(:stack_pass_approve_deny_0, "Approve") %>
-          <br />
-          <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
-          <%= label_tag(:stack_pass_form_main_stack_1, "Deny") %>
+          <div role="radiogroup" aria-required="true">
+            <%= radio_button_tag(:stack_pass_approve_deny, 1, false, id: 'stack_pass_approve', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
+            <%= label_tag(:stack_pass_approve_deny_0, "Approve") %>
+            <br />
+            <%= radio_button_tag(:stack_pass_approve_deny, 0, false, id: 'stack_pass_deny', name: 'stack_pass_[approve_deny]', onchange: 'checkStackPassInputs()') %>
+            <%= label_tag(:stack_pass_form_main_stack_1, "Deny") %>
+          </div>
           <!-- DENIAL REASON SELECT -->
           <%= select(:stack_pass_denial, 
             'denial_reason', 

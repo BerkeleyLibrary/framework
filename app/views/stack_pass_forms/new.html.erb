@@ -19,7 +19,7 @@
     <div class="form-group m-0 required">
       <fieldset class="form-group m-0 p-0">
         <legend class="required" style="font-size: 1rem">Is the item in the Main (Gardner) Stacks? <span style="color: red">*</span></legend >
-        <div class="mb-4 form-group">
+        <div class="mb-4 form-group" role="radiogroup" aria-required="true">
           <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "showBlock('main_stack_warn'), disableElement('submit_btn')", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
           <%= label_tag(:stack_pass_form_main_stack_no, "No") %>
           <%= radio_button_tag(:stack_pass_form_main_stack, 1, true, onClick: "hideBlock('main_stack_warn'), enableElement('submit_btn')", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>

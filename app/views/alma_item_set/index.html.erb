@@ -8,7 +8,7 @@
       <div class="form-label mt-4">
         <%= f.label(:alma_env, 'Alma Environment') %>:
       </div>
-      <div class="form-input">
+      <div class="form-input" role="radiogroup" aria-required="true">
         <% rb_alma_env = :alma_env %>
         <%= f.radio_button(rb_alma_env, "production", checked: true) %>
         <%= f.label("#{rb_alma_env}_production".to_sym, "Production") %>
