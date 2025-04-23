@@ -10,15 +10,28 @@ module Bibliographic
     }, default: :pending
 
     class << self
-      def from_mmsid(host_bib, mms_id)
+      def from_774(host_bib, subfields_from_774)
+        mms_id = subfields_from_774['w']
         marc_record = AlmaServices::Marc.record(mms_id)
-        return host_bib.linked_bibs.create(mms_id:, marc_status: 'failed') unless marc_record
+        code_t = subfields_from_774['t']
 
-        host_bib.linked_bibs.create(mms_id:, marc_status: 'retrieved', ldr_6: ldr_val(6, marc_record),
-                                    ldr_7: ldr_val(7, marc_record), field_035: sf_035_val(marc_record))
+        linked_bib = find_or_create_linked_bib(mms_id, marc_record)
+
+        host_bib.host_bib_linked_bibs.create(linked_bib:, code_t:)
+
+        linked_bib
       end
 
       private
+
+      def find_or_create_linked_bib(mms_id, marc_record)
+        LinkedBib.find_or_create_by(mms_id:) do |bib|
+          bib.marc_status = marc_record ? 'retrieved' : 'failed'
+          bib.ldr_6 = marc_record ? ldr_val(6, marc_record) : nil
+          bib.ldr_7 = marc_record ? ldr_val(7, marc_record) : nil
+          bib.field_035 = marc_record ? sf_035_val(marc_record) : nil
+        end
+      end
 
       def sf_035_val(marc)
         fields_035 = MARC::Spec.find('035$a', marc)

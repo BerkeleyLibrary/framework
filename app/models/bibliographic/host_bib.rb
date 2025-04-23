@@ -16,29 +16,31 @@ module Bibliographic
         marc_record = AlmaServices::Marc.record(host_bib.mms_id)
         return host_bib.failed! if marc_record.nil?
 
-        linked_bib_mms_ids = linked_bib_mms_ids_to_process(host_bib, marc_record)
+        linked_bibs_subfields = linked_bib_subfields_to_process(host_bib, marc_record)
+
         # to mark the start of retriving linked bibs
         host_bib.retrieving!
-        linked_bib_mms_ids.each { |mms_id| Bibliographic::LinkedBib.from_mmsid(host_bib, mms_id) }
+        linked_bibs_subfields.each { |subfields_from_774| Bibliographic::LinkedBib.from_774(host_bib, subfields_from_774) }
         host_bib.retrieved!
       end
 
       private
 
-      def linked_bib_mms_ids_to_process(host_bib, marc_record)
+      def linked_bib_subfields_to_process(host_bib, marc_record)
         status = host_bib.marc_status
         case status
         when 'pending'
-          mms_ids_from_744(marc_record)
+          subfields_from_774(marc_record)
         when 'retrieving'
           existing_mms_ids = host_bib.linked_bibs.pluck(:mms_id)
-          mms_ids_from_744(marc_record) - existing_mms_ids
+          subfields_from_774(marc_record).reject { |subfield| existing_mms_ids.include?(subfield['w']) }
         end
       end
 
-      def mms_ids_from_744(marc_record)
-        subfields = MARC::Spec.find('774$w', marc_record)
-        subfields.map(&:value)
+      def subfields_from_774(marc_record)
+        MARC::Spec.find('774', marc_record).map do |f|
+          { 't' => f['t'] || '', 'w' => f['w'] } unless f['w'].empty?
+        end
       end
     end
 

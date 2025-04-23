@@ -6,6 +6,7 @@ RSpec.describe Bibliographic::HostBib, type: :model do
   let(:mms_id) { '991083840969706532' }
   let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt') }
   let(:marc_stub) { instance_double(MARC::Record) }
+  let(:expected_subfields) { { 'w' => '991083840969706532', 't' => 'Seconde partie du discours aux Welches ' } }
 
   after do
     Bibliographic::HostBibTask.find(host_bib_task.id).destroy if host_bib_task.persisted?
@@ -55,4 +56,14 @@ RSpec.describe Bibliographic::HostBib, type: :model do
     end
   end
 
+  describe '.from_774' do
+    context 'when creating associations' do
+      it 'gets expected subfields from hostbib' do
+        subfields = Bibliographic::HostBib.send(:subfields_from_774, marc_stub)
+        expect(subfields).to be_an(Array)
+        expect(subfields).not_to be_empty
+        expect(subfields).to include(hash_including(expected_subfields))
+      end
+    end
+  end
 end

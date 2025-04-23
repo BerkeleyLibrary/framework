@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_26_215937) do
+ActiveRecord::Schema[7.0].define(version: 2025_04_04_180042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -121,6 +121,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_26_215937) do
   create_table "host_bib_linked_bibs", force: :cascade do |t|
     t.bigint "host_bib_id", null: false
     t.bigint "linked_bib_id", null: false
+    t.string "code_t"
     t.index ["host_bib_id"], name: "index_host_bib_linked_bibs_on_host_bib_id"
     t.index ["linked_bib_id"], name: "index_host_bib_linked_bibs_on_linked_bib_id"
   end

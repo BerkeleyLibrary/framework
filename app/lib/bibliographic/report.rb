@@ -40,7 +40,7 @@ module Bibliographic
 
     def csv_writter(csv)
       csv_rows = successful_host_bibs.flat_map { |host_bib| rows_by_host_bib(host_bib) }
-      csv << ['Source MMS ID', '774 MMS ID', 'LDR/06', 'LDR/07', '035', 'Count of 774s']
+      csv << ['Source MMS ID', '774 MMS ID', '774$t', 'LDR/06', 'LDR/07', '035', 'Count of 774s']
       csv_rows.each { |row| csv << row }
     end
 
@@ -60,10 +60,14 @@ module Bibliographic
     def row_by_linked_bib(host_bib, linked_bib, count)
       host_bib_mms_id = csv_number(host_bib.mms_id.strip)
       linked_bib_mms_id = csv_number(linked_bib.mms_id.strip)
+
+      host_bib_linked_bib = HostBibLinkedBib.find_by(host_bib:, linked_bib:)
+      linked_bib_774t = csv_text(host_bib_linked_bib.code_t)
+
       ldr_6 = csv_text(linked_bib.ldr_6)
       ldr_7 = csv_text(linked_bib.ldr_7)
       field_035 = csv_text(linked_bib.field_035)
-      [host_bib_mms_id, linked_bib_mms_id, ldr_6, ldr_7, field_035, count]
+      [host_bib_mms_id, linked_bib_mms_id, linked_bib_774t, ldr_6, ldr_7, field_035, count]
     end
 
     def failed_host_bibs

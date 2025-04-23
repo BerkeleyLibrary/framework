@@ -62,7 +62,7 @@ services:
       - ./:/build:rw
 
   selenium-chrome:
-    image: selenium/node-chrome
+    image: selenium/node-chromium
     # image: selenium/node-chrome:4.10.0
     # shm_size: 2gb
     depends_on:
@@ -90,5 +90,3 @@ services:
       - '8080:8978'
     volumes: 
       - ./:/build:rw
-
-version: '3.8'
