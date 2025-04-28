@@ -44,19 +44,19 @@
 
   <br />
 
-  <span style="color: #ee0000">* Required</span><br />
+  <span class="required-note">* Required</span><br />
 
   <br />
 
-  <p style="margin-bottom: 0.5rem;">Journal Title (no abbreviations)<span style="color: #ee0000">*</span>: </p>
+  <p style="margin-bottom: 0.5rem;">Journal Title (no abbreviations)<span class="required-note">*</span>: </p>
   <%= f.text_field :pub_title, required: true, :class => "narrow form-control is-valid" %><br />
   <%= f.label("pub_place", "Place of Publication") %>:
   <%= f.text_field :pub_location, :class => "narrow form-control is-valid" %><br />
   <%= f.label("issn", "ISSN") %>:
   <%= f.text_field :issn, :class => "narrow form-control is-valid" %><br />
-  <p style="margin-bottom: 0.5rem;">Volume and/or Publication Date<span style="color: #ee0000">*</span>: </p>
+  <p style="margin-bottom: 0.5rem;">Volume and/or Publication Date<span class="required-note">*</span>: </p>
   <%= f.text_field :vol, required: true, :class => "narrow form-control is-valid" %><br />
-  <p style="margin-bottom: 0.5rem;">Article Title<span style="color: #ee0000">*</span>: </p>
+  <p style="margin-bottom: 0.5rem;">Article Title<span class="required-note">*</span>: </p>
   <%= f.text_field :article_title, required: true, :class => "narrow form-control is-valid" %><br />
   <%= f.label("article_author", "Article Author") %>:
   <%= f.text_field :author, :class => "narrow form-control is-valid" %><br />

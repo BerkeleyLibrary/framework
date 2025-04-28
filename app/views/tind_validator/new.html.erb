@@ -21,7 +21,7 @@
   <% accept_mime_types = 'text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %> 
   <%= hidden_field_tag :email, @email %>
   <hr />
-  <p style="color: #ee0000">* Required</p>
+  <p class="required-note">Required</p>
   <div class="form-label form-group required">
     <%= f.label :input_file, 'Input file: (csv or xlsx)', class: 'control-label' %>
   </div>

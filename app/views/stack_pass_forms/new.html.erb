@@ -9,7 +9,7 @@
   </ul>
   <p>Requests for longer-term access can be made in person at the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/find/privileges-desk' %> or via the <%= link_to 'Main Stacks Reference Card Request form', new_reference_card_form_path %>.</p>
   <!-- FORM START -->
-  <p style="color: #ee0000">* Required</p>
+  <p class="required-note">Required</p>
   <!-- name, email, phone -->
   <%= field_for(f, :name, required: true) %>
   <%= field_for(f, :email, required: true) %>

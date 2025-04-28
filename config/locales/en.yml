@@ -120,6 +120,8 @@ en:
       page_title: Doe/Moffitt Libraries patron email form 
 
   doemoff_study_room_use_forms:
+    new:
+      page_title: Moffitt Library/Gardner Main Stacks Study Room/Studio Use Agreement Form
     all_checked:
       page_title: Agreement submitted
 

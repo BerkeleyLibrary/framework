@@ -4,7 +4,7 @@
 <%= form_with(url: '', local: true, target: '_blank') do |f| %>  
   <!-- %= hidden_field_tag :email, @current_user.email % -->
   <hr />
-  <p style="color: #ee0000">* Required</p>
+  <p class="required-note">Required</p>
   <div class="form-label form-group required">
     <%= label_tag('directory', 'Resource Directory', class: 'control-label') %>
     <span style="font-size:0.8em">(example: librettos/ucb/incoming or /librettos/ucb/incoming)</span>

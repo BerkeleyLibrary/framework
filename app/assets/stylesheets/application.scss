@@ -4,7 +4,7 @@
 @import "bootstrap";
 @import "tind_download";
 
-$required-color: #ee0000;
+$required-color: #bd0000;
 $required-indicator: "*";
 
 .form-group.required .control-label:after, fieldset.required legend:after {
@@ -21,6 +21,10 @@ p.required-note {
     color: $required-color;
     margin-right: 0.25em;
   }
+}
+
+span.required-note {
+  color: $required-color;
 }
 
 a, a:link, a:visited {

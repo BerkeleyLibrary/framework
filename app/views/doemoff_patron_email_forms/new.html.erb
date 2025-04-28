@@ -8,7 +8,7 @@
 <b>Students: </b>use this form to email links, lost and found inquiries, and other information to Doe/Moffitt library patrons
 </p>
 
-<p style="color: #ee0000">* Required fields are marked with an asterisk</p>
+<p class="required-note">Required fields are marked with an asterisk</p>
 <%= form_for(@form, class: 'needs-validation') do |f| %>
   <div class="form-label form-group required">
     <%= f.label :patron_email, 'Patron email address:', class: 'control-label' %>
