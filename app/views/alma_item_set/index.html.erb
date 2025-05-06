@@ -21,7 +21,7 @@
         <%= label_tag(:alma_set_id, 'Alma Set Name:', class: 'control-label') %>
       </div>
       <div class="form-input required">
-        <%# f.text_field(:alma_set_name, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+        <%# f.text_field(:alma_set_name, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
         <%= f.select(:alma_set_id, @production_sets, {}, {:class => 'form-control', :id => 'prod-drop-down'}) %>
         <%= f.select(:alma_set_id, @sandbox_sets, {}, {:class => 'form-control', :id => 'sand-drop-down'}) %>
       </div>
@@ -45,14 +45,14 @@
         <%= label_tag(:note_value, 'Note Value', class: 'control-label') %>
       </div>
       <div class="form-input required mb-4">
-        <%= f.text_field(:note_value, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+        <%= f.text_field(:note_value, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
       </div>
       <%# Initials Input %>
       <div class="form-label form-group required">
         <%= label_tag(:initials, 'Initials', class: 'control-label') %>
       </div>
       <div class="form-input required mb-4">
-        <%= f.text_field(:initials, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+        <%= f.text_field(:initials, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
       </div>
       <div class="form-input">
         <p><input type="submit" id='submit-btn' class='btn btn-primary' value="Append Note"></p>

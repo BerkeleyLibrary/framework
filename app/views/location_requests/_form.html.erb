@@ -29,7 +29,7 @@
           <%= form.label :email, class: 'control-label' %>
         </div>
         <div class="form-input required">
-          <%= form.text_field :email, class: 'form-control add-required', required: true %>
+          <%= form.email_field :email, class: 'form-control add-required', aria: { required: true }, required: true %>
         </div>
       </li>
       <li>

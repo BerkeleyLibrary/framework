@@ -26,7 +26,7 @@
     <%= f.label :input_file, 'Input file: (csv or xlsx)', class: 'control-label' %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.file_field :input_file, class: 'form-control add-required', required: true, accept: accept_mime_types %>
+    <%= f.file_field :input_file, class: 'form-control add-required', aria: { required: true }, required: true, accept: accept_mime_types %>
   </div>
 
   <div class="form-label form-group required">
@@ -41,35 +41,35 @@
     <%= label_tag('852__c', '852_c (Library location)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:'852__c', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    <%= f.text_field(:'852__c', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('902__n', '902_n (your initials)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:'902__n', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    <%= f.text_field(:'902__n', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('980__a', '980_a (internal collection code)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:'980__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    <%= f.text_field(:'980__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('982__a', '982_a (collection short name)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:'982__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    <%= f.text_field(:'982__a', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('982__b', '982_b (collection long name)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:'982__b', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+    <%= f.text_field(:'982__b', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group">

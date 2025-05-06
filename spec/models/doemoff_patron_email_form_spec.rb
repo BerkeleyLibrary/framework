@@ -41,4 +41,22 @@ describe DoemoffPatronEmailForm do
 
     end
   end
+
+  # malformed email should cause it to fail
+  describe 'malformed email fails' do
+    describe 'form' do
+      before do
+        @form = DoemoffPatronEmailForm.new
+        @form.patron_email = 'duey.edu'
+        @form.patron_message = 'test message'
+        @form.sender = 'libtest@berkeley.edu'
+        @form.recipient_email = 'main-circ@berkeley.edu'
+      end
+
+      it 'is not valid' do
+        expect(@form.valid?).to eq(false)
+      end
+
+    end
+  end
 end

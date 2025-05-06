@@ -13,7 +13,7 @@
       <%= label_tag(:collection_name, 'Collection Name', class: 'control-label') %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_field(:collection_name, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <%= f.text_field(:collection_name, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
 
     <div class="form-label">

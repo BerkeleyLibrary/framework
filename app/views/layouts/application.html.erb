@@ -9,14 +9,14 @@
     <%= render(partial: 'controller_assets') %>
   </head>
   <body>
-    <main id="main">
-      <a href="#main" class="visually-hidden focusable skip-link">Skip to main content</a>
-      <div id="app" class="container">
-        <%= render "layouts/navbar" %>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <div id="app" class="container">
+      <%= render "layouts/navbar" %>
+      <main id="main">
         <%= alerts %>
         <%= yield %>
-        <%= render "layouts/footer" %>
-      </div>
-    </main>
+      </main>
+      <%= render "layouts/footer" %>
+    </div>
   </body>
 </html>

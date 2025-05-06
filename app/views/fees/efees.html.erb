@@ -6,7 +6,7 @@
   <%= label_tag(:alma_id, 'Alma ID:', class: 'control-label') %>
 </div>
 <div class="form-input required mb-4">
-  <%= f.text_field(:alma_id, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', required: true, autofocus: true) %>
+  <%= f.text_field(:alma_id, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
 </div>
 <div class="form-input">
   <p><input type="submit" id='submit-btn' class='btn btn-primary' value="Look Up Fees"></p>

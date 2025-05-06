@@ -8,23 +8,23 @@
     <!-- Name -->
     <div class="form-group mb-4 required">
       <%= f.label(:name, 'Your Name:', class: 'control-label') %>
-      <%= f.text_field(:name, class: 'narrow form-control required', required: true, readonly: true, value: @display_name) %>
+      <%= f.text_field(:name, class: 'narrow form-control required', aria: { required: true }, required: true, readonly: true, value: @display_name) %>
     </div>
     <!-- Address -->
     <div class="mb-4 form-group required">
       <%= f.label(:address, 'Your Campus Address:', class: 'control-label') %>
-      <%= f.text_field(:address, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <%= f.text_field(:address, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
     <!-- Phone -->
     <div class="form-group mb-4 required">
       <%= f.label(:phone, 'Your Phone Number:', class: 'control-label') %>
-      <%= f.text_field(:phone, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <%= f.text_field(:phone, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
     
     <!-- Email -->
     <div class="form-group mb-4 required">
       <%= f.label(:email, 'Your Email Address:', class: 'control-label') %>
-      <%= f.text_field(:email, class: 'narrow form-control add-required', required: true, readonly: true, value: @email) %>
+      <%= f.email_field(:email, class: 'narrow form-control add-required', aria: { required: true }, required: true, readonly: true, value: @email) %>
       <small class="form-text text-muted mb-4" style="padding-bottom: 35px;">
         Circulation notices will be emailed to this address.
       </small>
@@ -33,13 +33,13 @@
     <!-- Supervisor Name -->
     <div class="form-group required mb-4">
       <%= f.label(:supervisor_name, 'Your Supervisor:', class: 'control-label') %>
-      <%= f.text_field(:supervisor_name, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <%= f.text_field(:supervisor_name, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
 
     <!-- Supervisor Email -->
     <div class="form-group mb-4 required">
       <%= f.label(:supervisor_email, "Your Supervisor's Email:", class: 'control-label') %>
-      <%= f.text_field(:supervisor_email, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <%= f.email_field(:supervisor_email, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
     <p><strong>Supervisors must reply to the form output email to approve card requests. Replies will be emailed to privdesk-library@berkeley.edu and mamarrow@berkeley.edu</strong></p>
 
@@ -57,7 +57,7 @@
     <div class="form-group required mb-4">
       <%= f.label :reason, 'Reason Needed:', class: 'control-label' %>
       (please provide as much information as possible)
-      <%= f.text_area(:reason, class: 'narrow form-control add-required', required: true, autofocus: true) %>
+      <%= f.text_area(:reason, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
     
     <!-- INFO -->
