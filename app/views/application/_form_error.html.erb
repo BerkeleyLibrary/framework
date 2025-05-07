@@ -1,0 +1,16 @@
+<% if model.errors.any? %>
+  <div class="alert alert-danger alert-dismissible">
+    <h5>Validation Failed</h5>
+
+    <p>We identified the following errors in your submission:</p>
+
+    <ul>
+      <% model.errors.each do |error| %>
+        <% id = field_id(model, error.attribute) %>
+        <li><%= link_to error.full_message, "##{id}", onclick: "document.getElementById('#{id}').focus();" %></li>
+      <% end %>
+    </ul>
+
+    <p>Please correct these and resubmit the form.</p>
+  </div>
+<% end %>

@@ -5,7 +5,7 @@ module ApplicationHelper
       flash.each do |lvl, msgs|
         msgs = [msgs] if msgs.is_a?(String)
         msgs.each do |msg|
-          concat content_tag(:div, msg.html_safe, class: "alert alert-#{lvl}")
+          concat content_tag(:div, msg.html_safe, class: "alert alert-#{lvl}", role: :status)
         end
       end
     end

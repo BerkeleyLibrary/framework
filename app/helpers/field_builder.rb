@@ -44,11 +44,13 @@ class FieldBuilder
   delegate :concat, to: :tag_helper
 
   def field_tag
-    @field ||= builder.send(type, attribute, {
-                              class: css_class,
-                              required:,
-                              readonly:
-                            })
+    html_attrs = {
+      class: css_class,
+      required:,
+      readonly:
+    }
+    html_attrs[:aria] = { required: } if required
+    @field ||= builder.send(type, attribute, html_attrs)
   end
 
   def label_tag

@@ -1,20 +1,6 @@
 <%= form_for(@form, class: 'needs-validation') do |f| %>
   <h1>Library Staff Electronic Devices Loan - Terms and Conditions</h1>
-  <% if @form.errors.any? %>
-    <div class="alert alert-danger alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <h5>Validation Failed</h5>
-      <p>We identified the following errors in your submission:</p>
-      <ul>
-        <% @form.errors.full_messages.each do |attribute, msg| %>
-          <li><%= "#{attribute} #{msg}" %></li>
-        <% end %>
-      </ul>
-      <p>Please correct these and resubmit the form.</p>
-    </div>
-  <% end %>
+  <%= render 'application/form_error', model: @form if @form.errors.any? %>
   <div class="alert alert-warning"><strong>Eligibility:</strong> This service is available to Library staff only.</div>
   <p>Users must be library staff in good standing (no fines, no overdue recalls, and no blocks) in order to borrow a laptop computer from the UC Berkeley Library. Users must provide their valid Cal 1 Card to borrow; desk staff must be able to scan card barcode at check-out. Devices for library staff are available at the Main Circulation Desk in Doe Library.</p>
   <p>Revised March 2023</p>
