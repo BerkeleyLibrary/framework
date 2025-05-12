@@ -9,7 +9,7 @@ describe MmsidTind do
       before do
         params = {
           directory: 'directory_collection/ucb/incoming',
-          source_data_root_dir: '/opt/app/spec/data/tind_marc/data/da/'.freeze
+          source_data_root_dir: Rails.root.join('spec/data/tind_marc/data/da/').to_s.freeze
         }
         @form = MmsidTind.new(params)
       end

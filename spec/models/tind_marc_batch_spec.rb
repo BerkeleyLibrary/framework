@@ -17,7 +17,7 @@ describe TindMarcBatch do
           f_540_a: 'some restriction text',
           resource_type: 'Image',
           library: 'The Bancroft Library',
-          source_data_root_dir: '/opt/app/spec/data/tind_marc/data/da/'.freeze
+          source_data_root_dir: Rails.root.join('spec/data/tind_marc/data/da/').to_s.freeze
         }
         @form = TindMarcBatch.new(params)
       end

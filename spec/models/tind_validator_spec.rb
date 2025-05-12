@@ -6,7 +6,7 @@ RSpec.describe TindValidator, type: :model do
   include_context('uploaded file')
   attr_reader :form
 
-  let(:input_file_path) { 'spec/data/tind_validator/fonoroff_with_errors.csv' }
+  let(:input_file_path) { Rails.root.join('spec/data/tind_validator/fonoroff_with_errors.csv').to_s.freeze }
   let(:input_file_basename) { File.basename(input_file_path) }
 
   describe 'is valid' do

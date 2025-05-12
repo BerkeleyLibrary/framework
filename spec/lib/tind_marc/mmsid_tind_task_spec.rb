@@ -4,7 +4,7 @@ module TindMarc
     let(:mmsid_tind_task) { described_class.new(args, email) }
 
     shared_examples 'run_and_send_email' do |type_sym|
-      let(:directory) { '/opt/app/spec/data/tind_marc/data/da/directory_collection/ucb/incoming' }
+      let(:directory) { Rails.root.join('spec/data/tind_marc/data/da/directory_collection/ucb/incoming') }
       let(:subject) do
         { completed: "Completed to obtain TIND and MMSID information for the batch at: #{directory}",
           failed: "Critical error, cann not obtain TIND and MMSID CSV file Directory: #{directory}" }

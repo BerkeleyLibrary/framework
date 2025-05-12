@@ -13,7 +13,7 @@ module TindMarc
 
       it 'raise an error when file does not exist' do
         error = 'Run into a problem when creating hash from lable.csv file at '
-        at = '/opt/app/spec/data/tind_marc/data/da/directory_collection/ucb/incoming/labels.csv. !'
+        at = "#{Rails.root.join('spec/data/tind_marc/data/da/directory_collection/ucb/incoming/labels.csv')}. !"
         expect(Util).to receive(:raise_error).with("#{error}#{at}")
         batch_info.create_label_hash
       end

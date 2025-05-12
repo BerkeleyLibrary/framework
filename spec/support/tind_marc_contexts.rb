@@ -11,7 +11,7 @@ RSpec.shared_context 'setup',
   end
   let(:mmsid_barcode) { mmsid_barcode }
   let(:incoming_path) { batch_path_hash[batch_path] }
-  let(:spec_root_path) { '/opt/app/spec/data/tind_marc/data/da/'.freeze }
+  let(:spec_root_path) { Rails.root.join('spec/data/tind_marc/data/da/').to_s.freeze }
   let(:batch_info) { batch_info_stub }
   let(:source_csv_file_paths) { source_file_paths_tobe_copied(label_subdir_path, mmsid_tind_info_subdir_path) }
 

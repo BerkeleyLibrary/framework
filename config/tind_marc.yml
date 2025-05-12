@@ -18,7 +18,7 @@ default: &default
     - Restricted2Humanities
     - berkeley_campus
 
-  data_root_dir: '/opt/app/data/da'
+  data_root_dir: <%= Rails.root.join('data', 'da') %>
 
 development:
   <<: *default
