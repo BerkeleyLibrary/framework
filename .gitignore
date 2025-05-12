@@ -5,6 +5,10 @@
 
 # vscode-remote-server
 .vscode-server/
+.cache/
+.dotnet/
+.gnupg/
+
 
 # github-markdown-preview previews
 *.md.html
@@ -90,6 +94,7 @@ bower.json
 
 # Ignore node_modules
 node_modules/
+.npm/
 
 # Ignore precompiled javascript packs
 /public/packs
@@ -154,6 +159,7 @@ build-iPhoneSimulator/
 /.bundle/
 /vendor/bundle
 /lib/bundler/man/
+.local
 
 # for a library or gem, you might want to ignore these files since the code is
 # intended to run in multiple environments; otherwise, check them in:

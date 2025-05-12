@@ -1,16 +1,34 @@
 /*
 *= require jquery-ui
 */
+
+// Workaround for Chrome not showing "this field is required" popup
+// when scrolling is required to show client-side validation errors
+$enable-smooth-scroll: false;
+
 @import "bootstrap";
 @import "tind_download";
+
+html {
+  scroll-behavior: auto !important;
+}
 
 $required-color: #bd0000;
 $required-indicator: "*";
 
-.form-group.required .control-label:after, fieldset.required legend:after {
+.form-group.required .control-label:after, .input-group.required .control-label:after, fieldset.required legend:after {
   content: $required-indicator;
   color: $required-color;
   margin-left: 0.25em;
+}
+
+// Should override bootstrap's invalid color
+$form-validation-states: (
+  "invalid": ( "color": $required-color )
+);
+
+.invalid-feedback {
+  color: $required-color;
 }
 
 p.required-note {

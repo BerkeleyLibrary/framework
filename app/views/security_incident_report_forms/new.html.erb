@@ -19,7 +19,7 @@
       <%= f.label :incident_location, 'Location of incident/complaint', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_field(:incident_location, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.text_field(:incident_location, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
  
@@ -37,7 +37,7 @@
       <%= f.label :incident_time, 'Time', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.time_field(:incident_time, :value => '', :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>  
+      <%= f.time_field(:incident_time, :value => '', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>  
     </div>
   </div>
 
@@ -46,7 +46,7 @@
       <%= f.label :reporter_name, 'Name of person filing report', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_field(:reporter_name, value: @user_name, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.text_field(:reporter_name, value: @user_name, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
 
@@ -55,7 +55,7 @@
       <%= f.label :email, 'Email', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.email_field(:email, value: @user_email, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.email_field(:email, value: @user_email, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
 
@@ -64,7 +64,7 @@
       <%= f.label :unit, 'Library/Unit', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_field(:unit, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.text_field(:unit, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
 
@@ -73,7 +73,7 @@
       <%= f.label :phone, 'Phone number', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_field(:phone, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.telephone_field(:phone, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
 
@@ -84,11 +84,11 @@
       Please do not include any information that could identify the victim(s)
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_area(:incident_description, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.text_area(:incident_description, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
   
-  <hr/>
+  <hr>
 
   <h2>Select the type of incident</h2>
 
@@ -189,7 +189,7 @@
       <%= f.label :injury_description, 'Description of injuries and assistance rendered (include name of hospital(s))', class: 'control-label' %>
     </div>
     <div class="form-input mb-4">
-      <%= f.text_area(:injury_description, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+      <%= f.text_area(:injury_description, class: 'narrow form-control', autofocus: true) %>
     </div>
   </div>
 
@@ -198,10 +198,10 @@
       <%= f.label :property_description, 'Description of property/equipment (include brand, model, color, year, license or serial #)', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.text_area(:property_description, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+      <%= f.text_area(:property_description, class: 'narrow form-control', autofocus: true) %>
     </div>
   </div>
-  <hr/>
+  <hr>
 
   <h2>Subject description</h2>
 
@@ -227,7 +227,7 @@
             <%= f.label :race, 'Race', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:race, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:race, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -235,7 +235,7 @@
             <%= f.label :sex, 'Sex', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:sex, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:sex, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -243,7 +243,7 @@
             <%= f.label :build, 'Build', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:build, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:build, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -251,7 +251,7 @@
             <%= f.label :height, 'Height', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:height, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:height, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -259,7 +259,7 @@
             <%= f.label :weight, 'Weight', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:weight, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:weight, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -267,7 +267,7 @@
             <%= f.label :hair, 'Hair', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:hair, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:hair, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -275,7 +275,7 @@
             <%= f.label :eyes, 'Eyes', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:eyes, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:eyes, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group" style="flex-grow: 20">
@@ -283,14 +283,14 @@
             <%= f.label :clothing, 'Clothing', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:clothing, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:clothing, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
       </div>
     </fieldset>
   </div>
   
-  <hr/>
+  <hr>
 
   <div id="subject_description_1">
     <fieldset>
@@ -314,7 +314,7 @@
             <%= f.label :race_1, 'Race', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:race_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:race_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -322,7 +322,7 @@
             <%= f.label :sex_1, 'Sex', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:sex_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:sex_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -330,7 +330,7 @@
             <%= f.label :build_1, 'Build', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:build_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:build_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -338,7 +338,7 @@
             <%= f.label :height_1, 'Height', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:height_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:height_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -346,7 +346,7 @@
             <%= f.label :weight_1, 'Weight', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:weight_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:weight_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -354,7 +354,7 @@
             <%= f.label :hair_1, 'Hair', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:hair_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:hair_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -362,7 +362,7 @@
             <%= f.label :eyes_1, 'Eyes', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:eyes_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:eyes_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group" style="flex-grow: 20">
@@ -370,13 +370,13 @@
             <%= f.label :clothing_1, 'Clothing', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:clothing_1, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:clothing_1, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
       </div>
     </fieldset>
   </div>
-  <hr/>
+  <hr>
 
   <div id="subject_description_2">
     <fieldset>
@@ -400,7 +400,7 @@
             <%= f.label :race_2, 'Race', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:race_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:race_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -408,7 +408,7 @@
             <%= f.label :sex_2, 'Sex', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:sex_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:sex_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -416,7 +416,7 @@
             <%= f.label :build_2, 'Build', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:build_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:build_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -424,7 +424,7 @@
             <%= f.label :height_2, 'Height', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:height_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:height_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -432,7 +432,7 @@
             <%= f.label :weight_2, 'Weight', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:weight_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:weight_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -440,7 +440,7 @@
             <%= f.label :hair_2, 'Hair', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:hair_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:hair_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group">
@@ -448,7 +448,7 @@
             <%= f.label :eyes_2, 'Eyes', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:eyes_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:eyes_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
         <div class="form-group" style="flex-grow: 20">
@@ -456,14 +456,14 @@
             <%= f.label :clothing_2, 'Clothing', class: 'control-label' %>
           </div>
           <div class="form-input required mb-4">
-            <%= f.text_field(:clothing_2, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+            <%= f.text_field(:clothing_2, class: 'narrow form-control', autofocus: true) %>
           </div>
         </div>
       </div>
     </fieldset>
   </div>
 
-  <hr/>
+  <hr>
   
   <div id="police_notified">
    <fieldset>
@@ -490,24 +490,27 @@
       <%= f.label :police_report_number, 'Police report number', class: 'control-label' %>
     </div>
     <div class="form-input mb-4">
-      <%= f.text_field(:police_report_number, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+      <%= f.text_field(:police_report_number, class: 'narrow form-control', autofocus: true) %>
     </div>
     <div class="form-label form-group">
       <%= f.label :officer_name_badge, "Officer's name/badge number", class: 'control-label' %>
     </div>
     <div class="form-input mb-4">
-      <%= f.text_field(:officer_name_badge, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true) %>
+      <%= f.text_field(:officer_name_badge, class: 'narrow form-control', autofocus: true) %>
     </div>
    </fieldset>
   </div>
 
-  <div class="form-group"> 
-    <legend>Fire department called</legend>
-    <div class="form-check">
-      <%= f.check_box :fire_department, {required: false}, "checked", "unchecked" %>
-      <%= f.label :fire_department, "Yes" %>
-    </div>
-  <hr/>
+  <div class="form-group">
+    <fieldset>
+      <legend>Fire department called</legend>
+      <div class="form-check">
+        <%= f.check_box :fire_department, {required: false}, "checked", "unchecked" %>
+        <%= f.label :fire_department, "Yes" %>
+      </div>
+    </fieldset>
+  </div>
+  <hr>
 
   <div class="form-group required">
     <div class="form-label required">
@@ -515,7 +518,7 @@
       <%= f.label :sup_email, 'Email address of your supervisor', class: 'control-label' %>
     </div>
     <div class="form-input required mb-4">
-      <%= f.email_field(:sup_email, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+      <%= f.email_field(:sup_email, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
     </div>
   </div>
 
