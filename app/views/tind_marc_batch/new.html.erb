@@ -11,7 +11,7 @@
     <span style="font-size:0.8em">(example: librettos/ucb/incoming or /librettos/ucb/incoming)</span>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:directory, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_field(:directory, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
   <div class="form-input mb-4">
     <div> <%= f.check_box :mmsid_barcode, {required: false, checked: 'unchecked'} %> <%= f.label :mmsid_barcode_check, "Select to use MMSID and barcode to create TIND records. (If files have same MMSID but different barcodes, the tool will create multiple TIND records.)" %> </div>
@@ -20,42 +20,42 @@
     <%= label_tag('library', 'Library Location', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:library, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_field(:library, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('902_n', '902_n (your initials)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:initials, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_field(:initials, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('980_a', '980_a (internal collection code)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:f_980_a, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_field(:f_980_a, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('982_a', '982_a (collection short name)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:f_982_a, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_field(:f_982_a, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= label_tag('982_b', '982_b (collection long name)', class: 'control-label') %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_field(:f_982_b, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_field(:f_982_b, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group">
     <%= label_tag('982_p', '982_p (optional)', class: 'control-label') %>
   </div>
   <div class="form-input mb-4">
-    <%= f.text_field(:f_982_p, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', required: false, autofocus: true) %>
+    <%= f.text_field(:f_982_p, class: 'narrow form-control', required: false, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
@@ -69,7 +69,7 @@
     <%= label_tag('540_a', '540_a (Rights statement, can be edited)', class: 'control-label') %>
   </div>
   <div class="form-input mb-4 required">
-    <%= f.text_area(:f_540_a, :onkeyup => 'checkFormInputs()', class: 'narrow form-control', autofocus: true, value: t('tind_marc_batch.standard_rights_statement'), rows: 8, required: true ) %>
+    <%= f.text_area(:f_540_a, class: 'narrow form-control', autofocus: true, value: t('tind_marc_batch.standard_rights_statement'), rows: 8, required: true ) %>
   </div>
 
   <div class="form-label form-group">

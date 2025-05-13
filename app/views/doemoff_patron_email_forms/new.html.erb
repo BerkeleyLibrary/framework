@@ -14,14 +14,14 @@
     <%= f.label :patron_email, 'Patron email address:', class: 'control-label' %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.email_field(:patron_email, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.email_field(:patron_email, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
     <%= f.label :patron_message, 'Message for patron:', class: 'control-label' %>
   </div>
   <div class="form-input required mb-4">
-    <%= f.text_area(:patron_message, rows: 5, :onkeyup => 'checkFormInputs()', class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
+    <%= f.text_area(:patron_message, rows: 5, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
   </div>
 
   <div class="form-label form-group required">
