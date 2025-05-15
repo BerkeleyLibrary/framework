@@ -24,7 +24,10 @@
 </ul>
 
 
-  <div> <%= f.check_box :borrow_check, {required: true}, "checked", "unchecked" %> <%= f.label :borrow_check, "I agree" %> </div>
+  <div class="form-check required">
+    <%= f.check_box :borrow_check, {class: 'form-check-input', required: true}, "checked", "unchecked" %>
+    <%= f.label :borrow_check, "I agree", {class: 'form-check-label'} %>
+  </div>
 
   <br />
 
@@ -38,7 +41,10 @@
 		<li>Prints not returned in the packing materials they were checked out in will be charged a $10 materials fee.</li>
   </ul>
 
-  <div> <%= f.check_box :fine_check, {required: true}, "checked", "unchecked" %> <%= f.label :fine_check, "I agree" %> </div>
+  <div class="form-check required">
+    <%= f.check_box :fine_check, {class: 'form-check-input', required: true}, "checked", "unchecked" %>
+    <%= f.label :fine_check, "I agree", {class: 'form-check-label'} %>
+  </div>
 
   <br />  
 

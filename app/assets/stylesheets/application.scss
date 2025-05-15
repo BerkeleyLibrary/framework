@@ -16,7 +16,7 @@ html {
 $required-color: #bd0000;
 $required-indicator: "*";
 
-.form-group.required .control-label:after, .input-group.required .control-label:after, fieldset.required legend:after {
+.form-group.required .control-label:after, .input-group.required .control-label:after, fieldset.required legend:after, .form-check.required .form-check-label:after {
   content: $required-indicator;
   color: $required-color;
   margin-left: 0.25em;

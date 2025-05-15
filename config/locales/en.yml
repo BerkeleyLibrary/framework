@@ -101,6 +101,18 @@ en:
         employee_phone: Your Phone Number
         employee_preferred_name: Your Preferred Name (if different from legal name)
         employee_address: Your Personal Mailing Address
+      service_article_request_form:
+        display_name: Name
+        patron_email: Email address to send the article(s)
+        pub_title: Journal Title (no abbreviations)
+        pub_location: Place of Publication
+        issn: ISSN
+        vol: Volume and/or Publication Date
+        article_title: Article Title
+        author: Article Author
+        pages: Article Pages
+        citation: 'Citation Found in (example: UC Library Search Call Number; Worldcat Location; OCLC Number; Other)'
+        pub_notes: Notes
       models:
         scan_request_form:
           attributes:
@@ -131,6 +143,8 @@ en:
       email: is not a valid email address
 
   galc_request_forms:
+    new:
+      page_title: Graphics Arts Loan Collection (GALC) - Borrowing Contract
     confirmed:
       page_title: Agreement submitted
 
@@ -200,6 +214,8 @@ en:
       page_title: Faculty Alt-Media Scanning form- UC Berkeley Library
 
   service_article_request_forms:
+    new:
+      page_title: Library Alt-Media Service - Article Request Form
     confirmed:
       page_title: Request submitted
 
