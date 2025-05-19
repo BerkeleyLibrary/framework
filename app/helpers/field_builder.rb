@@ -8,6 +8,7 @@ class FieldBuilder
   attr_reader :type
   attr_reader :required
   attr_reader :readonly
+  attr_reader :html_options
 
   # Builds a form field with appropriate label and CSS styling
   #
@@ -17,14 +18,16 @@ class FieldBuilder
   # @param type [Symbol] field type
   # @param required [Boolean] true if field is required, false otherwise (default false)
   # @param readonly [Boolean] true if field is read-only, false otherwise (default false)
+  # @param html_options [Hash] additional HTML attributes for the input field
   # rubocop:disable Metrics/ParameterLists
-  def initialize(tag_helper:, builder:, attribute:, type:, required:, readonly:)
+  def initialize(tag_helper:, builder:, attribute:, type:, required:, readonly:, html_options:)
     @tag_helper = tag_helper
     @builder = builder
     @attribute = attribute
     @type = type
     @required = required
     @readonly = readonly
+    @html_options = html_options || {}
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -50,7 +53,7 @@ class FieldBuilder
       readonly:
     }
     html_attrs[:aria] = { required: } if required
-    @field ||= builder.send(type, attribute, html_attrs)
+    @field ||= builder.send(type, attribute, html_options.merge(html_attrs) { |_, old, new| old.is_a?(Hash) ? old.merge(new) : new })
   end
 
   def label_tag

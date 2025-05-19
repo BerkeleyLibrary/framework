@@ -51,6 +51,14 @@ en:
         local_id: UC Library Search record link or call number for an item of interest
         pass_date: Requested access start date
         pass_date_end: Requested access end date
+      proxy_borrower_requests:
+        faculty_name: Name of Sponsoring Faculty/Academic Staff
+        student_name: Name of participant in the Disabled Students Program
+        research_last: Last name of (research assistant) proxy
+        research_first: First name of (research assistant) proxy
+        research_middle: Middle name or initial of (research assistant) proxy
+        dsp_rep: Name of DSP Representative
+        date_term: The term of the Proxy Card
       location_request:
         email: Email address
         filename: Input file
@@ -76,13 +84,13 @@ en:
         proxy_borrower_requests:
           attributes:
             research_last:
-              missing: "Last name of proxy must not be blank"
+              missing: must not be blank
             research_first:
-              missing: "First name of proxy must not be blank"
+              missing: must not be blank
             date_term:
-              missing: "Term of proxy card must not be blank and must be in the format mm/dd/yyyy"
-              expired: "The Proxy Term must not be in the past"
-              too_long: "The term of the Proxy Card must not be greater than %{max_term}"
+              missing: must not be blank and must be in the format mm/dd/yyyy
+              expired: must not be in the past
+              too_long: must not be greater than %{max_term}
 
   activemodel:
     attributes:
@@ -243,6 +251,9 @@ en:
       page_title: Proxy Borrower Card Application Form - DSP
     faculty_form:
       page_title: Proxy Borrower Card Application Form - Faculty
+    shared:
+      renewal_group_legend: Is this a renewal of an existing card in the proxy's possession?
+      term_label: Term of Proxy Card (not to exceed %{max})
     process_faculty_request:
       page_title: Proxy Borrower Card Application Submitted
     process_dsp_request:

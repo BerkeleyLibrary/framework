@@ -48,6 +48,19 @@ class ProxyBorrowerRequests < ActiveRecord::Base
     end
   end
 
+  # Determine the maximum term for a proxy borrower request.
+  # @return The last valid date for a request if it is submitted now.
+  def self.max_term
+    today = Date.current
+
+    # If month is Jan - March, then max date is June 30th of the current year
+    # else, if month is April - December, max date is June 30th of the following year
+    yr = today.year
+    yr += 1 if today.month >= 4
+
+    Date.new(yr, 6, 30)
+  end
+
   private
 
   # For the export we want am/pm, not military time:
@@ -62,19 +75,9 @@ class ProxyBorrowerRequests < ActiveRecord::Base
   end
 
   def date_limit
+    max = self.class.max_term
     return errors.add(:date_term, :missing) if date_term.blank?
     return errors.add(:date_term, :expired) if date_term < Date.current
-    return errors.add(:date_term, :too_long, max_term: max_term.strftime('%B %e, %Y')) if date_term > max_term
-  end
-
-  def max_term
-    today = Date.current
-
-    # If month is Jan - March, then max date is June 30th of the current year
-    # else, if month is April - December, max date is June 30th of the following year
-    yr = today.year
-    yr += 1 if today.month >= 4
-
-    Date.new(yr, 6, 30)
+    return errors.add(:date_term, :too_long, max_term: max.strftime('%B %e, %Y')) if date_term > max
   end
 end

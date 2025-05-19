@@ -36,17 +36,28 @@ module ApplicationHelper
     t(t_path, default: :site_name)
   end
 
-  def field_for(builder, attribute, type: :text_field, required: false, readonly: false)
+  # rubocop:disable Metrics/ParameterLists
+
+  # Creates a form field with Berkeley Library styling.
+  # @param builder [ActionView::Helpers::FormBuilder] enclosing form builder
+  # @param attribute [Symbol] attribute name
+  # @param type [Symbol] field type
+  # @param required [Boolean] true if field is required, false otherwise (default false)
+  # @param readonly [Boolean] true if field is read-only, false otherwise (default false)
+  # @param html_options [Hash] additional HTML attributes for the input field
+  def field_for(builder, attribute, type: :text_field, required: false, readonly: false, html_options: {})
     field_builder = FieldBuilder.new(
       tag_helper: self,
       builder:,
       attribute:,
       type:,
       required:,
-      readonly:
+      readonly:,
+      html_options:
     )
     field_builder.build
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def sortable(column, title = nil, param = nil)
     title ||= column.titleize

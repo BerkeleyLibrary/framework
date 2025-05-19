@@ -22,9 +22,9 @@ describe ProxyBorrowerRequests do
         valid: false,
         attributes: {},
         errors: {
-          research_last: ['Last name of proxy must not be blank'],
-          research_first: ['First name of proxy must not be blank'],
-          date_term: ['Term of proxy card must not be blank and must be in the format mm/dd/yyyy']
+          research_last: ['must not be blank'],
+          research_first: ['must not be blank'],
+          date_term: ['must not be blank and must be in the format mm/dd/yyyy']
         }
       },
       {
@@ -33,7 +33,7 @@ describe ProxyBorrowerRequests do
           date_term: Date.new(2000, 6, 30)
         },
         errors: {
-          date_term: ['The Proxy Term must not be in the past']
+          date_term: ['must not be in the past']
         }
       },
       {
@@ -42,7 +42,7 @@ describe ProxyBorrowerRequests do
           date_term: Date.current.next_day(720)
         },
         errors: {
-          date_term: ["The term of the Proxy Card must not be greater than #{@max_date_err_str}"]
+          date_term: ["must not be greater than #{@max_date_err_str}"]
         }
       },
       {

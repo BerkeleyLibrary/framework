@@ -115,9 +115,9 @@ describe 'Proxy Borrower Forms', type: :request do
       expect(response.status).to eq 200
     end
 
-    it 'Faculty Form redirects for non faculty members' do
+    it 'Faculty Form forbids non-faculty members' do
       get forms_proxy_borrower_faculty_path
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :forbidden
     end
 
     it 'Admin page renders' do
@@ -178,16 +178,16 @@ describe 'Proxy Borrower Forms', type: :request do
     end
 
     it 'Faculty Form rejects a submission with missing fields' do
-      post(forms_proxy_borrower_request_faculty_path, params: {
+      post(forms_proxy_borrower_request_faculty_path, params: { proxy_borrower_requests: {
              faculty_name: 'John Doe',
              research_last: '',
              research_first: '',
-             term: '',
+             date_term: '',
              renewal: ''
-           })
+           } })
 
-      expect(response.status).to eq 200
-      expect(response.body).to match(/Please correct them before submitting the form again/)
+      expect(response).to have_http_status :unprocessable_entity
+      expect(response.body).to match(/Please correct these and resubmit the form/)
     end
   end
 end

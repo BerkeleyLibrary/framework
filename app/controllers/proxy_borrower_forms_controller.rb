@@ -2,6 +2,8 @@ require 'time'
 
 # class ProxyBorrowerFormsController < ApplicationController
 class ProxyBorrowerFormsController < AuthenticatedFormController
+  before_action :set_current_user, only: %i[dsp_form faculty_form process_dsp_request process_faculty_request]
+
   # Simple page where you can select which form you wish to access
   def index
     # I think I want to get the users role now... if they're in the DB
@@ -12,18 +14,15 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   def dsp_form
     # wisks us away to Disabled Student Program Form (views/proxy_borrower_forms/dsp_form)
-    @request_form = ProxyBorrowerRequests.new
-    @current_user = current_user
+    @form = ProxyBorrowerRequests.new(student_name: @current_user.display_name)
   end
 
   def faculty_form
     # wisks us away to Faculty Form
-    if current_user.ucb_faculty?
-      @request_form = ProxyBorrowerRequests.new
-      @current_user = current_user
-    else
-      redirect_to forms_proxy_borrower_forbidden_path
-    end
+    render :forbidden, status: :forbidden and return unless current_user.ucb_faculty?
+
+    @form = ProxyBorrowerRequests.new(faculty_name: @current_user.display_name,
+                                      department: @current_user.department_number)
   end
 
   # TODO: do we still need this?
@@ -31,30 +30,32 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   # Processes a request from DSP form: (eventually dry this up)
   def process_dsp_request
-    @request_form = process_params(params)
+    @form = ProxyBorrowerRequests.new form_params(:student_name, :dsp_rep)
+    @form.student_dsp = current_user.ucpath_id
+    @form.user_email = current_user.email
 
-    if @request_form.save
+    if @form.save
       # Sends an email to the user with instructions:
-      @request_form.submit!
+      @form.submit!
       render 'result', status: :created
     else
-      @current_user = current_user
-      render 'dsp_form'
+      render 'dsp_form', status: :unprocessable_entity
     end
   end
 
   # Processes a request from faculty form:
   def process_faculty_request
-    @request_form = process_params(params)
+    @form = ProxyBorrowerRequests.new form_params(:faculty_name, :department)
+    @form.faculty_id = current_user.ucpath_id
+    @form.user_email = current_user.email
 
-    if @request_form.save
+    if @form.save
       # Sends an email to the user with instructions:
-      @request_form.submit!
+      @form.submit!
       render 'result', status: :created
     else
       # Failed to save - rerender the faculty form:
-      @current_user = current_user
-      render 'faculty_form'
+      render 'faculty_form', status: :unprocessable_entity
     end
   end
 
@@ -66,40 +67,12 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
 
   def init_form!; end
 
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-  def process_params(params)
-    request = ProxyBorrowerRequests.new
-    request['faculty_name'] = params['faculty_name'] || nil
-    request['department'] = params['department'] || nil
-    request['faculty_id'] = params['faculty_id'] || nil
-    request['user_email'] = params['user_email'] || nil
-    request['student_name'] = params['student_name'] || nil
-    request['student_dsp'] = params['student_dsp'] || nil
-    request['research_last'] = params['research_last'] || nil
-    request['research_first'] = params['research_first'] || nil
-    request['research_middle'] = params['research_middle'] || nil
-    request['dsp_rep'] = params['dsp_rep'] || nil
-    request['renewal'] = params['renewal'].to_i
-
-    # Handle the Proxy Term (date the term ends):
-    if params['term'].blank?
-      # If term is blank - set to nil:
-      request['date_term'] = nil
-    else
-      if (date_param = params['term'].match(%r{^(\d+/\d+/)(\d{2})$}))
-        params['term'] = "#{date_param[1]}20#{date_param[2]}"
-      end
-
-      begin
-        # Try to convert the string date to a date obj:
-        request['date_term'] = Date.strptime(params['term'], '%m/%d/%Y')
-      rescue ArgumentError
-        # If bad argument set to nil:
-        request['date_term'] = nil
-      end
-    end
-    request
+  def set_current_user
+    @current_user = current_user
   end
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
 
+  def form_params(*extra)
+    params.require(:proxy_borrower_requests).permit(:research_last, :research_first, :research_middle,
+                                                    :date_term, :renewal, *extra)
+  end
 end
