@@ -24,8 +24,8 @@ describe :reference_card_form, type: :system do
       fill_in('reference_card_form_affiliation', with: 'Red Bull')
       fill_in('reference_card_form_email', with: 'jdoe@library.edu')
       fill_in('reference_card_form_research_desc', with: 'History of Formula 1')
-      fill_in('reference_card_form_pass_date', with: "04/13/99\t") # \t to tab off date field
-      fill_in('reference_card_form_pass_date_end', with: "04/14/99\t") # \t to tab off date field
+      fill_in('reference_card_form_pass_date', with: Time.zone.today)
+      fill_in('reference_card_form_pass_date_end', with: Time.zone.tomorrow)
       fill_in('reference_card_form_local_id', with: '123456789')
 
       submit_button = find(:xpath, "//input[@type='submit']")
@@ -34,7 +34,7 @@ describe :reference_card_form, type: :system do
       expect(page).to have_content('Your request for a Reference Card has been submitted')
     end
 
-    it 'fails a request with an incorrectly formatted date' do
+    it 'fails to submit form with an incorrectly formatted date' do
       visit new_reference_card_form_path
       fill_in('reference_card_form_name', with: 'John Doe')
       fill_in('reference_card_form_affiliation', with: 'Red Bull')
@@ -47,7 +47,8 @@ describe :reference_card_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page).to have_content('Requested access start date must not be blank and must be in the format mm/dd/yyyy')
+      expect(page).not_to have_content('Your request for a Reference Card has been submitted')
+      expect(page).to have_current_path(new_reference_card_form_path, ignore_query: true)
     end
 
     it 'fails a request with an bad date' do
@@ -63,7 +64,8 @@ describe :reference_card_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page).to have_content('Requested access start date must not be blank and must be in the format mm/dd/yyyy')
+      expect(page).not_to have_content('Your request for a Reference Card has been submitted')
+      expect(page).to have_current_path(new_reference_card_form_path, ignore_query: true)
     end
 
     it 'fails a request with a bad email address' do
@@ -79,7 +81,8 @@ describe :reference_card_form, type: :system do
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
 
-      expect(page).to have_content('is not a valid email address')
+      expect(page).not_to have_content('Your request for a Reference Card has been submitted')
+      expect(page).to have_current_path(new_reference_card_form_path, ignore_query: true)
     end
   end
 

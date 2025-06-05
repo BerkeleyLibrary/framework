@@ -47,13 +47,18 @@ class FieldBuilder
   delegate :concat, to: :tag_helper
 
   def field_tag
-    html_attrs = {
-      class: css_class,
+    html_attrs = build_html_attrs
+    @field ||= builder.send(type, attribute, html_options.merge(html_attrs) { |_, old, new| old.is_a?(Hash) ? old.merge(new) : new })
+  end
+
+  def build_html_attrs
+    attrs = {
+      class: [html_options[:class], css_class].compact.join(' '),
       required:,
       readonly:
     }
-    html_attrs[:aria] = { required: } if required
-    @field ||= builder.send(type, attribute, html_options.merge(html_attrs) { |_, old, new| old.is_a?(Hash) ? old.merge(new) : new })
+    attrs[:aria] = { required: } if required
+    attrs
   end
 
   def label_tag

@@ -43,6 +43,39 @@ describe 'Reference Card Form', type: :request do
       expect(response.body).to match('RECaptcha Error')
     end
 
+    it 'accepts a submission with a valid date' do
+      params = {
+        reference_card_form: {
+          email: 'jrdoe@affiliate.test',
+          name: 'Jane R. Doe',
+          affiliation: 'nowhere',
+          research_desc: 'research goes here....',
+          pass_date: Date.current,
+          pass_date_end: Date.current,
+          local_id: '123456789'
+        }
+      }
+      post('/forms/reference-card', params:)
+      expect(response.status).to eq(201)
+    end
+
+    it 'rejects a submission with a requested end date before the start date' do
+      params = {
+        reference_card_form: {
+          email: 'jrdoe@affiliate.test',
+          name: 'Jane R. Doe',
+          affiliation: 'nowhere',
+          research_desc: 'research goes here....',
+          pass_date: Date.current,
+          pass_date_end: Date.current - 5.days,
+          local_id: '123456789'
+        }
+      }
+      post('/forms/reference-card', params:)
+      expect(response.status).to eq 302
+      follow_redirect!
+      expect(response.body).to include('Requested access end date must not precede access start date')
+    end
   end
 
   context 'specs with admin privledges' do

@@ -10,37 +10,19 @@
   <%= field_for(f, :email, required: true) %>
   <%= field_for(f, :research_desc, required: true) %>
   <!-- local_id : Location of item -->
-  <%= field_for(f, :local_id, required: true) %>
-  <small id="searchHelpBlock" class="form-text text-muted">
-    Location should read 'MAIN (Gardner) Stacks' and Status: 'Available'
-  </small>
-  <br/>
-  <!-- pass_date : Ref Card Start Date -->
-  <div class="form-group m-0 required">
-    <%= label_tag(:reference_card_form_pass_date, "Requested access start date", class: "control-label mb-2") %>
-    <%= text_field_tag(:pass_date, nil, class: "form-control w-25 mb-0", placeholder: "mm/dd/yyyy", required: true, id: 'reference_card_form_pass_date', name: 'reference_card_form[pass_date]') %>
-    <% if ! f.object.errors.messages[:pass_date].empty? %>
-      <% if f.object.inspect %>
-        <script>
-          document.getElementById("reference_card_form_pass_date").style.borderColor = 'red';
-        </script>
-      <% end %>
-    <% end %>
-    <br/>
+
+  <div class="form-group required">
+    <%= f.label(:local_id, class: "control-label") %>
+    <p id="searchHelpBlock" class="form-text">
+      Location should read 'MAIN (Gardner) Stacks' and Status: 'Available'
+    </p>
+    <%= f.text_field :local_id, class: "form-control", required: true, aria: { describedby: 'searchHelpBlock', required: true } %>
   </div>
-  <!-- pass_date_end : Ref Card End Date -->
-  <div class="form-group m-0 required">
-    <%= label_tag(:reference_card_form_pass_date_end, "Requested access end date", class: "control-label mb-2") %>
-    <%= text_field_tag(:pass_date_end, nil, class: "form-control w-25 mb-0", placeholder: "mm/dd/yyyy", required: true, id: 'reference_card_form_pass_date_end', name: 'reference_card_form[pass_date_end]') %>
-    <% if ! f.object.errors.messages[:pass_date_end].empty? %>
-      <% if f.object.inspect %>
-        <script>
-          document.getElementById("reference_card_form_pass_date_end").style.borderColor = 'red';
-        </script>
-      <% end %>
-    <% end %>
-    <br/>
-  </div>
+
+  <%= field_for(f, :pass_date, type: :date_field, required: true, html_options: { min: Time.zone.today, class: "w-auto" }) %>
+
+  <%= field_for(f, :pass_date_end, type: :date_field, required: true, html_options: { min: Time.zone.today, class: "w-auto" }) %>
+
   <!-- Recaptcha -->
   <div class="form-group">
     <%= recaptcha_tags %>
@@ -53,10 +35,20 @@
   <!-- FORM END -->
 <% end %>
 <script>
-  $(function() {
-    $( "#reference_card_form_pass_date" ).datepicker();
-  });
-  $(function() {
-    $( "#reference_card_form_pass_date_end" ).datepicker();
+  // on pass_date change, use value for the pass_date_end min
+  document.getElementById('reference_card_form_pass_date').addEventListener('change', function() {
+    const passDate = this;
+    const passDateEnd = document.getElementById('reference_card_form_pass_date_end');
+    if (passDate.value) {
+      passDateEnd.min = passDate.value;
+
+      // reset pass_date_end if it is before pass_date
+      if (passDate.value > passDateEnd.value) {
+        passDateEnd.value = '';
+        passDateEnd.classList.remove('is-valid');
+      }
+    } else {
+      passDateEnd.min = '';
+    }
   });
 </script>

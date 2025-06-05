@@ -15,6 +15,7 @@ html {
 
 $required-color: #bd0000;
 $required-indicator: "*";
+$form-text-color: #454545;
 
 .form-group.required .control-label:after, .input-group.required .control-label:after, fieldset.required legend:after, .form-check.required .form-check-label:after {
   content: $required-indicator;
@@ -26,6 +27,12 @@ $required-indicator: "*";
 $form-validation-states: (
   "invalid": ( "color": $required-color )
 );
+
+// Override bootstrap's form-text color and margins
+.form-text {
+  color: $form-text-color;
+  margin: auto 0;
+}
 
 .invalid-feedback {
   color: $required-color;

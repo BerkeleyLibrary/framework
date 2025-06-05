@@ -27,10 +27,6 @@ class ReferenceCardFormsController < ApplicationController
   def create
     validate_recaptcha!
 
-    # Need to grab and convert the date:
-    @form.pass_date = datestr_to_date(params[:reference_card_form][:pass_date]) if params[:reference_card_form][:pass_date].present?
-    @form.pass_date_end = datestr_to_date(params[:reference_card_form][:pass_date_end]) if params[:reference_card_form][:pass_date_end].present?
-
     if @form.save
       @form.submit!
       render 'result', status: :created
@@ -69,22 +65,6 @@ class ReferenceCardFormsController < ApplicationController
 
   private
 
-  def datestr_to_date(str)
-    return unless str.split('/').length == 3
-
-    # Try to handle mm/dd/yy:
-    if (date_param = str.match(%r{^(\d+/\d+/)(\d{2})$}))
-      str = "#{date_param[1]}20#{date_param[2]}"
-    end
-
-    begin
-      # Try to convert the string date to a date obj:
-      Date.strptime(str, '%m/%d/%Y')
-    rescue ArgumentError
-      # If bad argument set to nil:
-    end
-  end
-
   def form_params
     params.require(:reference_card_form).permit(:name, :email, :affiliation, :local_id, :research_desc, :pass_date, :pass_date_end)
   rescue ActionController::ParameterMissing
@@ -95,7 +75,7 @@ class ReferenceCardFormsController < ApplicationController
     @form = ReferenceCardForm.new
     return if form_params.empty?
 
-    @form.attributes = form_params
+    @form.assign_attributes(form_params)
     @form.validate
   end
 
