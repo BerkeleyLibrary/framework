@@ -376,6 +376,12 @@ RSpec.describe LocationRequestsController, type: :request do
               let(:invalid_attributes) { valid_attributes.merge(input_file: fixture_file_upload('spec/data/location/input-file-empty.xlsx')) }
             end
           end
+
+          context 'spreadsheet with too many OCLC numbers' do
+            it_behaves_like 'an invalid request' do
+              let(:invalid_attributes) { valid_attributes.merge(input_file: fixture_file_upload('spec/data/location/input-file-too-many-oclc.xlsx')) }
+            end
+          end
         end
       end
 

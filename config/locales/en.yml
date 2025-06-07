@@ -191,6 +191,10 @@ en:
     location_results:
       subject: Your location request
 
+  location_request:
+    errors:
+      max_oclc_numbers: Number of OCLC numbers exceeds the maximum (%{max})
+
   request_mailer:
     scan_request_opt_in_confirmation_email:
       subject: alt-media scanning service opt-in

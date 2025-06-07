@@ -8,6 +8,7 @@ class LocationRequest < ActiveRecord::Base
 
   # Batch size for inserting LocationRecords
   BATCH_SIZE = 10_000
+  MAX_OCLC_NUMBERS = 50_000
   RESULT_ARGS = %i[oclc_number wc_symbols wc_error ht_record_url ht_error].freeze
 
   MSG_NO_OCLC_NUMBERS = 'No OCLC numbers found in input spreadsheet'.freeze
@@ -52,6 +53,10 @@ class LocationRequest < ActiveRecord::Base
       clean_up(request) if request && request.persisted?
 
       raise
+    end
+
+    def max_oclc_numbers
+      MAX_OCLC_NUMBERS.to_fs(:delimited)
     end
 
     private
@@ -174,6 +179,9 @@ class LocationRequest < ActiveRecord::Base
       { location_request_id: id, oclc_number: oclc_num }
     end
     raise ArgumentError, MSG_NO_OCLC_NUMBERS if all_rows.empty?
+
+    # Also, ensure we don't have too many OCLC numbers - crazy librarians and 80K oclc numbers!
+    raise ArgumentError, I18n.t('location_request.errors.max_oclc_numbers', max: LocationRequest.max_oclc_numbers) if all_rows.size > MAX_OCLC_NUMBERS
 
     # Insert in batches to prevent DB connection timeout on very large datasets
     all_rows.each_slice(BATCH_SIZE) do |rows|
