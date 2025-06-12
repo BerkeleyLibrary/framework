@@ -234,6 +234,8 @@ en:
   site_name: UC Berkeley Library Forms
 
   student_edevices_loan_forms:
+    new:
+      page_title: Student Electronic Devices Loan Form
     all_checked:
       page_title: Agreement submitted
 

@@ -159,6 +159,12 @@ docker-compose exec -e RAILS_ENV=test app rake spec:system
 It may be convenient to also include `-e CAPYBARA_SERVER_PORT=<some port>` so it's
 easier to navigate to the server Capybara starts.
 
+#### Debugging user type restricted pages
+
+Example: If you want to locally debug a model based page that is restricted to student users,
+
+Go to the model rb file and temporarily add `Alma::Type::LIBRARY_STAFF` to `ALLOWED_PATRON_TYPES`.
+
 ## Setting up a standalone development environment
 
 ### Requirements
