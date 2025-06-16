@@ -44,16 +44,7 @@ function enableElement (id) {
  * with a list of your elements and how they should be reset
  */
 function formReset (form) {
-  if (form === 'stack-pass') {
-    document.getElementById('stack_pass_form_name').value = ''
-    document.getElementById('stack_pass_form_email').value = ''
-    document.getElementById('stack_pass_form_phone').value = ''
-    document.getElementById('stack_pass_form_main_stack_no').checked = false
-    document.getElementById('stack_pass_form_main_stack_yes').checked = false
-    hideBlock('main_stack_warn')
-    document.getElementById('stack_pass_form_pass_date').value = ''
-    document.getElementById('stack_pass_form_local_id').value = ''
-  } else if (form === 'reference-card') {
+  if (form === 'reference-card') {
     document.getElementById('reference_card_form_name').value = ''
     document.getElementById('reference_card_form_email').value = ''
     document.getElementById('reference_card_form_affiliation').value = ''

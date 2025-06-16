@@ -19,14 +19,13 @@ describe :stack_pass_form, type: :system do
     end
 
     it 'accepts a valid request' do
-      date_str = Date.current.strftime('%m/%d/%y')
       visit new_stack_pass_form_path
       fill_in('stack_pass_form_name', with: 'John Doe')
       fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
       fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: "#{date_str}\t") # \t to tab off date field
+      fill_in('stack_pass_form_pass_date', with: Date.current)
       fill_in('stack_pass_form_local_id', with: '123456789')
-      choose('stack_pass_form_main_stack_yes')
+      choose('stack_pass_form_main_stack_1')
 
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click
@@ -34,44 +33,14 @@ describe :stack_pass_form, type: :system do
       expect(page).to have_content('Your request for a Stack Pass has been submitted')
     end
 
-    it 'fails a request with an incorrectly formatted date' do
-      visit new_stack_pass_form_path
-      fill_in('stack_pass_form_name', with: 'John Doe')
-      fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
-      fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: "04---13---1996\t") # \t to tab off date field
-      fill_in('stack_pass_form_local_id', with: '123456789')
-      choose('stack_pass_form_main_stack_yes')
-
-      submit_button = find(:xpath, "//input[@type='submit']")
-      submit_button.click
-
-      expect(page).to have_content('The date must not be blank and must be in the format mm/dd/yyyy')
-    end
-
-    it 'fails a request with a bad date' do
-      visit new_stack_pass_form_path
-      fill_in('stack_pass_form_name', with: 'John Doe')
-      fill_in('stack_pass_form_email', with: 'jdoe@library.edu')
-      fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: "00/00/00zz\t") # \t to tab off date field
-      fill_in('stack_pass_form_local_id', with: '123456789')
-      choose('stack_pass_form_main_stack_yes')
-
-      submit_button = find(:xpath, "//input[@type='submit']")
-      submit_button.click
-
-      expect(page).to have_content('The date must not be blank and must be in the format mm/dd/yyyy')
-    end
-
     it 'fails a request with a bad email address' do
       visit new_stack_pass_form_path
       fill_in('stack_pass_form_name', with: 'John Doe')
-      fill_in('stack_pass_form_email', with: 'NOT-AN-EMAIL-ADDRESS')
+      fill_in('stack_pass_form_email', with: 'NOT-AN-EMAIL@ADDRESS')
       fill_in('stack_pass_form_phone', with: '925-555-9999')
-      fill_in('stack_pass_form_pass_date', with: "04/13/1996\t") # \t to tab off date field
+      fill_in('stack_pass_form_pass_date', with: Date.current)
       fill_in('stack_pass_form_local_id', with: '123456789')
-      choose('stack_pass_form_main_stack_yes')
+      choose('stack_pass_form_main_stack_1')
 
       submit_button = find(:xpath, "//input[@type='submit']")
       submit_button.click

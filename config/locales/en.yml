@@ -109,6 +109,8 @@ en:
         employee_phone: Your Phone Number
         employee_preferred_name: Your Preferred Name (if different from legal name)
         employee_address: Your Personal Mailing Address
+      stack_pass_form:
+        pass_date: On which day do you need access to the Main (Gardner) Stacks?
       service_article_request_form:
         display_name: Name
         patron_email: Email address to send the article(s)
@@ -282,6 +284,7 @@ en:
     new:
       page_title: Stack Pass Request Form
     create:
+      page_title: Stack Pass Request Successful
       recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
       success: Request successfully submitted.
 

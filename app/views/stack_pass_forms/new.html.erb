@@ -4,65 +4,33 @@
   <p>Members of the public who have research needs can obtain a Main (Gardner) Stacks access pass at no charge. Stacks passes are granted for browsing and using the library collections, not for general activities such as studying or meeting friends. A current government-issued photo ID is required to request a stack pass; people under the age of 18 utilizing the collection must be accompanied by an adult. Prepare to show your approved stack pass for entry.</p>
   <p>Requests for same-day access, or for access up to 7 days in advance, can be made in-person during <%= link_to 'Library Privilege desk hours', 'https://www.lib.berkeley.edu/visit/doe' %> or by completing and submitting the form below. Regarding the online form:</p>
   <ul>
-    <li>For <strong>same-day</strong> access, Monday-Friday, your request must be submitted by 10 AM. To visit the Stacks on the weekend, the request must be made by 2 PM on the previous Friday.</li>
-    <li>If your request is approved, you will receive your pass as an email attachment. <strong>You may print out the pass before coming to the Library or you may save the pass to your phone</strong>.</li>
+    <li>For <b>same-day</b> access, Monday through Friday, your request must be submitted by 10 AM. To visit the Stacks on the weekend, the request must be made by 2 PM on the previous Friday.</li>
+    <li>If your request is approved, you will receive your pass as an email attachment. <strong>You may print out the pass before coming to the Library or you may save the pass to your phone.</strong></li>
   </ul>
   <p>Requests for longer-term access can be made in person at the <%= link_to 'Privileges Desk', 'https://www.lib.berkeley.edu/find/privileges-desk' %> or via the <%= link_to 'Main Stacks Reference Card Request form', new_reference_card_form_path %>.</p>
-  <!-- FORM START -->
+
   <p class="required-note">Required</p>
-  <!-- name, email, phone -->
+
   <%= field_for(f, :name, required: true) %>
-  <%= field_for(f, :email, required: true) %>
-  <%= field_for(f, :phone, required: true) %>
-  <!-- main_stack : Item in Main Stacks -->
-  <% if f.object.main_stack %>
-    <div class="form-group m-0 required">
-      <fieldset class="form-group m-0 p-0">
-        <legend class="required" style="font-size: 1rem">Is the item in the Main (Gardner) Stacks? <span style="color: red">*</span></legend >
-        <div class="mb-4 form-group" role="radiogroup" aria-required="true">
-          <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "showBlock('main_stack_warn'), disableElement('submit_btn')", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
-          <%= label_tag(:stack_pass_form_main_stack_no, "No") %>
-          <%= radio_button_tag(:stack_pass_form_main_stack, 1, true, onClick: "hideBlock('main_stack_warn'), enableElement('submit_btn')", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>
-          <%= label_tag(:stack_pass_form_main_stack_yes, "Yes") %>
-        </div>
-      </fieldset>
+  <%= field_for(f, :email, type: :email_field, required: true) %>
+  <%= field_for(f, :phone, type: :telephone_field, required: true) %>
+
+  <div class="form-group my-4 required">
+    <label class="control-label" for="mainStackGroup" id="mainStackLabel">Is the item in the Main (Gardner) Stacks?</label>
+    <div class="form-group" role="radiogroup" id="mainStackGroup" aria-labelledby="mainStackLabel" aria-describedby="passOnlyForGardner">
+      <%= f.radio_button :main_stack, '1', required: true, aria: { required: true } %>
+      <%= f.label :main_stack_1, 'Yes' %>
+      <%= f.radio_button :main_stack, '0' %>
+      <%= f.label :main_stack_0, 'No' %>
     </div>
-  <% else %>
-    <div class="form-group m-0 required">
-      <fieldset class="form-group m-0 p-0">
-        <legend class="required" style="font-size: 1rem">Is the item in the Main (Gardner) Stacks? <span style="color: red">*</span></legend >
-        <div class="mb-4 form-group">
-          <%= radio_button_tag(:stack_pass_form_main_stack, 0, false, onClick: "showBlock('main_stack_warn'), disableElement('submit_btn')", id: 'stack_pass_form_main_stack_no', name: 'stack_pass_form[main_stack]') %>
-          <%= label_tag(:stack_pass_form_main_stack_no, "No") %>
-          <%= radio_button_tag(:stack_pass_form_main_stack, 1, false, onClick: "hideBlock('main_stack_warn'), enableElement('submit_btn')", id: 'stack_pass_form_main_stack_yes', name: 'stack_pass_form[main_stack]') %>
-          <%= label_tag(:stack_pass_form_main_stack_yes, "Yes") %>
-        </div>
-      </fieldset>
-    </div>
-  <% end %>
-  <!-- Only display this note if user selects no above -->
-  <div id="main_stack_warn" style="display:none;">
-    <fieldset style="padding: 1rem; border-radius: 10pt; border: 1pt black solid; background-color: lightgrey;">
-      <strong>Passes are only for the Main (Gardner) Stacks. Please consult <%= link_to 'reference', 'https://ucberkeley.libanswers.com/' %> staff about your research need.</strong>
-    </fieldset>
-    <br />
+    <div class="form-text" id="passOnlyForGardner">Passes are only for the Main (Gardner) Stacks. Please consult <%= link_to 'reference staff', 'https://ucberkeley.libanswers.com/' %> about your other research needs.</div>
   </div>
-  <!-- pass_date : Stack Pass Access Date -->
-  <div class="form-group m-0 required">
-    <%= label_tag(:stack_pass_form_pass_date, "On which day do you need access to the Main (Gardner) Stacks?", class: "control-label mb-2") %>
-    <%= text_field_tag(:pass_date, nil, class: "form-control w-25 mb-0", placeholder: "mm/dd/yyyy", required: true, id: 'stack_pass_form_pass_date', name: 'stack_pass_form[pass_date]') %>
-    <% if ! f.object.errors.messages[:pass_date].empty? %>
-      <% if f.object.inspect %>
-        <script>
-          document.getElementById("stack_pass_form_pass_date").style.borderColor = 'red';
-        </script>
-      <% end %>
-    <% end %>
-    <br/>
-  </div>
+
+  <%= field_for(f, :pass_date, type: :date_field, required: true, html_options: { min: Time.zone.today, max: Time.zone.today + 10.days }) %>
+
   <!-- local_id : Location of item -->
-  <%= field_for(f, :local_id, required: true) %>
-  <small id="searchHelpBlock" class="form-text text-muted" style="padding-bottom: 15px;">
+  <%= field_for(f, :local_id, required: true, html_options: { aria: { describedby: 'searchHelpBlock' } }) %>
+  <small id="searchHelpBlock" class="form-text" style="padding-bottom: 15px;">
     Location should read 'MAIN (Gardner) Stacks' and Status: 'Available'
   </small>
   <!-- Recaptcha -->
@@ -71,17 +39,7 @@
   </div>
   <!-- Submit/Reset Buttons -->
   <p>
-    <% if f.object.main_stack %>
-      <input id="submit_btn" type="submit" class="btn btn-primary" value="Submit">
-    <% else %>
-      <input id="submit_btn" type="submit" class="btn btn-primary" value="Submit" disabled>
-    <% end %>
-    <input type="button" name="reset" class="btn btn-link" value="Reset" onclick="formReset('stack-pass');">
+    <%= f.submit class: 'btn btn-primary' %>
+    <input type="reset" name="reset" class="btn btn-link" value="Reset">
   </p>
-  <!-- FORM END -->
 <% end %>
-<script>
-  $(function() {
-    $( "#stack_pass_form_pass_date" ).datepicker();
-  });
-</script>

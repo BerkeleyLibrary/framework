@@ -15,14 +15,9 @@ class StackPassFormsController < ApplicationController
 
   def result; end
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def create
     validate_recaptcha!
-
-    # Need to gab and convert the date:
-    if params[:stack_pass_form][:pass_date].present?
-      @form.pass_date = (convert_date_param if params[:stack_pass_form][:pass_date].split('/').length == 3)
-    end
 
     if @form.save
       @form.submit!
@@ -35,7 +30,7 @@ class StackPassFormsController < ApplicationController
     flash[:danger] = t('.recaptcha')
     redirect_with_params(action: :new)
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   # Show an admin the request
   def show
@@ -72,20 +67,6 @@ class StackPassFormsController < ApplicationController
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
-
-  def convert_date_param
-    # Try to handle mm/dd/yy:
-    if (date_param = params[:stack_pass_form][:pass_date].match(%r{^(\d+/\d+/)(\d{2})$}))
-      params[:stack_pass_form][:pass_date] = "#{date_param[1]}20#{date_param[2]}"
-    end
-
-    begin
-      # Try to convert the string date to a date obj:
-      Date.strptime(params[:stack_pass_form][:pass_date], '%m/%d/%Y')
-    rescue ArgumentError
-      # If bad argument set to nil:
-    end
-  end
 
   def form_params
     params.require(:stack_pass_form).permit(:name, :email, :phone, :local_id, :main_stack, :pass_date)

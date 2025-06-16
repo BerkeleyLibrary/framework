@@ -1,5 +1,6 @@
 class StackPassForm < StackRequest
   validate :date_check
+  validates :main_stack, acceptance: { message: 'Item must be located in the Main (Gardner) stacks.' }
 
   def submit!
     RequestMailer.stack_pass_email(self).deliver_now

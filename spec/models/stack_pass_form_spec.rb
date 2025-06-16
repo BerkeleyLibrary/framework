@@ -35,7 +35,8 @@ describe StackRequest do
         valid: true,
         attributes: {
           name: 'Jane Doe',
-          email: 'jdoe@bereley.edu'
+          email: 'jdoe@bereley.edu',
+          main_stack: true
         },
         errors: {}
       }

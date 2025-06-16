@@ -39,7 +39,7 @@ describe 'Stack Pass Form', type: :request do
           email: 'jrdoe@affiliate.test',
           name: 'Jane R. Doe',
           phone: '925-555-1212',
-          stack_pass_form_main_stack: true,
+          main_stack: true,
           pass_date: '04/13/1996',
           local_id: '123456789'
         }
