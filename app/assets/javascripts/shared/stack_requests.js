@@ -4,8 +4,6 @@
 /* exported disableElement */
 /* exported enableElement */
 
-/* exported formReset */
-
 /* exported checkStackPassInputs */
 
 /**
@@ -36,23 +34,6 @@ function disableElement (id) {
 function enableElement (id) {
   const elem = document.getElementById(id)
   elem && (elem.disabled = false)
-}
-
-/**
- * Custom Form Reset function
- * To use add to the if/else if block your form
- * with a list of your elements and how they should be reset
- */
-function formReset (form) {
-  if (form === 'reference-card') {
-    document.getElementById('reference_card_form_name').value = ''
-    document.getElementById('reference_card_form_email').value = ''
-    document.getElementById('reference_card_form_affiliation').value = ''
-    document.getElementById('reference_card_form_research_desc').value = ''
-    document.getElementById('reference_card_form_local_id').value = ''
-    document.getElementById('reference_card_form_pass_date').value = ''
-    document.getElementById('reference_card_form_pass_date_end').value = ''
-  }
 }
 
 // noinspection JSUnusedGlobalSymbols
