@@ -292,6 +292,7 @@ en:
     new:
       page_title: Reference Card Request Form
     create:
+      page_title: Reference Card Request Successful
       recaptcha: <strong>RECaptcha Error:</strong> Make sure to check the RECaptcha box at the bottom of the form.
       success: Request successfully submitted.
 
