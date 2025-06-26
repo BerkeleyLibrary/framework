@@ -15,7 +15,7 @@ class FrameworkUsers < ActiveRecord::Base
   has_many :roles, through: :assignments
 
   validates :lcasid,
-            presence: true
+            presence: true, numericality: true
   validates :name,
             presence: true
   validates :role,

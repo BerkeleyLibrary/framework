@@ -13,16 +13,18 @@ class StackPassUsersController < ApplicationController
 
   def create
     # First check if the user exists in framework user - or create the user
-    @user = FrameworkUsers.find_or_create_by!(lcasid: user_params[:lcasid]) do |new_user|
+    @user = FrameworkUsers.find_or_create_by(lcasid: user_params[:lcasid]) do |new_user|
       new_user.name = user_params[:name]
       new_user.role = 'Admin'
     end
 
+    unless @user.persisted?
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     Assignment.create!(framework_users: @user, role: Role.stackpass_admin)
     redirect_to stack_pass_users_path, flash: { success: "Added #{@user.name} as an administrator" }
-  rescue
-    @user ||= FrameworkUsers.new
-    render :new, status: :unprocessable_entity
   end
 
   def edit; end
@@ -43,6 +45,7 @@ class StackPassUsersController < ApplicationController
   end
 
   private
+
   # Ensure the current user is authenticated and an admin.
   def auth_as_admin!
     authenticate!
