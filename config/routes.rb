@@ -60,9 +60,7 @@ Rails.application.routes.draw do
   get '/forms/stack-pass-admin/', to: 'stack_pass_admin#admin'
   get '/forms/stack-pass-admin/stack-passes', to: 'stack_pass_admin#stackpasses'
   get '/forms/stack-pass-admin/reference-cards', to: 'stack_pass_admin#refcards'
-  get '/forms/stack-pass-admin/users', to: 'stack_pass_admin#users'
-  post '/forms/stack-pass-admin/add_user', to: 'stack_pass_admin#add_user'
-  delete '/forms/stack-pass-admin/delete_user/:id(.:format)', to: 'stack_pass_admin#destroy_user', as: :forms_stack_pass_delete_user
+  resources :stack_pass_users, path: '/forms/stack-pass-admin/users', except: [:show]
 
   # Proxy Borrower Form (DSP and Faculty) Routes:
   get '/forms/proxy-borrower/dsp', to: 'proxy_borrower_forms#dsp_form'

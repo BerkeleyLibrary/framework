@@ -14,37 +14,6 @@ class StackPassAdminController < AuthenticatedFormController
     @requests = ReferenceCardForm.where('pass_date_end > ?', start_calendar_year).order("#{sort_column} #{sort_direction}")
   end
 
-  def users
-    @users = Role.stackpass_admin.framework_users.order(:name)
-  end
-
-  def add_user
-    # First check if the user exists in framework user - or create the user
-    framework_user = FrameworkUsers.find_or_create_by(lcasid: params['lcasid']) do |new_user|
-      new_user.name = params['name']
-      new_user.role = 'Admin'
-    end
-
-    # Now that we have the user, create the assignment:
-    Assignment.create(framework_users: framework_user, role: Role.stackpass_admin)
-
-    # And redirect back to the admin users page:
-    flash[:success] = "Added #{framework_user.name} as an administrator"
-    redirect_to forms_stack_pass_admin_users_path
-  end
-
-  def destroy_user
-    # First grab the user (so we can grab the name!)
-    admin = FrameworkUsers.find(params[:id])
-    admin_name = admin.name
-
-    # Now lets find the assignment
-    user_assignment = Assignment.where(framework_users: admin, role: Role.stackpass_admin).first
-    user_assignment.destroy
-    flash[:success] = "Removed #{admin_name} from administrator list"
-    redirect_to forms_stack_pass_admin_users_path
-  end
-
   private
 
   def init_form!; end

@@ -1,0 +1,36 @@
+<span class="flex-heading">
+  <h1 class="inline-title"><%= t('.page_title') %></h1>
+  <%= link_to 'Admin Home',  forms_stack_pass_admin_path, class: "title-link text-nowrap" %>
+</span>
+
+<%= link_to 'Add New', new_stack_pass_user_path, class: 'btn btn-sm btn-success btn-white-text m-3', title: 'Add New Administrator' %>
+
+<table class="table pt-3 pb-3 mb-0 align-middle">
+  <thead class="table-header align-middle">
+  <tr>
+    <th scope="col">Administrator Name</th>
+    <th scope="col">User ID</th>
+    <th scope="col" class="text-end pt-3 pb-3">Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @users.each do |u| %>
+    <tr>
+      <td class="col user-col pt-3 pb-3">
+        <%= u.name %>
+      </td>
+      <!-- USER ID (FrameworkUsers.lcasid... not FrameworkUsers.id) -->
+      <td class="col user-col">
+        <%= u.lcasid %>
+      </td>
+      <td class="col action-col text-end">
+        <%= link_to 'Edit', edit_stack_pass_user_path(u.lcasid), class: 'btn btn-sm btn-warning', title: 'Edit Administrator' %>
+        <%= link_to 'Remove', stack_pass_user_path(u.lcasid),
+                    method: :delete,
+                    data: {confirm: "Are you sure you want to remove #{u.name} as an administrator?"},
+                    class: 'btn btn-sm btn-danger btn-white-text', title: 'Remove Administrator' %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

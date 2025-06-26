@@ -1,0 +1,6 @@
+<span class="flex-heading">
+  <h1 class="inline-title"><%= t('.page_title') %></h1>
+  <%= link_to 'Admin Home', forms_stack_pass_admin_path, class: "title-link text-nowrap" %>
+</span>
+
+<%= render 'form', action_url: stack_pass_users_url %>

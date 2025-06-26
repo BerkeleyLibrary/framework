@@ -1,0 +1,15 @@
+<%= form_for(@user, url: action_url) do |f| %>
+  <%= render 'application/form_error', model: @user if @user.errors.any? %>
+  <% if @user.persisted? %>
+    <div class="form-group">
+      <label class="control-label" for="lcasid">User ID</label>
+      <p id="lcasid"><%= @user.lcasid %></p>
+    </div>
+  <% else %>
+    <%= field_for f, :lcasid, required: true %>
+  <% end %>
+  <%= field_for f, :name, required: true %>
+  <div class="form-group mt-2">
+    <%= f.submit 'Save Administrator', class: 'btn btn-primary' %>
+  </div>
+<% end %>
