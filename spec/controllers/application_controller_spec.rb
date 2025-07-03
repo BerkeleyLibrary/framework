@@ -50,6 +50,7 @@ describe ApplicationController do
       ReferenceCardFormsController => 'privdesk-library@berkeley.edu',
       StackPassAdminController => 'privdesk-library@berkeley.edu',
       StackPassFormsController => 'privdesk-library@berkeley.edu',
+      StackPassUsersController => 'privdesk-library@berkeley.edu',
       StackRequestsController => 'privdesk-library@berkeley.edu',
       StudentEdevicesLoanFormsController => 'privdesk-library@berkeley.edu',
       DepartmentalCardFormsController => 'privdesk-library@berkeley.edu',

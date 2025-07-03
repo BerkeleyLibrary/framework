@@ -3,6 +3,8 @@ class StackPassUsersController < ApplicationController
   before_action :auth_as_admin!
   before_action :set_user, only: %i[edit update destroy]
 
+  self.support_email = 'privdesk-library@berkeley.edu'
+
   def index
     @users = Role.stackpass_admin.framework_users.order(:name)
   end
