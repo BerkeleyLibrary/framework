@@ -10,6 +10,18 @@ class StackRequest < ActiveRecord::Base
             presence: true,
             email: true
 
+  # Return the human-friendly status for this request.
+  def status
+    case approvedeny
+    when nil
+      'Unprocessed'
+    when true
+      'Approved'
+    when false
+      'Denied'
+    end
+  end
+
   private
 
   # For Stack Pass:

@@ -1,7 +1,6 @@
-<!-- Header and Admin Link -->
 <span class="flex-heading">
   <span>
-    <h1 class="inline-title">All Reference Card Requests:</h1>
+    <h1 class="inline-title">All Reference Card Requests</h1>
   </span>
   <span>
     <%= link_to 'Admin Home', 
@@ -10,41 +9,38 @@
   </span>
 </span>
 <table class="table table-bordered mt-5">
-  <!-- the header row -->
-  <thead class="thead-light">
+  <caption class="visually-hidden">
+    All reference card requests.  Column headers with buttons are sortable.
+  </caption>
+  <thead class="thead-light has-sortable-columns">
     <tr>
-      <th scope="col" style="text-align: center">Link</th>
-      <th scope="col"><%= sortable "name", "Name" %></th>
-      <th scope="col"><%= sortable "email", "Email" %></th>
-      <th scope="col"><%= sortable "pass_date", "Start Date" %></th>
-      <th scope="col"><%= sortable "pass_date_end", "End Date" %></th>
-      <th scope="col"># of Days</th>
-      <th scope="col"><%= sortable "approvedeny", "Status" %></th>
-      <th scope="col"><%= sortable "created_at", "Request Date" %></th>
+      <th scope="col">Link</th>
+      <%= sortable "name", "Name" %>
+      <%= sortable "email", "Email" %>
+      <%= sortable "pass_date", "Start Date" %>
+      <%= sortable "pass_date_end", "End Date" %>
+      <th scope="col"><span class="visually-hidden">Number of Days</span><span aria-hidden="true"># of Days</span></th>
+      <%= sortable "approvedeny", "Status" %>
+      <%= sortable "created_at", "Request Date" %>
     </tr>
   </thead>
-  <!-- Layout all those beautiful requests -->
   <tbody>
     <% @requests.each do |r| %>
       <tr>
-        <td style="text-align: center">
-          <%= link_to raw("&#x1F517"), reference_card_form_path(r.id), class: "no-link-style" %>
+        <td class="text-center">
+          <%= link_to reference_card_form_path(r.id), class: 'no-link-style', title: 'View or Edit Request' do %>
+            <span class="visually-hidden">View or Edit Request</span>
+            <span aria-hidden="true">&#x1F517;</span>
+          <% end %>
         </td>
         <td><%= r.name %></td>
         <td><%= r.email %></td>
-        <td><%= r.pass_date.strftime("%m/%d/%Y") %></td>
-        <td><%= r.pass_date_end.strftime("%m/%d/%Y") %></td>
+        <td><time datetime="<%= r.pass_date.strftime("%Y-%m-%d") %>"><%= r.pass_date.strftime("%m/%d/%Y") %></time></td>
+        <td><time datetime="<%= r.pass_date_end.strftime("%Y-%m-%d") %>"><%= r.pass_date_end.strftime("%m/%d/%Y") %></time></td>
         <!-- Calculate the number of days requested -->
-        <td style="text-align: center"><%= (r.pass_date_end - r.pass_date).to_i + 1 %></td>
-        <!-- Convert the status from nil, true, false to unprocessed, approved, denied -->
-        <% if r.approvedeny.nil? %>
-          <td>Unprocessed</td>
-        <% elsif r.approvedeny == true %>
-          <td>Approved</td>
-        <% else %>
-          <td>Denied</td>
-        <% end %>
-        <td><%= r.created_at.strftime("%m/%d/%Y") %></td>
+        <td class="text-center"><%= (r.pass_date_end - r.pass_date).to_i + 1 %></td>
+        <td><%= r.status %></td>
+        <td><time datetime="<%= r.created_at.strftime("%Y-%m-%d") %>"><%= r.created_at.strftime("%m/%d/%Y") %></time></td>
       </tr>
     <% end %>
   </tbody>

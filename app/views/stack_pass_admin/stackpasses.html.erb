@@ -1,7 +1,6 @@
-<!-- Header and Admin Link -->
 <span class="flex-heading">
   <span>
-    <h1 class="inline-title">All Stack Pass Requests:</h1>
+    <h1 class="inline-title">All Stack Pass Requests</h1>
   </span>
   <span>
     <%= link_to 'Admin Home', 
@@ -10,34 +9,32 @@
   </span>
 </span>
 <table class="table table-bordered mt-5">
-  <!-- the header row -->
-  <thead class="thead-light">
+  <caption class="visually-hidden">
+    All stack pass requests.  Column headers with buttons are sortable.
+  </caption>
+  <thead class="thead-light has-sortable-columns">
     <tr>
-      <th scope="col" style="text-align: center">Link</th>
-      <th scope="col"><%= sortable "name", "Name" %></th>
-      <th scope="col"><%= sortable "email", "Email" %></th>
-      <th scope="col"><%= sortable "pass_date", "Pass Date" %></th>
-      <th scope="col"><%= sortable "approvedeny", "Status" %></th>
-      <th scope="col"><%= sortable "created_at", "Request Date" %></th>
+      <th scope="col">Link</th>
+      <%= sortable "name", "Name" %>
+      <%= sortable "email", "Email" %>
+      <%= sortable "pass_date", "Pass Date" %>
+      <%= sortable "approvedeny", "Status" %>
+      <%= sortable "created_at", "Request Date" %>
     </tr>
   </thead>
-  <!-- Layout all those beautiful requests -->
   <tbody>
     <% @requests.each do |r| %>
       <tr>
-        <td style="text-align: center">
-          <%= link_to raw("&#x1F517"), stack_pass_form_path(r.id), class: "no-link-style" %>
+        <td class="text-center">
+          <%= link_to stack_pass_form_path(r.id), class: 'no-link-style', title: 'View or Edit Request' do %>
+            <span class="visually-hidden">View or Edit Request</span>
+            <span aria-hidden="true">&#x1F517;</span>
+          <% end %>
         </td>
         <td><%= r.name %></td>
         <td><%= r.email %></td>
-        <td><%= r.pass_date.strftime("%m/%d/%Y") %></td>
-        <% if r.approvedeny.nil? %>
-          <td>Unprocessed</td>
-        <% elsif r.approvedeny == true %>
-          <td>Approved</td>
-        <% else %>
-          <td>Denied</td>
-        <% end %>
+        <td><time datetime="<%= r.pass_date.strftime("%Y-%m-%d") %>"><%= r.pass_date.strftime("%m/%d/%Y") %></time></td>
+        <td><%= r.status %></td>
         <td><%= r.created_at.strftime("%m/%d/%Y") %></td>
       </tr>
     <% end %>

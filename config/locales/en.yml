@@ -301,9 +301,13 @@ en:
 
   stack_pass_admin:
     admin:
-      page_title: Stack Pass Administration
+      page_title: Stack Pass and Reference Card Administration
+    refcards:
+      page_title: Manage Reference Card Requests
     requests:
       page_title: Stack Pass Requests
+    stackpasses:
+      page_title: Manage Stack Pass Requests
 
   stack_pass_users:
     index:

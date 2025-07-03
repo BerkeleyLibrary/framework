@@ -14,14 +14,14 @@
 </span>
 <table class="table table-bordered mt-5">
   <!-- the header row -->
-  <thead class="thead-light">
+  <thead class="thead-light has-sortable-columns">
     <tr>
-      <th scope="col"><%= sortable "faculty_name", "Faculty/Academic Staff" %></th>
-      <th scope="col"><%= sortable "student_name", "DSP Participant" %></th>
-      <th scope="col"><%= sortable "research_last", "Proxy (Research Assistant)" %></th>
-      <th scope="col"><%= sortable "dsp_rep", "DSP Rep" %></th>
-      <th scope="col"><%= sortable "created_at", "Date of Request" %></th>
-      <th scope="col"><%= sortable "date_term", "Date proxy expires" %></th>
+      <%= sortable "faculty_name", "Faculty/Academic Staff" %>
+      <%= sortable "student_name", "DSP Participant" %>
+      <%= sortable "research_last", "Proxy (Research Assistant)" %>
+      <%= sortable "dsp_rep", "DSP Rep" %>
+      <%= sortable "created_at", "Date of Request" %>
+      <%= sortable "date_term", "Date proxy expires" %>
     </tr>
   </thead>
   <!-- Layout all those beautiful requests -->

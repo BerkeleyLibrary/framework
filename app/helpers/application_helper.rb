@@ -17,7 +17,7 @@ module ApplicationHelper
   end
 
   def login_link
-    link_to 'CalNet Logout', logout_path, class: 'nav-link' if authenticated?
+    link_to 'CalNet Log Out', logout_path, class: 'nav-link' if authenticated?
   end
 
   def logo_link
@@ -59,10 +59,22 @@ module ApplicationHelper
   end
   # rubocop:enable Metrics/ParameterLists
 
+  # rubocop:disable Metrics/MethodLength
   def sortable(column, title = nil, param = nil)
     title ||= column.titleize
-    css_class = column == sort_column ? "current #{sort_direction} no-link-style" : 'no-link-style'
+    th_opts = { scope: :col }
+    css_class = 'btn-col-sort'
+    if column == sort_column
+      css_class += " current #{sort_direction}"
+      th_opts[:aria] = { sort: "#{sort_direction}ending" }
+    end
     direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
-    link_to title, { sort: column, direction:, param: }, { class: css_class }
+    tag.th(**th_opts) do
+      button_to title, false, {
+        class: css_class, method: :get, params: { sort: column, direction:, param: },
+        title: "Sort table by #{title} (#{direction}ending order)"
+      }
+    end
   end
+  # rubocop:enable Metrics/MethodLength
 end

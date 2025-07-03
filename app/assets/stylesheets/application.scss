@@ -158,15 +158,42 @@ body>a.skip-link {
   margin: 0;
 }
 
+thead.has-sortable-columns th {
+  vertical-align: middle;
+}
+
+th .btn-col-sort {
+  background: none;
+  border: 2px #ffffff solid;
+  font-weight: bold;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+th .btn-col-sort:hover {
+  border-bottom: 2px #fdb515 solid;
+}
+
+th .btn-col-sort:hover::after {
+  content: "▲";
+  padding-left: 1em;
+  color: grey;
+}
+
+th .btn-col-sort.asc:hover::after {
+  content: "▼";
+}
+
 th .asc::after {
   content: "▲";
-  padding-left: 3px;
+  padding-left: 1em;
   color: gray;
 }
 
 th .desc::after {
   content: "▼";
-  padding-left: 3px;
+  padding-left: 1em;
   color: gray;
 }
 
