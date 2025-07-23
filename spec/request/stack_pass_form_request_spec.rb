@@ -27,7 +27,7 @@ describe 'Stack Pass Form', type: :request do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
                                   phone: '925-555-1234', pass_date: Date.current, main_stack: true)
 
-      get((form_path = stack_pass_form_path(id: form.id)))
+      get(form_path = stack_pass_form_path(id: form.id))
       expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
     end
 
@@ -61,7 +61,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'index page renders' do
       get stack_requests_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
       expect(response.body).to include('Admin User')
     end
 
@@ -82,7 +82,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'renders 404 if request does not exist' do
       get(path = '/forms/stack-pass/does-not-exist')
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status :not_found
       expect(response.body).to include(path)
     end
 
@@ -115,22 +115,22 @@ describe 'Stack Pass Form', type: :request do
 
     it 'Admin page renders' do
       get forms_stack_pass_admin_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Stack Pass views page renders' do
       get forms_stack_pass_admin_stack_passes_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Reference Card views page renders' do
       get forms_stack_pass_admin_reference_cards_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Admin Add/Edit Users form renders' do
       get forms_stack_pass_admin_users_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
   end
@@ -147,7 +147,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'Admin page redirects to if user is non-admin', :non_admin do
       get forms_stack_pass_admin_path
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :found
     end
   end
 
@@ -171,7 +171,7 @@ describe 'Stack Pass Form', type: :request do
 
     it 'admin page renders' do
       get forms_stack_pass_admin_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'index page includes admin link for admins' do

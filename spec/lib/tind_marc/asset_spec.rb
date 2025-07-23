@@ -6,7 +6,7 @@ module TindMarc
     include_context 'setup', :directory_batch_path, 'normal', 'with_append'
     let(:asset) { described_class.new(batch_info, '991000401929706532', filenames) }
 
-    describe '#Asset: directory batch, normal label file, with append tind_mmsid file, the directory has digital files ' do
+    describe '#Asset: directory batch, normal label file, with append tind_mmsid file, the directory has digital files' do
       let(:filenames) { ['name1.jpg', 'name2.jpg'] }
 
       it 'create 001 field' do
@@ -14,7 +14,7 @@ module TindMarc
       end
     end
 
-    describe '#Asset: directory batch, normal label file, with append tind_mmsid file, the directory has no digital files ' do
+    describe '#Asset: directory batch, normal label file, with append tind_mmsid file, the directory has no digital files' do
       let(:filenames) { [] }
 
       it 'An error message in asset' do

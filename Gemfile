@@ -5,14 +5,16 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby File.read('.ruby-version').strip
 
 gem 'awesome_print', '>=1.8.0'
+gem 'base64'
 gem 'berkeley_library-docker', '~> 0.2.0'
 gem 'berkeley_library-location', '~> 4.1.0'
 gem 'berkeley_library-logging', '~> 0.2', '>= 0.2.7'
 gem 'berkeley_library-marc', '~> 0.3.1'
-gem 'berkeley_library-tind', '~> 0.7.1'
+gem 'berkeley_library-tind', '~> 0.7.3'
 gem 'berkeley_library-util', '~> 0.1.8'
 gem 'bootstrap'
 gem 'dotenv-rails', '~> 2.8.1', require: 'dotenv/rails-now'
+gem 'drb'
 gem 'faraday'
 gem 'good_job', '~> 3.10', '>= 3.14.2'
 gem 'ipaddress'
@@ -22,6 +24,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jwt', '~> 1.5', '>= 1.5.4'
 gem 'lograge', '>=0.11.2'
+gem 'mutex_m'
 gem 'netaddr', '~> 1.5', '>= 1.5.1'
 gem 'net-ssh'
 gem 'omniauth', '~> 1.9', '>= 1.9.2'
@@ -52,9 +55,10 @@ end
 
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
-  gem 'rubocop', '~> 1.26.0'
-  gem 'rubocop-rails', '~> 2.13.2', require: false
-  gem 'rubocop-rspec', '~> 2.4.0', require: false
+  gem 'rubocop', '~> 1.77.0'
+  gem 'rubocop-rails', '~> 2.32.0', require: false
+  gem 'rubocop-rspec', '~> 3.6.0', require: false
+  gem 'rubocop-rspec_rails', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'

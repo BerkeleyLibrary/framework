@@ -1,7 +1,8 @@
 inherit_from: ../.rubocop.yml
 
-require:
+plugins:
   - rubocop-rspec
+  - rubocop-rspec_rails
 
 # Sometimes we're testing the operator
 Lint/BinaryOperatorWithIdenticalOperands:
@@ -41,6 +42,10 @@ RSpec/AnyInstance:
 RSpec/BeforeAfterAll:
   Enabled: false
 
+# :/
+RSpec/BeEq:
+  Enabled: false 
+
 # more words != more readable
 RSpec/ContextWording:
   Enabled: false
@@ -70,8 +75,11 @@ RSpec/ExpectInHook:
   Enabled: false
 
 # your naming scheme is not in possession of all the facts
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   Enabled: false
+
+RSpec/SpecFilePathSuffix:
+  Enabled: true
 
 # explicit >>> implicit
 RSpec/InstanceVariable:
@@ -109,6 +117,9 @@ RSpec/StubbedMock:
 RSpec/VerifiedDoubles:
   Enabled: false
 
+RSpecRails/InferredSpecType:
+  Enabled: false
+
 ############################################################
 # rubocop-rspec
 
@@ -117,5 +128,16 @@ RSpec/VerifiedDoubles:
 RSpec/IdenticalEqualityAssertion: # new in 2.4
   Enabled: true
 
-RSpec/Rails/AvoidSetupHook: # new in 2.4
+RSpecRails/AvoidSetupHook: # new in 2.4
+  Enabled: true
+
+RSpec/IncludeExamples: # new in 3.6
+  Enabled: true
+RSpecRails/HaveHttpStatus: # new in 2.12
+  Enabled: true
+RSpecRails/MinitestAssertions: # new in 2.17
+  Enabled: true
+RSpecRails/NegationBeValid: # new in 2.23
+  Enabled: true
+RSpecRails/TravelAround: # new in 2.19
   Enabled: true

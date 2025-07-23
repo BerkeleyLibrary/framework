@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ApplicationController, type: :request do
   it 'hides hidden paths' do
-    old_hidden_paths = ENV['LIT_HIDDEN_PATHS']
+    old_hidden_paths = ENV.fetch('LIT_HIDDEN_PATHS', nil)
     begin
       ENV['LIT_HIDDEN_PATHS'] = '/home /adm.*'
       get '/admin'

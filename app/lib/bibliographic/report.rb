@@ -11,7 +11,7 @@ module Bibliographic
     # For checking in development
     def save_to_local
       dir_path = Rails.root.join('tmp', 'bib')
-      Dir.mkdir(dir_path) unless Dir.exist?(dir_path)
+      FileUtils.mkdir_p(dir_path)
       report_file = dir_path.join('output.csv')
       CSV.open(report_file, 'w') { |csv| csv_writter(csv) }
       log_file = dir_path.join('log_error.txt')

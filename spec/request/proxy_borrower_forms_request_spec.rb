@@ -21,12 +21,12 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin page redirects to main proxy borrower card page if user is non-admin', :non_admin do
       get forms_proxy_borrower_admin_path
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :found
     end
 
     it 'Index page renders' do
       get proxy_borrower_forms_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 
@@ -72,12 +72,12 @@ describe 'Proxy Borrower Forms', type: :request do
     it 'Index contain disabled student links' do
       get proxy_borrower_forms_path
       expect(response.body).to include('<a href="/forms/proxy-borrower/dsp">Request Disabled Student</a>')
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Faculty Form renders for faculty members' do
       get forms_proxy_borrower_faculty_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 
@@ -112,7 +112,7 @@ describe 'Proxy Borrower Forms', type: :request do
     it 'DSP Form renders correct form' do
       get forms_proxy_borrower_dsp_path
       expect(response.body).to include('<h1>Proxy Borrower Card Application Form - DSP</h1>')
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Faculty Form forbids non-faculty members' do
@@ -122,22 +122,22 @@ describe 'Proxy Borrower Forms', type: :request do
 
     it 'Admin page renders' do
       get forms_proxy_borrower_admin_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Admin View DB page renders' do
       get forms_proxy_borrower_admin_view_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Admin Export redirects' do
       get forms_proxy_borrower_admin_export_path
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :found
     end
 
     it 'Admin Search renders page' do
       get forms_proxy_borrower_admin_search_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Admin Search indicates if there are no search results found' do
@@ -145,7 +145,7 @@ describe 'Proxy Borrower Forms', type: :request do
             search_term: 'SEARCHVALUE'
           })
 
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
       expect(response.body).to match(/we could not find any results/)
     end
 
@@ -154,7 +154,7 @@ describe 'Proxy Borrower Forms', type: :request do
             search_term: 'RLast'
           })
 
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
       expect(response.body).to match(/Test Search User/)
     end
 
@@ -163,18 +163,18 @@ describe 'Proxy Borrower Forms', type: :request do
             search_term: '4/13/1996'
           })
 
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
       expect(response.body).to match(/we could not find any results/)
     end
 
     it 'Admin Add/Edit Users form renders' do
       get forms_proxy_borrower_admin_users_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Results page renders' do
       get forms_proxy_borrower_result_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'Faculty Form rejects a submission with missing fields' do

@@ -34,7 +34,7 @@ module TindMarc
 
       def mkdir_at_tmp(name)
         dir_path = Rails.root.join('tmp', name)
-        Dir.mkdir(dir_path) unless Dir.exist?(dir_path)
+        FileUtils.mkdir_p(dir_path)
         dir_path
       end
 

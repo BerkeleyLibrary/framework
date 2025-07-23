@@ -16,7 +16,7 @@ describe 'Efees', type: :request do
 
   it 'lookup form renders' do
     get efees_path
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
     expect(response.body).to include('Non UC Berkeley Patron Fee Payments')
   end
 
@@ -75,7 +75,7 @@ describe 'Efees', type: :request do
 
     get '/efee?&type-efee&jwt=totallyfakejwt'
     follow_redirect!
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
     expect(response.body).to include('Error')
   end
 

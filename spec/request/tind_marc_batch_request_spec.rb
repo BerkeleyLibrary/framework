@@ -43,7 +43,7 @@ RSpec.describe TindMarcBatchController, type: :request do
       context 'GET #create' do
         it 'response' do
           get tind_marc_batch_path
-          expect(response.status).to eq 200
+          expect(response).to have_http_status :ok
           expect(response.body).to include('902_n (your initials)')
         end
       end
@@ -52,7 +52,7 @@ RSpec.describe TindMarcBatchController, type: :request do
         it 'submitted without error' do
           post tind_marc_batch_path, params: args
           render_template(:result)
-          expect(response.status).to eq 200
+          expect(response).to have_http_status :ok
         end
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe TindMarcBatchController, type: :request do
       it 'submit but not succeed, re-direct to new tool page' do
         post tind_marc_batch_path, params: args
         render_template(:new)
-        expect(response.status).to eq 302
+        expect(response).to have_http_status :found
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe TindMarcBatchController, type: :request do
       it 'submit but not succeed, re-direct to new tool page' do
         post tind_marc_batch_path, params: args
         render_template(:new)
-        expect(response.status).to eq 302
+        expect(response).to have_http_status :found
       end
     end
   end

@@ -66,7 +66,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
     let(:today) { Time.now.strftime('%Y%m%d') }
     let(:expected_note) { "#{today} #{note_text} [litscript]" }
 
-    it 'adds the expected note' do
+    it 'adds the expected note' do # rubocop:disable RSpec/NoExpectationExample
       stub_patron_save(patron_id, expected_note)
       job.perform_now(patron.id)
     end

@@ -63,7 +63,7 @@ class LocationRequestsController < ApplicationController
   end
 
   def ensure_location_request
-    @location_request ||= (find_location_request || create_location_request)
+    @location_request ||= find_location_request || create_location_request
   end
 
   def find_location_request

@@ -55,7 +55,7 @@ module TindMarc
 
     # Allowing some digital files in the lables.csv file to have no label descriptions
     def ffts_with_labels_file(da_filenames)
-      file_description_hash = @batch_info.file_label_hash.select { |k, _v| da_filenames.include?(k) }
+      file_description_hash = @batch_info.file_label_hash.slice(*da_filenames)
       ffts_with_label = ffts_with_description_on_csv(file_description_hash)
 
       filenames_without_label = filenames_no_labels_in_csv_file(da_filenames)

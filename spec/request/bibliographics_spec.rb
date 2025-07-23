@@ -47,7 +47,7 @@ RSpec.describe BibliographicsController, type: :request do
       context 'GET #create' do
         it 'response' do
           get bibliographics_path
-          expect(response.status).to eq 200
+          expect(response).to have_http_status :ok
           expect(response.body).to include('Please choose a &#39;.txt&#39; file')
         end
       end

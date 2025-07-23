@@ -68,7 +68,7 @@ RSpec.shared_context 'setup',
 
   def rm_files(file_paths)
     file_paths.each do |file_path|
-      FileUtils.rm(file_path) if File.exist?(file_path)
+      FileUtils.rm_f(file_path)
     end
   end
 
@@ -118,8 +118,7 @@ RSpec.shared_context 'setup_with_args_and_tind_request',
   let(:response_double) { instance_double(Net::HTTPResponse) }
 
   before do
-    allow(response_double).to receive(:body).and_return({ hits: ['281446'], total: 1 }.to_json)
-    allow(response_double).to receive(:code).and_return('200')
+    allow(response_double).to receive_messages(body: { hits: ['281446'], total: 1 }.to_json, code: '200')
     allow(response_double).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
     stub_request(:get, tind_url)
       .with(headers: { 'Authorization' => "Token #{token}" })

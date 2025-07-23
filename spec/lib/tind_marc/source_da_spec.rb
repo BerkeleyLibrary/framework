@@ -4,7 +4,7 @@ module TindMarc
   RSpec.describe SourceDa do
     let(:source_da) { described_class.new(batch_info) }
 
-    describe '#SourceDa: flat-file-type not effect assets from directory ' do
+    describe '#SourceDa: flat-file-type not effect assets from directory' do
       include_context 'setup', :directory_batch_path, 'normal'
 
       it 'generate directory asset from DA directories' do

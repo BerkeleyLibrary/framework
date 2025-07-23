@@ -84,7 +84,7 @@ module Alma
 
     # TODO: Clean up use of notes_array vs. find_note
     def notes_array
-      user_obj['user_note'].map { |n| n['note_text'] }
+      user_obj['user_note'].pluck('note_text')
     end
 
     # TODO: Clean up use of notes_array vs. find_note

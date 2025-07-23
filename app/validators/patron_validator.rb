@@ -20,13 +20,13 @@ class PatronValidator < ActiveModel::EachValidator
   private
 
   def wrong_type?(patron, types)
-    return if types.blank?
+    return false if types.blank?
 
     types.exclude?(patron.type)
   end
 
   def note_missing?(patron, note_pattern)
-    return unless note_pattern
+    return false unless note_pattern
 
     note_pattern = Regexp.new(note_pattern) if note_pattern.is_a?(String)
     # TODO: Clean up use of notes_array vs. find_note

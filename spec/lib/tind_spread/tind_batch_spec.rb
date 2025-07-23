@@ -24,9 +24,9 @@ RSpec.describe TindSpread::TindBatch do
     allow(TindSpread::MakeBatch).to receive(:make_header).with(any_args).and_return("Header1,Header2\n")
     allow(TindSpread::MakeBatch).to receive(:add_row).with(any_args).and_return("Data1,Data2\n")
     allow(TindSpread::TindValidation).to receive(:validate_row).with(any_args).and_return([])
-    # rubocop:disable RSpec/MessageChain: Avoid stubbing using receive_message_chain.
+    # rubocop:disable RSpec/MessageChain
     allow(RequestMailer).to receive_message_chain(:tind_spread_email, :deliver_now)
-    # rubocop:enable RSpec/MessageChain: Avoid stubbing using receive_message_chain.
+    # rubocop:enable RSpec/MessageChain
   end
 
   describe '#initialize' do

@@ -65,26 +65,26 @@ describe TindDownloadController, type: :request do
     describe 'form' do
       it 'returns 403' do
         get tind_download_path
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status :forbidden
       end
     end
 
     describe 'find_collection' do
       it 'returns 403' do
         get tind_download_find_collection_path
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status :forbidden
       end
     end
 
     describe 'download' do
       it 'returns 403 for a POST' do
         post tind_download_download_path, params: { collection_name:, export_format: 'csv' }
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status :forbidden
       end
 
       it 'returns 403 for a GET' do
         get tind_download_download_path, params: { collection_name:, export_format: 'csv' }
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status :forbidden
       end
     end
   end
@@ -107,7 +107,7 @@ describe TindDownloadController, type: :request do
     describe 'form' do
       it 'is displayed' do
         get tind_download_path
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
         expect(response.body).to include('TIND Metadata Download')
       end
     end
@@ -119,7 +119,7 @@ describe TindDownloadController, type: :request do
 
       it 'returns the matching collection name list' do
         get tind_download_find_collection_path, params: { collection_name: 'Abraham' }
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
         result = JSON.parse(response.body)
         expect(result).to be_a(Array)
         expect(result).to contain_exactly('Abraham Lincoln Papers', 'Veterans of the Abraham Lincoln Brigade')
@@ -127,7 +127,7 @@ describe TindDownloadController, type: :request do
 
       it 'returns an empty list for an unmatched name' do
         get tind_download_find_collection_path, params: { collection_name: 'axolotl' }
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
         result = JSON.parse(response.body)
         expect(result).to be_a(Array)
         expect(result).to be_empty
@@ -197,18 +197,18 @@ describe TindDownloadController, type: :request do
             let(:ext) { fmt.value.downcase }
             let(:expected_filename) { "abraham-lincoln-papers.#{ext}" }
             let(:expected_path) { File.join('spec/data/tind_download', expected_filename) }
-            let(:verify_method) { "verify_#{ext}".to_sym }
+            let(:verify_method) { :"verify_#{ext}" }
 
             it 'supports POST' do
               post tind_download_download_path, params: { collection_name:, export_format: ext }
-              expect(response.status).to eq(200)
+              expect(response).to have_http_status :ok
 
               send(verify_method, expected_path, body)
             end
 
             it 'supports GET' do
               get tind_download_download_path, params: { collection_name:, export_format: ext }
-              expect(response.status).to eq(200)
+              expect(response).to have_http_status :ok
 
               send(verify_method, expected_path, body)
             end
@@ -235,12 +235,12 @@ describe TindDownloadController, type: :request do
           describe fmt do
             it 'GET returns 404' do
               get tind_download_download_path, params: { collection_name: invalid_collection, export_format: ext }
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status :not_found
             end
 
             it 'POST returns 404' do
               post tind_download_download_path, params: { collection_name: invalid_collection, export_format: ext }
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status :not_found
             end
           end
         end

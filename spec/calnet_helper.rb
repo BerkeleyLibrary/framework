@@ -31,7 +31,7 @@ module CalnetHelper
     user = login_as_patron(patron_id)
     yield user
   rescue StandardError => e
-    puts "#{e}\n\t#{e.backtrace.join("\n\t")}"
+    puts "#{e}\n\t#{e.backtrace.join("\n\t")}" # rubocop:disable Rails/Output
     raise
   ensure
     logout!

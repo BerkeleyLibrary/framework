@@ -20,7 +20,7 @@ class ValidateProxyPatronController < ApplicationController
   end
 
   def authenticate_alma_patron!
-    return if AlmaServices::Patron.authenticate_alma_patron(alma_id, alma_password)
+    return if AlmaServices::Patron.authenticate_alma_patron?(alma_id, alma_password)
 
     logger.warn("Unable to authenticate Alma patron #{alma_id.inspect}")
     raise Error::PatronNotFoundError

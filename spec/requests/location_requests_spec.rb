@@ -82,7 +82,7 @@ RSpec.describe LocationRequestsController, type: :request do
 
       it 'is forbidden' do
         get location_requests_url
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status :forbidden
       end
     end
   end

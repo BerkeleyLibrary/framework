@@ -1,13 +1,13 @@
 class SecurityIncidentReportFormsController < ApplicationController
   before_action :authorize!, :init_form!
 
+  def index
+    redirect_to action: :new
+  end
+
   def new
     @user_email = current_user.email
     @user_name = current_user.display_name
-  end
-
-  def index
-    redirect_to action: :new
   end
 
   def create

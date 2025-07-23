@@ -31,7 +31,7 @@ describe 'Valid Alma Proxy Patron', type: :request do
       .to_return(status: 403, body: '', headers: {})
 
     post '/validate_proxy_patron', params: { alma_id: invalid_user_id, alma_password: }
-    expect(response.status).to eq(403)
+    expect(response).to have_http_status :forbidden
     expect(response.body).to include('Fail')
   end
 
@@ -53,7 +53,7 @@ describe 'Valid Alma Proxy Patron', type: :request do
       .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{valid_user_id}.json"))
 
     post '/validate_proxy_patron', params: { alma_id: valid_user_id, alma_password: }
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status :ok
     expect(response.body).to include('Success')
   end
 
@@ -76,7 +76,7 @@ describe 'Valid Alma Proxy Patron', type: :request do
       .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{blocked_user_id}.json"))
 
     post '/validate_proxy_patron', params: { alma_id: blocked_user_id, alma_password: }
-    expect(response.status).to eq(403)
+    expect(response).to have_http_status :forbidden
     expect(response.body).to include('Fail')
   end
 

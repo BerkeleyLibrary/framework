@@ -85,7 +85,8 @@ class LocationRequest < ActiveRecord::Base
     def filename_from(input_file)
       # input_file can be an UploadedFile, or a hash -- see https://guides.rubyonrails.org/active_storage_overview.html#attaching-file-io-objects
       return input_file.original_filename if input_file.respond_to?(:original_filename)
-      return input_file[:filename] if input_file.is_a?(Hash)
+
+      input_file[:filename] if input_file.is_a?(Hash)
     end
 
     def clean_input_file_message(msg, input_file)

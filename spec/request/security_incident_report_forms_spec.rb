@@ -45,7 +45,7 @@ RSpec.describe SecurityIncidentReportFormsController, type: :request do
     it 'accepts a submission with required params' do
       params = { security_incident_report_form: @required_params }
       post('/forms/security-incident-report', params:)
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it 'fails if an invalid param is sent' do

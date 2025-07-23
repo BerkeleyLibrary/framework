@@ -26,7 +26,7 @@ describe EfeesInvoice do
     expect(decoded_token[0] { userName }).to have_value('10335026')
   end
 
-  it 'submits the request mailer' do
+  it 'submits the request mailer' do # rubocop:disable RSpec/NoExpectationExample
     @invoice.submit!
   end
 end

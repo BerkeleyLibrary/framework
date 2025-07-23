@@ -123,7 +123,7 @@ class User
 
     # If user is not, then check if the user was added to the DB as an admin:
     user = FrameworkUsers.find_by(lcasid: uid)
-    return unless user
+    return false unless user
 
     user.assignments.exists?(role:)
   end

@@ -173,7 +173,7 @@ RSpec.shared_context('LocationRequest') do
     oclc_number = record.oclc_number
     symbols_expected = locations_by_oclc_num[oclc_number]
     symbols_actual = record.wc_symbols.split(',')
-    expect(symbols_actual).to contain_exactly(*symbols_expected)
+    expect(symbols_actual).to match_array(symbols_expected)
   end
 
   let(:input_file_path) { 'spec/data/location/input-file.xlsx' }
@@ -218,8 +218,8 @@ RSpec.shared_context('complete LocationRequest') do
       r_index = i + 1 # skip header
 
       wc_symbols = locations_by_oclc_num[oclc_number]
-      has_nrlf = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::NRLF).any?
-      has_srlf = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::SRLF).any?
+      has_nrlf = wc_symbols.intersect?(BerkeleyLibrary::Location::WorldCat::Symbols::NRLF)
+      has_srlf = wc_symbols.intersect?(BerkeleyLibrary::Location::WorldCat::Symbols::SRLF)
       expected_uc = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::UC)
 
       ht_record_url = record_urls_expected[oclc_number]

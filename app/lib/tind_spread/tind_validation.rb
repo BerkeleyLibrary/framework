@@ -5,7 +5,7 @@ module TindSpread
 
     # runs a set of validations against a single row.
     # Row should be an array of hashes, key being the column header for the row.
-    # rubocop:disable Metrics/MethodLength: Method has too many lines. [13/10]
+    # rubocop:disable Metrics/MethodLength
     def self.validate_row(row)
       errors = []
       validate_files(row, errors)
@@ -24,7 +24,7 @@ module TindSpread
       end
       errors
     end
-    # rubocop:enable Metrics/MethodLength: Method has too many lines. [13/10]
+    # rubocop:enable Metrics/MethodLength
 
     # private
     class << self
@@ -97,7 +97,7 @@ module TindSpread
         value_field_6_ref = get_sub_6_fields(row, value_field_6)
         return false if value_field_6_ref.empty?
 
-        value_field_6_ref.each do |_key, value|
+        value_field_6_ref.each_value do |value|
           return true if get_6_order(value_field_6).eql? get_6_order(clean_sub_6_field(value))
         end
 
@@ -110,7 +110,7 @@ module TindSpread
         false
       end
 
-      # rubocop:disable Metrics/MethodLength: Method has too many lines.
+      # rubocop:disable Metrics/MethodLength
       def valid_url?(url)
         begin
           uri = URI.parse(url.gsub(/\s/, ''))
@@ -127,7 +127,7 @@ module TindSpread
 
         true
       end
-      # rubocop:enable Metrics/MethodLength: Method has too many lines.
+      # rubocop:enable Metrics/MethodLength
 
       # This returns a hash of only the desired keys
       def search_field(field, row)

@@ -13,6 +13,15 @@ class AuthenticatedFormController < ApplicationController
     redirect_to action: :new
   end
 
+  def show
+    if special_ids.include?(params[:id])
+      render params[:id]
+    else
+      # noinspection RailsParamDefResolve
+      redirect_to action: :new
+    end
+  end
+
   def create
     @form.submit!
     redirect_to action: :show, id: success_id
@@ -22,15 +31,6 @@ class AuthenticatedFormController < ApplicationController
     flash[:danger] ||= []
     @form.errors.full_messages.each { |msg| flash[:danger] << msg }
     redirect_with_params(action: :new)
-  end
-
-  def show
-    if special_ids.include?(params[:id])
-      render params[:id]
-    else
-      # noinspection RailsParamDefResolve
-      redirect_to action: :new
-    end
   end
 
 end

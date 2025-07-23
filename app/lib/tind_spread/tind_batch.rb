@@ -1,7 +1,7 @@
 require 'roo'
-require_relative './tind_validation'
-require_relative './make_batch'
-require_relative './spread_tool'
+require_relative 'tind_validation'
+require_relative 'make_batch'
+require_relative 'spread_tool'
 
 module TindSpread
   class TindBatch
@@ -38,14 +38,14 @@ module TindSpread
       end
     end
 
-    # rubocop:disable Metrics/AbcSize: Assignment Branch Condition size for send_email is too high.
+    # rubocop:disable Metrics/AbcSize
     def send_email
       attachment_name = "#{@form_info[:'982__a'].gsub(/\s/i, '_')}_#{Time.current.in_time_zone('Pacific Time (US & Canada)').to_date}"
       body = @all_errors.empty? ? 'No errors found' : 'Line number in errors text file corresponds to line number in Errors spreadsheet'
       RequestMailer.tind_spread_email(@email, "Tind batch load for #{@form_info[:'982__a']}", body, attachments(attachment_name)).deliver_now
     end
 
-    # rubocop:disable Metrics/MethodLength: Method has too many lines.
+    # rubocop:disable Metrics/MethodLength
     def create_rows(all_rows)
       row_num = 0
       error_row = 2
@@ -63,7 +63,7 @@ module TindSpread
         row_num += 1
       end
     end
-    # rubocop:enable Metrics/MethodLength: Method has too many lines.
+    # rubocop:enable Metrics/MethodLength
 
     def run
       t = TindSpread::SpreadTool.new(@xlsx_path, @extension, @form_info[:directory])
@@ -78,6 +78,6 @@ module TindSpread
       # File.write('errors.csv', @errors_csv)
       send_email
     end
-    # rubocop:enable Metrics/AbcSize: Assignment Branch Condition size for run is too high.
+    # rubocop:enable Metrics/AbcSize
   end
 end

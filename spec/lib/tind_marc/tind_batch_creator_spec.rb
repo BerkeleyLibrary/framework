@@ -15,7 +15,7 @@ module TindMarc
       end
     end
 
-    describe '#TindBatchCreator: directory batch, no append tind_mmsid info  ' do
+    describe '#TindBatchCreator: directory batch, no append tind_mmsid info' do
       include_context 'setup_with_args_and_alma_request', :directory_batch_path, nil, 'no_append'
       it 'generate one insert record - need to get matadata from Alma' do
         hash = tind_batch_creator.records_hash

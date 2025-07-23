@@ -5,10 +5,10 @@ class PatronNoteJobBase < ApplicationJob
   attr_reader :mailer_prefix
   attr_reader :note_txt
 
-  def initialize(*arguments, mailer_prefix:, note_txt:)
+  def initialize(*, mailer_prefix:, note_txt:)
     @mailer_prefix = mailer_prefix
     @note_txt = note_txt
-    super(*arguments)
+    super(*)
   end
 
   def perform(patron_id)

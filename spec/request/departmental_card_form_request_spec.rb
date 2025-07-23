@@ -44,7 +44,7 @@ RSpec.describe DepartmentalCardFormsController, type: :request do
                address: 'whatever'
              })
 
-        expect(response.status).to eq 302
+        expect(response).to have_http_status :found
         expect(response).to redirect_to(action: :new, name: 'Just Steve', address: 'whatever')
       end
 
@@ -61,7 +61,7 @@ RSpec.describe DepartmentalCardFormsController, type: :request do
                reason: 'Test this out!'
              })
 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
         expect(response.body).to include('The Request a Departmental Card Form has been successfully submitted.')
       end
     end

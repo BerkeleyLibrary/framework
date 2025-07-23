@@ -41,7 +41,7 @@ RSpec.describe DoemoffPatronEmailFormsController, type: :request do
     it 'accepts a submission with required params and redirects to success page' do
       params = { doemoff_patron_email_form: @required_params }
       post('/forms/doemoff-patron-email', params:)
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
       expect(response.body).to match(/Your message has been sent/)
     end
 

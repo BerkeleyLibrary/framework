@@ -13,7 +13,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'reference card index page redirects to form' do
       get reference_card_forms_path
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :found
       expect(response).to redirect_to(action: :new)
     end
 
@@ -56,7 +56,7 @@ describe 'Reference Card Form', type: :request do
         }
       }
       post('/forms/reference-card', params:)
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status :created
     end
 
     it 'rejects a submission with a requested end date before the start date' do
@@ -72,7 +72,7 @@ describe 'Reference Card Form', type: :request do
         }
       }
       post('/forms/reference-card', params:)
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :found
       follow_redirect!
       expect(response.body).to include('Requested access end date must not precede access start date')
     end
@@ -108,7 +108,7 @@ describe 'Reference Card Form', type: :request do
 
     it 'renders 404 if request does not exist' do
       get(path = '/forms/reference-card/does-not-exist')
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status :not_found
       expect(response.body).to include(path)
     end
 

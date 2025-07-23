@@ -10,8 +10,8 @@ module ExceptionHandling
     def log_error(error)
       msg = {
         msg: error.message,
-        error: error.inspect.to_s,
-        cause: error.cause.inspect.to_s
+        error: error.inspect,
+        cause: error.cause.inspect
       }
       msg[:backtrace] = error.backtrace if Rails.logger.level < Logger::INFO
       logger.error(msg) # @note assumes the including class has a .logger method
@@ -96,7 +96,8 @@ module ExceptionHandling
 
     def handler_key_for(klass)
       return klass if klass.is_a?(String)
-      return klass.name if klass.is_a?(Module) && klass.respond_to?(:===)
+
+      klass.name if klass.is_a?(Module) && klass.respond_to?(:===)
     end
   end
 end

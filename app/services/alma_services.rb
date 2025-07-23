@@ -37,7 +37,7 @@ module AlmaServices
     class << self
       include Base
 
-      def authenticate_alma_patron(alma_user_id, alma_password)
+      def authenticate_alma_patron?(alma_user_id, alma_password)
         # Alma requires these params to be in the query string
         params = { op: 'auth', view: 'full', password: alma_password }
         auth_uri = URIs.append(user_uri_for(alma_user_id), '?', URI.encode_www_form(params))

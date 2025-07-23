@@ -5,10 +5,11 @@ module TindMarc
 
     shared_examples 'run_and_send_email' do |type_sym|
       let(:directory) { Rails.root.join('spec/data/tind_marc/data/da/directory_collection/ucb/incoming') }
-      let(:subject) do
+      let(:subject) do # rubocop:disable RSpec/SubjectDeclaration
         { completed: "Completed to obtain TIND and MMSID information for the batch at: #{directory}",
           failed: "Critical error, cann not obtain TIND and MMSID CSV file Directory: #{directory}" }
       end
+
       it "run and send #{type_sym} email" do
         mmsid_tind_task.run
         expect(ActionMailer::Base.deliveries.count).to eq(1)
@@ -36,10 +37,10 @@ module TindMarc
         end
 
         def rm_file
-          File.delete(mmsid_tind_csv_file_path) if File.exist?(mmsid_tind_csv_file_path)
+          FileUtils.rm_f(mmsid_tind_csv_file_path)
         end
 
-        it 'save tind-mmsid csv file ' do
+        it 'save tind-mmsid csv file' do
           allow(Rails.env).to receive(:development?).and_return(true)
           mmsid_tind_task.run
           expect(File.exist?(mmsid_tind_csv_file_path)).to be true

@@ -11,7 +11,7 @@ module TindSpread
     end
 
     def self.delete_filename(header)
-      header.each do |key, _value|
+      header.each do |key, _value| # rubocop:disable Style/HashEachMethods
         header.delete(key) if key.to_s.match(/filename/i)
       end
     end
@@ -52,8 +52,7 @@ module TindSpread
     end
 
     # Add each row from the spreadsheet along with some form params
-    # rubocop:disable Metrics/MethodLength: Method has too many lines.
-    # rubocop:disable Metrics/AbcSize: Assignment Branch Condition size for add_row is too high.
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def self.add_row(row, form_params, filename_row: false)
       csv_row = []
       csv_string = ''
@@ -71,8 +70,7 @@ module TindSpread
       end
       csv_string.encode('UTF-8')
     end
-    # rubocop:enable Metrics/MethodLength: Method has too many lines.
-    # rubocop:enable Metrics/AbcSize: Assignment Branch Condition size for add_row is too high.
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   end
 end

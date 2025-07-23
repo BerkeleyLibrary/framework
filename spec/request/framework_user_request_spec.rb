@@ -25,7 +25,7 @@ describe :forms_proxy_borrower_admin, type: :request do
       expect(response).to redirect_to(forms_proxy_borrower_admin_users_path)
       get(forms_proxy_borrower_admin_users_path)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       expect(response.body).to include('Jane Doe')
 
       created_user = FrameworkUsers.find_by(lcasid: '12345678')

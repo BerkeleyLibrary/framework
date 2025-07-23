@@ -1,7 +1,7 @@
 module CampusNetworkHelper
 
   def get_formatted_ranges(network_array)
-    return { ranged: [], starred: [] } if network_array.select(&:ipv4?).empty?
+    return { ranged: [], starred: [] } if network_array.none?(&:ipv4?)
 
     merged = connect_contiguous_ranges(network_array.select(&:ipv4?)).compact
     # add guard clause

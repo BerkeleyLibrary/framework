@@ -79,7 +79,7 @@ module TindMarc
       end
 
       def matching_folders(csv_data, warnings, batch_path)
-        folder_names_from_csv = csv_data.map { |row| row['mmsid_folder_name'] }.compact_blank
+        folder_names_from_csv = csv_data.pluck('mmsid_folder_name').compact_blank
         folder_names_from_da =  Util.total_mmsid_folders(batch_path)
         return if folder_names_from_csv.sort == folder_names_from_da.sort
 

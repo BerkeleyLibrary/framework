@@ -26,7 +26,7 @@ module CapybaraHelper
     end
 
     def local_save_path
-      File.join(Rails.root, SAVE_PATH)
+      Rails.root.join(SAVE_PATH)
     end
 
     def browser_save_path

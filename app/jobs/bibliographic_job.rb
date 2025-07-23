@@ -2,7 +2,7 @@ class BibliographicJob < ApplicationJob
   queue_as :default
 
   def perform(host_bib_task)
-    host_bib_task.host_bibs.where(marc_status: %w[pending retrieving]).each do |host_bib|
+    host_bib_task.host_bibs.where(marc_status: %w[pending retrieving]).find_each do |host_bib|
       Bibliographic::HostBib.create_linked_bibs(host_bib)
     end
     after_perform_upload!(host_bib_task)

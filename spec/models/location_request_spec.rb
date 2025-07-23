@@ -250,14 +250,14 @@ RSpec.describe LocationRequest, type: :model do
     it 'returns the symbols' do
       req = LocationRequest.create!(**valid_attributes)
       symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::ALL
-      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to match_array(symbols_expected)
     end
 
     it 'is not affected by the presence/absence of :hathi' do
       attributes = valid_attributes.except(:hathi)
       req = LocationRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::ALL
-      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to match_array(symbols_expected)
     end
 
     it 'returns nil for HathiTrust-only requests' do
@@ -270,14 +270,14 @@ RSpec.describe LocationRequest, type: :model do
       attributes = valid_attributes.except(:uc)
       req = LocationRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::RLF
-      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to match_array(symbols_expected)
     end
 
     it 'returns UC symbols for UC requests' do
       attributes = valid_attributes.except(:rlf)
       req = LocationRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::UC
-      expect(req.search_wc_symbols).to contain_exactly(*symbols_expected)
+      expect(req.search_wc_symbols).to match_array(symbols_expected)
     end
   end
 
@@ -473,6 +473,7 @@ RSpec.describe LocationRequest, type: :model do
     end
   end
 
+  # rubocop:disable Rails/WhereNotWithMultipleConditions
   describe :error_count do
     shared_examples 'counting records with errors' do
       it 'counts both HathiTrust and WorldCat errors' do
@@ -498,7 +499,7 @@ RSpec.describe LocationRequest, type: :model do
         expected_records = req.location_records.where.not(wc_error: nil, ht_error: nil).to_a
         actual_records = req.records_with_errors.to_a
 
-        expect(actual_records).to contain_exactly(*expected_records)
+        expect(actual_records).to match_array(expected_records)
       end
     end
 
@@ -512,4 +513,5 @@ RSpec.describe LocationRequest, type: :model do
       it_behaves_like 'returning records with errors'
     end
   end
+  # rubocop:enable Rails/WhereNotWithMultipleConditions
 end

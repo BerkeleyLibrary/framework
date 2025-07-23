@@ -11,7 +11,7 @@ module Health
     def &(other)
       return self unless other
 
-      self >= other ? self : other
+      [self, other].max
     end
 
     # Returns the status as a string, suitable for use as a JSON value.

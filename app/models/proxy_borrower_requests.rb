@@ -42,7 +42,7 @@ class ProxyBorrowerRequests < ActiveRecord::Base
     CSV.generate(headers: true) do |csv|
       csv << attributes
 
-      all.find_each do |request|
+      find_each do |request|
         csv << attributes.map { |attr| request.send(attr) }
       end
     end
@@ -78,6 +78,7 @@ class ProxyBorrowerRequests < ActiveRecord::Base
     max = self.class.max_term
     return errors.add(:date_term, :missing) if date_term.blank?
     return errors.add(:date_term, :expired) if date_term < Date.current
-    return errors.add(:date_term, :too_long, max_term: max.strftime('%B %e, %Y')) if date_term > max
+
+    errors.add(:date_term, :too_long, max_term: max.strftime('%B %e, %Y')) if date_term > max
   end
 end

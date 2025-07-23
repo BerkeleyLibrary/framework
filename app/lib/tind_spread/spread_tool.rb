@@ -2,7 +2,7 @@ require 'roo'
 require_relative 'tind_validation'
 
 module TindSpread
-  # rubocop:disable Metrics/ClassLength: Class has too many lines.
+  # rubocop:disable Metrics/ClassLength
   class SpreadTool
 
     def initialize(xlsx_path, extension, directory)
@@ -38,17 +38,15 @@ module TindSpread
     end
 
     def header(row)
-      header = []
-      row.each do |key|
-        header << key.gsub(/\d+:/, '')
+      row.map do |key|
+        key.gsub(/\d+:/, '')
       end
-      header
     end
 
     def delete_unnecessary_fields(all)
       remove = %w[035__a 980__a 982__a 982__b 982__p 540__a 852__a 336__a 852__c 902__ 991__a FFT__a]
-      all.each do |key, _value|
-        all.delete(key) if remove.select { |r| key.to_s.match(/#{r}/) }.any?
+      all.each_key do |key|
+        all.delete(key) if remove.any? { |r| key.to_s.match(/#{r}/) }
       end
       all
     end
@@ -77,7 +75,7 @@ module TindSpread
       highest
     end
 
-    # rubocop:disable Lint/UselessAssignment: Useless assignment to variable
+    # rubocop:disable Lint/UselessAssignment
     def get_files(file_pattern)
       dir = "#{Rails.application.config.tind_data_root_dir}/#{@directory.delete_prefix('/')}"
       if file_pattern.nil?
@@ -88,7 +86,7 @@ module TindSpread
         matches.map! { |i| i.gsub(Rails.application.config.tind_data_root_dir, 'https://digitalassets.lib.berkeley.edu') }
       end
     end
-    # rubocop:enable Lint/UselessAssignment: Useless assignment to variable
+    # rubocop:enable Lint/UselessAssignment
 
     def get_ffts(all_rows)
       ffts = []
@@ -129,7 +127,7 @@ module TindSpread
 
     def delete_filename_row(all_rows)
       all_rows.each do |row|
-        row.each do |key, _value|
+        row.each_key do |key|
           row.delete(key) if key.to_s.match(/filename/i)
         end
       end
@@ -150,5 +148,5 @@ module TindSpread
     end
 
   end
-  # rubocop:enable Metrics/ClassLength: Class has too many lines.
+  # rubocop:enable Metrics/ClassLength
 end

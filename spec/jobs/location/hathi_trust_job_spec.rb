@@ -33,6 +33,7 @@ module Location
           end
         end
 
+        # rubocop:disable RSpec/ExampleLength
         it 'completes partially-completed jobs' do
           request_records = req.location_records
 
@@ -145,6 +146,7 @@ module Location
             end
           end
         end
+        # rubocop:enable RSpec/ExampleLength
       end
     end
   end

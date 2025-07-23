@@ -4,13 +4,13 @@ class DepartmentalCardFormsController < ApplicationController
 
   self.support_email = 'privdesk-library@berkeley.edu'
 
+  def index
+    redirect_to action: :new
+  end
+
   def new
     @display_name = current_user.display_name
     @email = current_user.email
-  end
-
-  def index
-    redirect_to action: :new
   end
 
   def create

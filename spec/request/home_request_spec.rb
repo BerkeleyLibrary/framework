@@ -44,7 +44,7 @@ describe HomeController, type: :request do
 
     it "allows a framework admin page - #{name}" do
       with_patron_login(Alma::FRAMEWORK_ADMIN_ID) do
-        get admin_path if @name == 'admin'  # TODO : figure out to use block
+        get admin_path if @name == 'admin' # TODO : figure out to use block
         get framework_admin_path if @name == 'framework_admin'
         expect(response).to have_http_status(:ok)
       end

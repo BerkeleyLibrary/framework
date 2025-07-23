@@ -15,6 +15,16 @@ class StackPassFormsController < ApplicationController
 
   def result; end
 
+  # Show an admin the request
+  def show
+    require_admin!
+    @current_user = current_user
+    @req = StackPassForm.find(params[:id])
+
+    @approvals = @req.approval_count
+    @denials = @req.denial_count
+  end
+
   # rubocop:disable Metrics/MethodLength
   def create
     validate_recaptcha!
@@ -30,20 +40,9 @@ class StackPassFormsController < ApplicationController
     flash[:danger] = t('.recaptcha')
     redirect_with_params(action: :new)
   end
-  # rubocop:enable Metrics/MethodLength
-
-  # Show an admin the request
-  def show
-    require_admin!
-    @current_user = current_user
-    @req = StackPassForm.find(params[:id])
-
-    @approvals = @req.approval_count
-    @denials = @req.denial_count
-  end
 
   # Approve || Deny Request
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize
   def update
     require_admin!
 

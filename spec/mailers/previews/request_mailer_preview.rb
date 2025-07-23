@@ -35,7 +35,7 @@ class RequestMailerPreview < ActionMailer::Preview
     incident.race = 'White'
     incident.sex = 'Male'
     incident.build = 'Medium'
-    incident.height = "5\'9\""
+    incident.height = "5'9\""
     incident.weight = '185'
     incident.hair = 'brown'
     incident.eyes = 'brown'
@@ -44,7 +44,7 @@ class RequestMailerPreview < ActionMailer::Preview
     incident.race_1 = 'Black'
     incident.sex_1 = 'Femail'
     incident.build_1 = 'Medium'
-    incident.height_1 = "5\'3\""
+    incident.height_1 = "5'3\""
     incident.weight_1 = '150'
     incident.hair_1 = 'black'
     incident.eyes_1 = 'brown'
@@ -53,7 +53,7 @@ class RequestMailerPreview < ActionMailer::Preview
     incident.race_2 = 'White'
     incident.sex_2 = 'Male'
     incident.build_2 = 'Small'
-    incident.height_2 = "5\'2\""
+    incident.height_2 = "5'2\""
     incident.weight_2 = '130'
     incident.hair_2 = 'brown'
     incident.eyes_2 = 'brown'
@@ -72,9 +72,9 @@ class RequestMailerPreview < ActionMailer::Preview
     patron_email = DoemoffPatronEmailForm.new
     patron_email.patron_email = 'test@gmail.com'
     # rubocop:disable Style/StringLiterals
-    patron_email.patron_message = "We found the book you were looking for. Under the lamp near the entrance "\
-                                  "you will find a piece of paper with a riddle which (if properly solved) will "\
-                                  "direct you to the next riddle.\nSolve all the riddles correctly "\
+    patron_email.patron_message = "We found the book you were looking for. Under the lamp near the entrance " \
+                                  "you will find a piece of paper with a riddle which (if properly solved) will " \
+                                  "direct you to the next riddle.\nSolve all the riddles correctly " \
                                   "and it will lead you to your book"
     # rubocop:enable Style/StringLiterals
     patron_email.recipient_email = 'maincirc-library@berkeley.edu'
