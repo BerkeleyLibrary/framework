@@ -4,6 +4,7 @@ module TindMarc
     attr_reader :critical_errors, :errors, :warnings
 
     def initialize(args)
+      @args = args
       @tind_collection_info = TindCollectionInfo.new(args)
       @batch_info = BatchInfo.new(args, @tind_collection_info.prefix_035)
       @batch_info.create_label_hash
@@ -57,8 +58,20 @@ module TindMarc
       BerkeleyLibrary::TIND::Mapping::AlmaBase.collection_parameter_hash = @tind_collection_info.parameter_hash
     end
 
+    def prepare_additional_fields(asset)
+      if audio_or_video?
+        @tind_collection_info.new_fields + [asset.f_035]
+      else
+        @tind_collection_info.new_fields + asset.ffts + [asset.f_035]
+      end
+    end
+
+    def audio_or_video?
+      %w[Audio Video].include?(@args[:resource_type])
+    end
+
     def create_insert_record(asset)
-      additional_fields = @tind_collection_info.new_fields + asset.ffts + [asset.f_035]
+      additional_fields = prepare_additional_fields(asset)
       tind_marc = BerkeleyLibrary::TIND::Mapping::AlmaSingleTIND.new
       record = tind_marc.record(asset.mmsid, additional_fields)
       update_subfields(record)

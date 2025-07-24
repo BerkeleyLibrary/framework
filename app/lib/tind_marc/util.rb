@@ -21,7 +21,7 @@ module TindMarc
       end
 
       def valid_file_ext?(filename)
-        exts = %(.jpg .hocr .pdf)
+        exts = %(.jpg .hocr .pdf .mp3 .mp4)
         exts.include?(File.extname(filename).downcase)
       end
 
