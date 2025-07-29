@@ -10,8 +10,8 @@ gem 'berkeley_library-docker', '~> 0.2.0'
 gem 'berkeley_library-location', '~> 4.1.0'
 gem 'berkeley_library-logging', '~> 0.2', '>= 0.2.7'
 gem 'berkeley_library-marc', '~> 0.3.1'
-gem 'berkeley_library-tind', '~> 0.7.3'
-gem 'berkeley_library-util', '~> 0.1.8'
+gem 'berkeley_library-tind', '~> 0.8.0'
+gem 'berkeley_library-util', '~> 0.2.0'
 gem 'bootstrap'
 gem 'dotenv-rails', '~> 2.8.1', require: 'dotenv/rails-now'
 gem 'drb'
@@ -54,7 +54,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3.2'
   gem 'rubocop', '~> 1.77.0'
   gem 'rubocop-rails', '~> 2.32.0', require: false
   gem 'rubocop-rspec', '~> 3.6.0', require: false
