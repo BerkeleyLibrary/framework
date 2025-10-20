@@ -49,7 +49,7 @@ class StackPassFormsController < ApplicationController
 
     @form = StackPassForm.find(params[:id])
     @form.approvedeny = params[:stack_pass_][:approve_deny]
-    @form.processed_by = params[:processed_by]
+    @form.processed_by_id = FrameworkUsers.find_by_lcasid(current_user.uid).id
 
     if @form.approvedeny == false
       deny_reason = params[:denial_reason]

@@ -21,6 +21,10 @@ class FrameworkUsers < ActiveRecord::Base
   validates :role,
             presence: true
 
+  def name_for_lcasid(lcasid)
+    find_by(lcasid:)&.name
+  end
+
   class << self
     # Hardcoded admins - so if for some reason all of the
     # admins in the DB are deleted, we still have a way of

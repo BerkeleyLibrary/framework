@@ -22,6 +22,15 @@ class StackRequest < ActiveRecord::Base
     end
   end
 
+  # Return the name of the person who processed this request.
+  def processor_name
+    if processed_by_id.present?
+      FrameworkUsers.name_from_lcasid(processed_by_id)
+    else
+      processed_by
+    end
+  end
+
   private
 
   # For Stack Pass:

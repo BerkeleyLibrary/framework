@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_04_180042) do
+ActiveRecord::Schema[7.0].define(version: 2025_07_10_003327) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -235,6 +235,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_04_180042) do
     t.string "affiliation"
     t.text "research_desc"
     t.date "pass_date_end"
+    t.integer "processed_by_id"
   end
 
   create_table "tind_validators", force: :cascade do |t|
@@ -250,4 +251,5 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_04_180042) do
   add_foreign_key "host_bib_linked_bibs", "linked_bibs"
   add_foreign_key "host_bibs", "host_bib_tasks"
   add_foreign_key "location_records", "location_requests"
+  add_foreign_key "stack_requests", "framework_users", column: "processed_by_id"
 end

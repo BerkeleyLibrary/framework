@@ -24,7 +24,6 @@
         <%= u.lcasid %>
       </td>
       <td class="col action-col text-end">
-        <%= link_to 'Edit', edit_stack_pass_user_path(u.lcasid), class: 'btn btn-sm btn-warning', title: 'Edit Administrator' %>
         <%= link_to 'Remove', stack_pass_user_path(u.lcasid),
                     method: :delete,
                     data: {confirm: "Are you sure you want to remove #{u.name} as an administrator?"},
