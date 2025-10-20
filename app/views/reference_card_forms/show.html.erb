@@ -72,8 +72,7 @@
       </fieldset>
     </div>
     <div class="mb-4 form-group required">
-      <%= label_tag(:processed_by, "Processed by (enter your name):", class: "control-label") %> <br />
-      <%= text_field_tag(:processed_by, @current_user.display_name, placeholder: "Enter your name", class: "form-control", required: true) %>
+      Processed by: <%= @current_user.display_name %>
     </div>
     <div>
       <input id="process_btn" type="submit" class="btn btn-primary" value="Process Request" disabled=true>

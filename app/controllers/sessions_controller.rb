@@ -23,6 +23,7 @@ class SessionsController < ApplicationController
     @user = User.from_omniauth(auth_params).tap do |user|
       sign_in(user)
       log_signin(user)
+      update_name(user, auth_params['extra']['displayName'])
     end
 
     redirect_to request.env['omniauth.origin'] || home_path
@@ -45,5 +46,10 @@ class SessionsController < ApplicationController
 
   def log_signin(user)
     logger.debug({ msg: 'Signed in user', user: })
+  end
+
+  def update_name(user, name)
+    framework_user = FrameworkUsers.find_by_lcasid(user.uid)
+    framework_user.update(name:) if framework_user.present?
   end
 end

@@ -1,7 +1,7 @@
 # Manipulate stack pass / reference card admins.
 class StackPassUsersController < ApplicationController
   before_action :auth_as_admin!
-  before_action :set_user, only: %i[edit update destroy]
+  before_action :set_user, only: %i[update destroy]
 
   def index
     @users = Role.stackpass_admin.framework_users.order(:name)
@@ -25,17 +25,6 @@ class StackPassUsersController < ApplicationController
 
     Assignment.create!(framework_users: @user, role: Role.stackpass_admin)
     redirect_to stack_pass_users_path, flash: { success: "Added #{@user.name} as an administrator" }
-  end
-
-  def edit; end
-
-  def update
-    @user.name = user_params[:name]
-    if @user.save
-      redirect_to stack_pass_users_path, flash: { success: "Saved new name for #{@user.name}" }
-    else
-      render :edit, status: :unprocessable_entity
-    end
   end
 
   def destroy

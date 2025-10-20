@@ -10,6 +10,27 @@ class StackRequest < ActiveRecord::Base
             presence: true,
             email: true
 
+  # Return the human-friendly status for this request.
+  def status
+    case approvedeny
+    when nil
+      'Unprocessed'
+    when true
+      'Approved'
+    when false
+      'Denied'
+    end
+  end
+
+  # Return the name of the person who processed this request.
+  def processor_name
+    if processed_by_id.present?
+      FrameworkUsers.name_from_lcasid(processed_by_id)
+    else
+      processed_by
+    end
+  end
+
   private
 
   # For Stack Pass:
