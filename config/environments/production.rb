@@ -84,14 +84,14 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
-    port: '587',
+    port: 587,
     domain: config.altmedia['mail_smtp_domain'],
     user_name: config.altmedia['mail_smtp_username'],
     password: config.altmedia['mail_smtp_password'],
     authentication: 'plain',
-    enable_starttls_auto: true,
+    tls: true,
     open_timeout: ENV.fetch('MAIL_OPEN_TIMEOUT', 5).to_i,
-    read_timeout: ENV.fetch('MAIL_READ_TIMEOUT', 120).to_i
+    read_timeout: ENV.fetch('MAIL_READ_TIMEOUT', 5).to_i
   }
 
   if ENV['INTERCEPT_EMAILS'].present?
