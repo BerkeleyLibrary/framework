@@ -1,0 +1,28 @@
+services:
+  db:
+    volumes: !reset
+
+  app:
+    build: !reset
+    environment:
+      - CAPYBARA_SAVE_PATH=/opt/app/artifacts
+    image: ${DOCKER_APP_IMAGE}
+    depends_on:
+      - selenium
+    volumes: !override
+      - artifacts:/opt/app/artifacts
+    ports: !reset
+
+  worker:
+    build: !reset
+    image: ${DOCKER_APP_IMAGE}
+    volumes: !reset
+
+  selenium:
+    volumes: !override
+      - artifacts:/build
+
+  dbeaver: !reset
+
+volumes:
+  artifacts:
