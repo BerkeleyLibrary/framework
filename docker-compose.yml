@@ -10,8 +10,6 @@ services:
         condition: service_started
       selenium:
         condition: service_started
-      selenium-chrome:
-        condition: service_started
     init: true
     networks:
       default:
@@ -29,7 +27,6 @@ services:
     depends_on:
       - db
       - selenium
-      - selenium-chrome
     ports: []
 
   db:
@@ -48,45 +45,25 @@ services:
       - ./:/build:rw
 
   selenium:
-    image: selenium/hub
-    # image: selenium/hub:4.10.0
+    image: selenium/standalone-chromium
     networks:
       default:
         aliases:
           - selenium.test
     ports:
-      - 4442:4442
-      - 4443:4443
       - 4444:4444
+      - 7900:7900
+    shm_size: 2gb
     volumes:
-      - ./:/build:rw
-
-  selenium-chrome:
-    image: selenium/node-chromium
-    # image: selenium/node-chrome:4.10.0
-    # shm_size: 2gb
-    depends_on:
-      - selenium
-    environment:
-      - SE_EVENT_BUS_HOST=selenium
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-    ports:
-      # @note Use `open vnc://localhost:55900` to view the chrome session.
-      #       Doesn't work if you pass the "headless" option via Capybara.
-      #       Password = "secret"
-      - 55900:5900
-    volumes:
-      - /dev/shm:/dev/shm:rw
       - ./:/build:rw
 
   dbeaver:
     image: dbeaver/cloudbeaver:latest
-    container_name: dbeaver 
+    container_name: dbeaver
     depends_on:
       - db
     restart: always
     ports:
       - '8080:8978'
-    volumes: 
+    volumes:
       - ./:/build:rw
