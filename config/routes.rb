@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root to: redirect('/forms/altmedia/new')
 
   get 'admin', to: 'home#admin'
-  get 'health', to: 'home#health'
+  get 'health', to: 'ok_computer/ok_computer#index', defaults: { format: :json }
   get 'home', to: 'home#index'
   get 'build_info', to: 'home#build_info'
 

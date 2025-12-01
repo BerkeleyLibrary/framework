@@ -74,6 +74,7 @@ GEM
       execjs (~> 2)
     awesome_print (1.9.2)
     base64 (0.3.0)
+    benchmark (0.5.0)
     berkeley_library-alma (0.1.1)
       berkeley_library-logging (~> 0.2)
       berkeley_library-marc (~> 0.3.1)
@@ -258,6 +259,8 @@ GEM
     oj (3.16.11)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
+    okcomputer (1.19.1)
+      benchmark
     omniauth (1.9.2)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -500,6 +503,7 @@ DEPENDENCIES
   mutex_m
   net-ssh
   netaddr (~> 1.5, >= 1.5.1)
+  okcomputer (~> 1.19)
   omniauth (~> 1.9, >= 1.9.2)
   omniauth-cas (~> 2.0)
   pg (~> 1.2)

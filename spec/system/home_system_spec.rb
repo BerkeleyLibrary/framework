@@ -3,14 +3,6 @@ require 'calnet_helper'
 require 'support/build_info_context'
 
 describe :home, type: :system do
-  describe :health do
-    it 'does something sensible for a general error' do
-      expect(Health::Check).to receive(:new).and_raise('Something went wrong')
-      visit health_path
-      expect(page).to have_content('Internal Server Error')
-    end
-  end
-
   describe :admin do
     context 'without login' do
       it 'redirects to login' do
