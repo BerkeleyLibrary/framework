@@ -153,7 +153,7 @@ RSpec.describe LocationRequestsController, type: :request do
       {
         email: 'test@example.org',
         input_file: fixture_file_upload('spec/data/location/input-file.xlsx'),
-        rlf: true,
+        slf: true,
         uc: true,
         hathi: true
       }
@@ -361,7 +361,7 @@ RSpec.describe LocationRequestsController, type: :request do
 
           context 'no include flags present' do
             it_behaves_like 'an invalid request' do
-              let(:invalid_attributes) { valid_attributes.except(:rlf, :uc, :hathi) }
+              let(:invalid_attributes) { valid_attributes.except(:slf, :uc, :hathi) }
             end
           end
 

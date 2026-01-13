@@ -48,7 +48,7 @@ RSpec.describe LocationRequest, type: :model do
     @valid_attributes = {
       email: 'me@example.test',
       filename: 'test.xlsx',
-      rlf: true,
+      slf: true,
       uc: true,
       hathi: true,
       input_file: uploaded_file
@@ -77,7 +77,7 @@ RSpec.describe LocationRequest, type: :model do
     end
 
     it 'requires at least one option to be set' do
-      invalid_attributes = valid_attributes.except(:rlf, :uc, :hathi)
+      invalid_attributes = valid_attributes.except(:slf, :uc, :hathi)
       req = LocationRequest.new(**invalid_attributes)
       expect(req).not_to be_valid
     end
@@ -222,7 +222,7 @@ RSpec.describe LocationRequest, type: :model do
       req = LocationRequest.create!(
         email: 'me@example.test',
         filename: input_file_basename,
-        rlf: true,
+        slf: true,
         input_file: {
           io: File.open(input_file_path),
           filename: input_file_basename,
@@ -261,20 +261,20 @@ RSpec.describe LocationRequest, type: :model do
     end
 
     it 'returns nil for HathiTrust-only requests' do
-      attributes = valid_attributes.except(:rlf, :uc)
+      attributes = valid_attributes.except(:slf, :uc)
       req = LocationRequest.create!(**attributes)
       expect(req.search_wc_symbols).to be_nil
     end
 
-    it 'returns RLF symbols for RLF requests' do
+    it 'returns SLF symbols for SLF requests' do
       attributes = valid_attributes.except(:uc)
       req = LocationRequest.create!(**attributes)
-      symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::RLF
+      symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::SLF
       expect(req.search_wc_symbols).to match_array(symbols_expected)
     end
 
     it 'returns UC symbols for UC requests' do
-      attributes = valid_attributes.except(:rlf)
+      attributes = valid_attributes.except(:slf)
       req = LocationRequest.create!(**attributes)
       symbols_expected = BerkeleyLibrary::Location::WorldCat::Symbols::UC
       expect(req.search_wc_symbols).to match_array(symbols_expected)

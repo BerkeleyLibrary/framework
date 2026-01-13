@@ -117,7 +117,7 @@ class LocationRequest < ActiveRecord::Base
   # Synthetic accessors
 
   def world_cat?
-    rlf? || uc?
+    slf? || uc?
   end
 
   def incomplete?
@@ -207,7 +207,7 @@ class LocationRequest < ActiveRecord::Base
     return unless world_cat?
 
     [].tap do |symbols|
-      symbols.concat(BerkeleyLibrary::Location::WorldCat::Symbols::RLF) if rlf?
+      symbols.concat(BerkeleyLibrary::Location::WorldCat::Symbols::SLF) if slf?
       symbols.concat(BerkeleyLibrary::Location::WorldCat::Symbols::UC) if uc?
     end
   end
@@ -249,7 +249,7 @@ class LocationRequest < ActiveRecord::Base
   def options_selected
     return if world_cat? || hathi?
 
-    errors.add(:base, 'At least one of RLF, Other UC, or HathiTrust must be selected')
+    errors.add(:base, 'At least one of SLF, Other UC, or HathiTrust must be selected')
   end
 
   def new_result(oclc_number, wc_sym_str, wc_error, ht_record_url, ht_error)
@@ -269,7 +269,7 @@ class LocationRequest < ActiveRecord::Base
   end
 
   def write_results_to(ss)
-    writer = XLSXWriter.new(ss, rlf:, uc:, hathi_trust: hathi)
+    writer = XLSXWriter.new(ss, slf:, uc:, hathi_trust: hathi)
     result_data = location_records.pluck(*RESULT_ARGS)
     result_data.each { |row| writer << new_result(*row) }
   end

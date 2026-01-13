@@ -7,7 +7,7 @@ ruby File.read('.ruby-version').strip
 gem 'awesome_print', '>=1.8.0'
 gem 'base64'
 gem 'berkeley_library-docker', '~> 0.2.0'
-gem 'berkeley_library-location', '~> 4.1.0'
+gem 'berkeley_library-location', '~> 4.2.0'
 gem 'berkeley_library-logging', '~> 0.2', '>= 0.2.7'
 gem 'berkeley_library-marc', '~> 0.3.1'
 gem 'berkeley_library-tind', '~> 0.8.0'

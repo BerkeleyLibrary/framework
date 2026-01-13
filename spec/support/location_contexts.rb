@@ -185,7 +185,7 @@ RSpec.shared_context('LocationRequest') do
       email: 'dmoles@berkeley.edu',
       filename: 'input-file.xlsx',
       hathi: true,
-      rlf: true,
+      slf: true,
       uc: true,
       input_file: uploaded_file_from(input_file_path)
     )
@@ -209,8 +209,8 @@ RSpec.shared_context('complete LocationRequest') do
   end
 
   def assert_complete!(ss)
-    cnames = ['OCLC Number', 'NRLF', 'SRLF', 'Other UC', 'Hathi Trust']
-    c_oclc, c_nrlf, c_srlf, c_uc, c_ht = cnames.map do |cname|
+    cnames = ['OCLC Number', 'SLFN', 'SLFS', 'Other UC', 'Hathi Trust']
+    c_oclc, c_slfn, c_slfs, c_uc, c_ht = cnames.map do |cname|
       ss.find_column_index_by_header!(cname)
     end
 
@@ -218,16 +218,16 @@ RSpec.shared_context('complete LocationRequest') do
       r_index = i + 1 # skip header
 
       wc_symbols = locations_by_oclc_num[oclc_number]
-      has_nrlf = wc_symbols.intersect?(BerkeleyLibrary::Location::WorldCat::Symbols::NRLF)
-      has_srlf = wc_symbols.intersect?(BerkeleyLibrary::Location::WorldCat::Symbols::SRLF)
+      has_slfn = wc_symbols.intersect?(BerkeleyLibrary::Location::WorldCat::Symbols::SLFN)
+      has_slfs = wc_symbols.intersect?(BerkeleyLibrary::Location::WorldCat::Symbols::SLFS)
       expected_uc = wc_symbols.intersection(BerkeleyLibrary::Location::WorldCat::Symbols::UC)
 
       ht_record_url = record_urls_expected[oclc_number]
 
       expected_values = {
         c_oclc => oclc_number.to_i, # source data is numeric
-        c_nrlf => ('nrlf' if has_nrlf),
-        c_srlf => ('srlf' if has_srlf),
+        c_slfn => ('slfn' if has_slfn),
+        c_slfs => ('slfs' if has_slfs),
         c_uc => (expected_uc.join(',') if expected_uc.any?),
         c_ht => ht_record_url
       }
