@@ -64,7 +64,7 @@ en:
         filename: Input file
         input_file: Input file
         output_file: Output file
-        rlf: NRLF/SRLF holdings
+        slf: SLF-N/SLF-S holdings
         uc: UC campus library holdings
         hathi: HathiTrust URLs
         include:

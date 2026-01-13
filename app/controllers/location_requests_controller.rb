@@ -4,7 +4,7 @@ class LocationRequestsController < ApplicationController
   before_action :require_framework_admin!, only: %i[immediate index]
 
   REQUIRED_PARAMS = %i[email input_file].freeze
-  OPTIONAL_PARAMS = %i[rlf uc hathi immediate].freeze
+  OPTIONAL_PARAMS = %i[slf uc hathi immediate].freeze
   ALL_PARAMS = (REQUIRED_PARAMS + OPTIONAL_PARAMS)
 
   # GET /location_requests

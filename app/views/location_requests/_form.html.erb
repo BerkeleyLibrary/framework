@@ -53,13 +53,13 @@
           <legend>Include</legend>
           <ul class="form-input required">
             <li>
-              <%= form.check_box :rlf %>
-              <%= form.label :rlf %>
+              <%= form.check_box :slf %>
+              <%= form.label :slf %>
               <p class="option-note">
                 Checks OCLC for
-                <%= BerkeleyLibrary::Location::WorldCat::Symbols::NRLF.join('/') %>
+                <%= BerkeleyLibrary::Location::WorldCat::Symbols::SLFN.join('/') %>
                 and
-                <%= BerkeleyLibrary::Location::WorldCat::Symbols::SRLF.join('/') %>
+                <%= BerkeleyLibrary::Location::WorldCat::Symbols::SLFS.join('/') %>
                 holdings symbols
               </p>
             </li>
@@ -82,7 +82,7 @@
                 <strong>Note:</strong>
                 At least one of
                 <%=
-                  [:rlf, :uc, :hathi]
+                  [:slf, :uc, :hathi]
                   .map { |opt| t("activerecord.attributes.location_request.#{opt}") }
                   .to_sentence(last_word_connector: ', or ')
                 %>

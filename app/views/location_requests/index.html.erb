@@ -11,7 +11,7 @@
         <td></td>
         <th scope="col">Email</th>
         <th scope="col">Input file</th>
-        <th scope="col">RLF</th>
+        <th scope="col">SLF</th>
         <th scope="col">UC</th>
         <th scope="col">HT</th>
         <th scope="col">Submitted</th>
@@ -34,7 +34,7 @@
               <%= location_request.filename %>
             <% end %>
           </td>
-          <% [:rlf, :uc, :hathi].each do |opt| %>
+          <% [:slf, :uc, :hathi].each do |opt| %>
             <td>
               <% value = location_request.send(opt) || false %>
               <%= t("activerecord.attributes.location_request.include.#{value}") %>

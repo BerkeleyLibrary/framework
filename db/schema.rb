@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_04_180042) do
+ActiveRecord::Schema[7.0].define(version: 2025_12_22_223043) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -186,7 +186,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_04_180042) do
   create_table "location_requests", force: :cascade do |t|
     t.string "email", null: false
     t.string "filename", null: false
-    t.boolean "rlf", default: false, null: false
+    t.boolean "slf", default: false, null: false
     t.boolean "uc", default: false, null: false
     t.boolean "hathi", default: false, null: false
     t.datetime "created_at", null: false

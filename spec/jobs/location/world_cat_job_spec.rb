@@ -11,7 +11,7 @@ module Location
       end
 
       it 'rejects a non-Worldcat request' do
-        req.update(rlf: false, uc: false)
+        req.update(slf: false, uc: false)
 
         expect { WorldCatJob.perform_now(req) }.to raise_error(ArgumentError)
       end
