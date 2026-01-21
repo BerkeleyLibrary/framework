@@ -10,8 +10,8 @@
   <p>As a University of California <b>Faculty/Academic Staff</b> member (in good standing) at Berkeley, I 
     request that the Library permit the person named below to withdraw books in my name for use in research.
     I will take full responsibility for all materials checked out with this card in my name.</p>
-  <%= field_for f, :faculty_name %>
-  <%= field_for f, :department %>
+  <%= field_for f, :faculty_name, readonly: true %>
+  <%= field_for f, :department, readonly: true %>
   <%= field_for f, :research_last, required: true %>
   <%= field_for f, :research_first, required: true %>
   <%= field_for f, :research_middle %>
