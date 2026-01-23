@@ -66,9 +66,11 @@ module Alma
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def fetch_item_sets(source)
+        # Start with empty entry, so the dropdowns start with no selected set.
+        sets = [['', '']]
+
         # We can only fetch 100 item sets at a time so we
         # have to loop through the API to get all of them
-        sets = []
         offset = 0
 
         loop do
