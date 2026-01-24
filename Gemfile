@@ -4,7 +4,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby File.read('.ruby-version').strip
 
-gem 'awesome_print', '>=1.8.0'
 gem 'base64'
 gem 'berkeley_library-docker', '~> 0.2.0'
 gem 'berkeley_library-location', '~> 4.2.0'
@@ -19,7 +18,6 @@ gem 'faraday'
 gem 'good_job', '~> 3.10', '>= 3.14.2'
 gem 'ipaddress'
 gem 'jaro_winkler', '~> 1.5.5'
-gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jwt', '~> 1.5', '>= 1.5.4'
@@ -36,7 +34,6 @@ gem 'puma', '~> 4.3', '>= 4.3.12'
 gem 'rails', '~> 7.0.4'
 gem 'recaptcha', '~> 4.13'
 gem 'sprockets', '~> 4.0'
-gem 'typesafe_enum', '~> 0.3'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
@@ -50,7 +47,6 @@ group :development, :test do
   gem 'rspec_junit_formatter', '~> 0.5'
   gem 'rspec-rails', '~> 5.0'
   gem 'ruby-prof', '~> 1.3.0'
-  gem 'vcr'
   gem 'webmock'
 end
 
