@@ -18,6 +18,18 @@ class AlmaPatronCheck < OkComputer::Check
   end
 end
 
+class CustomMailerCheck < OkComputer::Check
+  # Check that the mail password is set
+  def check
+    if ENV['MAIL_PASSWORD'].present?
+      mark_message 'Environment variable MAIL_PASSWORD is set.'
+    else
+      mark_failure
+      mark_message 'Environment variable MAIL_PASSWORD is not set!'
+    end
+  end
+end
+
 # Ensure Alma API is working.
 OkComputer::Registry.register 'alma-patron-lookup', AlmaPatronCheck.new
 
@@ -25,4 +37,5 @@ OkComputer::Registry.register 'alma-patron-lookup', AlmaPatronCheck.new
 OkComputer::Registry.register 'database-migrations', OkComputer::ActiveRecordMigrationsCheck.new
 
 # Ensure connectivity to the mail system.
+OkComputer::Registry.register 'custom-mailer', CustomMailerCheck.new
 OkComputer::Registry.register 'action-mailer', OkComputer::ActionMailerCheck.new
