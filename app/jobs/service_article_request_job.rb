@@ -1,5 +1,3 @@
-require 'request_mailer'
-
 class ServiceArticleRequestJob < ApplicationJob
   queue_as :default
 

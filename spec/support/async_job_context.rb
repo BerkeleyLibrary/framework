@@ -1,10 +1,10 @@
-RSpec.shared_context('async execution', shared_context: :metadata) do |job_class:, shutdown_timeout: 5, rescue_exception: true|
-  def test_adapters
-    @test_adapters ||= {}
+RSpec.shared_context('async execution', shared_context: :metadata) do |job_class:, rescue_exception: true|
+  def gj_adapter
+    @gj_adapter ||= GoodJob::Adapter.new execution_mode: :async_all
   end
 
-  def gj_adapters
-    @gj_adapters ||= {}
+  def old_adapters
+    @old_adapters ||= {}
   end
 
   def latches
@@ -33,9 +33,6 @@ RSpec.shared_context('async execution', shared_context: :metadata) do |job_class
   end
 
   before do
-    test_adapters[job_class] = job_class.queue_adapter
-    job_class.disable_test_adapter
-
     if rescue_exception
       add_rescue_handler(job_class, from: Exception) do |ex|
         raise StandardError, ex.message
@@ -55,22 +52,18 @@ RSpec.shared_context('async execution', shared_context: :metadata) do |job_class
       callback_procs[job_class] = callback_proc
     end
 
-    job_class.queue_adapter = :good_job
-    job_class.queue_adapter.tap do |gj|
-      gj.instance_variable_set(:@_in_server_process, true)
-      gj.start_async
-      gj_adapters[job_class] = gj
-    end
+    old_adapters[job_class] = job_class.queue_adapter
+    # This is needed for the scheduled jobs in the LocationRequestsController spec.
+    # We don't re-enable later, because we've already saved the previous queue adapter.
+    # The 'test_adapter' overrides the queue adapter, but since we're putting it back
+    # as the queue adapter anyway, behaviour should remain functionally equivalent to
+    # re-enabling the test adapter as the test adapter.
+    job_class.disable_test_adapter
+    job_class.queue_adapter = gj_adapter
   end
 
   after do
-    gj_adapter = gj_adapters[job_class]
-    gj_adapter.shutdown(timeout: shutdown_timeout)
-
-    callback_proc = callback_procs[job_class]
-    callback_chain = job_class.__callbacks[:perform].instance_variable_get(:@chain)
-    callback = callback_chain.find { |cb| cb.instance_variable_get(:@filter) == callback_proc }
-    callback_chain.delete(callback)
+    job_class.skip_callback :perform, :around, callback_procs[job_class]
 
     if (rps_for_jc = rescue_procs[job_class])
       handlers = job_class.rescue_handlers
@@ -80,7 +73,6 @@ RSpec.shared_context('async execution', shared_context: :metadata) do |job_class
       end
     end
 
-    test_adapter = test_adapters[job_class]
-    job_class.enable_test_adapter(test_adapter)
+    job_class.queue_adapter = old_adapters.delete(job_class)
   end
 end

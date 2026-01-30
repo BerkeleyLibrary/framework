@@ -1,5 +1,3 @@
-require 'request_mailer'
-
 class DoemoffStudyRoomUseJob < PatronNoteJobBase
   NOTE_TXT = 'Doe/Moffitt study room eligible'.freeze
   MAILER_PREFIX = 'doemoff_room'.freeze
