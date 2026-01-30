@@ -70,7 +70,7 @@ class TindDownloadController < ApplicationController
     Rails.cache.fetch(:tind_collection_names, expires_in: CACHE_EXPIRY) { collections_by_name.keys.sort }
   end
 
-  def arrange_collections_by_name(_cache_key)
+  def arrange_collections_by_name(_cache_key, _options)
     {}.tap do |coll_by_name|
       root_collections.each do |root|
         root.each_descendant(include_self: true) do |coll|

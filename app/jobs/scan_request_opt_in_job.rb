@@ -1,5 +1,3 @@
-require 'request_mailer'
-
 class ScanRequestOptInJob < PatronNoteJobBase
   queue_as :default
 

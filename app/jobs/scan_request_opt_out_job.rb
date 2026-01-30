@@ -1,5 +1,3 @@
-require 'request_mailer'
-
 class ScanRequestOptOutJob < ApplicationJob
   queue_as :default
 

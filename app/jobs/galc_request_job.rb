@@ -1,5 +1,3 @@
-require 'request_mailer'
-
 class GalcRequestJob < PatronNoteJobBase
   NOTE_TXT = 'GALC eligible'.freeze
   MAILER_PREFIX = 'galc'.freeze

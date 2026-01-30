@@ -51,7 +51,7 @@ module Framework
 
     end
 
-    config.load_defaults 7.0
+    config.load_defaults 7.1
 
     # Load our custom config. This is implicitly consumed in a few remaining
     # places (e.g. RequestMailer). A good development improvement would be to

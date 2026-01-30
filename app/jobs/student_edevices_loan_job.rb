@@ -1,5 +1,3 @@
-require 'request_mailer'
-
 class StudentEdevicesLoanJob < PatronNoteJobBase
   NOTE_TXT = 'Student Electronic Devices eligible'.freeze
   MAILER_PREFIX = 'student_edevices'.freeze
