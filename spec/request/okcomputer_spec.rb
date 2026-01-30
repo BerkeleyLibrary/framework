@@ -11,8 +11,7 @@ RSpec.describe 'OKComputer', type: :request do
   it 'returns all checks to /health' do
     get '/health'
     expect(response.parsed_body.keys).to match_array %w[
-      action-mailer
-      custom-mailer
+      mailer-connectivity 
       alma-patron-lookup
       default
       database

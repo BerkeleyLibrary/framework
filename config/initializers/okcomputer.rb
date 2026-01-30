@@ -1,3 +1,5 @@
+require 'net/smtp'
+
 # frozen_string_literal: true
 
 # Health check configuration
@@ -6,7 +8,7 @@ OkComputer.logger = Rails.logger
 OkComputer.check_in_parallel = true
 
 class AlmaPatronCheck < OkComputer::Check
-  TEST_PATRON_ID = '000311@lbl.gov'
+  TEST_PATRON_ID = '000311@lbl.gov'.freeze
 
   def check
     Alma::User.find(TEST_PATRON_ID)
@@ -19,8 +21,9 @@ class AlmaPatronCheck < OkComputer::Check
 end
 
 # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-class CustomMailerCheck < OkComputer::Check
-  require 'net/smtp'
+class MailConnectivityCheck < OkComputer::Check
+  OkComputer::Registry.register 'mail-connectivity', MailConnectivityCheck.new if ActionMailer::Base.delivery_method == :smtp
+
   # Check that the mail password is set
   def check
     settings = ActionMailer::Base.smtp_settings
@@ -36,17 +39,21 @@ class CustomMailerCheck < OkComputer::Check
       ) { mark_message 'Connection for smtp successful' }
     rescue Net::SMTPAuthenticationError => e
       mark_failure
-      mark_message "Authentication error: #{e.message}"
+      Rails.logger.warn "SMTP authentication error: #{e}"
+      mark_message 'SMTP Error: Authentication failed. Check logs for more details'
     rescue Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
       mark_failure
-      mark_message "SMTP error: #{e.message}"
+      Rails.logger.warn "SMTP Error: #{e}"
+      mark_message 'SMTP error. Check logs for more details'
     rescue IOError, Net::ReadTimeout => e
       mark_failure
-      mark_message "Connection error: #{e.message}"
+      Rails.logger.warn "SMTP Timeout: #{e}"
+      mark_message 'SMTP Connection error: Timeout. Check logs for more details'
     rescue StandardError => e
       # Catch any other unexpected errors
       mark_failure
-      mark_message "An unexpected error occurred: #{e.message}"
+      Rails.logger.warn "SMTP standard error: #{e}"
+      mark_message 'SMTP ERROR: Could not connect. Check logs for more details'
     end
   end
 end
@@ -57,7 +64,3 @@ OkComputer::Registry.register 'alma-patron-lookup', AlmaPatronCheck.new
 
 # Ensure database migrations have been run.
 OkComputer::Registry.register 'database-migrations', OkComputer::ActiveRecordMigrationsCheck.new
-
-# Ensure connectivity to the mail system.
-OkComputer::Registry.register 'custom-mailer', CustomMailerCheck.new
-OkComputer::Registry.register 'action-mailer', OkComputer::ActionMailerCheck.new
