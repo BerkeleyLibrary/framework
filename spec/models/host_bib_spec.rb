@@ -4,7 +4,7 @@ require 'marc'
 RSpec.describe Bibliographic::HostBib, type: :model do
   let(:record_id) { double('record_id') }
   let(:mms_id) { '991083840969706532' }
-  let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt') }
+  let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt', email: 'test@test.example') }
   let(:marc_stub) { instance_double(MARC::Record) }
   let(:expected_subfields) { { 'w' => '991083840969706532', 't' => 'Seconde partie du discours aux Welches ' } }
 
@@ -39,6 +39,22 @@ RSpec.describe Bibliographic::HostBib, type: :model do
       Bibliographic::HostBib.create_linked_bibs(host_bib)
       host_bib_updated = Bibliographic::HostBib.find(host_bib.id)
       expect(host_bib_updated.marc_status).to eq('retrieved')
+    end
+  end
+
+  describe 'task creation' do
+    context 'without an email address' do
+      it 'is invalid' do
+        task = Bibliographic::HostBibTask.new(filename: 'fake.txt', email: nil)
+        expect(task).not_to be_valid
+      end
+    end
+
+    context 'with an email address' do
+      it 'is valid' do
+        task = Bibliographic::HostBibTask.new(filename: 'fake.txt', email: 'test@test.example')
+        expect(task).to be_valid
+      end
     end
   end
 

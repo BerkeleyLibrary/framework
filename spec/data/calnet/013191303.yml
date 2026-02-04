@@ -11,3 +11,4 @@ extra:
   uid: "013191303"
   berkeleyEduIsMemberOf:
     - cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu
+  berkeleyEduAlternateID: ethomas@berkeley.edu

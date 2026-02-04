@@ -3,7 +3,7 @@ require 'marc'
 
 RSpec.describe Bibliographic::LinkedBib, type: :model do
   let(:mms_id) { '991083840969706532' }
-  let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt') }
+  let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt', email: 'test@test.example') }
   let(:host_bib) { host_bib_task.host_bibs.create(mms_id:) }
   let(:subfields_from_774) { { 'w' => '991083840969706532', 't' => 'Seconde partie du discours aux Welches ' } }
 

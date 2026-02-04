@@ -6,6 +6,7 @@ module Bibliographic
       succeeded: 6,
       failed: 9
     }, default: :starting
+    validates :email, presence: true
 
     class << self
       def create_from!(file, email)
@@ -38,7 +39,7 @@ module Bibliographic
 
       def create_bib_task!(host_bib_task, mms_ids)
         ActiveRecord::Base.transaction do
-          host_bib_task.save
+          host_bib_task.save!
           attributes = mms_ids.map do |mms_id|
             #  The default value 'pending' won't be included in bulk inserts.
             { mms_id:, host_bib_task_id: host_bib_task.id, marc_status: 'pending' }

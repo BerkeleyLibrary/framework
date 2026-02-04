@@ -198,7 +198,7 @@
     <orderEntry type="library" scope="PROVIDED" name="selenium-webdriver (v4.6.1, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="simplecov (v0.22.0, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="simplecov-html (v0.12.3, ruby-3.3.9-p170) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="simplecov-rcov (v0.3.1, ruby-3.3.9-p170) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="simplecov-rcov (v0.3.7, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="simplecov_json_formatter (v0.1.4, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="spring (v2.1.1, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="spring-watcher-listen (v2.0.1, ruby-3.3.9-p170) [gem]" level="application" />

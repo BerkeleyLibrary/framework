@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Bibliographic
   RSpec.describe Report do
-    let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt') }
+    let(:host_bib_task) { Bibliographic::HostBibTask.create(filename: 'fake.txt', email: 'test@test.example') }
     let(:report) { described_class.new(host_bib_task, 6) }
 
     # succeed mmsids for csv content
