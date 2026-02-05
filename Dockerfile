@@ -66,10 +66,15 @@ RUN which yarn && yarn --version
 # Remove packages we only needed as part of the Node.js / Yarn repository
 # setup and installation -- note that the Node.js setup scripts installs
 # a full version of Python, but at runtime we only need a minimal version
-# RUN apt-mark manual nodejs python3-minimal \
-#     && apt-get autoremove --purge -y \
+# RUN apt-mark manual nodejs python3-minimal 
+# RUN apt-get autoremove --purge -y \
 #     curl \
 #     python3
+
+RUN apt-mark manual nodejs python3-minimal \
+    && apt-get autoremove --purge -y
+
+RUN apt-get remove  -y curl
 
 RUN echo '!!!!!!'
 #RUN which node && node -v 
@@ -123,12 +128,12 @@ RUN apt-get install -y --no-install-recommends \
 USER $APP_USER
 
 # Base image ships with an older version of bundler
-# RUN gem install bundler --version 2.7.2
+RUN gem install bundler --version 2.7.2
 
 # Install gems. We don't enforce the validity of the Gemfile.lock until the
 # final (production) stage.
 COPY --chown=$APP_USER:$APP_USER Gemfile* .ruby-version ./
-# RUN bundle install
+RUN bundle install
 
 # ------------------------------------------------------------
 # Install JS packages
@@ -168,8 +173,8 @@ COPY --from=development --chown=$APP_USER /opt/app /opt/app
 COPY --from=development --chown=$APP_USER /usr/local/bundle /usr/local/bundle
 
 # Ensure the bundle is installed and the Gemfile.lock is synced.
-# RUN bundle config set frozen 'true'
-# RUN bundle install --local
+RUN bundle config set frozen 'true'
+RUN bundle install --local
 
 # Ensure JS modules are installed and yarn.lock is synced
 RUN yarn install --immutable
