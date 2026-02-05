@@ -24,5 +24,5 @@ extra:
   berkeleyEduIsMemberOf:
     - cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu
   berkeleyEduAffiliations: EMPLOYEE-TYPE-STAFF
-  berkeleyEduAlternateId: fake.lisa@berkeley.edu
+  berkeleyEduAlternateID: fake.lisa@berkeley.edu
   longTermAuthenticationRequestTokenUsed: 'false'
