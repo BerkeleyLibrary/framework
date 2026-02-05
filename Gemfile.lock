@@ -123,7 +123,7 @@ GEM
       rest-client (~> 2.1)
       rubyzip (~> 2.3, < 3.0)
       typesafe_enum (~> 0.3)
-    berkeley_library-util (0.2.0)
+    berkeley_library-util (0.3.0)
       berkeley_library-logging (~> 0.3)
       rest-client (~> 2.1)
       typesafe_enum (~> 0.3)
@@ -511,7 +511,7 @@ DEPENDENCIES
   berkeley_library-logging (~> 0.2, >= 0.2.7)
   berkeley_library-marc (~> 0.3.1)
   berkeley_library-tind (~> 0.8.0)
-  berkeley_library-util (~> 0.2.0)
+  berkeley_library-util (~> 0.3)
   bootstrap
   brakeman
   bundle-audit
