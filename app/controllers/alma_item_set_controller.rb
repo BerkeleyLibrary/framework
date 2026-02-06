@@ -1,6 +1,7 @@
 require 'date'
 
 class AlmaItemSetController < ApplicationController
+  VALID_ENVS = %w[production sandbox].freeze
 
   # TODO: - Need to make sure only certain staff access this page
   before_action :authorize!
@@ -14,7 +15,9 @@ class AlmaItemSetController < ApplicationController
   # rubocop:disable Metrics/AbcSize
   def update
     env = params[:alma_env]
-    alma_set_id = params[:alma_set_id]
+    return head(:bad_request) unless env.in? VALID_ENVS
+
+    alma_set_id = params[:"alma_set_id_#{env}"]
     num = params[:note_num]
 
     note = new_note(params[:note_value], params[:initials])

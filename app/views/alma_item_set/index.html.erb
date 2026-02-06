@@ -17,13 +17,21 @@
         <%= f.label("#{rb_alma_env}_sandbox".to_sym, "Sandbox") %>
       </div>
       <%# Set Name %>
-      <div class="form-label form-group required mt-4">
-        <%= label_tag(:alma_set_id, 'Alma Set Name:', class: 'control-label') %>
+      <div id="prod-drop-down">
+        <div class="form-label form-group required mt-4">
+          <%= label_tag(:alma_set_id_production, 'Production Alma Set Name:', class: 'control-label') %>
+        </div>
+        <div class="form-input required">
+          <%= f.select(:alma_set_id_production, @production_sets, {}, {:class => 'form-control'}) %>
+        </div>
       </div>
-      <div class="form-input required">
-        <%# f.text_field(:alma_set_name, class: 'narrow form-control add-required', aria: { required: true }, required: true, autofocus: true) %>
-        <%= f.select(:alma_set_id, @production_sets, {}, {:class => 'form-control', :id => 'prod-drop-down'}) %>
-        <%= f.select(:alma_set_id, @sandbox_sets, {}, {:class => 'form-control', :id => 'sand-drop-down'}) %>
+      <div id="sand-drop-down">
+        <div class="form-label form-group required mt-4">
+          <%= label_tag(:alma_set_id_sandbox, 'Sandbox Alma Set Name:', class: 'control-label') %>
+        </div>
+        <div class="form-input required">
+          <%= f.select(:alma_set_id_sandbox, @sandbox_sets, {}, {:class => 'form-control'}) %>
+        </div>
       </div>
       <%# Note Number %>
       <div class="form-label form-group mt-4">
