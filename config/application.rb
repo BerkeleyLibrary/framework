@@ -107,9 +107,9 @@ module Framework
     config.tind_base_uri = config.altmedia['tind_base_uri']
     config.tind_api_key = config.altmedia['tind_api_key']
 
-    config.hathiTrust_health_check_url = 'https://catalog.hathitrust.org/api/volumes/full/oclc/424023.json'
-    config.whois_health_check_url = 'https://whois.arin.net/rest/poc/1AD-ARIN'
-    config.berkeley_service_now_health_check_url = 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
+    config.x.healthcheck_urls.hathiTrust = 'https://catalog.hathitrust.org/api/volumes/full/oclc/424023.json'
+    config.x.healthcheck_urls.whois = 'https://whois.arin.net/rest/poc/1AD-ARIN'
+    config.x.healthcheck_urls.berkeley_service_now = 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
 
     config.to_prepare do
       GoodJob::JobsController.class_eval do
