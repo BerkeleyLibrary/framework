@@ -62,7 +62,6 @@ RSpec.describe 'OKComputer', type: :request do
         hathitrust-api
         berkeley-service-now
         mail-connectivity
-        action-mailer
       ]
     end
   end
