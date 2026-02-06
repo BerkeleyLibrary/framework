@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   include AuthSupport
   include ExceptionHandling
 
+  before_action :set_current_request_id_and_ip_address
+
   # @!group Class Attributes
   # @!attribute [rw]
   # Value of the "Questions?" mailto link in the footer
@@ -18,6 +20,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   private
+
+  def set_current_request_id_and_ip_address
+    Current.request_id = request.request_id
+    Current.ip_address = request.remote_ip
+  end
 
   helper_method :authenticated?
 
