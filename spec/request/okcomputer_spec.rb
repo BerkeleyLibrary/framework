@@ -16,28 +16,64 @@ RSpec.describe 'OKComputer', type: :request do
     expect(response).to have_http_status :ok
   end
 
-  it 'returns all checks to /health' do
+  context 'without SMTP enabled' do
+    before do
+      allow(ActionMailer::Base).to receive(:delivery_method).and_return(:test)
 
-    get '/health'
-    expect(response.parsed_body.keys).to match_array %w[
-      action-mailer
-      alma-patron-lookup
-      default
-      database
-      database-migrations
-      thind-api
-      whois-arin-api
-      paypal-payflow
-      hathitrust-api
-      berkeley-service-now
-    ]
-    pending 'https://github.com/emmahsax/okcomputer/pull/21'
-    expect(response).to have_http_status :ok
+      OkComputer::Registry.instance_variable_set(:@checks, {})
+      load Rails.root.join('config/initializers/okcomputer.rb')
+    end
+
+    it 'returns checks to /health' do
+      get '/health'
+      expect(response.parsed_body.keys).to match_array %w[
+        default
+        database
+        alma-patron-lookup
+        database-migrations
+        thind-api
+        whois-arin-api
+        paypal-payflow
+        hathitrust-api
+        berkeley-service-now
+        action-mailer
+      ]
+    end
   end
 
-  it 'fails when Alma lookups fail' do
-    expect(Alma::User).to receive(:find).and_raise('Uh oh!')
-    get '/health'
-    expect(response).not_to have_http_status :ok
+  context 'with SMTP enabled' do
+    before do
+      allow(ActionMailer::Base).to receive(:delivery_method).and_return(:smtp)
+      allow(Net::SMTP).to receive(:start)
+
+      OkComputer::Registry.instance_variable_set(:@checks, {})
+      load Rails.root.join('config/initializers/okcomputer.rb')
+    end
+
+    it 'returns all checks to /health' do
+      get '/health'
+      expect(response.parsed_body.keys).to match_array %w[
+        default
+        database
+        alma-patron-lookup
+        database-migrations
+        thind-api
+        whois-arin-api
+        paypal-payflow
+        hathitrust-api
+        berkeley-service-now
+        mail-connectivity
+        action-mailer
+      ]
+    end
   end
+
+  context 'when Alma lookups fail' do
+    it 'returns a non-200 response' do
+      expect(Alma::User).to receive(:find).and_raise('Uh oh!')
+      get '/health'
+      expect(response).not_to have_http_status :ok
+    end
+  end
+
 end
