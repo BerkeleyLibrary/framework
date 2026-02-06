@@ -71,14 +71,19 @@ RUN which yarn && yarn --version
 #     curl \
 #     python3
 
-RUN apt-mark manual nodejs python3-minimal \
-    && apt-get autoremove --purge -y
+RUN apt-mark manual nodejs python3.13-minimal 
 
-RUN apt-get remove  -y curl
+RUN apt-get autoremove --purge -y
+
+# RUN apt-cache rdepends nodejs
+
+RUN apt-get remove  -y curl  
 
 RUN echo '!!!!!!'
 #RUN which node && node -v 
 RUN which yarn && yarn --version
+RUN apt-mark showmanual
+RUN apt-mark showauto
 RUN echo '^^^^^'
 
 
