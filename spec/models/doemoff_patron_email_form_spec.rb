@@ -4,7 +4,7 @@ describe DoemoffPatronEmailForm do
 
   attr_reader :form
 
-  # verify params are valid
+  # verify params are valid and it sends an email
   describe 'is valid' do
     describe 'form' do
       before do
@@ -20,8 +20,16 @@ describe DoemoffPatronEmailForm do
       end
 
       it 'sends an email' do
-        expect { @form.submit! }.to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect do
+          @form.submit!
+        end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+          'RequestMailer',
+          'doemoff_patron_email',
+          'deliver_now',
+          any_args
+        )
       end
+
     end
   end
 

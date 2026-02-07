@@ -15,6 +15,6 @@ class DoemoffPatronEmailForm < Form
   private
 
   def submit
-    RequestMailer.doemoff_patron_email(self).deliver_now
+    RequestMailer.doemoff_patron_email(:patron_email, :patron_message, :sender, :recipient_email).deliver_later
   end
 end

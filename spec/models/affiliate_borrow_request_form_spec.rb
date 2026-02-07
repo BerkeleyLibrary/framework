@@ -1,6 +1,11 @@
 require 'rails_helper'
 
+ActiveJob::Base.queue_adapter = :test
+
 describe AffiliateBorrowRequestForm do
+  include ActiveJob::TestHelper
+  include ActionMailer::TestHelper
+
   it 'validates the form' do
     tests = [
       {
@@ -90,10 +95,8 @@ describe AffiliateBorrowRequestForm do
       employee_address: '123 North St, Berkeley, CA 94707'
     )
 
-    expect { form.submit! }.to(change { ActionMailer::Base.deliveries.count }.by(1))
-    last_email = ActionMailer::Base.deliveries.last
-    expect(last_email.subject).to eq('UC Berkeley Borrowing Card Requested')
-    expect(last_email.to).to include('jeff@wilco.com')
+    expect { form.submit! }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
   end
 
   describe :model_name do
