@@ -7,10 +7,10 @@ class RequestMailer < ApplicationMailer
   helper :mail
 
   # Sends the AffiliateBorrowRequestForm
-  def affiliate_borrow_request_form_email(borrow_request)
-    @borrow_request = Struct.new(borrow_request)
+  def affiliate_borrow_request_form_email(borrow_request_hash)
+    @borrow_request = BorrowRequest.new(**borrow_request_hash)
 
-    mail(to: borrow_request.department_head_email)
+    mail(to: @borrow_request.department_head_email)
   end
 
   # Send LibstaffEdevicesLoanRequest confirmation email to user
