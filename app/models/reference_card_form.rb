@@ -4,15 +4,15 @@ class ReferenceCardForm < StackRequest
   MAX_LENGTH = 91
 
   def submit!
-    RequestMailer.reference_card_email(self).deliver_now
+    RequestMailer.reference_card_email(self).deliver_later
   end
 
   def approve!
-    RequestMailer.reference_card_approved(self).deliver_now
+    RequestMailer.reference_card_approved(self).deliver_later
   end
 
   def deny!
-    RequestMailer.reference_card_denied(self).deliver_now
+    RequestMailer.reference_card_denied(self).deliver_later
   end
 
   # Add up and return the total number of days this requester

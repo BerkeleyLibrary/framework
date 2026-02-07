@@ -27,8 +27,8 @@ class ProxyBorrowerRequests < ActiveRecord::Base
   validate :date_limit
 
   def submit!
-    RequestMailer.proxy_borrower_request_email(self).deliver_now
-    RequestMailer.proxy_borrower_alert_email(self).deliver_now
+    RequestMailer.proxy_borrower_request_email(self).deliver_later
+    RequestMailer.proxy_borrower_alert_email(self).deliver_later
   end
 
   def full_name
