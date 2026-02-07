@@ -8,7 +8,6 @@ class RequestMailer < ApplicationMailer
 
   # Sends the AffiliateBorrowRequestForm
   def affiliate_borrow_request_form_email(borrow_request_hash)
-    # @borrow_request = BorrowRequest.new(**borrow_request_hash)
     @borrow_request = AffiliateBorrowRequestForm::BorrowRequest.new(**borrow_request_hash)
 
     mail(to: @borrow_request.department_head_email)
