@@ -13,6 +13,8 @@ class AffiliateBorrowRequestForm < Form
     employee_address
   ].freeze
 
+  BorrowRequest = Struct.new(*ATTRIBUTES, keyword_init: true)
+
   attr_accessor(*ATTRIBUTES)
 
   validates :department_name,
