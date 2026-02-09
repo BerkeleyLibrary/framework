@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include AuthSupport
   include ExceptionHandling
 
-  before_action :set_current_request_id_and_ip_address
+  before_action :set_current_request_id
 
   # @!group Class Attributes
   # @!attribute [rw]
@@ -21,9 +21,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def set_current_request_id_and_ip_address
+  def set_current_request_id
     Current.request_id = request.request_id
-    Current.ip_address = request.remote_ip
   end
 
   helper_method :authenticated?

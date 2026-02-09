@@ -1,13 +1,13 @@
 class ApplicationJob < ActiveJob::Base
+  attr_reader :request_id
+
   before_enqueue do
-    self.arguments << { current_attributes: Current.attributes }
+    self.arguments << { request_id: Current.request_id }
   end
 
   around_perform do |job, block|
-    current_attributes = job.arguments.pop[:current_attributes] || {}
-    Current.set(current_attributes) do
-      block.call
-    end
+    @request_id = job.arguments.pop[:request_id] || ''
+    block.call
   end
 
   around_perform :log_activejob_id
@@ -18,7 +18,7 @@ class ApplicationJob < ActiveJob::Base
 
   # AP-186: Add the ActiveJob ID to job logs
   def log_activejob_id
-    logger.with_fields = { activejob_id: job_id, request_id: Current.request_id, ip_address: Current.ip_address }
+    logger.with_fields = { activejob_id: job_id, request_id: @request_id }
     yield
   end
 
