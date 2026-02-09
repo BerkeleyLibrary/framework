@@ -2,7 +2,7 @@ class ApplicationJob < ActiveJob::Base
   attr_reader :request_id
 
   before_enqueue do
-    self.arguments << { request_id: Current.request_id }
+    arguments << { request_id: Current.request_id }
   end
 
   around_perform do |job, block|
@@ -10,14 +10,13 @@ class ApplicationJob < ActiveJob::Base
     block.call
   end
 
-  around_perform :log_activejob_id
+  around_perform :log_job_metadata
 
   def today
     @today ||= Time.zone.now.strftime('%Y%m%d')
   end
 
-  # AP-186: Add the ActiveJob ID to job logs
-  def log_activejob_id
+  def log_job_metadata
     logger.with_fields = { activejob_id: job_id, request_id: @request_id }
     yield
   end
