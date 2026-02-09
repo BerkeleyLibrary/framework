@@ -2,11 +2,13 @@ class ApplicationJob < ActiveJob::Base
   attr_reader :request_id
 
   before_enqueue do
-    arguments << { request_id: Current.request_id }
+    arguments << { request_id: Current.request_id } if Current.request_id
   end
 
   around_perform do |job, block|
-    @request_id = job.arguments.pop[:request_id] || ''
+    if job.arguments.last.is_a?(Hash) && job.arguments.last.key?(:request_id)
+      @request_id = job.arguments.pop[:request_id]
+    end
     block.call
   end
 
