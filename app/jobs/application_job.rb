@@ -6,9 +6,7 @@ class ApplicationJob < ActiveJob::Base
   end
 
   around_perform do |job, block|
-    if job.arguments.last.is_a?(Hash) && job.arguments.last.key?(:request_id)
-      @request_id = job.arguments.pop[:request_id]
-    end
+    @request_id = job.arguments.pop[:request_id] if job.arguments.last.is_a?(Hash) && job.arguments.last.key?(:request_id)
     block.call
   end
 
