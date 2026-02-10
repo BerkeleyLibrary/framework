@@ -48,12 +48,6 @@ RUN apt-get install -y --no-install-recommends \
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y --no-install-recommends nodejs
 
-# # Add Yarn package repository, update package list, & install Yarn
-# RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null \
-#     && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list \
-#     && apt-get update -qq \
-#     && apt-get install -y --no-install-recommends yarn
-
 # Use Yarn via Corepack to avoids using reops and GPG keys
 RUN corepack enable \
     && corepack prepare yarn@stable --activate \
