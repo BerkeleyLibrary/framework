@@ -154,7 +154,7 @@ RUN bundle config set frozen 'true'
 RUN bundle install --local
 
 # Ensure JS modules are installed and yarn.lock is synced
-# RUN yarn install --immutable
+RUN yarn install --immutable
 
 # ------------------------------------------------------------
 # Precompile production assets
