@@ -57,8 +57,7 @@ RUN corepack enable \
 # setup and installation -- note that the Node.js setup scripts installs
 # a full version of Python, but at runtime we only need a minimal version
 
-RUN apt-mark manual python3.13-minimal \
-    && apt-get autoremove --purge -y curl
+RUN apt-get autoremove --purge -y curl
 
 # ------------------------------------------------------------
 # Run configuration
@@ -155,7 +154,7 @@ RUN bundle config set frozen 'true'
 RUN bundle install --local
 
 # Ensure JS modules are installed and yarn.lock is synced
-RUN yarn install --immutable
+# RUN yarn install --immutable
 
 # ------------------------------------------------------------
 # Precompile production assets
