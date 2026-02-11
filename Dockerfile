@@ -45,22 +45,19 @@ RUN apt-get install -y --no-install-recommends \
 
 # Add Node.js package repository (version 16 LTS release) & install Node.js
 # -- note that the Node.js setup script takes care of updating the package list
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y --no-install-recommends nodejs
 
-# Add Yarn package repository, update package list, & install Yarn
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update -qq \
-    && apt-get install -y --no-install-recommends yarn
+# Use Yarn via Corepack to avoids using reops and GPG keys
+RUN corepack enable \
+    && corepack prepare yarn@stable --activate \
+    && yarn -v
 
 # Remove packages we only needed as part of the Node.js / Yarn repository
 # setup and installation -- note that the Node.js setup scripts installs
 # a full version of Python, but at runtime we only need a minimal version
-RUN apt-mark manual python3-minimal \
-    && apt-get autoremove --purge -y \
-      curl \
-      python3
+
+RUN apt-get autoremove --purge -y curl
 
 # ------------------------------------------------------------
 # Run configuration
