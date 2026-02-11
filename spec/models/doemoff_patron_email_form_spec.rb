@@ -20,9 +20,7 @@ describe DoemoffPatronEmailForm do
       end
 
       it 'sends an email' do
-        expect do
-          @form.submit!
-        end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+        expect { @form.submit! }.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
           'RequestMailer',
           'doemoff_patron_email',
           'deliver_now',

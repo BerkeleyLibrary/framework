@@ -70,9 +70,7 @@ describe EfeesInvoice do
     it 'enqueues the efee invoice email' do
       invoice = EfeesInvoice.new(alma_id)
 
-      expect do
-        invoice.submit!
-      end.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+      expect { invoice.submit! }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
         .with(
           'RequestMailer',
           'efee_invoice_email',
