@@ -16,7 +16,8 @@ describe 'Valid Alma Proxy Patron', type: :request do
   end
 
   it 'alerts user of invalid parameters' do
-    expect { post('/validate_proxy_patron') }.to raise_error ActionController::ParameterMissing
+    post('/validate_proxy_patron')
+    expect(response).to have_http_status :bad_request
   end
 
   it 'alerts user if they failed to authenticate' do

@@ -12,8 +12,9 @@ describe 'Fees', type: :request do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
   end
 
-  it 'throws a ParameterMissing error if request has no jwt' do
-    expect { get fees_path }.to raise_error(ActionController::ParameterMissing)
+  it 'shows a Bad Request error if request has no jwt' do
+    get fees_path
+    expect(response).to have_http_status(:bad_request)
   end
 
   it 'redirects to error page if request has a non-existant alma id' do

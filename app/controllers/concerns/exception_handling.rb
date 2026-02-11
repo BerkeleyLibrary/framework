@@ -29,6 +29,11 @@ module ExceptionHandling
       render :not_found, status: :not_found, locals: { exception: error }
     end
 
+    rescue_from ActionController::ParameterMissing do |error|
+      log_error(error)
+      render :bad_request, status: :bad_request, locals: { exception: error }
+    end
+
     rescue_from Error::PatronApiError do |error|
       log_error(error)
       render :patron_api_error, status: :service_unavailable

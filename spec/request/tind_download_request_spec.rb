@@ -114,7 +114,8 @@ describe TindDownloadController, type: :request do
 
     describe 'find_collection' do
       it 'requires a collection' do
-        expect { get tind_download_find_collection_path }.to raise_error(ActionController::ParameterMissing)
+        get tind_download_find_collection_path
+        expect(response).to have_http_status :bad_request
       end
 
       it 'returns the matching collection name list' do
