@@ -41,7 +41,7 @@ class EfeesInvoice
 
   def submit!
     # Send the email with the link to the user!
-    RequestMailer.efee_invoice_email(self).deliver_now
+    RequestMailer.efee_invoice_email(alma_id).deliver_later
   end
 
   private

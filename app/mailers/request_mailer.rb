@@ -7,10 +7,10 @@ class RequestMailer < ApplicationMailer
   helper :mail
 
   # Sends the AffiliateBorrowRequestForm
-  def affiliate_borrow_request_form_email(borrow_request)
-    @borrow_request = borrow_request
+  def affiliate_borrow_request_form_email(borrow_request_hash)
+    @borrow_request = AffiliateBorrowRequestForm::BorrowRequest.new(**borrow_request_hash)
 
-    mail(to: borrow_request.department_head_email)
+    mail(to: @borrow_request.department_head_email)
   end
 
   # Send LibstaffEdevicesLoanRequest confirmation email to user
@@ -40,16 +40,21 @@ class RequestMailer < ApplicationMailer
     mail(to: admin_to)
   end
 
-  # Sends doemoff patron email
-  def doemoff_patron_email(email_form)
-    @email_form = email_form
-    mail(to: @email_form.patron_email, bcc: @email_form.recipient_email, reply_to: @email_form.recipient_email,
-         subject: 'Message from Doe/Moffitt Libraries Staff')
+  def doemoff_patron_email(payload)
+    @email_form = DoemoffPatronEmailForm::PatronEmail.new(**payload)
+
+    mail(
+      to: @email_form.patron_email,
+      bcc: @email_form.recipient_email,
+      reply_to: @email_form.recipient_email,
+      subject: 'Message from Doe/Moffitt Libraries Staff'
+    )
   end
 
   # Sends the Security Incident form email
-  def security_incident_email(security_incident)
-    @security_incident = security_incident
+  def security_incident_email(payload)
+    @security_incident = SecurityIncidentReportForm::SecurityIncident.new(**payload)
+
     if @security_incident.sup_email.nil?
       mail(to: security_to, subject: 'Incident Report Form email')
     else
@@ -227,7 +232,8 @@ class RequestMailer < ApplicationMailer
     mail(to: email, subject:, body:)
   end
 
-  def efee_invoice_email(efee)
+  def efee_invoice_email(alma_id)
+    efee = EfeesInvoice.new(alma_id)
     # type probably isn't needed now that I spun this off to a separate url
     params = {
       type: 'efee',
@@ -239,7 +245,7 @@ class RequestMailer < ApplicationMailer
     @name = efee.name
     @link = invoice_link.to_s
 
-    mail(to: efee.email)
+    mail(to: efee.email, subject: 'Library Fees')
   end
 
   # Departmental Card Request : alerts to privdesk, Mark Marrow and Supervisor

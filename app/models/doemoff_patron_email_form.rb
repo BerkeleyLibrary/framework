@@ -1,10 +1,14 @@
 class DoemoffPatronEmailForm < Form
-  attr_accessor(
-    :patron_email,
-    :patron_message,
-    :sender,
-    :recipient_email
-  )
+  ATTRIBUTES = %i[
+    patron_email
+    patron_message
+    sender
+    recipient_email
+  ].freeze
+
+  PatronEmail = Struct.new(*ATTRIBUTES, keyword_init: true)
+
+  attr_accessor(*ATTRIBUTES)
 
   validates :patron_email,
             email: true,
@@ -12,9 +16,13 @@ class DoemoffPatronEmailForm < Form
 
   validates :patron_message, :sender, :recipient_email, presence: true
 
-  private
+  def to_h
+    ATTRIBUTES.index_with { |attr| public_send(attr) }
+  end
 
-  def submit
-    RequestMailer.doemoff_patron_email(self).deliver_now
+  def submit!
+    raise ActiveModel::ValidationError, self unless valid?
+
+    RequestMailer.doemoff_patron_email(to_h).deliver_later
   end
 end

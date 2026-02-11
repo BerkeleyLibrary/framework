@@ -3,15 +3,15 @@ class StackPassForm < StackRequest
   validates :main_stack, acceptance: { message: 'Item must be located in the Main (Gardner) stacks.' }
 
   def submit!
-    RequestMailer.stack_pass_email(self).deliver_now
+    RequestMailer.stack_pass_email(self).deliver_later
   end
 
   def approve!
-    RequestMailer.stack_pass_approved(self).deliver_now
+    RequestMailer.stack_pass_approved(self).deliver_later
   end
 
   def deny!
-    RequestMailer.stack_pass_denied(self).deliver_now
+    RequestMailer.stack_pass_denied(self).deliver_later
   end
 
   def approval_count

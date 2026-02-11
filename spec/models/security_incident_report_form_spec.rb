@@ -78,8 +78,20 @@ describe SecurityIncidentReportForm do
         expect(@form.valid?).to eq(true)
       end
 
-      it 'sends an email' do
-        expect { @form.submit! }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      it 'enqueues the security incident email' do
+        form = SecurityIncidentReportForm.new(
+          incident_location: 'Doe Library',
+          incident_date: Date.current,
+          incident_time: '14:30',
+          reporter_name: 'Lucas Van Donnelay',
+          email: 'lvandonnelay@berkeley.edu',
+          sup_email: 'sup@berkeley.edu',
+          unit: 'LIT',
+          phone: '510-555-1234',
+          incident_description: 'Put book back on shelf in incorrect call number order'
+        )
+
+        expect { form.submit! }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
       end
     end
   end
