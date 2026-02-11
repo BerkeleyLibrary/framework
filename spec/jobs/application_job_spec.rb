@@ -7,14 +7,6 @@ end
 RSpec.describe ApplicationJob, type: :job do
   include ActiveJob::TestHelper
 
-  # # not sure if needed
-  # around do |example|
-  #   original_log_level = Rails.logger.level
-  #   Rails.logger.level = :debug
-  #   example.run
-  #   Rails.logger.level = original_log_level
-  # end
-
   after do
     ActiveJob::Base.queue_adapter.enqueued_jobs.clear
   end
