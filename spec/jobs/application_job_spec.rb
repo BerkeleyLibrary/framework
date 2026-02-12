@@ -16,7 +16,7 @@ RSpec.describe ApplicationJob, type: :job do
 
     context 'when Current.request_id is set' do
       before do
-        Current.request_id = request_id
+        allow(Current).to receive(:request_id).and_return(request_id)
       end
 
       it 'enqueues the job with the request_id' do
