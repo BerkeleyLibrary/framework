@@ -81,9 +81,8 @@ describe LocationRequestsController, type: :system do
     describe :immediate do
       before { visit immediate_location_request_path }
 
-      it 'redirects to login' do
-        expected_path = "#{omniauth_callback_path(:calnet)}?#{URI.encode_www_form(origin: immediate_location_request_path)}"
-        expect(page).to have_current_path(expected_path)
+      it 'requires login' do
+        expect(page).to have_content('You need to log in to continue.')
       end
     end
   end

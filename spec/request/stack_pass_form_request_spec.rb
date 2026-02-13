@@ -23,12 +23,12 @@ describe 'Stack Pass Form', type: :request do
       expect(response).to redirect_to(action: :new)
     end
 
-    it 'redirects to login if if user is not a stack pass admin' do
+    it 'requires login if user is not a stack pass admin' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
                                   phone: '925-555-1234', pass_date: Date.current, main_stack: true)
 
-      get(form_path = stack_pass_form_path(id: form.id))
-      expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
+      get stack_pass_form_path(id: form.id)
+      expect(response).to have_http_status :forbidden
     end
 
     it 'rejects a submission with a captcha verification error' do
@@ -49,7 +49,6 @@ describe 'Stack Pass Form', type: :request do
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
     end
-
   end
 
   context 'specs with admin privledges' do
@@ -136,7 +135,6 @@ describe 'Stack Pass Form', type: :request do
   end
 
   context 'specs with non-admin user logged in' do
-
     before do
       allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 

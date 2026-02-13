@@ -26,10 +26,9 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
     send("#{form_name}_path", id)
   end
 
-  it 'redirects to login' do
-    expected_location = login_path(url: new_form_path)
+  it 'requires login' do
     get new_form_path
-    expect(response).to redirect_to(expected_location)
+    expect(response).to have_http_status(:unauthorized)
   end
 
   allowed_patron_types.each do |type|

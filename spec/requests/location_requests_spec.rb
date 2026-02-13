@@ -9,10 +9,9 @@ RSpec.describe LocationRequestsController, type: :request do
 
   describe :index do
     context 'without login' do
-      it 'redirects to login' do
+      it 'requires login' do
         get location_requests_url
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: location_requests_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+        expect(response).to have_http_status :unauthorized
       end
     end
 

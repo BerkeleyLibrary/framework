@@ -19,35 +19,30 @@ describe TindDownloadController, type: :request do
     end
 
     describe 'form' do
-      it 'redirects to login' do
-        get(form_path = tind_download_path)
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+      it 'requires login' do
+        get tind_download_path
+        expect(response).to have_http_status :unauthorized
       end
     end
 
     describe 'find_collection' do
-      it 'redirects to login' do
+      it 'requires login' do
         get tind_download_find_collection_path
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: tind_download_find_collection_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+        expect(response).to have_http_status :unauthorized
       end
     end
 
     describe 'download' do
-      it 'POST redirects to login' do
+      it 'POST requires login' do
         post tind_download_download_path, params: { collection_name:, export_format: 'csv' }
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: tind_download_download_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+        expect(response).to have_http_status :unauthorized
       end
 
-      it 'GET redirects to login' do
+      it 'GET requires login' do
         params = { collection_name:, export_format: 'csv' }
         get tind_download_download_path, params: params
 
-        callback_url = "#{tind_download_download_path}?#{URI.encode_www_form(params)}"
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: callback_url)}"
-        expect(response).to redirect_to(login_with_callback_url)
+        expect(response).to have_http_status :unauthorized
       end
     end
   end
