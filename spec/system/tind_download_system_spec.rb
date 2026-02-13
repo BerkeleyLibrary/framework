@@ -8,10 +8,9 @@ describe TindDownloadController, type: :system do
   end
 
   describe 'unauthenticated user' do
-    it 'redirects to login' do
+    it 'requires login' do
       visit tind_download_path
-      expected_path = "#{omniauth_callback_path(:calnet)}?#{URI.encode_www_form(origin: tind_download_path)}"
-      expect(page).to have_current_path(expected_path)
+      expect(page).to have_content('You need to log in to continue.')
     end
   end
 

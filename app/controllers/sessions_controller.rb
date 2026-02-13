@@ -10,12 +10,6 @@
 #
 # @see https://github.com/omniauth/omniauth
 class SessionsController < ApplicationController
-  # Redirect the user to Calnet for authentication
-  def new
-    redirect_args = { origin: params[:url] || home_path }.to_query
-    redirect_to "/auth/calnet?#{redirect_args}"
-  end
-
   # Generate a new user session using data returned from a valid Calnet login
   def callback
     logger.debug({ msg: 'Received omniauth callback', omniauth: auth_params })

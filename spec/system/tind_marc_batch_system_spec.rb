@@ -6,10 +6,9 @@ describe :tind_marc_batch, type: :system do
   let(:alma_api_key) { 'not-a-real-api-key' }
 
   describe 'unauthenticated user' do
-    it 'redirects to login' do
+    it 'requires login' do
       visit tind_marc_batch_path
-      expected_path = "#{omniauth_callback_path(:calnet)}?#{URI.encode_www_form(origin: tind_marc_batch_path)}"
-      expect(page).to have_current_path(expected_path)
+      expect(page).to have_content('You need to log in to continue.')
     end
   end
 

@@ -64,7 +64,7 @@ module ExceptionHandling
       # this isn't really an error condition, it just means the user's
       # not logged in, so we don't need the full stack trace etc.
       logger.info(error.message)
-      redirect_to main_app.login_path(url: request.fullpath)
+      render :unauthorized, status: :unauthorized
     end
   end
   # rubocop:enable Metrics/BlockLength
