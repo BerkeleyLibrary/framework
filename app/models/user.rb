@@ -7,6 +7,21 @@ class User
   FRAMEWORK_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
   ALMA_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
 
+  CALNET_ATTRS = {
+    affiliations: 'berkeleyEduAffiliations',
+    cs_id: 'berkeleyEduCSID',
+    groups: 'berkeleyEduIsMemberOf',
+    # student_id: 'berkeleyEduStuID',
+    ucpath_id: 'berkeleyEduUCPathID',
+    email: 'berkeleyEduAlternateID',
+    department_number: 'departmentNumber',
+    display_name: 'displayName',
+    employee_id: 'employeeNumber',
+    given_name: 'givenName',
+    surname: 'surname',
+    uid: 'uid'
+  }.freeze
+
   class << self
     # Returns a new user object from the given "omniauth.auth" hash. That's a
     # hash of all data returned by the auth provider (in our case, calnet).
@@ -26,26 +41,50 @@ class User
     # rubocop:disable Metrics/MethodLength
     def auth_params_from(auth)
       auth_extra = auth['extra']
+      verify_calnet_attributes!(auth_extra)
       cal_groups = auth_extra['berkeleyEduIsMemberOf'] || []
 
       # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       {
-        affiliations: auth_extra['berkeleyEduAffiliations'],
-        cs_id: auth_extra['berkeleyEduCSID'],
-        department_number: auth_extra['departmentNumber'],
-        display_name: auth_extra['displayName'],
-        email: auth_extra['berkeleyEduAlternateID'],
-        employee_id: auth_extra['employeeNumber'],
-        given_name: auth_extra['givenName'],
-        student_id: auth_extra['berkeleyEduStuID'],
-        surname: auth_extra['surname'],
-        ucpath_id: auth_extra['berkeleyEduUCPathID'],
-        uid: auth_extra['uid'] || auth['uid'],
+        affiliations: auth_extra[CALNET_ATTRS[:affiliations]],
+        cs_id: auth_extra[CALNET_ATTRS[:cs_id]],
+        department_number: auth_extra[CALNET_ATTRS[:department_number]],
+        display_name: auth_extra[CALNET_ATTRS[:display_name]],
+        email: auth_extra[CALNET_ATTRS[:email]],
+        employee_id: auth_extra[CALNET_ATTRS[:employee_id]],
+        given_name: auth_extra[CALNET_ATTRS[:given_name]],
+        student_id: auth_extra[CALNET_ATTRS[:cs_id]],
+        surname: auth_extra[CALNET_ATTRS[:surname]],
+        ucpath_id: auth_extra[CALNET_ATTRS[:ucpath_id]],
+        uid: auth_extra[CALNET_ATTRS[:uid]] || auth['uid'],
         framework_admin: cal_groups.include?(FRAMEWORK_ADMIN_GROUP),
         alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
       }
     end
     # rubocop:enable Metrics/MethodLength
+    
+    # Verifies that auth_extra contains all required CalNet attributes with exact case-sensitive names
+    # Raise [Error::CalnetError] if any required attributes are missing
+    def verify_calnet_attributes!(auth_extra)
+      required_attributes = CALNET_ATTRS.values
+
+      missing = required_attributes.reject { |attr| auth_extra.key?(attr) }
+
+      return if missing.empty?
+
+      current_calnet_keys = list_auth_extra_keys(auth_extra)
+      msg = "Cannot find CalNet schema attribute(s) (case-sensitive): #{missing.join(', ')}. The current CalNet schema attributes: #{current_calnet_keys.join(', ')}."
+      Rails.logger.error(msg)
+      raise Error::CalnetError, msg
+    end
+
+    # list all keys except duo keys
+    def list_auth_extra_keys(auth_extra)
+      keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
+      Rails.logger.info("CalNet auth_extra keys: #{keys.join(', ')}")
+      keys
+    end
+
   end
 
   # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
