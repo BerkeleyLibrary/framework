@@ -21,6 +21,28 @@ describe User do
       expect { User.from_omniauth(auth) }.to raise_error(Error::InvalidAuthProviderError)
     end
 
+    it 'rejects calnet when a required schema attribute is missing or renamed' do
+      auth = {
+        'provider' => 'calnet',
+        'extra' => {
+          'berkeleyEduAffiliations' => 'expected affiliation',
+          'berkeleyEduCSID' => 'expected cs id',
+          'berkeleyEduIsMemberOf' => [],
+          'berkeleyEduStuID' => 'expected student id',
+          'berkeleyEduUCPathID' => 'expected UC Path ID',
+          'berkeleyEduAlternatid' => 'expected email', # intentionally wrong case to simulate renamed attribute: berkeleyEduAlternatid instead of berkeleyEduAlternateId
+          'departmentNumber' => 'expected dept. number',
+          'displayName' => 'expected display name',
+          'employeeNumber' => 'expected employee ID',
+          'givenName' => 'expected given name',
+          'surname' => 'expected surname',
+          'uid' => 'expected UID'
+        }
+      }
+
+      expect { User.from_omniauth(auth) }.to raise_error(Error::CalnetError, /Missing required CalNet attributes/)
+    end
+
     it 'populates a User object' do
       framework_admin_ldap = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'
       auth = {
