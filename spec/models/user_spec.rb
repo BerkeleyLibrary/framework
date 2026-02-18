@@ -29,7 +29,7 @@ describe User do
           'berkeleyEduCSID' => 'expected cs id',
           'berkeleyEduIsMemberOf' => [],
           'berkeleyEduUCPathID' => 'expected UC Path ID',
-          'berkeleyEduAlternatid' => 'expected email', # intentionally wrong case to simulate renamed attribute: berkeleyEduAlternatid instead of berkeleyEduAlternateID
+          'berkeleyEduAlternatid' => 'expected email', # intentionally wrong case to simulate wrong attribute
           'departmentNumber' => 'expected dept. number',
           'displayName' => 'expected display name',
           'employeeNumber' => 'expected employee ID',

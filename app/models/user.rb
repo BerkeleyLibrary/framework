@@ -26,7 +26,7 @@ class User
 
     private
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def auth_params_from(auth)
       auth_extra = auth['extra']
       verify_calnet_attributes!(auth_extra)
@@ -49,7 +49,7 @@ class User
         alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
       }
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     # Verifies that auth_extra contains all required CalNet attributes with exact case-sensitive names
     # For array attributes, at least one value in the array must be present in auth_extra
@@ -67,15 +67,15 @@ class User
 
       return if missing.empty?
 
-      current_calnet_keys = list_auth_extra_keys(auth_extra)
-      msg = "Cannot find CalNet schema attribute(s) (case-sensitive): #{missing.join(', ')}. The current CalNet schema attributes: #{current_calnet_keys.join(', ')}."
-      Rails.logger.error(msg)
-      raise Error::CalnetError, msg
+      raise_missing_calnet_attribute_error(auth_extra, missing)
     end
 
-    # list all keys except duo keys
-    def list_auth_extra_keys(auth_extra)
-      auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
+    def raise_missing_calnet_attribute_error(auth_extra)
+      missing_attrs = "Expected Calnet attribute(s) not found (case-sensitive): #{missing.join(', ')}."
+      actual_calnet_keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
+      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayname']}"
+      Rails.logger.error(msg)
+      raise Error::CalnetError, msg
     end
 
     # Gets an attribute value from auth_extra, handling both string and array attribute names
