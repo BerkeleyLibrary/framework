@@ -54,7 +54,15 @@ module CalnetHelper
     calnet_yml_file = "spec/data/calnet/#{uid}.yml"
     raise IOError, "No such file: #{calnet_yml_file}" unless File.file?(calnet_yml_file)
 
-    YAML.load_file(calnet_yml_file)
+    auth_hash = YAML.load_file(calnet_yml_file)
+    
+    # Merge in default extra fields from application config
+    if Rails.application.config.respond_to?(:calnet_test_defaults)
+      defaults = Rails.application.config.calnet_test_defaults.stringify_keys
+      auth_hash['extra'] = defaults.merge(auth_hash['extra'] || {})
+    end
+    
+    auth_hash
   end
 
   # Logs out. Suitable for calling in an after() block.
