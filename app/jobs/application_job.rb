@@ -1,24 +1,33 @@
 class ApplicationJob < ActiveJob::Base
-  attr_reader :request_id
+  attr_accessor :request_id
 
-  before_enqueue do
-    arguments << { request_id: Current.request_id } if Current.request_id
+  before_enqueue do |job|
+    job.request_id = Current.request_id
   end
 
-  around_perform do |job, block|
-    @request_id = job.arguments.pop[:request_id] if job.arguments.last.is_a?(Hash) && job.arguments.last.key?(:request_id)
-    block.call
+  before_perform :restore_request_id, :log_job_metadata
+
+  def serialize
+    super.merge('request_id' => request_id)
   end
 
-  around_perform :log_job_metadata
+  def deserialize(job_data)
+    super
+    self.request_id = job_data['request_id']
+  end
 
   def today
     @today ||= Time.zone.now.strftime('%Y%m%d')
   end
 
+  private
+
+  def restore_request_id
+    self.request_id ||= Current.request_id
+  end
+
   def log_job_metadata
-    logger.with_fields = { activejob_id: job_id, request_id: @request_id }
-    yield
+    logger.with_fields = { activejob_id: job_id, request_id: request_id }
   end
 
   # Log an exception

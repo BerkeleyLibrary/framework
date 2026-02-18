@@ -22,19 +22,15 @@ RSpec.describe ApplicationJob, type: :job do
       it 'enqueues the job with the request_id' do
         expect do
           TestJob.perform_later('some_arg')
-        end.to have_enqueued_job(TestJob).with('some_arg', { request_id: request_id })
-      end
+        end.to have_enqueued_job(TestJob)
 
-      it 'sets @request_id and removes it from the arguments' do
-        job = TestJob.new('some_arg', { request_id: request_id })
-        perform_enqueued_jobs { job.perform_now }
-
-        expect(job.instance_variable_get(:@request_id)).to eq(request_id)
-        expect(job.arguments).to eq(['some_arg'])
+        enqueued_job = ActiveJob::Base.queue_adapter.enqueued_jobs.last
+        expect(enqueued_job[:args]).to eq(['some_arg'])
+        expect(enqueued_job['request_id']).to eq(request_id)
       end
 
       it 'logs the activejob_id and request_id' do
-        job = TestJob.new('some_arg', { request_id: request_id })
+        job = TestJob.new('some_arg')
         allow(job.logger).to receive(:with_fields=)
 
         perform_enqueued_jobs { job.perform_now }
@@ -50,14 +46,17 @@ RSpec.describe ApplicationJob, type: :job do
         expect do
           TestJob.perform_later('some_arg')
         end.to have_enqueued_job(TestJob).with('some_arg')
+
+        enqueued_job = ActiveJob::Base.queue_adapter.enqueued_jobs.last
+        expect(enqueued_job['request_id']).to be_nil
       end
 
-      it 'does not set @request_id if not provided' do
+      it 'does not set request_id if not provided' do
         job = TestJob.new('some_arg')
         perform_enqueued_jobs { job.perform_now }
 
-        expect(job.instance_variable_get(:@request_id)).to be_nil
         expect(job.arguments).to eq(['some_arg'])
+        expect(job.request_id).to be_nil
       end
 
       it 'logs the activejob_id without a request_id' do
