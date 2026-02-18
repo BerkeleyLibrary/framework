@@ -8,18 +8,18 @@ class User
   ALMA_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
 
   CALNET_ATTRS = {
-    affiliations: 'berkeleyEduAffiliations',
-    cs_id: 'berkeleyEduCSID',
-    groups: 'berkeleyEduIsMemberOf',
+    affiliations: 'berkeleyEduAffiliations'.freeze,
+    cs_id: ['berkeleyEduStuID', 'berkeleyEduCSID'].freeze, 
+    # groups: 'berkeleyEduIsMemberOf'.freeze,
     # student_id: 'berkeleyEduStuID',
-    ucpath_id: 'berkeleyEduUCPathID',
-    email: 'berkeleyEduAlternateID',
-    department_number: 'departmentNumber',
-    display_name: 'displayName',
-    employee_id: 'employeeNumber',
-    given_name: 'givenName',
-    surname: 'surname',
-    uid: 'uid'
+    ucpath_id: 'berkeleyEduUCPathID'.freeze,
+    email: ['berkeleyEduAlternateID', 'berkeleyEduAlternateId'].freeze, 
+    department_number: 'departmentNumber'.freeze,
+    display_name: 'displayName'.freeze,
+    employee_id: 'employeeNumber'.freeze,
+    given_name: 'givenName'.freeze,
+    surname: 'surname'.freeze,
+    uid: 'uid'.freeze
   }.freeze
 
   class << self
@@ -46,17 +46,17 @@ class User
 
       # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       {
-        affiliations: auth_extra[CALNET_ATTRS[:affiliations]],
-        cs_id: auth_extra[CALNET_ATTRS[:cs_id]],
-        department_number: auth_extra[CALNET_ATTRS[:department_number]],
-        display_name: auth_extra[CALNET_ATTRS[:display_name]],
-        email: auth_extra[CALNET_ATTRS[:email]],
-        employee_id: auth_extra[CALNET_ATTRS[:employee_id]],
-        given_name: auth_extra[CALNET_ATTRS[:given_name]],
-        student_id: auth_extra[CALNET_ATTRS[:cs_id]],
-        surname: auth_extra[CALNET_ATTRS[:surname]],
-        ucpath_id: auth_extra[CALNET_ATTRS[:ucpath_id]],
-        uid: auth_extra[CALNET_ATTRS[:uid]] || auth['uid'],
+        affiliations: get_attribute_from_auth(auth_extra, :affiliations),
+        cs_id: get_attribute_from_auth(auth_extra, :cs_id),
+        department_number: get_attribute_from_auth(auth_extra, :department_number),
+        display_name: get_attribute_from_auth(auth_extra, :display_name),
+        email: get_attribute_from_auth(auth_extra, :email),
+        employee_id: get_attribute_from_auth(auth_extra, :employee_id),
+        given_name: get_attribute_from_auth(auth_extra, :given_name),
+        student_id: get_attribute_from_auth(auth_extra, :cs_id),
+        surname: get_attribute_from_auth(auth_extra, :surname),
+        ucpath_id: get_attribute_from_auth(auth_extra, :ucpath_id),
+        uid: get_attribute_from_auth(auth_extra, :uid) || auth['uid'],
         framework_admin: cal_groups.include?(FRAMEWORK_ADMIN_GROUP),
         alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
       }
@@ -64,11 +64,18 @@ class User
     # rubocop:enable Metrics/MethodLength
     
     # Verifies that auth_extra contains all required CalNet attributes with exact case-sensitive names
+    # For array attributes, at least one value in the array must be present in auth_extra
     # Raise [Error::CalnetError] if any required attributes are missing
     def verify_calnet_attributes!(auth_extra)
       required_attributes = CALNET_ATTRS.values
 
-      missing = required_attributes.reject { |attr| auth_extra.key?(attr) }
+      missing = required_attributes.reject do |attr|
+        if attr.is_a?(Array)
+          attr.any? { |a| auth_extra.key?(a) }
+        else
+          auth_extra.key?(attr)
+        end
+      end
 
       return if missing.empty?
 
@@ -80,10 +87,19 @@ class User
 
     # list all keys except duo keys
     def list_auth_extra_keys(auth_extra)
-      keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
-      Rails.logger.info("CalNet auth_extra keys: #{keys.join(', ')}")
-      keys
+      auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
     end
+
+    # Gets an attribute value from auth_extra, handling both string and array attribute names
+    # If attribute is an array, tries each key in order and returns the first match
+    # If attribute is a string, returns the value for that key
+    def get_attribute_from_auth(auth_extra, attr_key)
+      attrs = CALNET_ATTRS[attr_key]
+      return auth_extra[attrs] unless attrs.is_a?(Array)
+
+      attrs.find { |attr| auth_extra.key?(attr) }.yield_self { |attr| attr && auth_extra[attr] }
+    end
+
 
   end
 

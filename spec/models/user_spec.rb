@@ -28,9 +28,8 @@ describe User do
           'berkeleyEduAffiliations' => 'expected affiliation',
           'berkeleyEduCSID' => 'expected cs id',
           'berkeleyEduIsMemberOf' => [],
-          'berkeleyEduStuID' => 'expected student id',
           'berkeleyEduUCPathID' => 'expected UC Path ID',
-          'berkeleyEduAlternatid' => 'expected email', # intentionally wrong case to simulate renamed attribute: berkeleyEduAlternatid instead of berkeleyEduAlternateId
+          'berkeleyEduAlternatid' => 'expected email', # intentionally wrong case to simulate renamed attribute: berkeleyEduAlternatid instead of berkeleyEduAlternateID
           'departmentNumber' => 'expected dept. number',
           'displayName' => 'expected display name',
           'employeeNumber' => 'expected employee ID',
@@ -40,7 +39,7 @@ describe User do
         }
       }
 
-      expect { User.from_omniauth(auth) }.to raise_error(Error::CalnetError, /Missing required CalNet attributes/)
+      expect { User.from_omniauth(auth) }.to raise_error(Error::CalnetError, /Cannot find CalNet schema attribute/)
     end
 
     it 'populates a User object' do
@@ -54,7 +53,7 @@ describe User do
           'berkeleyEduAlternateID' => 'expected email',
           'employeeNumber' => 'expected employee ID',
           'givenName' => 'expected given name',
-          'berkeleyEduStuID' => 'expected student ID',
+          'berkeleyEduCSID' => 'expected cs id',
           'surname' => 'expected surname',
           'berkeleyEduUCPathID' => 'expected UC Path ID',
           'uid' => 'expected UID',
@@ -71,7 +70,7 @@ describe User do
         expect(user.email).to eq('expected email')
         expect(user.employee_id).to eq('expected employee ID')
         expect(user.given_name).to eq('expected given name')
-        expect(user.student_id).to eq('expected student ID')
+        expect(user.student_id).to eq('expected cs id')
         expect(user.surname).to eq('expected surname')
         expect(user.ucpath_id).to eq('expected UC Path ID')
         expect(user.uid).to eq('expected UID')
@@ -89,7 +88,7 @@ describe User do
           'berkeleyEduAlternateID' => 'expected email',
           'employeeNumber' => 'expected employee ID',
           'givenName' => 'expected given name',
-          'berkeleyEduStuID' => 'expected student ID',
+          'berkeleyEduCSID' => 'expected cs id',
           'surname' => 'expected surname',
           'berkeleyEduUCPathID' => 'expected UC Path ID',
           'uid' => 'expected UID'
@@ -103,7 +102,7 @@ describe User do
       expect(user.email).to eq('expected email')
       expect(user.employee_id).to eq('expected employee ID')
       expect(user.given_name).to eq('expected given name')
-      expect(user.student_id).to eq('expected student ID')
+      expect(user.student_id).to eq('expected cs id')
       expect(user.surname).to eq('expected surname')
       expect(user.ucpath_id).to eq('expected UC Path ID')
       expect(user.uid).to eq('expected UID')
