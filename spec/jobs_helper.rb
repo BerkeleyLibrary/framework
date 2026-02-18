@@ -8,7 +8,7 @@ RSpec.shared_examples 'an email job' do |note_text:, email_subject_success:, con
   include_context 'ssh'
   let(:job) { described_class }
   let(:alma_api_key) { 'totally-fake-key' }
-  let(:today) { Time.now.strftime('%Y%m%d') }
+  let(:today) { Time.now.utc.strftime('%Y%m%d') }
   let(:expected_note) { "#{today} #{note_text} [litscript]" }
 
   attr_reader :patron
@@ -57,13 +57,12 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
 
   before do
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
-
     stub_patron_dump(patron_id)
     @patron = Alma::User.find(patron_id)
   end
 
   describe 'success' do
-    let(:today) { Time.now.strftime('%Y%m%d') }
+    let(:today) { Time.now.utc.strftime('%Y%m%d') }
     let(:expected_note) { "#{today} #{note_text} [litscript]" }
 
     it 'adds the expected note' do # rubocop:disable RSpec/NoExpectationExample
