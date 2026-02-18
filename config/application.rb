@@ -111,6 +111,22 @@ module Framework
     config.x.healthcheck_urls.whois = 'https://whois.arin.net/rest/poc/1AD-ARIN'
     config.x.healthcheck_urls.berkeley_service_now = 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
 
+    # CalNet attribute mapping - shared between User model and test calnet_helper
+    # Maps hash values to CalNet attribute name(s)
+    # Array values indicate fallback/alternative attribute names
+    config.calnet_attrs = {
+      affiliations: 'berkeleyEduAffiliations',
+      cs_id: %w[berkeleyEduStuID berkeleyEduCSID],
+      ucpath_id: 'berkeleyEduUCPathID',
+      email: %w[berkeleyEduAlternateID berkeleyEduAlternateId],
+      department_number: 'departmentNumber',
+      display_name: 'displayName',
+      employee_id: 'employeeNumber',
+      given_name: 'givenName',
+      surname: 'surname',
+      uid: 'uid'
+    }.freeze
+
     config.to_prepare do
       GoodJob::JobsController.class_eval do
         include AuthSupport

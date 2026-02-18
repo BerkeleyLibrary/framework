@@ -7,20 +7,8 @@ class User
   FRAMEWORK_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
   ALMA_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
 
-  CALNET_ATTRS = {
-    affiliations: 'berkeleyEduAffiliations'.freeze,
-    cs_id: ['berkeleyEduStuID', 'berkeleyEduCSID'].freeze, 
-    # groups: 'berkeleyEduIsMemberOf'.freeze,
-    # student_id: 'berkeleyEduStuID',
-    ucpath_id: 'berkeleyEduUCPathID'.freeze,
-    email: ['berkeleyEduAlternateID', 'berkeleyEduAlternateId'].freeze, 
-    department_number: 'departmentNumber'.freeze,
-    display_name: 'displayName'.freeze,
-    employee_id: 'employeeNumber'.freeze,
-    given_name: 'givenName'.freeze,
-    surname: 'surname'.freeze,
-    uid: 'uid'.freeze
-  }.freeze
+  # CalNet attribute mapping derived from configuration
+  CALNET_ATTRS = Rails.application.config.calnet_attrs.freeze
 
   class << self
     # Returns a new user object from the given "omniauth.auth" hash. That's a
@@ -62,7 +50,7 @@ class User
       }
     end
     # rubocop:enable Metrics/MethodLength
-    
+
     # Verifies that auth_extra contains all required CalNet attributes with exact case-sensitive names
     # For array attributes, at least one value in the array must be present in auth_extra
     # Raise [Error::CalnetError] if any required attributes are missing
@@ -97,9 +85,8 @@ class User
       attrs = CALNET_ATTRS[attr_key]
       return auth_extra[attrs] unless attrs.is_a?(Array)
 
-      attrs.find { |attr| auth_extra.key?(attr) }.yield_self { |attr| attr && auth_extra[attr] }
+      attrs.find { |attr| auth_extra.key?(attr) }.then { |attr| attr && auth_extra[attr] }
     end
-
 
   end
 
