@@ -56,10 +56,11 @@ module CalnetHelper
 
     auth_hash = YAML.load_file(calnet_yml_file)
     
-    # Merge in default extra fields from application config
-    if Rails.application.config.respond_to?(:calnet_test_defaults)
-      defaults = Rails.application.config.calnet_test_defaults.stringify_keys
-      auth_hash['extra'] = defaults.merge(auth_hash['extra'] || {})
+    # Merge in default extra fields from base.yml
+    base_yml_file = 'spec/data/calnet/base.yml'
+    if File.file?(base_yml_file)
+      base_defaults = YAML.load_file(base_yml_file)['extra'] || {}
+      auth_hash['extra'] = base_defaults.merge(auth_hash['extra'] || {})
     end
     
     auth_hash
