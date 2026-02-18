@@ -54,7 +54,7 @@
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-logging (v0.3.0, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-marc (v0.3.2, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="berkeley_library-tind (v0.8.0, ruby-3.3.9-p170) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="berkeley_library-util (v0.2.0, ruby-3.3.9-p170) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="berkeley_library-util (v0.3.0, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bigdecimal (v3.2.2, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bindex (v0.8.1, ruby-3.3.9-p170) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bootstrap (v5.2.2, ruby-3.3.9-p170) [gem]" level="application" />

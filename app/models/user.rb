@@ -23,7 +23,7 @@ class User
 
     private
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def auth_params_from(auth)
       auth_extra = auth['extra']
       cal_groups = auth_extra['berkeleyEduIsMemberOf'] || []
@@ -34,7 +34,7 @@ class User
         cs_id: auth_extra['berkeleyEduCSID'],
         department_number: auth_extra['departmentNumber'],
         display_name: auth_extra['displayName'],
-        email: auth_extra['berkeleyEduAlternateID'],
+        email: auth_extra['berkeleyEduAlternateID'] || auth_extra['berkeleyEduAlternateId'],
         employee_id: auth_extra['employeeNumber'],
         given_name: auth_extra['givenName'],
         student_id: auth_extra['berkeleyEduStuID'],
@@ -45,7 +45,7 @@ class User
         alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
       }
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
   end
 
   # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
