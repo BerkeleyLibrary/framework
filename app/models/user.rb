@@ -70,10 +70,10 @@ class User
       raise_missing_calnet_attribute_error(auth_extra, missing)
     end
 
-    def raise_missing_calnet_attribute_error(auth_extra)
+    def raise_missing_calnet_attribute_error(auth_extra, missing)
       missing_attrs = "Expected Calnet attribute(s) not found (case-sensitive): #{missing.join(', ')}."
       actual_calnet_keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
-      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayname']}"
+      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayName']}"
       Rails.logger.error(msg)
       raise Error::CalnetError, msg
     end
