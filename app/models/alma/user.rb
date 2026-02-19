@@ -107,7 +107,7 @@ module Alma
         'user_viewable' => false,
         'popup_note' => false,
         'created_by' => 'Framework',
-        'created_date' => Time.zone.now.strftime('%Y-%m-%dT%H:%M:00Z'),
+        'created_date' => Time.now.utc.strftime('%Y-%m-%dT%H:%M:00Z'),
         'segment_type' => 'Internal'
       }
       user_obj['user_note'].push(new_note)
