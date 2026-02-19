@@ -11,6 +11,8 @@ services:
       - selenium
     volumes: !override
       - artifacts:/opt/app/artifacts
+    secrets:
+      - SECRET_KEY_BASE
     ports: !reset
 
   worker:
@@ -23,6 +25,10 @@ services:
       - artifacts:/build
 
   dbeaver: !reset
+
+secrets:
+  SECRET_KEY_BASE:
+    file: /tmp/secret_key_base
 
 volumes:
   artifacts:

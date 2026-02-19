@@ -21,7 +21,7 @@ Rails.application.configure do
   # Enabling Lograge
   config.lograge.enabled = true
 
-  # Enable server timing
+  # Enable server timing.
   config.server_timing = true
 
   # Enable/disable caching. By default caching is disabled.
@@ -45,6 +45,9 @@ Rails.application.configure do
 
   # Fake sending of emails
   config.action_mailer.delivery_method = :test
+
+  # Disable caching for Action Mailer templates even if Action Controller
+  # caching is enabled.
   config.action_mailer.perform_caching = false
 
   # Print deprecation notices to the Rails logger.
@@ -82,7 +85,7 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  # Raise error when a before_action's only/except options reference missing actions
+  # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
   # Configure the default host - this is used by Stack Pass's mailer, to create a link

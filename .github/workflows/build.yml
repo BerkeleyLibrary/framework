@@ -130,6 +130,7 @@ jobs:
 
       - name: Setup the stack
         run: |
+          docker run --rm "${DOCKER_APP_IMAGE}" rails secret > /tmp/secret_key_base
           docker compose build --quiet
           docker compose pull --quiet
           docker compose up --wait
