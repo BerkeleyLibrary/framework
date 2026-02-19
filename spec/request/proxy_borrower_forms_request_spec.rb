@@ -1,6 +1,9 @@
 require 'forms_helper'
 
 describe 'Proxy Borrower Forms', type: :request do
+  include ActiveJob::TestHelper
+  after { clear_enqueued_jobs }
+
   attr_reader :patron_id
   attr_reader :patron
   attr_reader :user
@@ -189,5 +192,42 @@ describe 'Proxy Borrower Forms', type: :request do
       expect(response).to have_http_status :unprocessable_entity
       expect(response.body).to match(/Please correct these and resubmit the form/)
     end
+
+    it 'submission enqueues confirmation + alert emails' do
+      expect do
+        post(forms_proxy_borrower_request_dsp_path, params: {
+               proxy_borrower_requests: {
+                 student_name: 'Veronica Names',
+                 dsp_rep: 'DSP Rep',
+                 research_last: 'last',
+                 research_first: 'first',
+                 date_term: Date.tomorrow,
+                 renewal: 0
+               }
+             })
+      end.to have_enqueued_job(ActionMailer::MailDeliveryJob).exactly(2).times
+
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'Faculty submission enqueues confirmation + alert emails' do
+      allow_any_instance_of(User).to receive(:ucb_faculty?).and_return(true)
+
+      expect do
+        post(forms_proxy_borrower_request_faculty_path, params: {
+               proxy_borrower_requests: {
+                 faculty_name: 'Thelonius Monk',
+                 department: 'History',
+                 research_last: 'Last',
+                 research_first: 'First',
+                 date_term: Date.tomorrow,
+                 renewal: 0
+               }
+             })
+      end.to have_enqueued_job(ActionMailer::MailDeliveryJob).exactly(2).times
+
+      expect(response).to have_http_status(:created)
+    end
+
   end
 end
