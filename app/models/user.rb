@@ -29,22 +29,23 @@ class User
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def auth_params_from(auth)
       auth_extra = auth['extra']
+      # log_auth_extra(auth_extra)
       verify_calnet_attributes!(auth_extra)
       cal_groups = auth_extra['berkeleyEduIsMemberOf'] || []
 
       # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       {
-        affiliations: get_attribute_from_auth(auth_extra, :affiliations),
-        cs_id: get_attribute_from_auth(auth_extra, :cs_id),
-        department_number: get_attribute_from_auth(auth_extra, :department_number),
-        display_name: get_attribute_from_auth(auth_extra, :display_name),
+        affiliations: auth_extra['berkeleyEduAffiliations'],
+        cs_id: auth_extra['berkeleyEduCSID'],
+        department_number: auth_extra['departmentNumber'],
+        display_name: auth_extra['displayName'],
         email: get_attribute_from_auth(auth_extra, :email),
-        employee_id: get_attribute_from_auth(auth_extra, :employee_id),
-        given_name: get_attribute_from_auth(auth_extra, :given_name),
-        student_id: get_attribute_from_auth(auth_extra, :cs_id),
-        surname: get_attribute_from_auth(auth_extra, :surname),
-        ucpath_id: get_attribute_from_auth(auth_extra, :ucpath_id),
-        uid: get_attribute_from_auth(auth_extra, :uid) || auth['uid'],
+        employee_id: auth_extra['employeeNumber'],
+        given_name: auth_extra['givenName'],
+        student_id: auth_extra['berkeleyEduStuID'],
+        surname: auth_extra['surname'],
+        ucpath_id: auth_extra['berkeleyEduUCPathID'],
+        uid: auth_extra['uid'] || auth['uid'],
         framework_admin: cal_groups.include?(FRAMEWORK_ADMIN_GROUP),
         alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
       }
@@ -55,14 +56,13 @@ class User
     # For array attributes, at least one value in the array must be present in auth_extra
     # Raise [Error::CalnetError] if any required attributes are missing
     def verify_calnet_attributes!(auth_extra)
-      required_attributes = CALNET_ATTRS.values
+      affiliations = affiliations_from(auth_extra)
+      raise_missing_calnet_attribute_error(auth_extra, ['berkeleyEduAffiliations']) if affiliations.blank?
+      
+      required_attributes = required_attributes_for(affiliations)
 
       missing = required_attributes.reject do |attr|
-        if attr.is_a?(Array)
-          attr.any? { |a| auth_extra.key?(a) }
-        else
-          auth_extra.key?(attr)
-        end
+        present_in_auth_extra?(auth_extra, attr)
       end
 
       return if missing.empty?
@@ -76,6 +76,53 @@ class User
       msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayName']}"
       Rails.logger.error(msg)
       raise Error::CalnetError, msg
+    end
+
+    # def log_auth_extra(auth_extra)
+    #   return if auth_extra.nil?
+
+    #   keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
+    #   Rails.logger.info("CalNet auth_extra keys!!! student 5 - #{auth_extra['berkeleyEduAffiliations']}: #{keys.join(', ')}")
+    # end
+
+    def affiliations_from(auth_extra)
+      Array(auth_extra['berkeleyEduAffiliations'])
+    end
+
+    def employee_affiliated?(affiliations)
+      affiliations.include?('EMPLOYEE-TYPE-STAFF') ||
+        affiliations.include?('EMPLOYEE-TYPE-ACADEMIC')
+    end
+
+    def student_affiliated?(affiliations)
+      affiliations.include?('STUDENT-TYPE-NOT-REGISTERED') ||
+        affiliations.include?('STUDENT-TYPE-REGISTERED')
+    end
+
+    def required_attributes_for(affiliations)
+      required_cal_attrs = CALNET_ATTRS.dup
+
+      # only employee afflication will validate employee_id and ucpath_id attributes.
+      unless employee_affiliated?(affiliations)
+        required_cal_attrs.delete(:employee_id)
+        required_cal_attrs.delete(:ucpath_id)
+        
+      end
+     
+      # only student registered and not-registered affiliation will validate student_id attribute.
+      unless student_affiliated?(affiliations)
+        required_cal_attrs.delete(:student_id)
+      end
+
+      required_cal_attrs.values
+    end
+
+    def present_in_auth_extra?(auth_extra, attr)
+      if attr.is_a?(Array)
+        attr.any? { |a| auth_extra.key?(a) }
+      else
+        auth_extra.key?(attr)
+      end
     end
 
     # Gets an attribute value from auth_extra, handling both string and array attribute names

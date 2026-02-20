@@ -115,9 +115,9 @@ module Framework
     # Maps hash values to CalNet attribute name(s)
     # Array values indicate fallback/alternative attribute names
     config.calnet_attrs = {
-      affiliations: 'berkeleyEduAffiliations',
-      cs_id: %w[berkeleyEduStuID berkeleyEduCSID],
+      cs_id: 'berkeleyEduCSID',
       ucpath_id: 'berkeleyEduUCPathID',
+      student_id: 'berkeleyEduStuID',
       email: %w[berkeleyEduAlternateID berkeleyEduAlternateId],
       department_number: 'departmentNumber',
       display_name: 'displayName',
