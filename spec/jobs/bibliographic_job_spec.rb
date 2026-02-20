@@ -35,4 +35,56 @@ RSpec.describe BibliographicJob, type: :job do
 
   end
 
+  describe 'email notifications' do
+    let(:mailer_double) { instance_double(ActionMailer::MessageDelivery, deliver_now: true) }
+
+    context 'when job succeeds' do
+      it 'sends completion email with attachments' do
+        fake_attachments = {
+          'fake_completed.csv' => { mime_type: 'text/csv', content: 'csvdata' }
+        }
+
+        allow_any_instance_of(BibliographicJob)
+          .to receive(:generate_attatchments)
+          .and_return(fake_attachments)
+
+        expect(RequestMailer)
+          .to receive(:bibliographic_email)
+          .with(
+            email,
+            fake_attachments,
+            'Host Bibliographic Upload - Completed',
+            'When there is an attached log file, please review unusual MMS ID information.'
+          ).and_return(mailer_double)
+
+        BibliographicJob.perform_now(host_bib_task)
+
+        expect(host_bib_task.reload.status).to eq('succeeded')
+      end
+    end
+
+    context 'when job fails' do
+      it 'sends failure email' do
+        host_bib = host_bib_task.host_bibs.create(mms_id: mms_id1, marc_status: 'pending')
+
+        allow(Bibliographic::HostBib)
+          .to receive(:create_linked_bibs)
+          .with(host_bib)
+          .and_raise(StandardError.new('Error'))
+
+        expect(RequestMailer)
+          .to receive(:bibliographic_email)
+          .with(
+            email,
+            [],
+            'Host Bibliographic Upload - Failed',
+            'Host Bibliographic upload failed, please reach out to our support team.'
+          ).and_return(mailer_double)
+
+        expect { BibliographicJob.perform_now(host_bib_task) }.to raise_error(StandardError)
+
+        expect(host_bib_task.reload.status).to eq('failed')
+      end
+    end
+  end
 end

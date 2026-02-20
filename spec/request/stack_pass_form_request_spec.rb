@@ -1,6 +1,10 @@
 require 'forms_helper'
 
 describe 'Stack Pass Form', type: :request do
+  include ActiveJob::TestHelper
+
+  after { clear_enqueued_jobs }
+
   attr_reader :patron_id
   attr_reader :patron
   attr_reader :user
@@ -23,9 +27,9 @@ describe 'Stack Pass Form', type: :request do
       expect(response).to redirect_to(action: :new)
     end
 
-    it 'requires login if user is not a stack pass admin' do
-      form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true)
+    it 'redirects to login if if user is not a stack pass admin' do
+      form = StackPassForm.create(email: 'openreq@test.com', name: 'John Testy',
+                                  phone: '510-222-2222', pass_date: Date.current, main_stack: true)
 
       get stack_pass_form_path(id: form.id)
       expect(response).to have_http_status :forbidden
@@ -38,14 +42,16 @@ describe 'Stack Pass Form', type: :request do
         stack_pass_form: {
           email: 'jrdoe@affiliate.test',
           name: 'Jane R. Doe',
-          phone: '925-555-1212',
+          phone: '510-222-2222',
           main_stack: true,
           pass_date: '04/13/1996',
           local_id: '123456789'
         }
       }
+
       post('/forms/stack-pass', params:)
       expect(response).to redirect_to(action: :new, params:)
+
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
     end
@@ -67,14 +73,16 @@ describe 'Stack Pass Form', type: :request do
     it 'renders process form for unprocessed request' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
                                   phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
+
       get "/forms/stack-pass/#{form.id}"
       expect(response.body).to include('<h3>This request needs to be processed.</h3>')
     end
 
     it 'renders processed page for processed request' do
       form = StackPassForm.create(email: 'closedreq@test.com', name: 'Jane Doe',
-                                  phone: '925-555-5678', pass_date: Date.current, main_stack: true, local_id: '8675309',
-                                  approvedeny: true, processed_by: 'Test Admin')
+                                  phone: '925-555-5678', pass_date: Date.current, main_stack: true,
+                                  local_id: '8675309', approvedeny: true, processed_by: 'Test Admin')
+
       get "/forms/stack-pass/#{form.id}"
       expect(response.body).to include('<h2>This request has been processed</h2>')
     end
@@ -85,28 +93,42 @@ describe 'Stack Pass Form', type: :request do
       expect(response.body).to include(path)
     end
 
-    it 'allows an admin to deny a request' do
+    it 'allows an admin to deny a request and enqueues denial email' do
       form = StackPassForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                  phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
+                                  phone: '925-555-1234', pass_date: Date.current + 1,
+                                  main_stack: true, local_id: '8675309')
 
-      params = {
-        'stack_pass_[approve_deny]' => false,
-        'processed_by' => 'ADMIN USER',
-        'denial_reason' => 'Item listed at another library'
-      }
-      patch("/forms/stack-pass/#{form.id}", params:)
-      expect(response).to redirect_to(action: :show, id: 1)
+      expect do
+        patch "/forms/stack-pass/#{form.id}", params: {
+          stack_pass_: { approve_deny: false },
+          processed_by: 'ADMIN USER',
+          denial_reason: 'Item listed at another library'
+        }
+      end.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+      expect(response).to redirect_to(action: :show, id: form.id)
 
       get(response.headers['Location'])
-      expect(response.body).to include(params['denial_reason'])
+      expect(response.body).to include('Item listed at another library')
       expect(response.body).to include('This request has been processed')
     end
 
+    it 'enqueues approval email when admin approves request' do
+      form = StackPassForm.create(email: 'openreq@test.com', name: 'John Testy',
+                                  phone: '510-222-2222', pass_date: Date.current + 1,
+                                  main_stack: true, local_id: '8675309')
+
+      expect do
+        patch "/forms/stack-pass/#{form.id}", params: {
+          stack_pass_: { approve_deny: true },
+          processed_by: 'ADMIN USER'
+        }
+      end.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+    end
   end
 
   context 'specs with hard-coded admin privledges' do
-
-    before do |_test|
+    before do
       admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
@@ -131,7 +153,6 @@ describe 'Stack Pass Form', type: :request do
       get forms_stack_pass_admin_users_path
       expect(response).to have_http_status :ok
     end
-
   end
 
   context 'specs with non-admin user logged in' do
@@ -150,8 +171,7 @@ describe 'Stack Pass Form', type: :request do
   end
 
   context 'specs with user created administrators' do
-    before do |_test|
-      # Create the role, user and assignment:
+    before do
       Role.create(id: 1, role: 'stackpass_admin')
       admin_user = User.new(uid: '9999999', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       FrameworkUsers.create(id: 1, lcasid: '9999999', name: 'Test Dude', role: 'admin')
@@ -177,5 +197,4 @@ describe 'Stack Pass Form', type: :request do
       expect(response.body).to include('Admin User')
     end
   end
-
 end
