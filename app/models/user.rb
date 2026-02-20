@@ -1,6 +1,7 @@
 # Represents a user in our system
 #
 # This is closely coupled to CalNet's user schema.
+# rubocop:disable Metrics/ClassLength
 class User
   include ActiveModel::Model
 
@@ -226,3 +227,4 @@ class User
     uid_patron_record
   end
 end
+# rubocop:enable Metrics/ClassLength
