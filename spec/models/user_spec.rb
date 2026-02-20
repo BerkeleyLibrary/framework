@@ -76,7 +76,7 @@ describe User do
         expect(user.email).to eq('expected email')
         expect(user.employee_id).to eq('expected employee ID')
         expect(user.given_name).to eq('expected given name')
-        expect(user.student_id).to eq('expected cs id')
+        expect(user.student_id).to eq(nil)
         expect(user.surname).to eq('expected surname')
         expect(user.ucpath_id).to eq('expected UC Path ID')
         expect(user.uid).to eq('expected UID')
@@ -108,7 +108,7 @@ describe User do
       expect(user.email).to eq('expected email')
       expect(user.employee_id).to eq('expected employee ID')
       expect(user.given_name).to eq('expected given name')
-      expect(user.student_id).to eq('expected cs id')
+      expect(user.student_id).to eq(nil)
       expect(user.surname).to eq('expected surname')
       expect(user.ucpath_id).to eq('expected UC Path ID')
       expect(user.uid).to eq('expected UID')
@@ -126,6 +126,76 @@ describe User do
     it 'returns false if user ID is nil' do
       user = User.new(uid: nil)
       expect(user.authenticated?).to eq(false)
+    end
+  end
+
+  describe :verify_calnet_attributes! do
+    it 'allows employee-affiliated users without berkeleyEduStuID' do
+      auth_extra = {
+        'berkeleyEduAffiliations' => ['EMPLOYEE-TYPE-ACADEMIC'],
+        'berkeleyEduCSID' => 'cs123',
+        'berkeleyEduIsMemberOf' => [],
+        'berkeleyEduUCPathID' => 'ucpath456',
+        'berkeleyEduAlternateID' => 'email@berkeley.edu',
+        'departmentNumber' => 'dept1',
+        'displayName' => 'Test Faculty',
+        'employeeNumber' => 'emp789',
+        'givenName' => 'Test',
+        'surname' => 'Faculty',
+        'uid' => 'faculty1'
+      }
+
+      expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.not_to raise_error
+    end
+
+    it 'allows student-affiliated users without employeeNumber and berkeleyEduUCPathID' do
+      auth_extra = {
+        'berkeleyEduAffiliations' => ['STUDENT-TYPE-REGISTERED'],
+        'berkeleyEduCSID' => 'cs123',
+        'berkeleyEduIsMemberOf' => [],
+        'berkeleyEduStuID' => 'stu456',
+        'berkeleyEduAlternateID' => 'email@berkeley.edu',
+        'departmentNumber' => 'dept1',
+        'displayName' => 'Test Student',
+        'givenName' => 'Test',
+        'surname' => 'Student',
+        'uid' => 'student1'
+      }
+
+      expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.not_to raise_error
+    end
+
+    it 'rejects student-affiliated users if berkeleyEduStuID is missing' do
+      auth_extra = {
+        'berkeleyEduAffiliations' => ['STUDENT-TYPE-REGISTERED'],
+        'berkeleyEduCSID' => 'cs123',
+        'berkeleyEduIsMemberOf' => [],
+        'berkeleyEduAlternateID' => 'email@berkeley.edu',
+        'departmentNumber' => 'dept1',
+        'displayName' => 'Test Student',
+        'givenName' => 'Test',
+        'surname' => 'Student',
+        'uid' => 'student1'
+      }
+
+      expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.to raise_error(Error::CalnetError)
+    end
+
+    it 'rejects employee-affiliated users if employeeNumber is missing' do
+      auth_extra = {
+        'berkeleyEduAffiliations' => ['EMPLOYEE-TYPE-STAFF'],
+        'berkeleyEduCSID' => 'cs123',
+        'berkeleyEduIsMemberOf' => [],
+        'berkeleyEduUCPathID' => 'ucpath456',
+        'berkeleyEduAlternateID' => 'email@berkeley.edu',
+        'departmentNumber' => 'dept1',
+        'displayName' => 'Test Staff',
+        'givenName' => 'Test',
+        'surname' => 'Staff',
+        'uid' => 'staff1'
+      }
+
+      expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.to raise_error(Error::CalnetError)
     end
   end
 

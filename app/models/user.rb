@@ -101,6 +101,7 @@ class User
 
     def required_attributes_for(affiliations)
       required_cal_attrs = CALNET_ATTRS.dup
+      required_cal_attrs.delete(:affiliations)
 
       # only employee afflication will validate employee_id and ucpath_id attributes.
       unless employee_affiliated?(affiliations)
