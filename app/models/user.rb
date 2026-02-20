@@ -29,7 +29,6 @@ class User
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def auth_params_from(auth)
       auth_extra = auth['extra']
-      # log_auth_extra(auth_extra)
       verify_calnet_attributes!(auth_extra)
       cal_groups = auth_extra['berkeleyEduIsMemberOf'] || []
 
@@ -77,13 +76,6 @@ class User
       Rails.logger.error(msg)
       raise Error::CalnetError, msg
     end
-
-    # def log_auth_extra(auth_extra)
-    #   return if auth_extra.nil?
-
-    #   keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
-    #   Rails.logger.info("CalNet auth_extra keys!!! student 5 - #{auth_extra['berkeleyEduAffiliations']}: #{keys.join(', ')}")
-    # end
 
     def affiliations_from(auth_extra)
       Array(auth_extra['berkeleyEduAffiliations'])
