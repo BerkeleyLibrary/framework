@@ -58,7 +58,7 @@ class User
     def verify_calnet_attributes!(auth_extra)
       affiliations = affiliations_from(auth_extra)
       raise_missing_calnet_attribute_error(auth_extra, ['berkeleyEduAffiliations']) if affiliations.blank?
-      
+
       required_attributes = required_attributes_for(affiliations)
 
       missing = required_attributes.reject do |attr|
@@ -107,13 +107,10 @@ class User
       unless employee_affiliated?(affiliations)
         required_cal_attrs.delete(:employee_id)
         required_cal_attrs.delete(:ucpath_id)
-        
       end
-     
+
       # only student registered and not-registered affiliation will validate student_id attribute.
-      unless student_affiliated?(affiliations)
-        required_cal_attrs.delete(:student_id)
-      end
+      required_cal_attrs.delete(:student_id) unless student_affiliated?(affiliations)
 
       required_cal_attrs.values
     end
