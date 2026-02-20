@@ -10,17 +10,15 @@ RSpec.describe TindMarcBatchController, type: :request do
     end
 
     context 'new/create' do
-      it 'GET redirects to login' do
-        get(form_path = tind_marc_batch_path)
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+      it 'GET requires login' do
+        get tind_marc_batch_path
+        expect(response).to have_http_status :unauthorized
       end
 
-      it 'POST redirects to login' do
+      it 'POST requires login' do
         args = {}
         post tind_marc_batch_path, params: args
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: tind_marc_batch_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+        expect(response).to have_http_status :unauthorized
       end
     end
   end

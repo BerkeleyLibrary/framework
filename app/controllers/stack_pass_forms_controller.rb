@@ -87,6 +87,6 @@ class StackPassFormsController < ApplicationController
 
   def require_admin!
     @user_is_admin = current_user.role?(Role.stackpass_admin)
-    redirect_to login_path(url: request.fullpath) unless @user_is_admin
+    raise Error::ForbiddenError unless @user_is_admin
   end
 end

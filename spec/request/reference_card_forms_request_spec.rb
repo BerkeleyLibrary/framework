@@ -1,6 +1,9 @@
 require 'forms_helper'
 
 describe 'Reference Card Form', type: :request do
+  include ActiveJob::TestHelper
+  after { clear_enqueued_jobs }
+
   attr_reader :patron_id
   attr_reader :patron
   attr_reader :user
@@ -17,15 +20,16 @@ describe 'Reference Card Form', type: :request do
       expect(response).to redirect_to(action: :new)
     end
 
-    it 'redirects to login if if user is not a stack pass admin' do
+    it 'requires login if user is not a stack pass admin' do
       form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
                                       pass_date: Date.current, pass_date_end: Date.current + 1)
-      get(form_path = reference_card_form_path(id: form.id))
-      expect(response).to redirect_to("#{login_path}?#{URI.encode_www_form(url: form_path)}")
+      get reference_card_form_path(id: form.id)
+      expect(response).to have_http_status :forbidden
     end
 
     it 'rejects a submission with a captcha verification error' do
       expect_any_instance_of(Recaptcha::Verify).to receive(:verify_recaptcha).and_raise(Recaptcha::RecaptchaError)
+
       params = {
         reference_card_form: {
           email: 'jrdoe@affiliate.test',
@@ -37,13 +41,15 @@ describe 'Reference Card Form', type: :request do
           local_id: '123456789'
         }
       }
+
       post('/forms/reference-card', params:)
       expect(response).to redirect_to(action: :new, params:)
+
       get response.header['Location']
       expect(response.body).to match('RECaptcha Error')
     end
 
-    it 'accepts a submission with a valid date' do
+    it 'accepts a submission with a valid date and enqueues email' do
       params = {
         reference_card_form: {
           email: 'jrdoe@affiliate.test',
@@ -55,15 +61,17 @@ describe 'Reference Card Form', type: :request do
           local_id: '123456789'
         }
       }
-      post('/forms/reference-card', params:)
+
+      expect { post('/forms/reference-card', params:) }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
       expect(response).to have_http_status :created
     end
 
     it 'rejects a submission with a requested end date before the start date' do
       params = {
         reference_card_form: {
-          email: 'jrdoe@affiliate.test',
-          name: 'Jane R. Doe',
+          email: 'jrdupree@affiliate.test',
+          name: 'Jane R. Duprie',
           affiliation: 'nowhere',
           research_desc: 'research goes here....',
           pass_date: Date.current,
@@ -71,8 +79,10 @@ describe 'Reference Card Form', type: :request do
           local_id: '123456789'
         }
       }
+
       post('/forms/reference-card', params:)
       expect(response).to have_http_status :found
+
       follow_redirect!
       expect(response.body).to include('Requested access end date must not precede access start date')
     end
@@ -86,22 +96,24 @@ describe 'Reference Card Form', type: :request do
     end
 
     it 'renders process form for unprocessed request' do
-      form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Doe',
+      form = ReferenceCardForm.create(id: 1, email: 'openreq@test.com', name: 'John Testy',
                                       pass_date: Date.current, pass_date_end: Date.current + 1,
                                       research_desc: 'This is research', affiliation: 'Affiliation 1',
                                       local_id: '8675309')
+
       get "/forms/reference-card/#{form.id}"
       expect(response.body).to include('<h3>This Reference Card request needs to be processed.</h3>')
     end
 
     it 'renders processed page for processed request' do
       form = ReferenceCardForm.create(
-        email: 'closedreq@test.com', name: 'Jane Doe',
+        email: 'closedreq@test.com', name: 'Jane Testy',
         pass_date: Date.current, pass_date_end: Date.current + 1,
         research_desc: 'This is research', affiliation: 'Affiliation 1',
         local_id: '8675309',
         approvedeny: true, processed_by: 'Test Admin'
       )
+
       get "/forms/reference-card/#{form.id}"
       expect(response.body).to include('<h2>This request has been processed</h2>')
     end
@@ -112,23 +124,41 @@ describe 'Reference Card Form', type: :request do
       expect(response.body).to include(path)
     end
 
-    it 'allows an admin to deny a request' do
+    it 'allows an admin to deny a request and enqueues denial email' do
       form = ReferenceCardForm.create(email: 'openreq@test.com', name: 'John Doe',
-                                      affiliation: 'Red Bull', pass_date: Date.current, pass_date_end: Date.current + 1, local_id: '8675309')
+                                      affiliation: 'Red Bull',
+                                      pass_date: Date.current,
+                                      pass_date_end: Date.current + 1,
+                                      local_id: '8675309')
 
-      params = {
-        'stack_pass_[approve_deny]' => false,
-        'processed_by' => 'ADMIN USER',
-        'denial_reason' => 'Item listed at another library'
-      }
-      patch("/forms/reference-card/#{form.id}", params:)
-      expect(response).to redirect_to(action: :show, id: 1)
+      expect do
+        patch("/forms/reference-card/#{form.id}", params: {
+                'stack_pass_[approve_deny]' => false,
+                'processed_by' => 'ADMIN USER',
+                'denial_reason' => 'Item listed at another library'
+              })
+      end.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+      expect(response).to redirect_to(action: :show, id: form.id)
 
       get(response.headers['Location'])
-      expect(response.body).to include(params['denial_reason'])
+      expect(response.body).to include('Item listed at another library')
       expect(response.body).to include('This request has been processed')
     end
 
-  end
+    it 'enqueues approval email when admin approves request' do
+      form = ReferenceCardForm.create(email: 'openreq@test.com', name: 'John Doe',
+                                      affiliation: 'Test',
+                                      pass_date: Date.current,
+                                      pass_date_end: Date.current + 1,
+                                      local_id: '8675309')
 
+      expect do
+        patch("/forms/reference-card/#{form.id}", params: {
+                'stack_pass_[approve_deny]' => true,
+                'processed_by' => 'ADMIN USER'
+              })
+      end.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+    end
+  end
 end

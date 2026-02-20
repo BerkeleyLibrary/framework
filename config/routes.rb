@@ -74,7 +74,6 @@ Rails.application.routes.draw do
 
   # Omniauth automatically handles requests to /auth/:provider. We need only
   # implement the callback.
-  get '/login', to: 'sessions#new', as: :login
   get '/logout', to: 'sessions#destroy', as: :logout
   get '/auth/:provider/callback', to: 'sessions#callback', as: :omniauth_callback
   get '/auth/failure', to: 'sessions#failure'

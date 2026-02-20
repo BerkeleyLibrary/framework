@@ -7,32 +7,28 @@ RSpec.describe BibliographicsController, type: :request do
     end
 
     context 'new/create' do
-      it 'GET redirects to login' do
-        get(form_path = bibliographics_path)
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+      it 'GET requires login' do
+        get bibliographics_path
+        expect(response).to have_http_status :unauthorized
       end
 
-      it 'POST redirects to login' do
+      it 'POST requires login' do
         post bibliographics_path, params: { upload_file: nil }
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: bibliographics_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+        expect(response).to have_http_status :unauthorized
       end
     end
 
     # context 'index' do
-    #   it 'GET redirects to login' do
-    #     get(form_path = bibliographics_index_path)
-    #     login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
-    #     expect(response).to redirect_to(login_with_callback_url)
+    #   it 'GET requires login' do
+    #     get bibliographics_index_path
+    #     expect(response).to have_http_status :unauthorized
     #   end
     # end
 
     context 'response' do
-      it 'GET redirects to login' do
-        get(form_path = bibliographics_response_path)
-        login_with_callback_url = "#{login_path}?#{URI.encode_www_form(url: form_path)}"
-        expect(response).to redirect_to(login_with_callback_url)
+      it 'GET requires login' do
+        get bibliographics_response_path
+        expect(response).to have_http_status :unauthorized
       end
     end
 
