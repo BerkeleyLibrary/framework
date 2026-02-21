@@ -28,7 +28,6 @@ class User
     private
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def auth_params_from(auth)
       auth_extra = auth['extra']
       verify_calnet_attributes!(auth_extra)

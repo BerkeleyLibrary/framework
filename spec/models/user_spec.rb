@@ -129,6 +129,7 @@ describe User do
           'berkeleyEduStuID' => 'expected student ID',
           'surname' => 'expected surname',
           'berkeleyEduUCPathID' => 'expected UC Path ID',
+          'berkeleyEduCSID' => 'expected cs id',
           'uid' => 'expected UID'
         }
       }
