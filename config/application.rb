@@ -111,8 +111,8 @@ module Framework
     config.x.healthcheck_urls.whois = 'https://whois.arin.net/rest/poc/1AD-ARIN'
     config.x.healthcheck_urls.berkeley_service_now = 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
 
-    # CalNet attribute mapping - shared between User model and test calnet_helper
-    # Maps hash values to CalNet attribute name(s)
+    # CalNet attribute mapping - Maps hash values to CalNet attribute name(s), shared between User model and test calnet_helper;
+    # names need validation in User#from_omniauth and test coverage in calnet_helper_spec.
     # Array values indicate fallback/alternative attribute names
     config.calnet_attrs = {
       affiliations: 'berkeleyEduAffiliations',

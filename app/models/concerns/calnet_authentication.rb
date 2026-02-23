@@ -35,7 +35,7 @@ module CalnetAuthentication
       # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       {
         affiliations: get_attribute_from_auth(auth_extra, :affiliations),
-        cs_id: auth_extra['berkeleyEduCSID'],
+        cs_id: auth_extra['berkeleyEduCSID'], # Not included in CALNET_ATTRS because it's not used by any applications; Just keept it here.
         department_number: get_attribute_from_auth(auth_extra, :department_number),
         display_name: get_attribute_from_auth(auth_extra, :display_name),
         email: get_attribute_from_auth(auth_extra, :email),
@@ -53,6 +53,7 @@ module CalnetAuthentication
 
     # Verifies that auth_extra contains all required CalNet attributes with exact case-sensitive names
     # For array attributes, at least one value in the array must be present in auth_extra
+    # Not all users have the same attributes, so the required attributes are determined based on the user's affiliations (e.g. employee vs student)
     # Raise [Error::CalnetError] if any required attributes are missing
     def verify_calnet_attributes!(auth_extra)
       affiliations = affiliations_from(auth_extra)
@@ -115,9 +116,10 @@ module CalnetAuthentication
       end
     end
 
-    # Gets an attribute value from auth_extra, handling both string and array attribute names
-    # If attribute is an array, tries each key in order and returns the first match:
-    # to hanle situations different casings of the same attribute (e.g. berkeleyEduAlternateID vs berkeleyEduAlternateId)
+    # Gets an attribute value from auth_extra, handling both string and array attribute names as defined in CALNET_ATTRS.
+    # For array attribute names, it tries each name in order and returns the first match.
+    # This is to handle situations where the same attribute may have different attribute names
+    # (e.g. berkeleyEduAlternateID vs berkeleyEduAlternateId).
     # If attribute is a string, returns the value for that key
     def get_attribute_from_auth(auth_extra, attr_key)
       attrs = CALNET_ATTRS[attr_key]
