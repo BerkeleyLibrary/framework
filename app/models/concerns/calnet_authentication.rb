@@ -34,16 +34,16 @@ module CalnetAuthentication
 
       # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       {
-        affiliations: auth_extra['berkeleyEduAffiliations'],
+        affiliations: get_attribute_from_auth(auth_extra, :affiliations),
         cs_id: auth_extra['berkeleyEduCSID'],
-        department_number: auth_extra['departmentNumber'],
-        display_name: auth_extra['displayName'],
+        department_number: get_attribute_from_auth(auth_extra, :department_number),
+        display_name: get_attribute_from_auth(auth_extra, :display_name),
         email: get_attribute_from_auth(auth_extra, :email),
-        employee_id: auth_extra['employeeNumber'],
-        given_name: auth_extra['givenName'],
-        student_id: auth_extra['berkeleyEduStuID'],
-        surname: auth_extra['surname'],
-        ucpath_id: auth_extra['berkeleyEduUCPathID'],
+        employee_id: get_attribute_from_auth(auth_extra, :employee_id),
+        given_name: get_attribute_from_auth(auth_extra, :given_name),
+        student_id: get_attribute_from_auth(auth_extra, :student_id),
+        surname: get_attribute_from_auth(auth_extra, :surname),
+        ucpath_id: get_attribute_from_auth(auth_extra, :ucpath_id),
         uid: auth_extra['uid'] || auth['uid'],
         framework_admin: cal_groups.include?(FRAMEWORK_ADMIN_GROUP),
         alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
@@ -116,7 +116,8 @@ module CalnetAuthentication
     end
 
     # Gets an attribute value from auth_extra, handling both string and array attribute names
-    # If attribute is an array, tries each key in order and returns the first match
+    # If attribute is an array, tries each key in order and returns the first match:
+    # to hanle situations different casings of the same attribute (e.g. berkeleyEduAlternateID vs berkeleyEduAlternateId)
     # If attribute is a string, returns the value for that key
     def get_attribute_from_auth(auth_extra, attr_key)
       attrs = CALNET_ATTRS[attr_key]

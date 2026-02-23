@@ -116,7 +116,6 @@ module Framework
     # Array values indicate fallback/alternative attribute names
     config.calnet_attrs = {
       affiliations: 'berkeleyEduAffiliations',
-      cs_id: 'berkeleyEduCSID',
       ucpath_id: 'berkeleyEduUCPathID',
       student_id: 'berkeleyEduStuID',
       email: %w[berkeleyEduAlternateID berkeleyEduAlternateId],
@@ -124,8 +123,7 @@ module Framework
       display_name: 'displayName',
       employee_id: 'employeeNumber',
       given_name: 'givenName',
-      surname: 'surname',
-      uid: 'uid'
+      surname: 'surname'
     }.freeze
 
     config.to_prepare do
