@@ -35,7 +35,7 @@ module CalnetAuthentication
       # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
       {
         affiliations: get_attribute_from_auth(auth_extra, :affiliations),
-        cs_id: auth_extra['berkeleyEduCSID'], # Not included in CALNET_ATTRS because it's not used by any applications; Just keept it here.
+        cs_id: auth_extra['berkeleyEduCSID'], # Not included in CALNET_ATTRS because it's not used by any applications; Just keep it here.
         department_number: get_attribute_from_auth(auth_extra, :department_number),
         display_name: get_attribute_from_auth(auth_extra, :display_name),
         email: get_attribute_from_auth(auth_extra, :email),
@@ -71,7 +71,7 @@ module CalnetAuthentication
     end
 
     def raise_missing_calnet_attribute_error(auth_extra, missing)
-      missing_attrs = "Expected Calnet attribute(s) not found (case-sensitive): #{missing.join(', ')}."
+      missing_attrs = "Expected CalNet attribute(s) not found (case-sensitive): #{missing.join(', ')}."
       actual_calnet_keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
       msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayName']}"
       Rails.logger.error(msg)

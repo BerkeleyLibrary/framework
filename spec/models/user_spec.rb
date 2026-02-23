@@ -43,7 +43,7 @@ describe User do
       actual = %w[berkeleyEduAffiliations berkeleyEduAlternatid berkeleyEduCSID berkeleyEduIsMemberOf berkeleyEduUCPathID departmentNumber
                   displayName employeeNumber givenName surname uid]
       # rubocop:disable Layout/LineLength
-      msg = "Expected Calnet attribute(s) not found (case-sensitive): #{missing.join(', ')}. The actual CalNet attributes: #{actual.join(', ')}. The user is expected display name"
+      msg = "Expected CalNet attribute(s) not found (case-sensitive): #{missing.join(', ')}. The actual CalNet attributes: #{actual.join(', ')}. The user is expected display name"
       # rubocop:enable Layout/LineLength
       expect { User.from_omniauth(auth) }.to raise_error(Error::CalnetError, msg)
     end
