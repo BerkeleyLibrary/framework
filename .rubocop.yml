@@ -1,5 +1,6 @@
 plugins:
   - rubocop-rails
+  - rubocop-rspec_rails
 
 AllCops:
   UseCache: false
@@ -577,4 +578,18 @@ Rails/WhereMissing: # new in 2.16
 Rails/WhereNotWithMultipleConditions: # new in 2.17
   Enabled: true
 Rails/WhereRange: # new in 2.25
+  Enabled: true
+RSpecRails/AvoidSetupHook: # new in 2.4
+  Enabled: true
+RSpecRails/HaveHttpStatus: # new in 2.12
+  Enabled: true
+RSpecRails/HttpStatusNameConsistency: # new in 2.32
+  Enabled: true
+RSpecRails/InferredSpecType: # new in 2.14
+  Enabled: true
+RSpecRails/MinitestAssertions: # new in 2.17
+  Enabled: true
+RSpecRails/NegationBeValid: # new in 2.23
+  Enabled: true
+RSpecRails/TravelAround: # new in 2.19
   Enabled: true

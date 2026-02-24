@@ -34,7 +34,7 @@ class LocationRequestsController < ApplicationController
       flash[:success] = 'Location request scheduled.'
       redirect_to location_request_url(@location_request)
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

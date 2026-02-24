@@ -39,7 +39,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
       @form.submit!
       render 'result', status: :created
     else
-      render 'dsp_form', status: :unprocessable_entity
+      render 'dsp_form', status: :unprocessable_content
     end
   end
 
@@ -55,7 +55,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
       render 'result', status: :created
     else
       # Failed to save - rerender the faculty form:
-      render 'faculty_form', status: :unprocessable_entity
+      render 'faculty_form', status: :unprocessable_content
     end
   end
 

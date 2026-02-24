@@ -189,7 +189,7 @@ describe 'Proxy Borrower Forms', type: :request do
              renewal: ''
            } })
 
-      expect(response).to have_http_status :unprocessable_entity
+      expect(response).to have_http_status :unprocessable_content
       expect(response.body).to match(/Please correct these and resubmit the form/)
     end
 

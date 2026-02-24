@@ -113,12 +113,7 @@ module CapybaraHelper
 
       Capybara.register_driver(driver_name) do |app|
         capabilities = [
-          chrome_options,
-          ::Selenium::WebDriver::Remote::Capabilities.chrome(
-            'goog:loggingPrefs' => {
-              browser: 'ALL', driver: 'ALL'
-            }
-          )
+          chrome_options
         ]
         options = { capabilities: }.merge(driver_opts)
         Capybara::Selenium::Driver.new(app, **options)
