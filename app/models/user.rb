@@ -3,50 +3,7 @@
 # This is closely coupled to CalNet's user schema.
 class User
   include ActiveModel::Model
-
-  FRAMEWORK_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:LIBR-framework-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
-  ALMA_ADMIN_GROUP = 'cn=edu:berkeley:org:libr:framework:alma-admins,ou=campus groups,dc=berkeley,dc=edu'.freeze
-
-  class << self
-    # Returns a new user object from the given "omniauth.auth" hash. That's a
-    # hash of all data returned by the auth provider (in our case, calnet).
-    #
-    # @see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema OmniAuth Schema
-    # @see https://git.lib.berkeley.edu/lap/altmedia/issues/16#note_5549 Sample Calnet Response
-    # @see https://calnetweb.berkeley.edu/calnet-technologists/ldap-directory-service/how-ldap-organized/people-ou/people-attribute-schema CalNet LDAP
-    def from_omniauth(auth)
-      raise Error::InvalidAuthProviderError, auth['provider'] \
-        if auth['provider'].to_sym != :calnet
-
-      new(**auth_params_from(auth))
-    end
-
-    private
-
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def auth_params_from(auth)
-      auth_extra = auth['extra']
-      cal_groups = auth_extra['berkeleyEduIsMemberOf'] || []
-
-      # NOTE: berkeleyEduCSID should be same as berkeleyEduStuID for students
-      {
-        affiliations: auth_extra['berkeleyEduAffiliations'],
-        cs_id: auth_extra['berkeleyEduCSID'],
-        department_number: auth_extra['departmentNumber'],
-        display_name: auth_extra['displayName'],
-        email: auth_extra['berkeleyEduAlternateID'] || auth_extra['berkeleyEduAlternateId'],
-        employee_id: auth_extra['employeeNumber'],
-        given_name: auth_extra['givenName'],
-        student_id: auth_extra['berkeleyEduStuID'],
-        surname: auth_extra['surname'],
-        ucpath_id: auth_extra['berkeleyEduUCPathID'],
-        uid: auth_extra['uid'] || auth['uid'],
-        framework_admin: cal_groups.include?(FRAMEWORK_ADMIN_GROUP),
-        alma_admin: cal_groups.include?(ALMA_ADMIN_GROUP)
-      }
-    end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-  end
+  include CalnetAuthentication
 
   # Affiliations per CalNet (attribute `berkeleyEduAffiliations` e.g.
   # `EMPLOYEE-TYPE-FACULTY`, `STUDENT-TYPE-REGISTERED`).
