@@ -31,7 +31,7 @@ gem 'omniauth-rails_csrf_protection', '~> 1.0'
 gem 'pg', '~> 1.2'
 gem 'prawn', '~> 2.4'
 gem 'puma', '~> 4.3', '>= 4.3.12'
-gem 'rails', '~> 7.2.3'
+gem 'rails', '~> 8.0.4'
 gem 'recaptcha', '~> 4.13'
 gem 'sprockets', '~> 4.0'
 gem 'tzinfo-data', platforms: %i[windows jruby]

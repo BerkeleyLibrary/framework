@@ -553,8 +553,13 @@ Rails/SelectMap: # new in 2.21
   Enabled: true
 Rails/StripHeredoc: # new in 2.15
   Enabled: true
+
+# This changes all .require.permit to .expect, which is not always what we want.
+# For example, it means all parameters are required, which would break the
+# proxy borrower form (a middle name would be required for the researcher).
 Rails/StrongParametersExpect: # new in 2.29
-  Enabled: true
+  Enabled: false
+
 Rails/ThreeStateBooleanColumn: # new in 2.19
   Enabled: true
 Rails/ToFormattedS: # new in 2.15
