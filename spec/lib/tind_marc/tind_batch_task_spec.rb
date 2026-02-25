@@ -5,7 +5,7 @@ module TindMarc
     let(:tind_batch_task) { described_class.new(args, email) }
 
     shared_examples 'run_and_send_email' do |type_sym|
-      let(:subject) do
+      let(:subject) do # rubocop:disable RSpec/SubjectDeclaration
         { completed: 'Completed: Tind batch file(s) created for Air Photos - directory_collection/ucb/incoming',
           failed: 'Cannot create Tind batch, please check with support team. Directory: directory_collection/ucb/incoming' }
       end

@@ -5,7 +5,7 @@ module TindMarc
 
     shared_examples 'run_and_send_email' do |type_sym|
       let(:directory) { Rails.root.join('spec/data/tind_marc/data/da/directory_collection/ucb/incoming') }
-      let(:subject) do
+      let(:subject) do # rubocop:disable RSpec/SubjectDeclaration
         { completed: "Completed to obtain TIND and MMSID information for the batch at: #{directory}",
           failed: "Critical error, cann not obtain TIND and MMSID CSV file Directory: #{directory}" }
       end
