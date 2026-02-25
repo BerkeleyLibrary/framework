@@ -65,7 +65,6 @@ module Location
         end
       end
 
-      # rubocop:disable RSpec/ExampleLength
       it 'handles network errors' do
         request_records = req.location_records
 
@@ -137,7 +136,6 @@ module Location
 
         request_records.find_each(&method(:verify_wc_symbols))
       end
-      # rubocop:enable RSpec/ExampleLength
     end
   end
 end
