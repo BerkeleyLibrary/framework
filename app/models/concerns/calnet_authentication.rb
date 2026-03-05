@@ -51,61 +51,22 @@ module CalnetAuthentication
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-    # Verifies that auth_extra contains all required CalNet attributes with exact case-sensitive names
+    # Verifies that auth_extra contains the required email CalNet attribute
     # For array attributes, at least one value in the array must be present in auth_extra
-    # Not all users have the same attributes, so the required attributes are determined based on the user's affiliations (e.g. employee vs student)
-    # Raise [Error::CalnetError] if any required attributes are missing
+    # Raise [Error::CalnetError] if the email attribute is missing
     def verify_calnet_attributes!(auth_extra)
-      affiliations = affiliations_from(auth_extra)
-      raise_missing_calnet_attribute_error(auth_extra, ['berkeleyEduAffiliations']) if affiliations.blank?
+      email_attrs = CALNET_ATTRS[:email]
+      return if present_in_auth_extra?(auth_extra, email_attrs)
 
-      required_attributes = required_attributes_for(affiliations)
-
-      missing = required_attributes.reject do |attr|
-        present_in_auth_extra?(auth_extra, attr)
-      end
-
-      return if missing.empty?
-
-      raise_missing_calnet_attribute_error(auth_extra, missing)
+      raise_missing_calnet_attribute_error(auth_extra, Array(email_attrs))
     end
 
     def raise_missing_calnet_attribute_error(auth_extra, missing)
       missing_attrs = "Expected CalNet attribute(s) not found (case-sensitive): #{missing.join(', ')}."
       actual_calnet_keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
-      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayName']}"
+      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['uid']}"
       Rails.logger.error(msg)
       raise Error::CalnetError, msg
-    end
-
-    def affiliations_from(auth_extra)
-      Array(auth_extra['berkeleyEduAffiliations'])
-    end
-
-    def employee_affiliated?(affiliations)
-      affiliations.include?('EMPLOYEE-TYPE-STAFF') ||
-        affiliations.include?('EMPLOYEE-TYPE-ACADEMIC')
-    end
-
-    def student_affiliated?(affiliations)
-      affiliations.include?('STUDENT-TYPE-NOT-REGISTERED') ||
-        affiliations.include?('STUDENT-TYPE-REGISTERED')
-    end
-
-    def required_attributes_for(affiliations)
-      required_cal_attrs = CALNET_ATTRS.dup
-      required_cal_attrs.delete(:affiliations)
-
-      # only employee afflication will validate employee_id and ucpath_id attributes.
-      unless employee_affiliated?(affiliations)
-        required_cal_attrs.delete(:employee_id)
-        required_cal_attrs.delete(:ucpath_id)
-      end
-
-      # only student registered and not-registered affiliation will validate student_id attribute.
-      required_cal_attrs.delete(:student_id) unless student_affiliated?(affiliations)
-
-      required_cal_attrs.values
     end
 
     def present_in_auth_extra?(auth_extra, attr)
