@@ -21,7 +21,7 @@ describe User do
       expect { User.from_omniauth(auth) }.to raise_error(Error::InvalidAuthProviderError)
     end
 
-    it 'rejects calnet when a required schema attribute is missing or renamed' do
+    it 'logs a warning when a required schema attribute is missing or renamed' do
       auth = {
         'provider' => 'calnet',
         'extra' => {
@@ -43,9 +43,10 @@ describe User do
       actual = %w[berkeleyEduAffiliations berkeleyEduAlternatid berkeleyEduCSID berkeleyEduIsMemberOf berkeleyEduUCPathID departmentNumber
                   displayName employeeNumber givenName surname uid]
       # rubocop:disable Layout/LineLength
-      msg = "Expected CalNet attribute(s) not found (case-sensitive): #{missing.join(', ')}. The actual CalNet attributes: #{actual.join(', ')}. The user is expected display name"
+      msg = "Expected CalNet attribute(s) not found (case-sensitive): #{missing.join(', ')}. The actual CalNet attributes: #{actual.join(', ')}. The user is expected UID"
       # rubocop:enable Layout/LineLength
-      expect { User.from_omniauth(auth) }.to raise_error(Error::CalnetError, msg)
+      expect(Rails.logger).to receive(:info).with(msg)
+      User.from_omniauth(auth)
     end
 
     it 'populates a User object' do
@@ -198,7 +199,7 @@ describe User do
       expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.not_to raise_error
     end
 
-    it 'rejects student-affiliated users if berkeleyEduStuID is missing' do
+    it 'logs missing berkeleyEduStuID for student-affiliated users' do
       auth_extra = {
         'berkeleyEduAffiliations' => ['STUDENT-TYPE-REGISTERED'],
         'berkeleyEduCSID' => 'cs123',
@@ -211,10 +212,11 @@ describe User do
         'uid' => 'student1'
       }
 
-      expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.to raise_error(Error::CalnetError)
+      expect(Rails.logger).to receive(:info).with(/berkeleyEduStuID/)
+      User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra })
     end
 
-    it 'rejects employee-affiliated users if employeeNumber is missing' do
+    it 'logs missing employeeNumber for employee-affiliated users' do
       auth_extra = {
         'berkeleyEduAffiliations' => ['EMPLOYEE-TYPE-STAFF'],
         'berkeleyEduCSID' => 'cs123',
@@ -228,7 +230,8 @@ describe User do
         'uid' => 'staff1'
       }
 
-      expect { User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra }) }.to raise_error(Error::CalnetError)
+      expect(Rails.logger).to receive(:info).with(/employeeNumber/)
+      User.from_omniauth({ 'provider' => 'calnet', 'extra' => auth_extra })
     end
   end
 

@@ -57,7 +57,7 @@ module CalnetAuthentication
     # Raise [Error::CalnetError] if any required attributes are missing
     def verify_calnet_attributes!(auth_extra)
       affiliations = affiliations_from(auth_extra)
-      raise_missing_calnet_attribute_error(auth_extra, ['berkeleyEduAffiliations']) if affiliations.blank?
+      return log_missing_calnet_attribute(auth_extra, ['berkeleyEduAffiliations']) if affiliations.blank?
 
       required_attributes = required_attributes_for(affiliations)
 
@@ -67,15 +67,14 @@ module CalnetAuthentication
 
       return if missing.empty?
 
-      raise_missing_calnet_attribute_error(auth_extra, missing)
+      log_missing_calnet_attribute(auth_extra, missing)
     end
 
-    def raise_missing_calnet_attribute_error(auth_extra, missing)
+    def log_missing_calnet_attribute(auth_extra, missing)
       missing_attrs = "Expected CalNet attribute(s) not found (case-sensitive): #{missing.join(', ')}."
       actual_calnet_keys = auth_extra.keys.reject { |k| k.start_with?('duo') }.sort
-      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['displayName']}"
-      Rails.logger.error(msg)
-      raise Error::CalnetError, msg
+      msg = "#{missing_attrs} The actual CalNet attributes: #{actual_calnet_keys.join(', ')}. The user is #{auth_extra['uid']}"
+      Rails.logger.info(msg)
     end
 
     def affiliations_from(auth_extra)
