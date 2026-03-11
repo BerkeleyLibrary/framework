@@ -6,7 +6,7 @@ module TindSpread
   module MakeBatch
 
     def self.added_headers(form_params)
-      added_headers = %i[336__a 852__c 540__a 980__a 982__a 982__b 982__p 991__a 902__n]
+      added_headers = %i[336__a 852__c 540__a 980__a 982__a 982__b 982__p 991__a]
       form_params.select { |key| added_headers.include?(key) }
     end
 
@@ -25,7 +25,8 @@ module TindSpread
       CSV.generate do |csv|
         h = header.concat(added_headers(form_params).keys.to_a)
         h << '035__a'
-        h << '902__d'
+        h << '902__n-1'
+        h << '902__d-1'
         csv << h
       end
       # csv_string
@@ -64,6 +65,7 @@ module TindSpread
           csv_row << value
         end
         csv_row << make_035(form_params[:'980__a'], row)
+        csv_row << form_params[:'902__n']
         csv_row << Time.current.in_time_zone('Pacific Time (US & Canada)').to_date
 
         csv << csv_row

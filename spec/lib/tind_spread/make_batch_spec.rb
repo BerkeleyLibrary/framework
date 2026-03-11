@@ -16,7 +16,14 @@ RSpec.describe TindSpread::MakeBatch do
     it 'generates a CSV header combining spreadsheet headers and form params' do
       header = %w[Header1 Header2]
       form_params = { '336__a': 'value1', '852__c': 'value2' }
-      expected_result = "Header1,Header2,336__a,852__c,035__a,902__d\n"
+      expected_result = "Header1,Header2,336__a,852__c,035__a,902__n-1,902__d-1\n"
+      expect(described_class.make_header(header, form_params)).to eq(expected_result)
+    end
+
+    it 'includes 902__n-1 and 902__d-1 so they group on the same field' do
+      header = %w[Header1]
+      form_params = { '336__a': 'value1', '902__n': 'DMZ' }
+      expected_result = "Header1,336__a,035__a,902__n-1,902__d-1\n"
       expect(described_class.make_header(header, form_params)).to eq(expected_result)
     end
   end
@@ -40,9 +47,9 @@ RSpec.describe TindSpread::MakeBatch do
   describe '.add_row' do
     it 'adds a row to the CSV string with form params and additional fields' do
       row = { 'Header1' => 'Data1', 'Header2' => 'Data2' }
-      form_params = { '980__a': 'VTI', '336__a': 'value1', '852__c': 'value2' }
+      form_params = { '980__a': 'VTI', '336__a': 'value1', '852__c': 'value2', '902__n': 'DMZ' }
       allow(Time).to receive(:current).and_return(Time.parse('2023-10-01 12:00:00 UTC'))
-      expected_result = "Data1,Data2,VTI,value1,value2,(VTI)file,2023-10-01\n"
+      expected_result = "Data1,Data2,VTI,value1,value2,(VTI)file,DMZ,2023-10-01\n"
       allow(described_class).to receive(:get_first_fft).with(row).and_return('file.txt')
       expect(described_class.add_row(row, form_params)).to eq(expected_result)
     end
