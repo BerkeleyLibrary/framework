@@ -11,8 +11,8 @@ RSpec.describe 'OKComputer', type: :request do
     stub_request(:get, Rails.application.config.paypal_payflow_url).to_return(status: 200)
   end
 
-  it 'is mounted at /okcomputer' do
-    get '/okcomputer'
+  it 'is mounted at /health' do
+    get '/health'
     expect(response).to have_http_status :ok
   end
 

@@ -53,12 +53,6 @@ RUN corepack enable \
     && corepack prepare yarn@stable --activate \
     && yarn -v
 
-# Remove packages we only needed as part of the Node.js / Yarn repository
-# setup and installation -- note that the Node.js setup scripts installs
-# a full version of Python, but at runtime we only need a minimal version
-
-RUN apt-get autoremove --purge -y curl
-
 # ------------------------------------------------------------
 # Run configuration
 

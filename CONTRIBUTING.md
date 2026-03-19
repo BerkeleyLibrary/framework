@@ -58,8 +58,8 @@ own mistakes. 🙂
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-Windows developers should also consider installing the 
-[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/). 
+Windows developers should also consider installing the
+[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/).
 See “[Docker Desktop WSL 2 backend](https://docs.docker.com/docker-for-windows/wsl/)”
 for instructions on integrating Docker Desktop with WSL.
 
@@ -112,12 +112,24 @@ above, that service will fail to start.
 
 Navigate to [`http://localhost:3000/home`](http://localhost:3000/home).
 
-**Note:** On first run, the database will not exist and assets (javascript/css) will not be precompiled.
-To set up the database and precompile the assets, you can use `docker-compose exec` to run the relevant
-Rake tasks in the application container.
+**Note:** On first run, an `init` service will run to setup the database and compile assets (javascript/css). If necessary you can run it manually via:
 
 ```sh
-docker compose exec -u root app rails db:setup assets:precompile
+docker compose run --rm init
+```
+
+You can, equivalently, simply exec commands on the running `app` container:
+
+```sh
+docker compose exec app rails …
+docker compose run --rm app rails … # similar, but in a one-off container
+```
+
+If the stack's many `depends_on` declarations are slowing you down, use Compose's `--no-deps` flag to skip loading dependencies:
+
+```sh
+docker compose up --no-deps app
+docker compose run --rm --no-deps app …
 ```
 
 #### Running commands in the application container
@@ -170,8 +182,8 @@ Go to the model rb file and temporarily add `Alma::Type::LIBRARY_STAFF` to `ALLO
 ### Requirements
 
 - Ruby (see [`.ruby-version`](.ruby-version) for the required version
-  - recommended: a Ruby version manager such as [RVM](https://rvm.io/), 
-    [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby), 
+  - recommended: a Ruby version manager such as [RVM](https://rvm.io/),
+    [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby),
     or [asdf-ruby](https://github.com/asdf-vm/asdf-ruby).
 - [node.js](https://nodejs.org/en/)
   - recommended: a Node version manager such as [nvm](https://github.com/nvm-sh/nvm)
@@ -199,7 +211,7 @@ Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/).
    DATABASE_URL='postgres://<user>:<password>@<host>/<database-name>' rails s
    ```
 
-**Note:** Placing `DATABASE_URL` and other environment variables in a 
+**Note:** Placing `DATABASE_URL` and other environment variables in a
 [`.env` file](https://github.com/bkeepers/dotenv) can simplify development.
 
 #### Accessing the server

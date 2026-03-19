@@ -4,12 +4,20 @@ services:
       context: .
       target: development
     depends_on:
-      db:
-        condition: service_started
+      init:
+        condition: service_completed_successfully
+        required: false
       worker:
-        condition: service_started
-      selenium:
-        condition: service_started
+        condition: service_healthy
+        required: false
+    environment:
+      - PUMA_DELAYED_STOP_DRAIN_SECONDS=1
+    healthcheck:
+      test: curl -sf http://localhost:3000/health/default
+      interval: 15s
+      timeout: 1s
+      retries: 3
+      start_period: 30s
     init: true
     networks:
       default:
@@ -20,19 +28,36 @@ services:
     ports:
       - 3000:3000
     restart: always
+    stop_grace_period: 30s
+    stop_signal: QUIT
 
   worker:
     <<: *services-app
     command: good_job start
     depends_on:
-      - db
-      - selenium
+      init:
+        condition: service_completed_successfully
+        required: false
+    environment:
+      - GOOD_JOB_PROBE_PORT=7001
+    healthcheck:
+      test: curl -sf http://localhost:7001/status/started
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     ports: []
 
   db:
     environment:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
+    healthcheck:
+      test: pg_isready -U root
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     image: postgres:16
     networks:
       default:
@@ -43,6 +68,24 @@ services:
       - 5432:5432
     volumes:
       - ./:/build:rw
+
+  init:
+    <<: *services-app
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        rails assets:precompile db:await db:setup
+        RAILS_ENV=test rails db:setup
+    depends_on:
+      db:
+        condition: service_healthy
+        required: false
+    healthcheck:
+      disable: true
+    ports: []
+    restart: on-failure:5
 
   selenium:
     image: selenium/standalone-chromium
@@ -61,7 +104,9 @@ services:
     image: dbeaver/cloudbeaver:latest
     container_name: dbeaver
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        required: false
     restart: always
     ports:
       - '8080:8978'

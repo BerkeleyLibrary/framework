@@ -130,11 +130,10 @@ jobs:
 
       - name: Setup the stack
         run: |
-          docker run --rm "${DOCKER_APP_IMAGE}" rails secret > /tmp/secret_key_base
+          docker run --quiet --rm "${DOCKER_APP_IMAGE}" rails secret > /tmp/secret_key_base
           docker compose build --quiet
           docker compose pull --quiet
           docker compose up --wait
-          docker compose exec -e RAILS_ENV=test app rails db:await db:setup assets:precompile
           docker compose exec -u root app chown -R altmedia:altmedia artifacts
 
       - name: Run RSpec
@@ -162,7 +161,7 @@ jobs:
       - name: Copy out artifacts
         if: ${{ always() }}
         run: |
-          docker compose cp app:/opt/app/artifacts ./
+          docker compose cp app:/opt/app/artifacts ./ || mkdir artifacts
           docker compose logs > artifacts/docker-compose-services.log
           docker compose config > artifacts/docker-compose.merged.yml
 
