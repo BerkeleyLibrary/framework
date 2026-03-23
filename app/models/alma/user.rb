@@ -42,6 +42,10 @@ module Alma
         find_if_exists(id).tap do |rec|
           return nil unless rec && rec.active?
         end
+      rescue Error::AlmaRecordNotFoundError => e
+        return if e.message.include?('Alma query failed with response: 404')
+
+        raise
       end
     end
 
