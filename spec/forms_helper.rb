@@ -56,8 +56,20 @@ RSpec.shared_examples 'an authenticated form' do |form_class:, allowed_patron_ty
     with_patron_login(patron_id) do
       get new_form_path
       expect(response).to have_http_status(:forbidden)
-      expected_msg = /Your patron record cannot be found/
+      expected_msg = /This form is only available to active library patrons/
       expect(response.body).to match(expected_msg)
+    end
+  end
+
+  it 'forbids users when active patron lookup returns Alma 404' do
+    patron_id = Alma::Type.sample_id_for(allowed_patron_types.first)
+    allow(AlmaServices::Patron).to receive(:get_user).with(patron_id)
+      .and_raise(Error::AlmaRecordNotFoundError,
+                 'Alma query failed with response: 404')
+
+    with_patron_login(patron_id) do
+      get new_form_path
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

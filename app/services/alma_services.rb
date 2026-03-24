@@ -50,14 +50,14 @@ module AlmaServices
       def get_user(alma_user_id)
         params = { view: 'full', expand: 'fees' }
         connection.get(user_uri_for(alma_user_id), params).tap do |res|
-          raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
+          raise Error::AlmaRecordNotFoundError, "Alma query failed with response: #{res.status}" unless res.status == 200
         end
       end
 
       def save(alma_user_id, user)
         # noinspection RubyArgCount
         connection.put(user_uri_for(alma_user_id), user.to_json, { 'Content-Type' => 'application/json' }).tap do |res|
-          raise ActiveRecord::RecordNotFound, 'Failed to save.' unless res.status == 200
+          raise Error::AlmaRecordNotFoundError, 'Failed to save.' unless res.status == 200
         end
 
         'Saved user.' # TODO: what is this for?
@@ -85,7 +85,7 @@ module AlmaServices
 
       def fetch_all(alma_user_id)
         res = connection.get(fees_uri_for(alma_user_id))
-        raise ActiveRecord::RecordNotFound, 'No fees could be found.' unless res.status == 200
+        raise Error::AlmaRecordNotFoundError, 'No fees could be found.' unless res.status == 200
 
         JSON.parse(res.body)
       end
@@ -97,7 +97,7 @@ module AlmaServices
         payment_uri = URIs.append(fee_uri_for(alma_user_id, fee.id), '?', URI.encode_www_form(params))
 
         connection.post(payment_uri).tap do |res|
-          raise ActiveRecord::RecordNotFound, "Alma query failed with response: #{res.status}" unless res.status == 200
+          raise Error::AlmaRecordNotFoundError, "Alma query failed with response: #{res.status}" unless res.status == 200
         end
       end
     end
@@ -119,14 +119,14 @@ module AlmaServices
         }
 
         res = connection(env).get(URIs.append(alma_api_url, 'conf/sets'), params)
-        raise ActiveRecord::RecordNotFound, 'No item sets could be found..' unless res.status == 200
+        raise Error::AlmaRecordNotFoundError, 'No item sets could be found..' unless res.status == 200
 
         JSON.parse(res.body)
       end
 
       def fetch_set(env, id)
         res = connection(env).get(URIs.append(alma_api_url, "conf/sets/#{id}"))
-        raise ActiveRecord::RecordNotFound, "No set with ID #{id} found..." unless res.status == 200
+        raise Error::AlmaRecordNotFoundError, "No set with ID #{id} found..." unless res.status == 200
 
         JSON.parse(res.body)
       end
@@ -137,7 +137,7 @@ module AlmaServices
           limit: 100
         }
         res = connection(env).get(URIs.append(alma_api_url, "conf/sets/#{set_id}/members"), params)
-        raise ActiveRecord::RecordNotFound, 'No item sets could be found.' unless res.status == 200
+        raise Error::AlmaRecordNotFoundError, 'No item sets could be found.' unless res.status == 200
 
         JSON.parse(res.body)
       end
@@ -145,7 +145,7 @@ module AlmaServices
       def fetch_item(env, mms_id, holding_id, item_pid)
         uri = URIs.append(alma_api_url, "bibs/#{mms_id}/holdings/#{holding_id}/items/#{item_pid}")
         res = connection(env).get(uri)
-        raise ActiveRecord::RecordNotFound, 'Item could be found.' unless res.status == 200
+        raise Error::AlmaRecordNotFoundError, 'Item could be found.' unless res.status == 200
 
         JSON.parse(res.body)
       end

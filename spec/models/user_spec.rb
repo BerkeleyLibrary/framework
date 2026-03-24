@@ -235,4 +235,23 @@ describe User do
     end
   end
 
+  describe :primary_patron_record do
+    it 'returns nil when active patron lookup returns nil' do
+      user = User.new(uid: 'does_not_exist')
+      allow(Alma::User).to receive(:find_if_active).with('does_not_exist')
+        .and_return(nil)
+
+      expect(user.primary_patron_record).to be_nil
+    end
+
+    it 're-raises active patron lookup errors' do
+      user = User.new(uid: 'fake_uid')
+      allow(Alma::User).to receive(:find_if_active).with('fake_uid')
+        .and_raise(Error::AlmaRecordNotFoundError,
+                   'Alma query failed with response: 500')
+
+      expect { user.primary_patron_record }.to raise_error(Error::AlmaRecordNotFoundError)
+    end
+  end
+
 end
