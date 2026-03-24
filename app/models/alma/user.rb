@@ -43,7 +43,8 @@ module Alma
           return nil unless rec && rec.active?
         end
       rescue Error::AlmaRecordNotFoundError => e
-        return if e.message.include?('Alma query failed with response: 404')
+        return if e.message == '400'
+        return if e.message == '404'
 
         raise
       end
