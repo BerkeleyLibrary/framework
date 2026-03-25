@@ -50,7 +50,7 @@ module AlmaServices
       def get_user(alma_user_id)
         params = { view: 'full', expand: 'fees' }
         connection.get(user_uri_for(alma_user_id), params).tap do |res|
-          raise Error::AlmaRecordNotFoundError, "Alma query failed with response: #{res.status}" unless res.status == 200
+          raise Error::AlmaRecordNotFoundError, res.status unless res.status == 200
         end
       end
 
@@ -97,7 +97,7 @@ module AlmaServices
         payment_uri = URIs.append(fee_uri_for(alma_user_id, fee.id), '?', URI.encode_www_form(params))
 
         connection.post(payment_uri).tap do |res|
-          raise Error::AlmaRecordNotFoundError, "Alma query failed with response: #{res.status}" unless res.status == 200
+          raise Error::AlmaRecordNotFoundError, res.status unless res.status == 200
         end
       end
     end
