@@ -1,6 +1,7 @@
 require 'jwt'
 
 class FeesController < ApplicationController
+
   # This will be needed for transaction_complete since Paypal will hit that
   protect_from_forgery with: :null_session
 
@@ -9,6 +10,8 @@ class FeesController < ApplicationController
     decoded_token = JWT.decode @jwt, nil, false
     @alma_id = decoded_token.first['userName']
     @fees = FeesPayment.new(alma_id: @alma_id)
+  rescue ActionController::ParameterMissing
+    redirect_to 'https://www.lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
   rescue JWT::DecodeError
     redirect_to(action: :transaction_error)
   end
