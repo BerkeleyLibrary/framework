@@ -1,6 +1,9 @@
 require 'jwt'
 
 class FeesController < ApplicationController
+
+  rescue_from ActionController::ParameterMissing, with: :missing_params
+
   # This will be needed for transaction_complete since Paypal will hit that
   protect_from_forgery with: :null_session
 
@@ -11,6 +14,10 @@ class FeesController < ApplicationController
     @fees = FeesPayment.new(alma_id: @alma_id)
   rescue JWT::DecodeError
     redirect_to(action: :transaction_error)
+  end
+
+  def missing_params(_error)
+    redirect_to 'https://lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
   end
 
   def efee
@@ -72,8 +79,6 @@ class FeesController < ApplicationController
     @fees.credit
     render json: { status: 'silent post received' }
   end
-
-  private
 
   def authorize!
     return if Rails.env.development?
