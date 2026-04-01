@@ -14,7 +14,7 @@ describe 'Fees', type: :request do
 
   it 'redirects to the fallback URL if there is no jwt' do
     get fees_path
-    expect(response).to redirect_to('https://lib.berkeley.edu/find/borrow-renew?section=pay-fees')
+    expect(response).to redirect_to('https://www.lib.berkeley.edu/find/borrow-renew?section=pay-fees')
   end
 
   it 'redirects to error page if request has a non-existant alma id' do
