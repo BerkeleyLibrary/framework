@@ -76,7 +76,7 @@ class FeesController < ApplicationController
     render json: { status: 'silent post received' }
   end
 
-  private 
+  private
 
   def missing_params(_error)
     redirect_to 'https://lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
