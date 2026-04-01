@@ -6,14 +6,14 @@ class FeesController < ApplicationController
   protect_from_forgery with: :null_session
 
   def index
-      @jwt = params.require(:jwt)
-      decoded_token = JWT.decode @jwt, nil, false
-      @alma_id = decoded_token.first['userName']
-      @fees = FeesPayment.new(alma_id: @alma_id)
-    rescue ActionController::ParameterMissing
-      redirect_to 'https://www.lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
-    rescue JWT::DecodeError
-      redirect_to(action: :transaction_error)
+    @jwt = params.require(:jwt)
+    decoded_token = JWT.decode @jwt, nil, false
+    @alma_id = decoded_token.first['userName']
+    @fees = FeesPayment.new(alma_id: @alma_id)
+  rescue ActionController::ParameterMissing
+    redirect_to 'https://www.lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
+  rescue JWT::DecodeError
+    redirect_to(action: :transaction_error)
   end
 
   def efee
