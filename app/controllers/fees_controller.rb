@@ -16,10 +16,6 @@ class FeesController < ApplicationController
     redirect_to(action: :transaction_error)
   end
 
-  def missing_params(_error)
-    redirect_to 'https://lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
-  end
-
   def efee
     @jwt = params.require(:jwt)
     secret = EfeesInvoice.secret
@@ -78,6 +74,12 @@ class FeesController < ApplicationController
     @fees.pp_ref_number = params[:PNREF]
     @fees.credit
     render json: { status: 'silent post received' }
+  end
+
+  private 
+
+  def missing_params(_error)
+    redirect_to 'https://lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
   end
 
   def authorize!
