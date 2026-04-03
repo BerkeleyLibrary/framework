@@ -5,16 +5,24 @@ class FeesController < ApplicationController
   # This will be needed for transaction_complete since Paypal will hit that
   protect_from_forgery with: :null_session
 
+  # rubocop:disable Metrics/MethodLength
   def index
     @jwt = params.require(:jwt)
-    decoded_token = JWT.decode @jwt, nil, false
-    @alma_id = decoded_token.first['userName']
-    @fees = FeesPayment.new(alma_id: @alma_id)
+    payload = AlmaJwtValidator.decode_and_verify_jwt(@jwt)
+    @alma_id = payload.first['userName']
+    begin
+      @fees = FeesPayment.new(alma_id: @alma_id)
+    rescue StandardError => e
+      Rails.logger.warn "FeesPayment failed: #{e.message}"
+      redirect_to(action: :transaction_error) and return
+    end
   rescue ActionController::ParameterMissing
     redirect_to 'https://www.lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
-  rescue JWT::DecodeError
+  rescue JWT::DecodeError, JWT::VerificationError => e
+    Rails.logger.warn "JWT verification failed: #{e.message}"
     redirect_to(action: :transaction_error)
   end
+  # rubocop:enable Metrics/MethodLength
 
   def efee
     @jwt = params.require(:jwt)

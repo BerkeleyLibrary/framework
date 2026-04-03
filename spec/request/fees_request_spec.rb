@@ -9,7 +9,13 @@ describe 'Fees', type: :request do
   let(:request_headers) { { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" } }
 
   before do
-    allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
+    allow(AlmaJwtValidator).to receive(:decode_and_verify_jwt).and_return(
+      [{ 'userName' => '10335026' }]
+    )
+    allow(Rails.application.config).to receive_messages(
+      alma_api_key: alma_api_key,
+      alma_jwt_secret: 'fake-jwt-secret'
+    )
   end
 
   it 'redirects to the fallback URL if there is no jwt' do
@@ -18,7 +24,8 @@ describe 'Fees', type: :request do
   end
 
   it 'redirects to error page if request has a non-existant alma id' do
-    stub_request(:get, "#{base_url_for}fees")
+    user_id = '10335026'
+    stub_request(:get, "#{base_url_for(user_id)}/fees")
       .with(headers: request_headers)
       .to_return(status: 404, body: '')
 
@@ -53,9 +60,10 @@ describe 'Fees', type: :request do
   end
 
   it 'payments page redirects to index if no fee was selected for payment' do
-    post '/fees/payment', params: { jwt: File.read('spec/data/fees/alma-fees-jwt.txt') }
+    jwt = File.read('spec/data/fees/alma-fees-jwt.txt').strip
+    post '/fees/payment', params: { jwt: jwt }
     expect(response).to have_http_status(:found)
-    expect(response).to redirect_to("#{fees_path}?jwt=#{File.read('spec/data/fees/alma-fees-jwt.txt')}")
+    expect(response).to redirect_to("#{fees_path}?jwt=#{jwt}")
   end
 
   it 'successful transaction_complete returns status 200' do
