@@ -18,7 +18,7 @@ class FeesController < ApplicationController
     end
   rescue ActionController::ParameterMissing
     redirect_to 'https://www.lib.berkeley.edu/find/borrow-renew?section=pay-fees', allow_other_host: true
-  rescue JWT::DecodeError, JWT::VerificationError => e
+  rescue JWT::DecodeError => e
     Rails.logger.warn "JWT verification failed: #{e.message}"
     redirect_to(action: :transaction_error)
   end
