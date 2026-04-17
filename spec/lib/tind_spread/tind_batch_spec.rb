@@ -76,20 +76,20 @@ RSpec.describe TindSpread::TindBatch do
 
   describe '#validate_header_row' do
     it 'returns an empty array for valid headers' do
-      headers = ['001__a', '245__a', '500__3']
+      headers = %w[001__a 245__a 500__3]
       errors = tind_batch.validate_header_row(headers)
       expect(errors).to be_empty
     end
 
     it 'returns error messages for invalid headers' do
-      headers = ['Header1', 'Header2']
+      headers = %w[Header1 Header2]
       errors = tind_batch.validate_header_row(headers)
       expect(errors).to include('Invalid header name: Header1')
       expect(errors).to include('Invalid header name: Header2')
     end
 
     it 'returns errors only for invalid headers in a mixed list' do
-      headers = ['001__a', 'InvalidHeader', '245__a']
+      headers = %w[001__a InvalidHeader 245__a]
       errors = tind_batch.validate_header_row(headers)
       expect(errors).to include('Invalid header name: InvalidHeader')
       expect(errors.length).to eq(1)
