@@ -108,4 +108,26 @@ RSpec.describe TindSpread::TindValidation do
       expect(described_class.send(:corresponding_6?, '800__6', row)).to be false
     end
   end
+
+  describe '.valid_header?' do
+    it 'returns true for a valid header with standard format' do
+      expect(described_class.valid_header?('001__a')).to be true
+      expect(described_class.valid_header?('245__a')).to be true
+      expect(described_class.valid_header?('Filename')).to be true
+      expect(described_class.valid_header?('100_1a')).to be true
+    end
+
+    it 'returns true for a valid header with suffix format' do
+      expect(described_class.valid_header?('001__a-1')).to be true
+      expect(described_class.valid_header?('245__a-2')).to be true
+      expect(described_class.valid_header?('500__3-5')).to be true
+    end
+
+    it 'returns false for invalid headers' do
+      expect(described_class.valid_header?('abc')).to be false
+      expect(described_class.valid_header?('12__a')).to be false
+      expect(described_class.valid_header?('001__a-')).to be false
+      expect(described_class.valid_header?('001__a-ab')).to be false
+    end
+  end
 end
