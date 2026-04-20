@@ -9,7 +9,7 @@ module TindSpread
     # optionally can have a ('-' followed by a number). This is used to group columns into similar fields
     # the header row can also be just "Filename" or "FFT". The program will create the proper fields for those
     def self.valid_header?(str)
-      str.match?(/\d{3}[_|\d]{2}[a-zA-Z0-9]$/) || str.match?(/\d{3}[_|\d]{2}[a-zA-Z0-9]-\d$/) || str.match?(/Filename|FFT/i)
+      str.match?(/\d{3}[_|\d]{2}[a-zA-Z0-9](-\d+)?$/) || str.match?(/Filename|FFT/i)
     end
 
     # runs a set of validations against a single row.
