@@ -15,13 +15,13 @@ RSpec.describe TindSpread::TindBatch do
   let(:args) { { directory:, '982__a': 'test' } }
   let(:tind_batch) { described_class.new(args, xlsx, extension, email) }
   let(:spread_tool) { instance_double(TindSpread::SpreadTool) }
-  let(:all_rows) { [{ 'Header1' => 'Data1', 'Header2' => 'Data2' }, { 'Header1' => 'Data3', 'Header2' => 'Data4' }] }
+  let(:all_rows) { [{ '001__a' => 'Data1', '245__a' => 'Data2' }, { '001__a' => 'Data3', '245__a' => 'Data4' }] }
 
   before do
     allow(TindSpread::SpreadTool).to receive(:new).with(xlsx, extension, directory).and_return(spread_tool)
     allow(spread_tool).to receive(:spread).and_return(all_rows)
-    allow(spread_tool).to receive(:header).with(any_args).and_return(%w[Header1 Header2])
-    allow(TindSpread::MakeBatch).to receive(:make_header).with(any_args).and_return("Header1,Header2\n")
+    allow(spread_tool).to receive(:header).with(any_args).and_return(%w[001__a 245__a])
+    allow(TindSpread::MakeBatch).to receive(:make_header).with(any_args).and_return("001__a,245__a\n")
     allow(TindSpread::MakeBatch).to receive(:add_row).with(any_args).and_return("Data1,Data2\n")
     allow(TindSpread::TindValidation).to receive(:validate_row).with(any_args).and_return([])
     # rubocop:disable RSpec/MessageChain
@@ -49,15 +49,15 @@ RSpec.describe TindSpread::TindBatch do
   describe '#send_email' do
     it 'sends an email with the correct attachments' do
       tind_batch.instance_variable_set(:@all_errors, {})
-      tind_batch.instance_variable_set(:@csv, "Header1,Header2\nData1,Data2\n")
-      tind_batch.instance_variable_set(:@errors_csv, "Header1,Header2\n")
+      tind_batch.instance_variable_set(:@csv, "001__a,245__a\nData1,Data2\n")
+      tind_batch.instance_variable_set(:@errors_csv, "001__a,245__a\n")
       allow(Time).to receive(:current).and_return(Time.parse('2023-10-01 12:00:00 UTC'))
       attachment_name = 'test_2023-10-01'
       expect(RequestMailer).to receive(:tind_spread_email).with(
         email,
         'Tind batch load for test',
         'No errors found',
-        { "#{attachment_name}.csv" => "Header1,Header2\nData1,Data2\n" }
+        { "#{attachment_name}.csv" => "001__a,245__a\nData1,Data2\n" }
       ).and_return(double(deliver_now: true))
       tind_batch.send_email
     end
@@ -74,12 +74,34 @@ RSpec.describe TindSpread::TindBatch do
     end
   end
 
+  describe '#validate_header_row' do
+    it 'returns an empty array for valid headers' do
+      headers = %w[001__a 245__a 500__3]
+      errors = tind_batch.validate_header_row(headers)
+      expect(errors).to be_empty
+    end
+
+    it 'returns error messages for invalid headers' do
+      headers = %w[Header1 Header2]
+      errors = tind_batch.validate_header_row(headers)
+      expect(errors).to include('Invalid header name: Header1')
+      expect(errors).to include('Invalid header name: Header2')
+    end
+
+    it 'returns errors only for invalid headers in a mixed list' do
+      headers = %w[001__a InvalidHeader 245__a]
+      errors = tind_batch.validate_header_row(headers)
+      expect(errors).to include('Invalid header name: InvalidHeader')
+      expect(errors.length).to eq(1)
+    end
+  end
+
   describe '#run' do
     it 'runs the batch process' do
       allow(tind_batch).to receive(:send_email)
       tind_batch.run
-      expect(tind_batch.instance_variable_get(:@csv)).to eq("Header1,Header2\nData1,Data2\nData1,Data2\n")
-      expect(tind_batch.instance_variable_get(:@errors_csv)).to eq("Header1,Header2\n")
+      expect(tind_batch.instance_variable_get(:@csv)).to eq("001__a,245__a\nData1,Data2\nData1,Data2\n")
+      expect(tind_batch.instance_variable_get(:@errors_csv)).to eq("001__a,245__a\n")
     end
   end
 end

@@ -27,15 +27,18 @@ module TindSpread
     end
 
     def attachments(attachment_name)
-      if @all_errors.empty?
-        { "#{attachment_name}.csv" => @csv.to_s }
-      elsif @csv.count("\n") > 1
-        { "#{attachment_name}.csv" => @csv.to_s, "ERRORREPORT_#{attachment_name}.csv" => @errors_csv.to_s,
-          "ERRORREPORT_#{attachment_name}.txt" => format_errors }
-      else
-        { "ERRORREPORT_#{attachment_name}.csv" => @errors_csv.to_s,
-          "ERRORREPORT_#{attachment_name}.txt" => format_errors }
+      return { "ERRORREPORT_#{attachment_name}.txt" => format_errors } if @all_errors.key?(1)
+
+      return { "#{attachment_name}.csv" => @csv.to_s } if @all_errors.empty?
+
+      if @csv.count("\n") > 1
+        return { "#{attachment_name}.csv" => @csv.to_s,
+                 "ERRORREPORT_#{attachment_name}.csv" => @errors_csv.to_s,
+                 "ERRORREPORT_#{attachment_name}.txt" => format_errors }
       end
+
+      { "ERRORREPORT_#{attachment_name}.csv" => @errors_csv.to_s,
+        "ERRORREPORT_#{attachment_name}.txt" => format_errors }
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -65,12 +68,29 @@ module TindSpread
     end
     # rubocop:enable Metrics/MethodLength
 
+    def validate_header_row(headers)
+      header_errors = []
+      headers.each do |header|
+        header_errors << "Invalid header name: #{header.gsub(/^\d+:/, '')}" unless TindSpread::TindValidation.valid_header?(header)
+      end
+      header_errors
+    end
+
+    # rubocop:disable Metrics/MethodLength
     def run
       t = TindSpread::SpreadTool.new(@xlsx_path, @extension, @form_info[:directory])
       all_rows = t.spread
+      @all_errors = {}
+
+      # Validate header row
+      header_errors = validate_header_row(all_rows.first.keys)
+      @all_errors[1] = header_errors if header_errors.any?
+
+      return send_email if header_errors.any?
+
       @csv = TindSpread::MakeBatch.make_header(t.header(all_rows.first.keys), @form_info).encode('UTF-8')
       @errors_csv = TindSpread::MakeBatch.make_header(t.header(all_rows.first.keys), @form_info, remove_filename: false).encode('UTF-8')
-      @all_errors = {}
+
       create_rows(all_rows)
       @csv.to_s.gsub!("\xEF\xBB\xBF".force_encoding('UTF-8'), '')
       @errors_csv.to_s.gsub!("\xEF\xBB\xBF".force_encoding('UTF-8'), '')
@@ -78,6 +98,7 @@ module TindSpread
       # File.write('errors.csv', @errors_csv)
       send_email
     end
+    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
   end
 end
