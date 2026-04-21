@@ -19,7 +19,7 @@ gem 'ipaddress'
 gem 'jaro_winkler', '~> 1.5.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'jwt', '~> 1.5', '>= 1.5.4'
+gem 'jwt', '~> 2.5'
 gem 'lograge', '>=0.11.2'
 gem 'mutex_m' # Deprecation warning.
 gem 'netaddr', '~> 1.5', '>= 1.5.1'
