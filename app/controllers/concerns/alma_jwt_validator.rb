@@ -18,7 +18,7 @@ module AlmaJwtValidator
 
   def decode_and_verify_jwt(token)
     options = {
-      algorithm: 'RS256',
+      algorithm: 'ES256',
       verify_expiration: true,
       verify_aud: false,
       verify_iss: true,
