@@ -3,7 +3,11 @@ require 'net/http'
 require 'json'
 
 module AlmaJwtValidator
-  JWKS_URL = 'https://api-na.hosted.exlibrisgroup.com/auth/01UCS_BER/jwks.json'.freeze
+  # https://developers.exlibrisgroup.com/alma/integrations/token/
+  # If running against the Alma sandbox the JWKS_URL needs env=sandbox appended to the end of the url
+  # e.g. https://api-na.hosted.exlibrisgroup.com/auth/01UCS_BER/jwks.json?env=sandbox.
+  # set ALMA_JWT_JWKS_URL in your .env when running locally against the Alma sandbox
+  JWKS_URL = ENV.fetch('ALMA_JWT_JWKS_URL', 'https://api-na.hosted.exlibrisgroup.com/auth/01UCS_BER/jwks.json').freeze
   EXPECTED_ISS = 'Prima'.freeze
 
   module_function

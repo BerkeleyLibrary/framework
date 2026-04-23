@@ -5,7 +5,7 @@ require 'openssl'
 
 describe AlmaJwtValidator do
   let(:alma_institution_code) { '01UCS_BER' }
-  let(:jwks_url) { "https://api-na.hosted.exlibrisgroup.com/auth/#{alma_institution_code}/jwks.json" }
+  let(:jwks_url) { ENV.fetch('ALMA_JWT_JWKS_URL', "https://api-na.hosted.exlibrisgroup.com/auth/#{alma_institution_code}/jwks.json") }
   let(:expected_iss) { 'Prima' }
 
   # Generate an EC key pair for testing
