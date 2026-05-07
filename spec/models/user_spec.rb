@@ -163,6 +163,53 @@ describe User do
     end
   end
 
+  describe :role? do
+    it 'returns true for framework admin users' do
+      user = User.new(framework_admin: true)
+
+      expect(user.role?(:framework_admin)).to be(true)
+    end
+
+    it 'returns true for Alma admin users' do
+      user = User.new(alma_admin: true)
+
+      expect(user.role?(:alma_admin)).to be(true)
+    end
+
+    it 'returns false when the user does not have the role' do
+      user = User.new(uid: '12345')
+
+      allow(FrameworkUsers).to receive(:hardcoded_admin?).with('12345').and_return(false)
+      allow(FrameworkUsers).to receive(:find_by).with(lcasid: '12345').and_return(nil)
+
+      expect(user.role?(:framework_admin)).to be(false)
+    end
+
+    it 'accepts a Role object' do
+      role = double('Role', name: 'framework_admin')
+      user = User.new(framework_admin: true)
+
+      expect(user.role?(role)).to be(true)
+    end
+  end
+
+  describe :any_role? do
+    it 'returns true when the user has at least one requested role' do
+      user = User.new(framework_admin: true)
+
+      expect(user.any_role?(:alma_admin, :framework_admin)).to be(true)
+    end
+
+    it 'returns false when the user has none of the requested roles' do
+      user = User.new(uid: '12345')
+
+      allow(FrameworkUsers).to receive(:hardcoded_admin?).with('12345').and_return(false)
+      allow(FrameworkUsers).to receive(:find_by).with(lcasid: '12345').and_return(nil)
+
+      expect(user.any_role?(:alma_admin, :framework_admin)).to be(false)
+    end
+  end
+
   describe :verify_calnet_attributes! do
     it 'allows employee-affiliated users without berkeleyEduStuID' do
       auth_extra = {

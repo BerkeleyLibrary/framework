@@ -12,6 +12,15 @@ module AuthSupport
     raise Error::UnauthorizedError, "Endpoint #{controller_name}/#{action_name} requires authentication" unless authenticated?
   end
 
+  # Require current user be authenticated and have a role
+  def authenticate_with_role!(*roles)
+    authenticate!
+    return true if current_user.any_role?(*roles)
+
+    raise Error::ForbiddenError,
+          "Endpoint #{controller_name}/#{action_name} requires one of: #{roles.join(', ')}"
+  end
+
   # Return whether the current user is authenticated
   #
   # @return [Boolean]
@@ -46,11 +55,7 @@ module AuthSupport
   end
 
   def require_framework_admin!
-    authenticate!
-    return true if framework_admin?
-
-    raise Error::ForbiddenError,
-          "Endpoint #{controller_name}/#{action_name} requires framework admin CalGroup"
+    authenticate_with_role!(:framework_admin)
   end
 
   def framework_admin?
