@@ -51,7 +51,7 @@ class StackPassAdminController < AuthenticatedFormController
 
   # You shall not pass....unless you're an admin
   def require_admin!
-    @user_is_admin = current_user.any_role?(Role.stackpass_admin)
+    @user_is_admin = current_user.any_role?(Role.stackpass_admin, :framework_admin)
     redirect_to stack_pass_forms_path unless @user_is_admin
   end
 

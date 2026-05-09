@@ -94,7 +94,7 @@ describe :reference_card_form, type: :system do
                                       affiliation: 'Red Bull', pass_date: Date.current, pass_date_end: Date.current + 1, local_id: '8675309')
 
       # These functions require admin privledges:
-      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', framework_admin: true, affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ReferenceCardFormsController).to receive(:current_user).and_return(admin_user)
 
       visit "/forms/reference-card/#{form.id}"

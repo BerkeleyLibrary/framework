@@ -2,8 +2,8 @@ require 'rails_helper'
 require 'alma_helper'
 
 module CalnetHelper
-  # Lisa Weber's UID, hard-coded in FrameworkUsers
-  STACK_REQUEST_ADMIN_UID = '7165'.freeze
+  # UID used for test authentication
+  TEST_UID = '7165'.freeze
 
   # Mocks a calnet login as the specified patron, and stubs the corresponding
   # Millennium patron dump file. Suitable for calling from a before() block.
@@ -31,7 +31,7 @@ module CalnetHelper
     user = login_as_patron(patron_id)
     yield user
   rescue StandardError => e
-    puts "#{e}\n\t#{e.backtrace.join("\n\t")}" # rubocop:disable Rails/Output
+    puts "#{e}\n\t#{e.backtrace.join("\n\t")}"
     raise
   ensure
     logout!

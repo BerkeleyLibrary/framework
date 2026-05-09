@@ -72,19 +72,8 @@ class User
     @primary_patron_record ||= find_primary_record
   end
 
-  # TODO: Unify this, faculty/staff checks, framework/alma admin checks
-  #       (and improve the design)
   def role?(role)
-    role_value =
-      if role.respond_to?(:role)
-        role.role
-      elsif role.respond_to?(:name)
-        role.name
-      else
-        role
-      end
-
-    role_name = role_value.to_sym
+    role_name = role_name_for(role)
 
     case role_name
     when :framework_admin
@@ -92,9 +81,6 @@ class User
     when :alma_admin
       return true if alma_admin?
     end
-
-    # TODO: Remove this hackery!!!
-    return true if FrameworkUsers.hardcoded_admin?(uid)
 
     user = FrameworkUsers.find_by(lcasid: uid)
     return false unless user
@@ -123,5 +109,18 @@ class User
 
   def find_primary_record
     uid_patron_record
+  end
+
+  def role_name_for(role)
+    role_value =
+      if role.respond_to?(:role)
+        role.role
+      elsif role.respond_to?(:name)
+        role.name
+      else
+        role
+      end
+
+    role_value.to_sym
   end
 end

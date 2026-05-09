@@ -21,18 +21,4 @@ class FrameworkUsers < ActiveRecord::Base
   validates :role,
             presence: true
 
-  class << self
-    # Hardcoded admins - so if for some reason all of the
-    # admins in the DB are deleted, we still have a way of
-    # getting in and managing things!
-    HARDCODED_ADMIN_UIDS = [
-      '7165',    # Lisa Weber
-      '1707532'  # Steve Sullivan
-    ].freeze
-
-    def hardcoded_admin?(uid)
-      HARDCODED_ADMIN_UIDS.include?(uid.to_s)
-    end
-  end
-
 end

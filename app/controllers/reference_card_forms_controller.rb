@@ -85,7 +85,7 @@ class ReferenceCardFormsController < ApplicationController
 
   def require_admin!
     authenticate!
-    @user_is_admin = current_user.role?(Role.stackpass_admin)
+    @user_is_admin = current_user.any_role?(Role.stackpass_admin, :framework_admin)
     raise Error::ForbiddenError unless @user_is_admin
   end
 end

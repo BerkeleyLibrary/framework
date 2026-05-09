@@ -57,7 +57,7 @@ describe :stack_pass_form, type: :system do
                                   phone: '925-555-1234', pass_date: Date.current, main_stack: true, local_id: '8675309')
 
       # These functions require admin privledges:
-      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', framework_admin: true, affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
 
       visit "/forms/stack-pass/#{form.id}"
