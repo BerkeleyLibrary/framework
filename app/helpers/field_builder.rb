@@ -1,5 +1,6 @@
 require 'action_view/helpers/tag_helper'
 
+# rubocop:disable Rails/HelperInstanceVariable
 class FieldBuilder
   attr_reader :tag_helper
   attr_reader :builder
@@ -108,3 +109,4 @@ class FieldBuilder
     content_tag(:div, first_error, class: 'invalid-feedback')
   end
 end
+# rubocop:enable Rails/HelperInstanceVariable
