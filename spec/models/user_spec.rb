@@ -179,7 +179,7 @@ describe User do
     it 'returns false when the user does not have the role' do
       user = User.new(uid: '12345')
 
-      allow(FrameworkUsers).to receive(:hardcoded_admin?).with('12345').and_return(false)
+      allow(FrameworkUsers).to receive(:TEST_UID?).with('12345').and_return(false)
       allow(FrameworkUsers).to receive(:find_by).with(lcasid: '12345').and_return(nil)
 
       expect(user.role?(:framework_admin)).to be(false)
@@ -203,7 +203,7 @@ describe User do
     it 'returns false when the user has none of the requested roles' do
       user = User.new(uid: '12345')
 
-      allow(FrameworkUsers).to receive(:hardcoded_admin?).with('12345').and_return(false)
+      allow(FrameworkUsers).to receive(:TEST_UID?).with('12345').and_return(false)
       allow(FrameworkUsers).to receive(:find_by).with(lcasid: '12345').and_return(nil)
 
       expect(user.any_role?(:alma_admin, :framework_admin)).to be(false)

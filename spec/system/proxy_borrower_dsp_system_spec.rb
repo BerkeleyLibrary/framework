@@ -3,25 +3,15 @@ require 'calnet_helper'
 require 'time'
 
 describe :forms_proxy_borrower_dsp, type: :system do
-  attr_reader :patron_id
-  attr_reader :patron
-  attr_reader :user
-
   let(:alma_api_key) { 'totally-fake-key' }
-
   let(:field_prefix) { 'proxy_borrower_requests_' }
-
-  before(:all) do
-    # Calculate and define the max date and an invalid date:
-    @max_date = ProxyBorrowerRequests.max_term
-
-    # Thou shalt pass parameters as Dates, since we use native date fields now:
-    @invalid_date = Time.zone.today - 1.day
-  end
+  let(:max_date) { ProxyBorrowerRequests.max_term }
+  let(:invalid_date) { Time.zone.today - 1.day }
+  let(:patron_id) { Alma::Type.sample_id_for(Alma::Type::UNDERGRAD_SLE) }
 
   before do
-    @patron_id = Alma::Type.sample_id_for(Alma::Type::UNDERGRAD_SLE)
-    @user = login_as_patron(patron_id)
+    login_as_patron(patron_id)
+
     allow(Rails.application.config).to receive(:alma_api_key).and_return(alma_api_key)
 
     req_url = "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/#{patron_id}?expand=fees&view=full"
@@ -29,8 +19,6 @@ describe :forms_proxy_borrower_dsp, type: :system do
     stub_request(:get, req_url)
       .with(headers: { 'Accept' => 'application/json', 'Authorization' => "apikey #{alma_api_key}" })
       .to_return(status: 200, body: File.new("spec/data/alma_patrons/#{patron_id}.json"))
-
-    @patron = Alma::User.find(patron_id)
 
     visit forms_proxy_borrower_dsp_path
   end
@@ -62,7 +50,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
     fill_in("#{field_prefix}research_last", with: ' ')
     fill_in("#{field_prefix}research_first", with: ' ')
     fill_in("#{field_prefix}dsp_rep", with: ' ') # TODO: add server-side validation for this (currently only JS)
-    fill_in("#{field_prefix}date_term", with: @max_date)
+    fill_in("#{field_prefix}date_term", with: max_date)
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -77,7 +65,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
     fill_in("#{field_prefix}research_first", with: 'John')
     fill_in("#{field_prefix}dsp_rep", with: 'Jane Roe')
 
-    fill_in("#{field_prefix}date_term", with: @invalid_date)
+    fill_in("#{field_prefix}date_term", with: invalid_date)
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
@@ -90,7 +78,7 @@ describe :forms_proxy_borrower_dsp, type: :system do
     fill_in("#{field_prefix}research_last", with: 'Doe')
     fill_in("#{field_prefix}research_first", with: 'John')
     fill_in("#{field_prefix}dsp_rep", with: 'Jane Roe')
-    fill_in("#{field_prefix}date_term", with: @max_date)
+    fill_in("#{field_prefix}date_term", with: max_date)
 
     submit_button = find(:xpath, "//input[@type='submit']")
     submit_button.click
