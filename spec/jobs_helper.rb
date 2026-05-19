@@ -112,7 +112,7 @@ RSpec.shared_examples 'a patron note job' do |note_text:, email_subject_failure:
 
       expect { job.perform_now(patron.id) }.to(
         raise_error(StandardError).and(
-          (change { ActionMailer::Base.deliveries.count }).by(1)
+          change { ActionMailer::Base.deliveries.count }.by(1)
         )
       )
       last_email = ActionMailer::Base.deliveries.last

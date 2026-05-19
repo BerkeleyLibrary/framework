@@ -16,7 +16,7 @@ RSpec.describe SecurityIncidentReportFormsController, type: :request do
 
   context 'specs for logged in user' do
     before do
-      mock_login(CalnetHelper::STACK_REQUEST_ADMIN_UID)
+      mock_login(CalnetHelper::TEST_UID)
       @required_params = {
         incident_location: 'Camponille Tower',
         incident_date: '2024-05-03',

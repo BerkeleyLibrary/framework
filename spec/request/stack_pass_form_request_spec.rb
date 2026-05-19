@@ -14,7 +14,7 @@ describe 'Stack Pass Form', type: :request do
   context 'specs without admin privledges' do
     before do
       login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID)
-      allow_any_instance_of(User).to receive(:role?).with(Role.stackpass_admin).and_return(false)
+      allow_any_instance_of(User).to receive(:any_role?).with(Role.stackpass_admin, :framework_admin).and_return(false)
     end
 
     it 'index page does not include admin link for non admins' do
@@ -59,7 +59,7 @@ describe 'Stack Pass Form', type: :request do
 
   context 'specs with admin privledges' do
     before do
-      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', framework_admin: true, affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(StackPassFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
     end
@@ -124,34 +124,6 @@ describe 'Stack Pass Form', type: :request do
           processed_by: 'ADMIN USER'
         }
       end.to have_enqueued_job(ActionMailer::MailDeliveryJob)
-    end
-  end
-
-  context 'specs with hard-coded admin privledges' do
-    before do
-      admin_user = User.new(uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
-      allow_any_instance_of(StackPassAdminController).to receive(:current_user).and_return(admin_user)
-      allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
-    end
-
-    it 'Admin page renders' do
-      get forms_stack_pass_admin_path
-      expect(response).to have_http_status :ok
-    end
-
-    it 'Stack Pass views page renders' do
-      get forms_stack_pass_admin_stack_passes_path
-      expect(response).to have_http_status :ok
-    end
-
-    it 'Reference Card views page renders' do
-      get forms_stack_pass_admin_reference_cards_path
-      expect(response).to have_http_status :ok
-    end
-
-    it 'Admin Add/Edit Users form renders' do
-      get forms_stack_pass_admin_users_path
-      expect(response).to have_http_status :ok
     end
   end
 

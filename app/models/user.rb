@@ -72,17 +72,24 @@ class User
     @primary_patron_record ||= find_primary_record
   end
 
-  # TODO: Unify this, faculty/staff checks, framework/alma admin checks
-  #       (and improve the design)
   def role?(role)
-    # First check if user is a hardcoded admin
-    return true if FrameworkUsers.hardcoded_admin?(uid)
+    role_name = role_name_for(role)
 
-    # If user is not, then check if the user was added to the DB as an admin:
+    case role_name
+    when :framework_admin
+      return true if framework_admin?
+    when :alma_admin
+      return true if alma_admin?
+    end
+
     user = FrameworkUsers.find_by(lcasid: uid)
     return false unless user
 
     user.assignments.exists?(role:)
+  end
+
+  def any_role?(*roles)
+    roles.flatten.any? { |role| role?(role) }
   end
 
   def ucb_faculty?
@@ -102,5 +109,18 @@ class User
 
   def find_primary_record
     uid_patron_record
+  end
+
+  def role_name_for(role)
+    role_value =
+      if role.respond_to?(:role)
+        role.role
+      elsif role.respond_to?(:name)
+        role.name
+      else
+        role
+      end
+
+    role_value.to_sym
   end
 end

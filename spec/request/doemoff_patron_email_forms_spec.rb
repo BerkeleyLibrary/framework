@@ -16,7 +16,7 @@ RSpec.describe DoemoffPatronEmailFormsController, type: :request do
 
   context 'specs for logged in user' do
     before do
-      mock_login(CalnetHelper::STACK_REQUEST_ADMIN_UID)
+      mock_login(CalnetHelper::TEST_UID)
       @required_params = {
         patron_email: 'test@berkeley.edu',
         patron_message: 'test message',

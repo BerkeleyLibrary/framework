@@ -8,10 +8,10 @@ describe 'Reference Card Form', type: :request do
   attr_reader :patron
   attr_reader :user
 
-  context 'specs without admin privledges' do
+  context 'specs without admin privileges' do
     before do
       login_as_patron(Alma::NON_FRAMEWORK_ADMIN_ID)
-      allow_any_instance_of(User).to receive(:role?).with(Role.stackpass_admin).and_return(false)
+      allow_any_instance_of(User).to receive(:any_role?).with(Role.stackpass_admin, :framework_admin).and_return(false)
     end
 
     it 'reference card index page redirects to form' do
@@ -88,9 +88,9 @@ describe 'Reference Card Form', type: :request do
     end
   end
 
-  context 'specs with admin privledges' do
+  context 'specs with admin privileges' do
     before do
-      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
+      admin_user = User.new(display_name: 'Test Admin', uid: '1707532', framework_admin: true, affiliations: ['EMPLOYEE-TYPE-ACADEMIC'])
       allow_any_instance_of(ReferenceCardFormsController).to receive(:current_user).and_return(admin_user)
       allow_any_instance_of(StackRequestsController).to receive(:current_user).and_return(admin_user)
     end

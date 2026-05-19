@@ -9,7 +9,7 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     # I think I want to get the users role now... if they're in the DB
     # then I'll want to pass that info so they have the
     # admin link...otherwise, NO admin link!
-    @user_is_admin = current_user.role?(Role.proxyborrow_admin)
+    @user_is_admin = current_user.any_role?(Role.proxyborrow_admin, :framework_admin)
   end
 
   def dsp_form
@@ -24,9 +24,6 @@ class ProxyBorrowerFormsController < AuthenticatedFormController
     @form = ProxyBorrowerRequests.new(faculty_name: @current_user.display_name,
                                       department: @current_user.department_number)
   end
-
-  # TODO: do we still need this?
-  def forbidden; end
 
   # Processes a request from DSP form: (eventually dry this up)
   def process_dsp_request

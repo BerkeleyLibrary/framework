@@ -3,22 +3,38 @@ require 'calnet_helper'
 
 describe :forms_proxy_borrower_admin, type: :system do
 
-  context 'specs with hardcoded admin' do
+  context 'specs with proxyborrower admin' do
     before do
-      # First create a DSP Rep and assignment
-      user = FrameworkUsers.create(lcasid: 112_233, name: 'John Doe', role: 'Admin')
-      @assignment = Assignment.create(framework_users_id: user.id, role_id: Role.proxyborrow_admin.id)
+      admin = FrameworkUsers.create(
+        lcasid: CalnetHelper::TEST_UID,
+        name: 'Test Admin',
+        role: 'Admin'
+      )
 
-      # These functions require admin privledges:
-      mock_login(CalnetHelper::STACK_REQUEST_ADMIN_UID)
+      Assignment.create(
+        framework_users: admin,
+        role: Role.proxyborrow_admin
+      )
 
-      # Go to the Admin Users View Page:
+      user = FrameworkUsers.create(
+        lcasid: 112_233,
+        name: 'John Doe',
+        role: 'Admin'
+      )
+
+      @assignment = Assignment.create(
+        framework_users: user,
+        role: Role.proxyborrow_admin
+      )
+
+      mock_login(CalnetHelper::TEST_UID)
+
       visit forms_proxy_borrower_admin_users_path
     end
 
     it 'removes an admin user' do
       accept_confirm 'Are you sure you want to delete John Doe?' do
-        click_link 'Remove'
+        click_link 'Remove', match: :first
       end
       expect(page).to have_no_content('<div class="col user-col">John Doe')
       expect(page).to have_content('Removed John Doe from administrator list')

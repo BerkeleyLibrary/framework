@@ -109,7 +109,7 @@ class ProxyBorrowerAdminController < AuthenticatedFormController
 
   # You shall not pass....unless you're an admin
   def require_admin!
-    @user_is_admin = current_user.role?(Role.proxyborrow_admin)
+    @user_is_admin = current_user.any_role?(Role.proxyborrow_admin, :framework_admin)
     redirect_to proxy_borrower_forms_path unless @user_is_admin
   end
 

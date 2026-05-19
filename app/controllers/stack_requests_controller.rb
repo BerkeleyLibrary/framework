@@ -8,7 +8,7 @@ class StackRequestsController < ApplicationController
   def forbidden; end
 
   def index
-    @user_is_admin = current_user.role?(Role.stackpass_admin)
+    @user_is_admin = current_user.any_role?(Role.stackpass_admin, :framework_admin)
   end
 
 end
