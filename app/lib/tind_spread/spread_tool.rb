@@ -75,10 +75,10 @@ module TindSpread
       highest
     end
 
-    # rubocop:disable Lint/UselessAssignment
+    # rubocop:disable Lint/UselessAssignment, Metrics/AbcSize
     def get_files(file_pattern)
       dir = "#{Rails.application.config.tind_data_root_dir}/#{@directory.delete_prefix('/')}"
-      if file_pattern.nil?
+      if file_pattern.nil? || !file_pattern.respond_to?(:gsub)
         matches = []
       else
         file_match = file_pattern.gsub(/\.tif/i, '')
@@ -86,13 +86,17 @@ module TindSpread
         matches.map! { |i| i.gsub(Rails.application.config.tind_data_root_dir, 'https://digitalassets.lib.berkeley.edu') }
       end
     end
-    # rubocop:enable Lint/UselessAssignment
+    # rubocop:enable Lint/UselessAssignment, Metrics/AbcSize
 
     def get_ffts(all_rows)
       ffts = []
       all_rows.each do |row_data|
         file_pattern = get_filename(row_data)
-        ffts << urls_to_fft(get_files(file_pattern))
+        ffts << if file_pattern.is_a?(String) && file_pattern.present?
+                  urls_to_fft(get_files(file_pattern))
+                else
+                  {}
+                end
       end
       ffts
     end

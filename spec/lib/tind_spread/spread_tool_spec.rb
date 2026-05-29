@@ -85,4 +85,22 @@ RSpec.describe TindSpread::SpreadTool do
       expect(spread_tool.spread_to_hash(header)).to eq(expected_result)
     end
   end
+
+  describe '#get_ffts' do
+    it 'skips get_files when the filename is blank' do
+      row_data = [{ '0:Filename' => nil, '1:Header2' => 'Data2' }]
+
+      expect(spread_tool).not_to receive(:get_files)
+
+      expect(spread_tool.get_ffts(row_data)).to eq([{}])
+    end
+
+    it 'skips get_files when the filename is a hash' do
+      row_data = [{ '0:Filename' => { name: 'Data1' }, '1:Header2' => 'Data2' }]
+
+      expect(spread_tool).not_to receive(:get_files)
+
+      expect(spread_tool.get_ffts(row_data)).to eq([{}])
+    end
+  end
 end
