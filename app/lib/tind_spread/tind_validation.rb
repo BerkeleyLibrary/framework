@@ -7,7 +7,8 @@ module TindSpread
     # validates the header row
     # should be 3 digits for field, 2 for indicator (can be _, number), one digit or number for subfield
     # optionally can have a ('-' followed by a number). This is used to group columns into similar fields
-    # the header row can also be just "Filename" or "001". The program will create the proper fields for those
+    # the header row can also be just "Filename" or "001". The program will create the proper fields for those.
+    # The fft will be created at runtime based off of the filename.
     def self.valid_header?(str)
       valid_patterns = [
         /^\d+:001/,
