@@ -15,7 +15,7 @@ RSpec.describe TindSpread::TindBatch do
   let(:args) { { directory:, '982__a': 'test' } }
   let(:tind_batch) { described_class.new(args, xlsx, extension, email) }
   let(:spread_tool) { instance_double(TindSpread::SpreadTool) }
-  let(:all_rows) { [{ '001__a' => 'Data1', '245__a' => 'Data2' }, { '001__a' => 'Data3', '245__a' => 'Data4' }] }
+  let(:all_rows) { [{ '1:001__a' => 'Data1', '1:245__a' => 'Data2' }, { '1:001__a' => 'Data3', '1:245__a' => 'Data4' }] }
 
   before do
     allow(TindSpread::SpreadTool).to receive(:new).with(xlsx, extension, directory).and_return(spread_tool)
@@ -76,7 +76,7 @@ RSpec.describe TindSpread::TindBatch do
 
   describe '#validate_header_row' do
     it 'returns an empty array for valid headers' do
-      headers = %w[001__a 245__a 500__3]
+      headers = %w[1:001__a 1:245__a 1:500__3]
       errors = tind_batch.validate_header_row(headers)
       expect(errors).to be_empty
     end
@@ -89,7 +89,7 @@ RSpec.describe TindSpread::TindBatch do
     end
 
     it 'returns errors only for invalid headers in a mixed list' do
-      headers = %w[001__a InvalidHeader 245__a]
+      headers = %w[1:001__a InvalidHeader 1:245__a]
       errors = tind_batch.validate_header_row(headers)
       expect(errors).to include('Invalid header name: InvalidHeader')
       expect(errors.length).to eq(1)
