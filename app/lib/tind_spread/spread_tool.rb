@@ -44,7 +44,7 @@ module TindSpread
     end
 
     def delete_unnecessary_fields(all)
-      remove = %w[035__a 980__a 982__a 982__b 982__p 540__a 852__a 336__a 852__c 902__ 991__a FFT__a]
+      remove = %w[035__a 980__a 982__a 982__b 982__p 540__a 5880_a 852__a 336__a 852__c 902__ 991__a FFT__a]
       all.each_key do |key|
         all.delete(key) if remove.any? { |r| key.to_s.match(/#{r}/) }
       end

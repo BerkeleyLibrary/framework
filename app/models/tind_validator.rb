@@ -3,7 +3,7 @@ class TindValidator < ActiveRecord::Base
 
   # REQUIRED_PARAMS = %i[directory 980__a 982__a 982__b 540__a 336__a 852__c 902__n].freeze
   REQUIRED_PARAMS = %i[980__a 982__a 982__b 540__a 336__a 852__c 902__n].freeze
-  OPTIONAL_PARAMS = %i[982__p 991__a directory].freeze
+  OPTIONAL_PARAMS = %i[982__p 991__a 5880_a directory].freeze
 
   has_one_attached :input_file
   validate :directory_must_exist

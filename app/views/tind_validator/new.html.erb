@@ -94,6 +94,13 @@
   </div>
 
   <div class="form-label form-group">
+    <%= label_tag('5880_a', '5880_a (optional, source of description)', class: 'control-label') %>
+  </div>
+  <div class="form-input mb-4">
+    <%= f.text_field(:'5880_a', class: 'narrow form-control', required: false, autofocus: true) %>
+  </div>
+
+  <div class="form-label form-group">
     <%= label_tag('991__a', 'Restriction (optional)', class: 'control-label') %>
   </div>
   <div class="form-input mb-4">
