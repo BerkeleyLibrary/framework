@@ -16,8 +16,6 @@ services:
   db:
     volumes: !reset
 
-  dbeaver: !reset
-
   init:
     build: !reset
     image: ${DOCKER_APP_IMAGE}

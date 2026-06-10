@@ -99,16 +99,3 @@ services:
     shm_size: 2gb
     volumes:
       - ./:/build:rw
-
-  dbeaver:
-    image: dbeaver/cloudbeaver:latest
-    container_name: dbeaver
-    depends_on:
-      db:
-        condition: service_healthy
-        required: false
-    restart: always
-    ports:
-      - '8080:8978'
-    volumes:
-      - ./:/build:rw
