@@ -18,6 +18,7 @@ RSpec.describe TindValidator, type: :model do
           '982__b': 'Italian Librettos',
           '982__p': 'Some larger project',
           '540__a': 'some restriction text',
+          '5880_a': 'image, source of description',
           '336__a': 'Image',
           '852__c': 'The Bancroft Library',
           '902__n': 'DMZ',
@@ -44,6 +45,7 @@ RSpec.describe TindValidator, type: :model do
           '982__b': 'Italian Librettos',
           '982__p': 'Some parent collection',
           '540__a': 'some restriction text',
+          '5880_a': 'image, source of description',
           '336__a': 'Image',
           '852__c': 'The Bancroft Library',
           '902__n': 'DMZ',
@@ -71,6 +73,7 @@ RSpec.describe TindValidator, type: :model do
           resource_type: nil,
           library: nil,
           f_982_p: nil,
+          f_588_p: nil,
           restriction: nil,
           fail: nil
         }

@@ -6,7 +6,7 @@ module TindSpread
   module MakeBatch
 
     def self.added_headers(form_params)
-      added_headers = %i[336__a 852__c 540__a 980__a 982__a 982__b 982__p 991__a]
+      added_headers = %i[336__a 852__c 540__a 5880_a 980__a 982__a 982__b 982__p 991__a]
       form_params.select { |key| added_headers.include?(key) }
     end
 
