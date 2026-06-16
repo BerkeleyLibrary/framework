@@ -71,7 +71,7 @@ jobs:
         run: |
           docker compose cp app:/opt/app/artifacts ./ || mkdir artifacts
           docker compose logs > artifacts/docker-compose-services.log
-          docker compose config > artifacts/docker-compose.docker-buildd.yml
+          docker compose config > artifacts/docker-compose.merged.yml
 
       - name: Upload the test report
         if: ${{ always() }}
