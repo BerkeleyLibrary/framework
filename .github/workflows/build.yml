@@ -36,7 +36,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Setup the stack
+        run: |
+          docker run --quiet --rm "${DOCKER_APP_IMAGE}" rails secret > /tmp/secret_key_base
+          docker compose up --wait
+          docker compose exec -u root app chown -R altmedia:altmedia artifacts
       - name: Run RSpec
         if: ${{ always() }}
         run: |
