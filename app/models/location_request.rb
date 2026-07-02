@@ -36,13 +36,13 @@ class LocationRequest < ActiveRecord::Base
   class << self
     # Creates a new LocationRequest, validates the attached input file, and
     # creates location records for each OCLC number.
-    def create_from(**options)
+    def create_from(**)
       # This awkwardness is b/c we need the rollback to cancel
       # creating associated LocationRecords, but we still want
       # to return the created request
       request = nil
       transaction(requires_new: true) do
-        request = create_with_records(**options)
+        request = create_with_records(**)
         raise ActiveRecord::Rollback if request.errors.any?
       end
       request
@@ -73,10 +73,10 @@ class LocationRequest < ActiveRecord::Base
     end
 
     # @return LocationRequest the request
-    def create_with_records(input_file: nil, user: nil, **options)
+    def create_with_records(input_file: nil, user: nil, **)
       filename = filename_from(input_file)
 
-      create(filename:, input_file:, **options).tap do |request|
+      create(filename:, input_file:, **).tap do |request|
         ensure_location_records(request, input_file:)
         ensure_admin_if_immediate(request, user:)
       end
