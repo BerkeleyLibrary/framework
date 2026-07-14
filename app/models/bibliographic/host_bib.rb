@@ -38,9 +38,11 @@ module Bibliographic
       end
 
       def subfields_from_774(marc_record)
-        MARC::Spec.find('774', marc_record).map do |f|
-          { 't' => f['t'] || '', 'w' => f['w'] } unless f['w'].empty?
+        subfields = MARC::Spec.find('774', marc_record).map do |f|
+          { 't' => f['t'] || '', 'w' => f['w'] } if f['w'].present?
         end
+        subfields.delete(nil)
+        subfields
       end
     end
 

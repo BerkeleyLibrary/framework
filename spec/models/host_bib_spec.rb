@@ -19,8 +19,10 @@ RSpec.describe Bibliographic::HostBib, type: :model do
     record.append(control_field)
     data_field1 = MARC::DataField.new('774', '0', '1', ['t', 'Seconde partie du discours aux Welches '], %w[w 991083840969706532], %w[9 Exl])
     data_field2 = MARC::DataField.new('774', '0', '1', ['t', 'Où va donc largent.'], %w[w 991083840969706532], %w[9 Exl])
+    data_field3 = MARC::DataField.new('774', '0', '1', ['t', 'Agriculture and Natural Resources publications'], %w[9 unrelated])
     record.append(data_field1)
     record.append(data_field2)
+    record.append(data_field3)
     record
   end
 
