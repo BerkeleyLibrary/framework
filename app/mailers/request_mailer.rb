@@ -232,6 +232,12 @@ class RequestMailer < ApplicationMailer
     mail(to: email, subject:, body:)
   end
 
+  def bibliographic_failure_email(email, subject, host_bib_task, host_bib)
+    @host_bib_task = host_bib_task
+    @host_bib = host_bib
+    mail(to: email, subject:)
+  end
+
   def efee_invoice_email(alma_id)
     efee = EfeesInvoice.new(alma_id)
     # type probably isn't needed now that I spun this off to a separate url

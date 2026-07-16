@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+
+  <body>
+  <br/>
+  <h1>Upload Failed</h1>
+  Your Host Bibliographic upload failed.  Please reach out to our support team.
+
+  <h2>Details</h2>
+  <dl>
+    <% if @host_bib_task %>
+    <dt>Failing file</dt>
+    <dd><%= File.basename(@host_bib_task.filename) %></dd>
+    <% end %>
+    <% if @host_bib %>
+    <dt>Failing Host MMS ID</dt>
+    <dd><%= @host_bib.mms_id %></dd>
+    <% end %>
+  </dl>
+  </body>
+</html>

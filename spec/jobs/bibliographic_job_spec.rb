@@ -73,12 +73,12 @@ RSpec.describe BibliographicJob, type: :job do
           .and_raise(StandardError.new('Error'))
 
         expect(RequestMailer)
-          .to receive(:bibliographic_email)
+          .to receive(:bibliographic_failure_email)
           .with(
             email,
-            [],
             'Host Bibliographic Upload - Failed',
-            'Host Bibliographic upload failed, please reach out to our support team.'
+            host_bib_task,
+            host_bib
           ).and_return(mailer_double)
 
         expect { BibliographicJob.perform_now(host_bib_task) }.to raise_error(StandardError)

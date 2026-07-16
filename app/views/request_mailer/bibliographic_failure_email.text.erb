@@ -1,0 +1,10 @@
+Your Host Bibliographic upload failed.  Please reach out to our support team.
+
+Failure details:
+
+<% if @host_bib_task %>
+Failing file: <%= File.basename(@host_bib_task.filename) %>
+<% end %>
+<% if @host_bib %>
+Failing Host MMS ID: <%= @host_bib.mms_id %>
+<% end %>

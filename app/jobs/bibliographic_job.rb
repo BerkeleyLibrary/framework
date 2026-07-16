@@ -2,12 +2,14 @@ class BibliographicJob < ApplicationJob
   queue_as :default
 
   def perform(host_bib_task)
+    current = nil
     host_bib_task.host_bibs.where(marc_status: %w[pending retrieving]).find_each do |host_bib|
+      current = host_bib
       Bibliographic::HostBib.create_linked_bibs(host_bib)
     end
     after_perform_upload!(host_bib_task)
   rescue StandardError => e
-    mark_failed_and_notify!(e, host_bib_task)
+    mark_failed_and_notify!(e, host_bib_task, current)
   end
 
   private
@@ -25,12 +27,13 @@ class BibliographicJob < ApplicationJob
     attachment_hash
   end
 
-  def mark_failed_and_notify!(e, host_bib_task)
+  def mark_failed_and_notify!(e, host_bib_task, host_bib)
     host_bib_task.failed!
     subject = 'Host Bibliographic Upload - Failed'
-    message = 'Host Bibliographic upload failed, please reach out to our support team.'
-    RequestMailer.bibliographic_email(host_bib_task.email, [], subject, message).deliver_now
-    logger.error "BibliographicJob failed: #{e.message}"
+    RequestMailer.bibliographic_failure_email(host_bib_task.email, subject, host_bib_task, host_bib).deliver_now
+    mms_id = host_bib&.mms_id
+    filename = File.basename(host_bib_task.filename)
+    logger.error "BibliographicJob failed processing #{mms_id} in #{filename}: #{e.message}"
     raise e
   end
 
