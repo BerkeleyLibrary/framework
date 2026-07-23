@@ -167,7 +167,25 @@ module AlmaServices
         record_id = BerkeleyLibrary::Alma::RecordId.parse(id)
         return unless record_id
 
-        record_id.get_marc_record
+        fetch_record(record_id, id)
+      end
+
+      private
+
+      def fetch_record(record_id, id)
+        attempts = 0
+
+        begin
+          attempts += 1
+          record_id.get_marc_record
+        rescue Errno::ECONNRESET => e
+          raise if attempts >= 3
+
+          Rails.logger.warn("Retry Alma fetch #{attempts + 1}/3 for #{id}: #{e.message}")
+
+          sleep(1)
+          retry
+        end
       end
     end
   end
