@@ -26,11 +26,45 @@ RSpec.describe Bibliographic::HostBib, type: :model do
     record
   end
 
-  context 'AlmaServices::Marc has' do
-    it 'alma marc' do
+  context 'AlmaServices::Marc' do
+    it 'has alma marc' do
       class_double(BerkeleyLibrary::Alma::RecordId, parse: record_id).as_stubbed_const
       expect(record_id).to receive(:get_marc_record).and_return('marc_stub')
       expect(AlmaServices::Marc.record(mms_id)).to eq('marc_stub')
+    end
+
+    it 'retries when the connection is reset' do
+      class_double(BerkeleyLibrary::Alma::RecordId, parse: record_id).as_stubbed_const
+      allow(AlmaServices::Marc).to receive(:sleep)
+
+      attempts = 0
+
+      allow(record_id).to receive(:get_marc_record) do
+        attempts += 1
+        raise Errno::ECONNRESET if attempts == 1
+
+        'marc_stub'
+      end
+
+      expect(AlmaServices::Marc.record(mms_id)).to eq('marc_stub')
+      expect(record_id).to have_received(:get_marc_record).twice
+    end
+
+    it 'raises after exhuasting retries' do
+      class_double(BerkeleyLibrary::Alma::RecordId, parse: record_id).as_stubbed_const
+      allow(AlmaServices::Marc).to receive(:sleep)
+
+      allow(record_id)
+        .to receive(:get_marc_record)
+        .and_raise(Errno::ECONNRESET)
+
+      expect do
+        AlmaServices::Marc.record(mms_id)
+      end.to raise_error(Errno::ECONNRESET)
+
+      expect(record_id)
+        .to have_received(:get_marc_record)
+        .exactly(3).times
     end
   end
 
