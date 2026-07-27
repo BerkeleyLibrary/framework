@@ -5,7 +5,7 @@ require 'berkeley_library/util/uris/head_check'
 
 # Health check configuration
 OkComputer.logger = Rails.logger
-OkComputer.check_in_parallel = true
+OkComputer.check_in_parallel = ActiveModel::Type::Boolean.new.cast(ENV.fetch('OKCOMPUTER_CHECK_IN_PARALLEL', false))
 
 class AlmaPatronCheck < OkComputer::Check
   TEST_PATRON_ID = '000311@lbl.gov'
