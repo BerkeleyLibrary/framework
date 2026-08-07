@@ -113,7 +113,7 @@ module Framework
     config.tind_api_key = config.altmedia['tind_api_key']
 
     config.x.healthcheck_urls.hathiTrust = 'https://catalog.hathitrust.org/api/volumes/full/oclc/424023.json'
-    config.x.healthcheck_urls.whois = 'https://whois.arin.net/rest/poc/1AD-ARIN'
+    config.x.healthcheck_urls.whois = 'https://whois.arin.net/rest/poc/CPP-ARIN'
     config.x.healthcheck_urls.berkeley_service_now = 'https://berkeley.service-now.com/kb_view.do?sysparm_article=KB0011960'
 
     # CalNet attribute mapping - Maps hash values to CalNet attribute name(s), shared between User model and test calnet_helper;
