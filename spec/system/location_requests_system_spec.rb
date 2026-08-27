@@ -13,6 +13,29 @@ describe LocationRequestsController, type: :system do
     end
   end
 
+  describe 'location requests alert' do
+    let(:configured_alert) { nil }
+
+    before do
+      allow(Rails.configuration).to receive(:location_requests_alert).and_return(configured_alert)
+      visit new_location_request_path
+    end
+
+    context 'when the alert is not configured' do
+      it 'does not display a warning alert' do
+        expect(page).to have_no_selector('div.alert.alert-warning[role="alert"]')
+      end
+    end
+
+    context 'when the alert is configured' do
+      let(:configured_alert) { 'OCLC requests are currently rate limited.' }
+
+      it 'displays the configured warning alert' do
+        expect(page).to have_selector('div.alert.alert-warning[role="alert"]', text: configured_alert)
+      end
+    end
+  end
+
   shared_examples 'a form with immediate and off-hours options' do
     it 'includes the "immediate" radio group' do
       [true, false].each do |state|
