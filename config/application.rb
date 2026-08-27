@@ -85,6 +85,9 @@ module Framework
     # Valid groups for libproxy access based on Alma groups
     config.libproxy_groups = config.libproxy['valid_groups']
 
+    # alert message on location requests when we know we're being rate limited
+    config.location_requests_alert = config.altmedia['location_requests_alert']
+
     # Tind set values for marc inserts
     config.tind_resource_types = config.tind_marc['resource_types']
     config.tind_restrictions = config.tind_marc['restrictions']
