@@ -87,6 +87,7 @@ module Framework
 
     # alert message on location requests when we know we're being rate limited
     config.location_requests_alert = config.altmedia['location_requests_alert']
+    config.location_requests_max_oclc_numbers = config.altmedia['location_requests_max_oclc_numbers']
 
     # Tind set values for marc inserts
     config.tind_resource_types = config.tind_marc['resource_types']

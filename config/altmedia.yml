@@ -16,6 +16,7 @@ default: &default
   alma_api_key: <%= ENV["FRAMEWORK_ALMA_API_KEY"].presence || 'fake-api-key' %>
   alma_sandbox_key: <%= ENV["FRAMEWORK_ALMA_SANDBOX_KEY"].presence || 'fake-api-key' %>
   location_requests_alert: <%= ENV["FRAMEWORK_LOCATION_REQUESTS_ALERT"] %>
+  location_requests_max_oclc_numbers: <%= Integer(ENV["FRAMEWORK_LOCATION_REQUESTS_MAX_OCLC_NUMBERS"].presence || 50_000) %>
   paypal_payflow_url: <%= ENV["PAYPAL_PAYFLOW_URL"] || 'https://payflowlink.paypal.com' %>
   paypal_payflow_login: <%= ENV["PAYPAL_PAYFLOW_LOGIN"] || 'ucblibrary' %>
   tind_base_uri: <%= ENV["LIT_TIND_BASE_URL"] || 'https://digicoll.lib.berkeley.edu/' %>
