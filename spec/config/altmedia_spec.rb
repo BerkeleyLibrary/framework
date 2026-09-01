@@ -19,9 +19,9 @@ RSpec.describe 'altmedia configuration' do
     Rails.application.config_for(:altmedia)
   end
 
-  it 'defaults the location requests max OCLC numbers to 50,000' do
+  it 'defaults the location requests max OCLC numbers to 10,000' do
     with_location_requests_max_oclc_numbers(nil) do
-      expect(altmedia_config[:location_requests_max_oclc_numbers]).to eq(50_000)
+      expect(altmedia_config[:location_requests_max_oclc_numbers]).to eq(10_000)
     end
   end
 
