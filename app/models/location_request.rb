@@ -8,7 +8,7 @@ class LocationRequest < ActiveRecord::Base
 
   # Batch size for inserting LocationRecords
   BATCH_SIZE = 10_000
-  MAX_OCLC_NUMBERS = 50_000
+  MAX_OCLC_NUMBERS = Rails.application.config.location_requests_max_oclc_numbers
   RESULT_ARGS = %i[oclc_number wc_symbols wc_error ht_record_url ht_error].freeze
 
   MSG_NO_OCLC_NUMBERS = 'No OCLC numbers found in input spreadsheet'.freeze
