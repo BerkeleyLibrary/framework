@@ -360,32 +360,18 @@ RSpec.describe LocationRequest, type: :model do
 
     it 'handles large numbers of records' do
       # NOTE: tested with up to 1 million, but it's slow (~4 minutes)
-      expected_count = 15_000
+      expected_count = LocationRequest::BATCH_SIZE + 1
+      stub_const('LocationRequest::MAX_OCLC_NUMBERS', expected_count)
       oclc_numbers = Array.new(expected_count) { |i| (expected_count + i).to_s }
       oclc_numbers.shuffle!
 
-      Dir.mktmpdir(File.basename(__FILE__)) do |tmpdir|
-        original_path = 'spec/data/location/input-file-empty.xlsx'
-        new_path = File.join(tmpdir, "#{expected_count}.xlsx")
+      attributes = valid_attributes.except(:input_file)
+      attributes[:input_file] = uploaded_file_with_oclc_numbers(oclc_numbers)
 
-        ss = BerkeleyLibrary::Util::XLSX::Spreadsheet.new(original_path)
-        c_index = ss.find_column_index_by_header!(BerkeleyLibrary::Location::Constants::OCLC_COL_HEADER)
-        oclc_numbers.each_with_index do |oclc_num, i|
-          r_index = 1 + i # skip header row
-          ss.set_value_at(r_index, c_index, oclc_num)
-        end
-        ss.save_as(new_path)
+      req = LocationRequest.create!(**attributes)
+      req.ensure_location_records!
 
-        input_file = uploaded_file_from(new_path, mime_type: mime_type_xlsx)
-
-        attributes = valid_attributes.except(:input_file)
-        attributes[:input_file] = input_file
-
-        req = LocationRequest.create!(**attributes)
-        req.ensure_location_records!
-
-        expect(req.location_records.count).to eq(expected_count)
-      end
+      expect(req.location_records.count).to eq(expected_count)
     end
   end
 
