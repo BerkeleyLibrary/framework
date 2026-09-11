@@ -64,10 +64,10 @@ module TindSpread
         files_not_found(row, errors)
       end
 
-      # FFT needs to resolve and needs to be either a jpg or pdf
+      # FFT needs to resolve and needs to be either a jpg, pdf, mp3 or mp4
       def validate_fft(key, value, errors)
         add_error(errors, key, "URL: #{value} inaccessible") unless valid_url?(value)
-        add_error(errors, key, "URL: #{value} invalid. needs to be .jpg or .pdf") unless fft_jpg_or_pdf?(value)
+        add_error(errors, key, "URL: #{value} invalid. needs to be .jpg,.pdf,.mp3 or .mp4") unless fft_valid_format?(value)
       end
 
       # If there is a 500__3 there needs to be a corresponding 500__a
@@ -122,8 +122,8 @@ module TindSpread
         false
       end
 
-      def fft_jpg_or_pdf?(url)
-        return true if url.gsub(/\s+$/, '') =~ /\.jpg$|\.pdf$/
+      def fft_valid_format?(url)
+        return true if url.gsub(/\s+$/, '') =~ /\.jpg$|\.pdf|\.mp3|\.mp4$/
 
         false
       end
