@@ -15,7 +15,7 @@ RSpec.describe TindSpread::TindValidation do
       expected_errors = [
         'header: FFT__a-1 No files found for value',
         'header: FFT__a URL: invalid_url inaccessible',
-        'header: FFT__a URL: invalid_url invalid. needs to be .jpg,.pdf,.mp3 or .mp4',
+        'header: FFT__a URL: invalid_url invalid. needs to be .jpg, .pdf, .mp3 or .mp4',
         'header: 500__3 There is a 500__3 without a corresponding 500__a. Value for 500__3 is value',
         'header: 800__6 There is no matching $6 for value value'
       ]
@@ -30,7 +30,7 @@ RSpec.describe TindSpread::TindValidation do
       allow(described_class).to receive(:fft_valid_format?).with('invalid_url').and_return(false)
       described_class.send(:validate_fft, 'FFT__a', 'invalid_url', errors)
       expect(errors).to include('header: FFT__a URL: invalid_url inaccessible')
-      expect(errors).to include('header: FFT__a URL: invalid_url invalid. needs to be .jpg,.pdf,.mp3 or .mp4')
+      expect(errors).to include('header: FFT__a URL: invalid_url invalid. needs to be .jpg, .pdf, .mp3 or .mp4')
     end
   end
 
