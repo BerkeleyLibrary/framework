@@ -123,7 +123,7 @@ module TindSpread
       end
 
       def fft_valid_format?(url)
-        return true if url.downcase.end_with?('.jpg', '.pdf', '.mp3', '.mp4', '.mov')
+        return true if url.downcase.end_with?(*%w[.jpg .pdf .mp3 .mp4 .mov])
 
         false
       end
