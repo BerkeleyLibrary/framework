@@ -15,7 +15,7 @@ RSpec.describe TindSpread::TindValidation do
       expected_errors = [
         'header: FFT__a-1 No files found for value',
         'header: FFT__a URL: invalid_url inaccessible',
-        'header: FFT__a URL: invalid_url invalid. needs to be .jpg, .pdf, .mp3 or .mp4',
+        'header: FFT__a URL: invalid_url invalid. needs to be .jpg, .pdf, .mp3, .mp4 or .mov',
         'header: 500__3 There is a 500__3 without a corresponding 500__a. Value for 500__3 is value',
         'header: 800__6 There is no matching $6 for value value'
       ]
@@ -30,7 +30,7 @@ RSpec.describe TindSpread::TindValidation do
       allow(described_class).to receive(:fft_valid_format?).with('invalid_url').and_return(false)
       described_class.send(:validate_fft, 'FFT__a', 'invalid_url', errors)
       expect(errors).to include('header: FFT__a URL: invalid_url inaccessible')
-      expect(errors).to include('header: FFT__a URL: invalid_url invalid. needs to be .jpg, .pdf, .mp3 or .mp4')
+      expect(errors).to include('header: FFT__a URL: invalid_url invalid. needs to be .jpg, .pdf, .mp3, .mp4 or .mov')
     end
   end
 
@@ -79,7 +79,7 @@ RSpec.describe TindSpread::TindValidation do
       expect(described_class.send(:fft_valid_format?, url)).to be true
     end
 
-    it 'returns false for a URL not ending with .jpg, .pdf, .mp3, .mp4' do
+    it 'returns false for a URL not ending with .jpg, .pdf, .mp3, .mp4, .mov' do
       url = 'https://example.com/document.txt'
       expect(described_class.send(:fft_valid_format?, url)).to be false
     end
@@ -91,6 +91,11 @@ RSpec.describe TindSpread::TindValidation do
 
     it 'returns true for a URL ending with .mp4' do
       url = 'https://example.com/song.mp4'
+      expect(described_class.send(:fft_valid_format?, url)).to be true
+    end
+
+    it 'returns true for a URL ending with .mov' do
+      url = 'https://example.com/video.mov'
       expect(described_class.send(:fft_valid_format?, url)).to be true
     end
   end
