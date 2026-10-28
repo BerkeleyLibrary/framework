@@ -25,6 +25,7 @@ services:
           - app.test
     volumes:
       - ./:/opt/app
+      - ./node_modules:/opt/app/node_modules
     ports:
       - 3000:3000
     restart: always
