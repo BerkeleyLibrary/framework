@@ -1,3 +1,6 @@
+# Pin the pnpm version used by the image.
+ARG PNPM_VERSION="12.4.0"
+
 # =============================================================================
 # Target: base
 #
@@ -41,17 +44,22 @@ RUN apt-get install -y --no-install-recommends \
     libpq-dev \
     libyaml-dev
 
-# Install Node.js and Yarn from their own repositories
+# Install pnpm
 
-# Add Node.js package repository (version 16 LTS release) & install Node.js
-# -- note that the Node.js setup script takes care of updating the package list
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs
+ENV PNPM_HOME="/usr/local/pnpm"
 
-# Use Yarn via Corepack to avoids using reops and GPG keys
-RUN corepack enable \
-    && corepack prepare yarn@stable --activate \
-    && yarn -v
+ARG PNPM_VERSION
+RUN arch="$(uname -m)"; \
+    case "$arch" in \
+      aarch*) export pnpmArch="arm64";; \
+      x86_64) export pnpmArch="x64";; \
+      *) printf "Unsupported architecture %s\n" "$arch"; exit 1;; \
+    esac; \
+    mkdir -p /tmp/pnpm && \
+    curl -L "https://github.com/pnpm/pnpm/releases/download/v${PNPM_VERSION}/pnpm-linux-${pnpmArch}.tar.gz" \
+      | tar -C /tmp/pnpm -xzf - && \
+    /usr/bin/env SHELL="/bin/bash" /tmp/pnpm/pnpm setup --force && \
+    rm -rf /tmp/pnpm
 
 # ------------------------------------------------------------
 # Run configuration
@@ -63,7 +71,7 @@ WORKDIR /opt/app
 USER $APP_USER
 
 # Add binstubs to the path.
-ENV PATH="/opt/app/bin:$PATH"
+ENV PATH="/usr/bin:/opt/app/bin:$PNPM_HOME/bin:$PATH"
 
 # If run with no other arguments, the image will start the rails server by
 # default. Note that we must bind to all interfaces (0.0.0.0) because when
@@ -107,18 +115,9 @@ COPY --chown=$APP_USER:$APP_USER Gemfile* .ruby-version ./
 RUN bundle install
 
 # ------------------------------------------------------------
-# Install JS packages
-
-# Install JS packages
-COPY --chown=$APP_USER:$APP_USER package.json yarn.lock ./
-RUN yarn install
-
-# ------------------------------------------------------------
 # Copy codebase
 
-# Copy the rest of the codebase. We do this after installing packages so that
-# changes unrelated to the packages don't invalidate the cache and force a slow
-# re-install.
+# Copy the rest of the codebase.
 COPY --chown=$APP_USER:$APP_USER . .
 
 # =============================================================================
@@ -147,8 +146,8 @@ COPY --from=development --chown=$APP_USER /usr/local/bundle /usr/local/bundle
 RUN bundle config set frozen 'true'
 RUN bundle install --local
 
-# Ensure JS modules are installed and yarn.lock is synced
-RUN yarn install --immutable
+# Ensure JS modules are installed and pnpm-lock.yaml is synced.
+RUN pnpm install --frozen-lockfile
 
 # ------------------------------------------------------------
 # Precompile production assets

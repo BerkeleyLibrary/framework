@@ -81,13 +81,12 @@ module UCBLIT
     end
 
     def eslint_cmd(*args)
-      %w[yarn eslint].tap do |cmd|
+      %w[pnpm exec eslint].tap do |cmd|
         cmd.concat(args)
         cmd.concat(js_dirs)
       end
     end
 
-    # TODO: figure out how to silence "npm ERR!" but still get $stderr output
     def run_cmd(cmd, out: $stdout, err: err_stream, silence_errors: false)
       sh(*cmd, out:, err:) do |ok, ps|
         ps.exitstatus.tap do |exit_status|
