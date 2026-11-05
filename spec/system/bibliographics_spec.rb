@@ -6,7 +6,7 @@ RSpec.describe 'Bibliographics', type: :system do
   describe 'unauthenticated user' do
     it 'requires login' do
       visit bibliographics_path
-      expect(page).to have_content('You need to log in to continue.')
+      expect(page).to have_content('Please sign in with your CalNet credentials to complete this form.')
     end
   end
 
