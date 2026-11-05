@@ -105,7 +105,7 @@ describe LocationRequestsController, type: :system do
       before { visit immediate_location_request_path }
 
       it 'requires login' do
-        expect(page).to have_content('Please sign in with your CalNet credentials to complete this form.')
+        expect(page).to have_content('You need to log in to continue.')
       end
     end
   end
