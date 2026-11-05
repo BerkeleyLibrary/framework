@@ -1,0 +1,7 @@
+<h1>Authentication Required</h1>
+
+<p>Please sign in with your CalNet credentials to complete this form.</p>
+
+<%= form_tag('/auth/calnet', url: request.original_url, method: :post, data: { turbo: false }) do %>
+  <%= button_tag 'CalNet Login', class: :calnet_login, role: :link %>
+<% end %>

@@ -10,7 +10,7 @@ describe TindDownloadController, type: :system do
   describe 'unauthenticated user' do
     it 'requires login' do
       visit tind_download_path
-      expect(page).to have_content('Please sign in with your CalNet credentials to complete this form.')
+      expect(page).to have_content('You need to log in to continue.')
     end
   end
 

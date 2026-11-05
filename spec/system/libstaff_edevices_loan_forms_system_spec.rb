@@ -2,6 +2,13 @@ require 'capybara_helper'
 require 'calnet_helper'
 
 describe :libstaff_edevices_loan_forms, type: :system do
+  describe 'unauthenticated user' do
+    it 'asks them to sign in with their CalNet credentials' do
+      visit new_libstaff_edevices_loan_form_path
+      expect(page).to have_content('Please sign in with your CalNet credentials to complete this form.')
+    end
+  end
+
   describe 'with a valid user' do
     attr_reader :patron_id
     attr_reader :patron

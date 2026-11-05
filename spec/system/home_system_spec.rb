@@ -7,7 +7,7 @@ describe :home, type: :system do
     context 'without login' do
       it 'requires login' do
         visit admin_path
-        expect(page).to have_content('Please sign in with your CalNet credentials to complete this form.')
+        expect(page).to have_content('You need to log in to continue.')
       end
     end
   end
