@@ -7,7 +7,7 @@ ARG PNPM_VERSION="12.4.0"
 # The base stage scaffolds elements which are common to building and running
 # the application, such as installing ca-certificates, creating the app user,
 # and installing runtime system dependencies.
-FROM ruby:3.4-slim AS base
+FROM ruby:3.4.13-slim AS base
 
 # ------------------------------------------------------------
 # Declarative metadata
