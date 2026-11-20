@@ -89,7 +89,8 @@ services:
     restart: on-failure:5
 
   selenium:
-    image: selenium/standalone-chromium
+    # Chromium 156.0.8078.79: use the same browser locally and in CI.
+    image: selenium/standalone-chromium:4.53.0-20261120
     networks:
       default:
         aliases:

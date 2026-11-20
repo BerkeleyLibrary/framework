@@ -5,6 +5,7 @@ require 'berkeley_library/docker'
 require 'capybara/rspec'
 require 'selenium-webdriver'
 require 'berkeley_library/logging'
+require 'support/chrome_node_visibility'
 
 module CapybaraHelper
   # Capybara artifact path
